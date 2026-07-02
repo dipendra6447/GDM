@@ -10,7 +10,6 @@ import RefineSearch from '../../components/RefineSearch/RefineSearch';
 import SearchResultCard from '../../components/SearchResultCard/SearchResultCard';
 import SearchPagination from '../../components/SearchPagination/SearchPagination';
 import Newsletter from '../../components/Newsletter/Newsletter';
-import Footer from '../../components/Footer/Footer';
 import MobileBottomNav from '../../components/MobileBottomNav/MobileBottomNav';
 
 // Data
@@ -205,7 +204,6 @@ const JobListing: React.FC = () => {
         {/* Newsletter & Footer (full width) */}
         <Newsletter />
       </main>
-      <Footer />
       <MobileBottomNav />
     </>
   );

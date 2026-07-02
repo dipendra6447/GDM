@@ -12,7 +12,7 @@ const HiringBanner: React.FC = () => {
     >
       {/* Full-width background image */}
       <img
-        src={hiringBg?.src || hiringBg}
+        src={hiringBg.src}
         alt=""
         className="hiring-bg-img"
         aria-hidden="true"

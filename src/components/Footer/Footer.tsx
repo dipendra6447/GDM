@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
 import './Footer.css';
 
 const footerColumns = [
@@ -51,7 +52,7 @@ const Footer: React.FC = () => {
                 {/* Social Links */}
                 <div className="footer-social d-flex gap-3 mt-4">
                   {socialLinks.map(social => (
-                    <a
+                    <Link
                       key={social.label}
                       href={social.href}
                       className="social-btn"
@@ -59,26 +60,26 @@ const Footer: React.FC = () => {
                       id={`social-${social.label.toLowerCase()}`}
                     >
                       <i className={`bi ${social.icon}`}></i>
-                    </a>
+                    </Link>
                   ))}
                 </div>
 
                 {/* App Badges */}
                 <div className="footer-apps d-flex flex-wrap gap-2 mt-4">
-                  <a href="#" className="app-badge" id="footer-app-store">
+                  <Link href="#" className="app-badge" id="footer-app-store">
                     <i className="bi bi-apple me-2"></i>
                     <div>
                       <span className="app-badge-small">Download on the</span>
                       <span className="app-badge-big">App Store</span>
                     </div>
-                  </a>
-                  <a href="#" className="app-badge" id="footer-play-store">
+                  </Link>
+                  <Link href="#" className="app-badge" id="footer-play-store">
                     <i className="bi bi-google-play me-2"></i>
                     <div>
                       <span className="app-badge-small">Get it on</span>
                       <span className="app-badge-big">Google Play</span>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -91,9 +92,9 @@ const Footer: React.FC = () => {
                   <ul className="footer-links">
                     {col.links.map(link => (
                       <li key={link}>
-                        <a href="#" className="footer-link" id={`footer-link-${link.toLowerCase().replace(/\s+/g, '-')}`}>
+                        <Link href="#" className="footer-link" id={`footer-link-${link.toLowerCase().replace(/\s+/g, '-')}`}>
                           {link}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -112,9 +113,9 @@ const Footer: React.FC = () => {
               © 2024 JobNest. All rights reserved. Made with ❤️ for job seekers worldwide.
             </p>
             <div className="footer-bottom-links d-flex gap-4">
-              <a href="#" className="footer-bottom-link" id="footer-privacy">Privacy</a>
-              <a href="#" className="footer-bottom-link" id="footer-terms">Terms</a>
-              <a href="#" className="footer-bottom-link" id="footer-cookies">Cookies</a>
+              <Link href="#" className="footer-bottom-link" id="footer-privacy">Privacy</Link>
+              <Link href="#" className="footer-bottom-link" id="footer-terms">Terms</Link>
+              <Link href="#" className="footer-bottom-link" id="footer-cookies">Cookies</Link>
             </div>
           </div>
         </div>

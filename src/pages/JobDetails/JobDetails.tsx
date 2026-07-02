@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from 'react';
 import './JobDetails.css';
-import Navbar from '../../components/Navbar/Navbar';
-import Footer from '../../components/Footer/Footer';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import JobDetailsBreadcrumb from '../../components/JobDetailsBreadcrumb/JobDetailsBreadcrumb';
 import JobDetailsHeader from '../../components/JobDetailsHeader/JobDetailsHeader';
@@ -75,7 +73,6 @@ const JobDetails: React.FC = () => {
         {/* Newsletter */}
         <Newsletter />
       </main>
-      <Footer />
       <MobileBottomNav />
     </>
   );

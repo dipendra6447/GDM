@@ -131,7 +131,7 @@ const SpecialPromotions: React.FC = () => {
                 {/* RIGHT — laptop image */}
                 <div className="sp-card-image" aria-hidden="true">
                   <img
-                    src={laptopImg?.src || laptopImg}
+                    src={laptopImg.src}
                     alt="Laptop illustration"
                     className="sp-laptop-img"
                     loading="lazy"

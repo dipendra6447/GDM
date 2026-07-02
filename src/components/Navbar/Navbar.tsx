@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import Link from 'next/link';
 import "./Navbar.css";
 
 const navLinks = [
@@ -53,7 +54,7 @@ const Navbar: React.FC = () => {
       >
         <div className="container">
           {/* Logo */}
-          <a className="navbar-brand" href="/" aria-label="JobNest Home">
+          <Link className="navbar-brand" href="/" aria-label="JobNest Home">
             <div className="logo-mark">
               <span className="logo-icon">
                 <i className="bi bi-briefcase-fill"></i>
@@ -62,7 +63,7 @@ const Navbar: React.FC = () => {
                 Job<span className="logo-accent">Nest</span>
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* Hamburger */}
           <button
@@ -89,14 +90,14 @@ const Navbar: React.FC = () => {
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0 nav-links">
               {navLinks.map((link) => (
                 <li className="nav-item" key={link.label}>
-                  <a
+                  <Link
                     className="nav-link"
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
                     id={`nav-${link.label.toLowerCase().replace(" ", "-")}`}
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -144,13 +145,42 @@ const Navbar: React.FC = () => {
                           <span className="nav-dropdown-role">Job Seeker</span>
                         </div>
                       </div>
+                      
+                      {/* Profile Completion Section */}
+                      <div className="nav-dropdown-completion px-3 py-2">
+                        <div className="d-flex justify-content-between align-items-center mb-1">
+                          <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Profile Completion</span>
+                          <span style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: 600 }}>{user?.profileCompletion || 0}%</span>
+                        </div>
+                        <div className="progress" style={{ height: '6px', background: 'rgba(255,255,255,0.1)' }}>
+                          <div 
+                            className="progress-bar bg-primary" 
+                            role="progressbar" 
+                            style={{ width: `${user?.profileCompletion || 0}%` }}
+                            aria-valuenow={user?.profileCompletion || 0} 
+                            aria-valuemin={0} 
+                            aria-valuemax={100}
+                          ></div>
+                        </div>
+                        {(user?.profileCompletion || 0) < 100 && (
+                          <Link 
+                            href="/profile"
+                            className="btn btn-sm btn-outline-primary w-100 mt-2"
+                            style={{ fontSize: '0.8rem', borderRadius: '8px', display: 'inline-block', textAlign: 'center' }}
+                            onClick={() => setDropdownOpen(false)}
+                          >
+                            Complete Profile
+                          </Link>
+                        )}
+                      </div>
+
                       <div className="nav-dropdown-divider" />
-                      <a href="/jobs" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                      <Link href="/jobs" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                         <i className="bi bi-search" /> Find Jobs
-                      </a>
-                      <a href="/subscription" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                      </Link>
+                      <Link href="/subscription" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                         <i className="bi bi-star" /> Subscription
-                      </a>
+                      </Link>
                       <div className="nav-dropdown-divider" />
                       <button
                         className="nav-dropdown-item nav-dropdown-logout"
@@ -165,13 +195,13 @@ const Navbar: React.FC = () => {
               ) : (
                 /* ── Logged Out: Show Sign In + Post a Job ── */
                 <>
-                  <a href="/login" className="btn-login" id="nav-login-btn">
+                  <Link href="/login" className="btn-login" id="nav-login-btn">
                     Sign In
-                  </a>
-                  <a href="/login" className="btn-register" id="nav-register-btn">
+                  </Link>
+                  <Link href="/login" className="btn-register" id="nav-register-btn">
                     <i className="bi bi-person-plus me-2"></i>
                     Post a Job
-                  </a>
+                  </Link>
                 </>
               )}
             </div>

@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import "../../styles/subscription.css";
 import "../../styles/subscription-light.css";
 import "../Home/Home.css";
-import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer/Footer";
 import PricingHero from "../../components/PricingHero/PricingHero";
 import JobSeekerPlans from "../../components/JobSeekerPlans/JobSeekerPlans";
 import EmployerPlans from "../../components/EmployerPlans/EmployerPlans";
@@ -44,14 +42,6 @@ const SubscriptionLight: React.FC = () => {
 
   return (
     <div className="subscription-page subscription-light-page">
-      {/* SEO Meta */}
-      <title>JobNest Premium — Subscription &amp; Pricing Plans</title>
-
-      {/* Sticky Navbar — same pattern as Home page */}
-      <div className="sticky-header">
-        <Navbar />
-      </div>
-
       <main style={{ paddingTop: "80px" }}>
         {/* 1. Hero */}
         <PricingHero />
@@ -116,8 +106,6 @@ const SubscriptionLight: React.FC = () => {
         {/* 9. CTA */}
         <SubscriptionCTA />
       </main>
-
-      <Footer />
 
       {/* Role Switcher Modal — rendered at page level */}
       {roleSwitch.open && (

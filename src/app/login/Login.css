@@ -53,11 +53,12 @@
   justify-content: center;
   padding: 2rem;
   position: relative;
+  overflow-y: auto;
 }
 
 .auth-form-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -65,11 +66,12 @@
   border-radius: 24px;
   padding: 3rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  margin: 2rem 0;
 }
 
 .auth-form-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .auth-form-title {
@@ -130,7 +132,7 @@
 }
 
 .auth-input-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   text-align: left;
 }
 
@@ -157,6 +159,105 @@
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.auth-input::placeholder {
+  color: #475569;
+}
+
+/* Password Wrapper */
+.auth-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.auth-password-toggle:hover {
+  color: #cbd5e1;
+}
+
+/* Phone Input Overrides */
+.phone-input-container {
+  width: 100% !important;
+}
+
+.phone-input {
+  width: 100% !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+  padding: 14px 16px 14px 48px !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+  height: 50px !important;
+}
+
+.phone-input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+
+.phone-input-button {
+  background: transparent !important;
+  border: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px 0 0 12px !important;
+  padding-left: 8px !important;
+}
+
+.react-tel-input .country-list {
+  background-color: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+.react-tel-input .country-list .country:hover {
+  background-color: #334155 !important;
+}
+
+.react-tel-input .country-list .country.highlight {
+  background-color: #3b82f6 !important;
+}
+
+.auth-select {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+
+.auth-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.auth-select option {
+  background: #1e293b;
+  color: #f8fafc;
 }
 
 .auth-submit-btn {
@@ -218,6 +319,17 @@
   text-align: center;
 }
 
+.auth-success-msg {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 /* Floating aesthetic circles in background */
 .auth-glow-circle {
   position: absolute;
@@ -242,3 +354,225 @@
   bottom: -200px;
   left: -200px;
 }
+
+/* ============================================
+   ROLE SELECTOR (Radio Card Group)
+   ============================================ */
+.role-selector {
+  margin-bottom: 1.75rem;
+}
+
+.role-selector-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.role-card {
+  position: relative;
+  cursor: pointer;
+  background: rgba(15, 23, 42, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.role-card:hover {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(15, 23, 42, 0.7);
+  transform: translateY(-2px);
+}
+
+.role-card.active {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15),
+              inset 0 1px 0 rgba(59, 130, 246, 0.2);
+}
+
+.role-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.role-card-icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.role-card-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  line-height: 1.3;
+}
+
+.role-card.active .role-card-name {
+  color: #60a5fa;
+}
+
+.role-card-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.25s ease;
+}
+
+.role-card.active .role-card-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.role-card-check svg {
+  width: 10px;
+  height: 10px;
+  color: white;
+}
+
+/* ============================================
+   PROFILE SECTION (Role-specific fields)
+   ============================================ */
+.profile-section {
+  overflow: hidden;
+}
+
+.profile-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.profile-section-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.profile-section-icon.seeker {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.profile-section-icon.employer {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+
+.profile-section-icon.promoter {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.profile-section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.profile-section-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.profile-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.profile-fields-grid .auth-input-group.full-width {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .role-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-fields-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-form-container {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+
+  .auth-brand-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* ============================================
+   PASSWORD STRENGTH INDICATOR
+   ============================================ */
+.password-strength {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.password-strength-bar {
+  height: 3px;
+  flex: 1;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s ease;
+}
+
+.password-strength-bar.filled.weak {
+  background: #ef4444;
+}
+
+.password-strength-bar.filled.medium {
+  background: #f59e0b;
+}
+
+.password-strength-bar.filled.strong {
+  background: #22c55e;
+}
+
+.password-strength-text {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.password-strength-text.weak { color: #ef4444; }
+.password-strength-text.medium { color: #f59e0b; }
+.password-strength-text.strong { color: #22c55e; }

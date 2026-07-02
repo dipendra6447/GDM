@@ -1,19 +1,20 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
 import './JobDetailsBreadcrumb.css';
 
 const JobDetailsBreadcrumb: React.FC = () => (
-  <nav className="jdb-breadcrumb" aria-label="Breadcrumb">
-    <a href="/jobs" className="jdb-back-link" id="jdb-back-to-jobs">
-      <i className="bi bi-chevron-left" />
-      Back to Jobs
-    </a>
+  <nav className="jdb-nav" aria-label="breadcrumb">
+    <Link href="/jobs" className="jdb-back-link" id="jdb-back-to-jobs">
+      <i className="bi bi-arrow-left" /> Back to Jobs
+    </Link>
+    
     <ol className="jdb-crumb-list">
-      <li><a href="/" className="jdb-crumb-link">Jobs</a></li>
-      <li><i className="bi bi-chevron-right jdb-sep" /></li>
-      <li><a href="/jobs" className="jdb-crumb-link">Marketing</a></li>
-      <li><i className="bi bi-chevron-right jdb-sep" /></li>
-      <li className="jdb-crumb-current" aria-current="page">Marketing Manager</li>
+      <li><Link href="/" className="jdb-crumb-link">Jobs</Link></li>
+      <li className="jdb-crumb-sep">/</li>
+      <li><Link href="/jobs" className="jdb-crumb-link">Marketing</Link></li>
+      <li className="jdb-crumb-sep">/</li>
+      <li className="jdb-crumb-current" aria-current="page">Senior Product Marketing Manager</li>
     </ol>
   </nav>
 );

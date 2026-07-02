@@ -1,4 +1,4 @@
-"use client";
+
 import { SearchResult } from '../components/SearchResultCard/SearchResultCard';
 
 export const mockSearchResults: SearchResult[] = [

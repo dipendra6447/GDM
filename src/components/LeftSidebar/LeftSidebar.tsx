@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useAuth } from '../../hooks/useAuth';
 import './LeftSidebar.css';
 
 interface NavItem {
@@ -45,6 +47,8 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 }) => {
   const [activityOpen, setActivityOpen] = useState(true);
   const [listingsOpen, setListingsOpen] = useState(true);
+  const { user } = useAuth();
+  const profileCompletion = user?.profileCompletion || 0;
 
   return (
     <>
@@ -64,7 +68,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
       >
         {/* Logo */}
         <div className="ls-logo-area">
-          <a href="/" className="ls-logo" aria-label="JobNest Home">
+          <Link href="/" className="ls-logo" aria-label="JobNest Home">
             <span className="ls-logo-icon">
               <i className="bi bi-briefcase-fill" />
             </span>
@@ -72,7 +76,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
               Job<span className="ls-logo-accent">Nest</span>
               <small className="ls-logo-tagline">.com</small>
             </span>
-          </a>
+          </Link>
           {/* Mobile close */}
           <button
             className="ls-close-btn"
@@ -179,10 +183,10 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                   />
                   <path
                     className="ls-ring-fill"
-                    strokeDasharray="85, 100"
+                    strokeDasharray={`${profileCompletion}, 100`}
                     d="M18 2.0845a15.9155 15.9155 0 0 1 0 31.831a15.9155 15.9155 0 0 1 0-31.831"
                   />
-                  <text x="18" y="20.5" className="ls-ring-text">85%</text>
+                  <text x="18" y="20.5" className="ls-ring-text">{profileCompletion}%</text>
                 </svg>
               </div>
               <div className="ls-profile-card-text">
@@ -192,9 +196,14 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 </p>
               </div>
             </div>
-            <a href="#" className="ls-profile-card-cta" id="ls-complete-profile">
+            <Link 
+              href="/profile"
+              className="ls-profile-card-cta w-100 text-start" 
+              id="ls-complete-profile"
+              style={{ border: 'none', background: 'transparent' }}
+            >
               Complete Profile <i className="bi bi-arrow-right" />
-            </a>
+            </Link>
           </div>
         </div>
 

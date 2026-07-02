@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface User {
   id: string;
@@ -9,6 +10,7 @@ interface User {
   jobApplyCount: number;
   jobPostCount: number;
   roles: number[];
+  profileCompletion?: number;
   createdAt: string;
 }
 
@@ -18,6 +20,7 @@ interface AuthState {
   isLoggedIn: boolean;
   logout: () => Promise<void>;
   refetch: () => Promise<void>;
+  updateProfile?: (data: FormData) => Promise<void>;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -25,6 +28,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 export function useAuth(): AuthState {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   const fetchUser = useCallback(async () => {
     try {
@@ -91,8 +95,35 @@ export function useAuth(): AuthState {
     }
     localStorage.removeItem('token');
     setUser(null);
-    window.location.href = '/';
-  }, []);
+    router.push('/');
+  }, [router]);
+
+  const updateProfile = useCallback(async (formData: FormData) => {
+    const token = localStorage.getItem('token');
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const endpoint = user?.roles[0] === 1 ? '/api/profiles/job-seeker' : 
+                     user?.roles[0] === 2 ? '/api/profiles/employer' : 
+                     '/api/profiles/business-promoter';
+
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers,
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || 'Failed to update profile');
+    }
+
+    // Refresh user data to get updated profileCompletion
+    await fetchUser();
+  }, [user, fetchUser]);
 
   return {
     user,
@@ -100,5 +131,6 @@ export function useAuth(): AuthState {
     isLoggedIn: !!user,
     logout,
     refetch: fetchUser,
+    updateProfile,
   };
 }

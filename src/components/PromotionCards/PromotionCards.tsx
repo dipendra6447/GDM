@@ -103,7 +103,7 @@ const PromotionCards: React.FC = () => {
               {/* RIGHT — Image + floating window */}
               <div className="promo-card-image-wrap">
                 <img
-                  src={jobSeekerImg?.src || jobSeekerImg}
+                  src={jobSeekerImg.src}
                   alt="Professional woman job seeker holding documents in modern office"
                   className="promo-card-img"
                   loading="lazy"
@@ -184,7 +184,7 @@ const PromotionCards: React.FC = () => {
               {/* RIGHT — Image + floating window */}
               <div className="promo-card-image-wrap">
                 <img
-                  src={businessImg?.src || businessImg}
+                  src={businessImg.src}
                   alt="Two business professionals shaking hands in modern office"
                   className="promo-card-img"
                   loading="lazy"

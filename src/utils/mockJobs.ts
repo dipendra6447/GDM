@@ -1,4 +1,4 @@
-"use client";
+
 import { Job } from '../components/JobListingGrid/JobCard';
 
 export const mockJobs: Job[] = [

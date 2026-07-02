@@ -16,8 +16,6 @@ import ValueProps from '../../components/ValueProps/ValueProps';
 import MarketplaceStats from '../../components/MarketplaceStats/MarketplaceStats';
 import MobileBottomNav from '../../components/MobileBottomNav/MobileBottomNav';
 import Newsletter from '../../components/Newsletter/Newsletter';
-import Footer from '../../components/Footer/Footer';
-
 // Data
 import {
   topPicks,
@@ -80,9 +78,6 @@ const Marketplace: React.FC = () => {
         {/* ── Newsletter (reused) ── */}
         <Newsletter />
       </main>
-
-      {/* Footer (reused) */}
-      <Footer />
 
       {/* Mobile Bottom Nav */}
       <MobileBottomNav />

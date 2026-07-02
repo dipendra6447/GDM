@@ -7,7 +7,7 @@ import blogSalaryGuide from '../../assets/images/blog_salary_guide.png';
 
 interface BlogPost {
   id: number;
-  image: string;
+  image: any;
   imageAlt: string;
   category: string;
   categoryColor: string;
@@ -107,7 +107,7 @@ const BlogSection: React.FC = () => {
               {/* Cover Image */}
               <div className="blog-card-img-wrap">
                 <img
-                  src={blog.image?.src || blog.image}
+                  src={blog.image.src || blog.image}
                   alt={blog.imageAlt}
                   className="blog-card-img"
                   loading="lazy"

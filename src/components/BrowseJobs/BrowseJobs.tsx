@@ -87,7 +87,7 @@ const BrowseJobs: React.FC = () => {
       {/* ── Hero Banner ── */}
       <div className="browse-banner-wrap">
         <img
-          src={browseBanner?.src || browseBanner}
+          src={browseBanner.src}
           alt="Global job opportunities cityscape"
           className="browse-banner-img"
           loading="lazy"

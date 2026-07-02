@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import "./Home.css";
-import Navbar from "../../components/Navbar/Navbar";
 import Hero from "../../components/Hero/Hero";
 import CategorySection from "../../components/CategorySection/CategorySection";
 import TrendingJobs from "../../components/TrendingJobs/TrendingJobs";
@@ -12,7 +11,6 @@ import DiscoverJobs from "../../components/DiscoverJobs/DiscoverJobs";
 import HiringBanner from "../../components/HiringBanner/HiringBanner";
 import BlogSection from "../../components/BlogSection/BlogSection";
 import BrowseJobs from "../../components/BrowseJobs/BrowseJobs";
-import Footer from "../../components/Footer/Footer";
 import AdPromotion from "../../components/AdPromotion/AdPromotion";
 
 const BANNER_HEIGHT = 46; // px — keep in sync with AdPromotion.css min-height
@@ -30,7 +28,6 @@ const Home: React.FC = () => {
           bannerVisible={bannerVisible}
           onBannerClose={() => setBannerVisible(false)}
         />
-        <Navbar />
       </div>
       <main style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
         <Hero />
@@ -44,7 +41,6 @@ const Home: React.FC = () => {
         <BlogSection />
         <BrowseJobs />
       </main>
-      <Footer />
     </>
   );
 };

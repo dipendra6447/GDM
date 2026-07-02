@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import "../../styles/subscription.css";
-import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer/Footer";
 import PricingHero from "../../components/PricingHero/PricingHero";
 import JobSeekerPlans from "../../components/JobSeekerPlans/JobSeekerPlans";
 import EmployerPlans from "../../components/EmployerPlans/EmployerPlans";
@@ -42,14 +40,6 @@ const Subscription: React.FC = () => {
 
   return (
     <div className="subscription-page">
-      {/* SEO Meta */}
-      <title>JobNest Premium — Subscription &amp; Pricing Plans</title>
-
-      {/* Sticky Navbar */}
-      <div style={{ position: "sticky", top: 0, zIndex: 1000 }}>
-        <Navbar />
-      </div>
-
       <main style={{ paddingTop: "0" }}>
         {/* 1. Hero */}
         <PricingHero />
@@ -111,8 +101,6 @@ const Subscription: React.FC = () => {
         {/* 9. CTA */}
         <SubscriptionCTA />
       </main>
-
-      <Footer />
 
       {/* Role Switcher Modal — rendered at page level */}
       {roleSwitch.open && (

@@ -17,7 +17,7 @@ import catHospitality from "../../assets/images/categories/cat-hospitality.png";
 import catLogistics from "../../assets/images/categories/cat-logistics.png";
 
 interface Category {
-  image: string;
+  image: any;
   label: string;
   count: string;
   accentColor: string;

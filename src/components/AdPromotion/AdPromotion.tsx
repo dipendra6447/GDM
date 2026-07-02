@@ -120,7 +120,7 @@ const AdPromotion: React.FC<AdPromotionProps> = ({
           <span className="float-ad-adlabel">Ad</span>
 
           <div className="float-ad-img-wrap">
-            <img src={currentAd.img?.src || currentAd.img} alt={currentAd.title} loading="lazy" />
+            <img src={currentAd.img} alt={currentAd.title} loading="lazy" />
           </div>
 
           <div className="float-ad-body">

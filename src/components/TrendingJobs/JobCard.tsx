@@ -1,12 +1,31 @@
 "use client";
 import React from 'react';
 import { Job } from './TrendingJobs';
+import { useAuth } from '../../hooks/useAuth';
 
 interface JobCardProps {
   job: Job;
 }
 
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
+  const { user, isLoggedIn } = useAuth();
+
+  const handleApply = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      window.location.href = '/login';
+      return;
+    }
+    const completion = user?.profileCompletion || 0;
+    if (completion < 50) {
+      alert("Please complete your profile to apply for this job.");
+      window.location.href = '/profile';
+      return;
+    }
+    // Proceed with application logic (future implementation)
+    alert(`Successfully applied for ${job.title}!`);
+  };
+
   return (
     <article
       className="job-card"
@@ -66,6 +85,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           className="job-apply-btn"
           id={`apply-${job.id}`}
           aria-label={`Apply for ${job.title}`}
+          onClick={handleApply}
         >
           Apply Now
         </a>

@@ -20,7 +20,7 @@ export interface Job {
   type: string;
   salary: string;
   cardBg: string; // soft bg color for the image area
-  illustrationImg: string;
+  illustrationImg: any;
   tags: string[];
   applyBtnColor: string; // hex color for the Apply Now button
   category: string;
