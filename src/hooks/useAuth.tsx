@@ -12,7 +12,8 @@ interface User {
   jobApplyCount: number;
   jobPostCount: number;
   roles: number[];
-  profileCompletion?: number;
+  profileCompletion?: number;       // averaged across all roles
+  profileCompletions?: Record<string, number>; // per-role map e.g. { "1": 60, "2": 30 }
   createdAt: string;
 }
 
@@ -22,7 +23,7 @@ interface AuthState {
   isLoggedIn: boolean;
   logout: () => Promise<void>;
   refetch: () => Promise<void>;
-  updateProfile?: (data: FormData) => Promise<void>;
+  updateProfile?: (data: FormData, roleId?: number) => Promise<void>;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -104,16 +105,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/');
   }, [router]);
 
-  const updateProfile = useCallback(async (formData: FormData) => {
+  const updateProfile = useCallback(async (formData: FormData, roleId?: number) => {
     const token = localStorage.getItem('token');
     const headers: Record<string, string> = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
+    // Prefer explicit roleId; fall back to user's first role
+    const effectiveRole = roleId ?? user?.roles[0];
     const endpoint =
-      user?.roles[0] === 1 ? '/api/profiles/job-seeker' :
-      user?.roles[0] === 2 ? '/api/profiles/employer' :
+      effectiveRole === 1 ? '/api/profiles/job-seeker' :
+      effectiveRole === 2 ? '/api/profiles/employer' :
       '/api/profiles/business-promoter';
 
     const res = await fetch(`${API_BASE}${endpoint}`, {
@@ -125,7 +128,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (!res.ok) {
       const data = await res.json();
-      throw new Error(data.message || 'Failed to update profile');
+      const err = new Error(data.message || 'Failed to update profile') as any;
+      err.errors = data.errors;
+      throw err;
     }
 
     // Refresh user data after update

@@ -205,3 +205,28 @@
     flex-direction: column;
   }
 }
+
+/* ── Skeleton loader (while auth resolves) ── */
+@keyframes join-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.join-btn-skeleton {
+  height: 44px;
+  flex: 1;
+  border-radius: var(--radius-button, 999px);
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.06) 25%,
+    rgba(255,255,255,0.13) 50%,
+    rgba(255,255,255,0.06) 75%
+  );
+  background-size: 800px 100%;
+  animation: join-shimmer 1.4s infinite linear;
+}
+
+.join-btn-skeleton--wide {
+  width: 100%;
+  flex: none;
+}

@@ -1,19 +1,31 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import './JoinCommunity.css';
 import joinBg from '../../assets/images/hiring_banner_bg.png';
 import { useAuth } from '../../hooks/useAuth';
+import RoleUpgradeModal from '../RoleUpgradeModal/RoleUpgradeModal';
 
 const JoinCommunity: React.FC = () => {
   const { isLoggedIn, user, isLoading } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [targetRole, setTargetRole] = useState<1 | 2 | 3 | null>(null);
 
-  // role: 1 = job_seeker, 2 = job_poster (employer), 3 = business_promoter
-  const userRole = user?.roles[0];
+  const userRoles = user?.roles ?? [];
 
-  // Each button is shown to everyone EXCEPT the user who already has that role
-  const showSeekerBtn   = !isLoggedIn || userRole !== 1;
-  const showEmployerBtn = !isLoggedIn || userRole !== 2;
-  const showPromoterBtn = !isLoggedIn || userRole !== 3;
+  // Hide a button for roles the user already holds (check ALL roles, not just the first)
+  const showSeekerBtn   = !isLoggedIn || !userRoles.includes(1);
+  const showEmployerBtn = !isLoggedIn || !userRoles.includes(2);
+  const showPromoterBtn = !isLoggedIn || !userRoles.includes(3);
+
+  const handleRoleClick = (role: 1 | 2 | 3, loginPath: string) => {
+    if (!isLoggedIn) {
+      window.location.href = loginPath;
+      return;
+    }
+    // Logged in but doesn't have this role → show upgrade modal
+    setTargetRole(role);
+    setModalOpen(true);
+  };
 
   return (
     <section
@@ -39,44 +51,71 @@ const JoinCommunity: React.FC = () => {
         </div>
 
         {/* RIGHT — CTAs */}
-        {!isLoading && (
-          <div className="join-right">
-            <div className="join-cta-group">
+        <div className="join-right">
+          <div className="join-cta-group">
+            {isLoading ? (
+              /* Skeleton loader while auth resolves */
+              <>
+                <div className="join-btn-skeleton join-btn-skeleton--wide" />
+                <div className="join-cta-row">
+                  <div className="join-btn-skeleton" />
+                  <div className="join-btn-skeleton" />
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Browse Jobs — always visible for everyone */}
+                <a
+                  href="/jobs"
+                  className="join-btn-primary"
+                  style={{ justifyContent: 'center' }}
+                  id="join-browse-jobs-btn"
+                  aria-label="Browse Jobs"
+                >
+                  Browse Jobs <i className="bi bi-search ms-2" aria-hidden="true" />
+                </a>
 
-              {/* Browse Jobs — always visible for everyone */}
-              <a
-                href="/jobs"
-                className="join-btn-primary"
-                style={{ justifyContent: 'center' }}
-                id="join-browse-jobs-btn"
-                aria-label="Browse Jobs"
-              >
-                Browse Jobs <i className="bi bi-search ms-2" aria-hidden="true" />
-              </a>
-
-              {/* The 2 non-current role buttons */}
-              <div className="join-cta-row">
-                {showSeekerBtn && (
-                  <a href="/login?role=job_seeker" className="join-btn-outline" id="join-seeker-btn">
-                    Find a Job <i className="bi bi-person ms-2" aria-hidden="true" />
-                  </a>
-                )}
-                {showEmployerBtn && (
-                  <a href="/login?role=job_poster" className="join-btn-outline" id="join-employer-btn">
-                    Hire Talent <i className="bi bi-building ms-2" aria-hidden="true" />
-                  </a>
-                )}
-                {showPromoterBtn && (
-                  <a href="/login?role=business_promoter" className="join-btn-outline" id="join-promoter-btn">
-                    Promote Business <i className="bi bi-megaphone ms-2" aria-hidden="true" />
-                  </a>
-                )}
-              </div>
-
-            </div>
+                {/* Only show roles the user does NOT currently have */}
+                <div className="join-cta-row">
+                  {showSeekerBtn && (
+                    <button
+                      className="join-btn-outline"
+                      id="join-seeker-btn"
+                      onClick={() => handleRoleClick(1, '/login?role=job_seeker')}
+                    >
+                      Find a Job <i className="bi bi-person ms-2" aria-hidden="true" />
+                    </button>
+                  )}
+                  {showEmployerBtn && (
+                    <button
+                      className="join-btn-outline"
+                      id="join-employer-btn"
+                      onClick={() => handleRoleClick(2, '/login?role=job_poster')}
+                    >
+                      Hire Talent <i className="bi bi-building ms-2" aria-hidden="true" />
+                    </button>
+                  )}
+                  {showPromoterBtn && (
+                    <button
+                      className="join-btn-outline"
+                      id="join-promoter-btn"
+                      onClick={() => handleRoleClick(3, '/login?role=business_promoter')}
+                    >
+                      Promote Business <i className="bi bi-megaphone ms-2" aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
+
+      <RoleUpgradeModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        targetRole={targetRole}
+      />
     </section>
   );
 };

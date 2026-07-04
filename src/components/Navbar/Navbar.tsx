@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from "../../hooks/useAuth";
 import Link from 'next/link';
+import RoleUpgradeModal from '../RoleUpgradeModal/RoleUpgradeModal';
 import "./Navbar.css";
 
 const navLinks = [
@@ -17,8 +19,27 @@ const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [targetRole, setTargetRole] = useState<1 | 2 | 3 | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
   const { user, isLoading, isLoggedIn, logout } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleActionClick = (role: 1 | 2 | 3) => {
+    if (!isLoggedIn) {
+      const roleStr = role === 2 ? 'job_poster' : role === 3 ? 'business_promoter' : 'job_seeker';
+      router.push(`/login?role=${roleStr}`);
+      return;
+    }
+    if (user?.roles?.includes(role)) {
+      router.push(`/profile?tab=${role}`);
+      return;
+    }
+    setTargetRole(role);
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -40,6 +61,12 @@ const Navbar: React.FC = () => {
   const getUserInitial = () => {
     if (user?.email) return user.email.charAt(0).toUpperCase();
     return "U";
+  };
+
+  const getRoleLabel = () => {
+    if (user?.roles?.includes(2)) return "Employer";
+    if (user?.roles?.includes(3)) return "Business Promoter";
+    return "Job Seeker";
   };
 
   return (
@@ -107,8 +134,28 @@ const Navbar: React.FC = () => {
               {isLoading ? (
                 <div className="nav-auth-skeleton" />
               ) : isLoggedIn ? (
-                /* ── Logged In: Show Profile Dropdown ── */
-                <div className="nav-profile-wrapper" ref={dropdownRef}>
+                /* ── Logged In: Show Profile Dropdown & Post a Job ── */
+                <>
+                  {user?.roles?.includes(2) ? (
+                    <Link
+                      href="/employer/post-job"
+                      className="btn-register d-none d-lg-flex"
+                      id="nav-post-job-logged-in"
+                    >
+                      <i className="bi bi-briefcase me-2"></i>
+                      Post a Job
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => handleActionClick(2)}
+                      className="btn-register d-none d-lg-flex"
+                      id="nav-post-job-logged-in"
+                    >
+                      <i className="bi bi-briefcase me-2"></i>
+                      Post a Job
+                    </button>
+                  )}
+                  <div className="nav-profile-wrapper" ref={dropdownRef}>
                   <button
                     className="nav-profile-btn"
                     onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -142,7 +189,7 @@ const Navbar: React.FC = () => {
                         )}
                         <div className="nav-dropdown-info">
                           <span className="nav-dropdown-email">{user?.email}</span>
-                          <span className="nav-dropdown-role">Job Seeker</span>
+                          <span className="nav-dropdown-role">{getRoleLabel()}</span>
                         </div>
                       </div>
                       
@@ -154,7 +201,7 @@ const Navbar: React.FC = () => {
                         </div>
                         <div className="progress" style={{ height: '6px', background: 'rgba(255,255,255,0.1)' }}>
                           <div 
-                            className="progress-bar bg-primary" 
+                            className={`progress-bar ${(user?.profileCompletion || 0) < 50 ? 'bg-danger' : (user?.profileCompletion || 0) < 80 ? 'bg-warning' : 'bg-success'}`} 
                             role="progressbar" 
                             style={{ width: `${user?.profileCompletion || 0}%` }}
                             aria-valuenow={user?.profileCompletion || 0} 
@@ -175,6 +222,18 @@ const Navbar: React.FC = () => {
                       </div>
 
                       <div className="nav-dropdown-divider" />
+                      {user?.roles?.includes(2) && (
+                        <>
+                          <Link
+                            href="/employer/post-job"
+                            className="nav-dropdown-item nav-dropdown-post-job"
+                            id="nav-dropdown-post-job"
+                            onClick={() => setDropdownOpen(false)}
+                          >
+                            <i className="bi bi-plus-circle" /> Post a Job
+                          </Link>
+                        </>
+                      )}
                       <Link href="/jobs" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                         <i className="bi bi-search" /> Find Jobs
                       </Link>
@@ -192,6 +251,7 @@ const Navbar: React.FC = () => {
                     </div>
                   )}
                 </div>
+                </>
               ) : (
                 /* ── Logged Out: Show Sign In + Post a Job ── */
                 <>
@@ -208,6 +268,12 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </nav>
+      {/* Role Upgrade Modal */}
+      <RoleUpgradeModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        targetRole={targetRole} 
+      />
     </header>
   );
 };
