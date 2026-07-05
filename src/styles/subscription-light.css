@@ -31,33 +31,52 @@
 
 /* ── Hero Section ── */
 .subscription-light-page .sub-hero {
-  background: linear-gradient(180deg, #F0F4FF 0%, #F8FAFF 100%);
+  background: none;
   position: relative;
   overflow: hidden;
+  z-index: 0;
 }
 
+/* Dark overlay for text readability over background image */
 .subscription-light-page .sub-hero::before {
-  background: radial-gradient(circle, rgba(36, 84, 255, 0.06) 0%, transparent 65%);
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#0a143cf0 0%, #0a143cde 40%, #0a143cb0 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .subscription-light-page .hero-glow-left {
-  background: radial-gradient(circle, rgba(36, 84, 255, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(36, 84, 255, 0.12) 0%, transparent 70%);
+  z-index: 1;
 }
 
 .subscription-light-page .hero-glow-right {
-  background: radial-gradient(circle, rgba(123, 62, 255, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(123, 62, 255, 0.10) 0%, transparent 70%);
+  z-index: 1;
 }
 
 .subscription-light-page .hero-particle {
-  background: #2454FF;
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .subscription-light-page .sub-hero-title {
-  color: var(--color-navy, #0B1739);
+  color: #FFFFFF;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.subscription-light-page .sub-hero-title span {
+  background: linear-gradient(135deg, #FFFFFF, #d4e4ff) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
 }
 
 .subscription-light-page .sub-hero-desc {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.90);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* ── Hero Buttons ── */
@@ -88,11 +107,34 @@
   box-shadow: 0 8px 32px rgba(36, 84, 255, 0.3);
 }
 
+/* Hero-specific outline button: white border/text over dark overlay */
+.subscription-light-page .sub-hero .btn-gold-outline {
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+.subscription-light-page .sub-hero .btn-gold-outline:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.8);
+  color: #FFFFFF;
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
+}
+
 /* ── Badge / Labels ── */
 .subscription-light-page .sub-badge {
   background: rgba(36, 84, 255, 0.08);
   border-color: rgba(36, 84, 255, 0.2);
   color: #2454FF;
+}
+
+/* Hero badge: light glassmorphism over dark overlay */
+.subscription-light-page .sub-hero .sub-badge {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  backdrop-filter: blur(8px);
 }
 
 .subscription-light-page .sub-heading {
@@ -527,17 +569,24 @@
 }
 
 /* Logo — restore blue accent */
-.subscription-light-page .logo-text { color: var(--color-navy, #0B1739) !important; }
-.subscription-light-page .logo-accent { color: var(--color-primary, #2454FF) !important; }
+.subscription-light-page .logo-text {
+  color: var(--color-navy, #0B1739) !important;
+}
+
+.subscription-light-page .logo-accent {
+  color: var(--color-primary, #2454FF) !important;
+}
 
 /* Nav links — restore dark text */
 .subscription-light-page .nav-links .nav-link {
   color: var(--color-navy, #0B1739) !important;
 }
+
 .subscription-light-page .nav-links .nav-link:hover {
   color: var(--color-primary, #2454FF) !important;
   background: rgba(36, 84, 255, 0.06) !important;
 }
+
 .subscription-light-page .nav-links .nav-link::after {
   background: var(--color-primary, #2454FF) !important;
 }
@@ -547,6 +596,7 @@
   color: var(--color-navy, #0B1739) !important;
   border-color: var(--color-border, #EDF0F7) !important;
 }
+
 .subscription-light-page .btn-login:hover {
   color: var(--color-primary, #2454FF) !important;
   border-color: var(--color-primary, #2454FF) !important;
@@ -557,6 +607,7 @@
   background: var(--gradient-primary, linear-gradient(135deg, #2454FF, #4F46E5)) !important;
   box-shadow: var(--shadow-blue, 0 8px 24px rgba(36, 84, 255, 0.25)) !important;
 }
+
 .subscription-light-page .btn-register:hover {
   box-shadow: 0 12px 32px rgba(36, 84, 255, 0.4) !important;
 }
@@ -572,15 +623,25 @@
     border: 1px solid rgba(36, 84, 255, 0.1) !important;
     box-shadow: 0 20px 60px rgba(36, 84, 255, 0.08) !important;
   }
+
   .subscription-light-page .navbar-cta {
     border-top-color: rgba(36, 84, 255, 0.1) !important;
   }
 }
 
 /* ── Scrollbar ── */
-.subscription-light-page::-webkit-scrollbar { width: 4px; }
-.subscription-light-page::-webkit-scrollbar-track { background: #F0F4FF; }
-.subscription-light-page::-webkit-scrollbar-thumb { background: #2454FF; border-radius: 2px; }
+.subscription-light-page::-webkit-scrollbar {
+  width: 4px;
+}
+
+.subscription-light-page::-webkit-scrollbar-track {
+  background: #F0F4FF;
+}
+
+.subscription-light-page::-webkit-scrollbar-thumb {
+  background: #2454FF;
+  border-radius: 2px;
+}
 
 /* ── Responsive Tweaks ── */
 @media (max-width: 991px) {
@@ -630,23 +691,28 @@
   border-color: rgba(150, 150, 150, 0.3);
   background: #FFFFFF;
 }
+
 .subscription-light-page .tier-platinum.pricing-card {
   background: linear-gradient(145deg, #F5F0FF, #EEE8FF);
   border-color: rgba(123, 79, 255, 0.25);
 }
+
 .subscription-light-page .tier-gold.pricing-card.featured {
   background: linear-gradient(145deg, #EEF2FF, #F0F4FF);
 }
+
 .subscription-light-page .tier-gold .price-amount {
   background: linear-gradient(135deg, #2454FF, #4F46E5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
 .subscription-light-page .tier-silver .price-amount {
   color: #8892B0;
   -webkit-text-fill-color: #8892B0;
 }
+
 .subscription-light-page .tier-platinum .price-amount {
   background: linear-gradient(135deg, #7B4FFF, #B57BFF);
   -webkit-background-clip: text;
@@ -660,14 +726,17 @@
   border-color: rgba(36, 84, 255, 0.2);
   box-shadow: 0 4px 16px rgba(36, 84, 255, 0.06);
 }
+
 .subscription-light-page .sbt-btn {
   color: #4B5680;
 }
+
 .subscription-light-page .sbt-btn.active {
   background: linear-gradient(135deg, #2454FF, #4F46E5);
   color: #fff;
   box-shadow: 0 4px 16px rgba(36, 84, 255, 0.3);
 }
+
 .subscription-light-page .sbt-btn:not(.active):hover {
   color: #2454FF;
   background: rgba(36, 84, 255, 0.06);
@@ -678,22 +747,27 @@
   background: rgba(36, 84, 255, 0.04);
   border-color: rgba(36, 84, 255, 0.15);
 }
+
 .subscription-light-page .btn-compare-plans {
   border-color: rgba(36, 84, 255, 0.4);
   color: #2454FF;
 }
+
 .subscription-light-page .btn-compare-plans:hover {
   background: rgba(36, 84, 255, 0.08);
   border-color: #2454FF;
   box-shadow: 0 8px 24px rgba(36, 84, 255, 0.15);
 }
+
 .subscription-light-page .role-switch-label {
   color: #8892B0;
 }
+
 .subscription-light-page .role-pill {
   border-color: rgba(36, 84, 255, 0.2);
   color: #4B5680;
 }
+
 .subscription-light-page .role-pill:hover {
   background: rgba(36, 84, 255, 0.08);
   border-color: rgba(36, 84, 255, 0.45);
@@ -916,4 +990,3 @@
   border-color: rgba(36, 84, 255, 0.35);
   color: #0B1739;
 }
-
