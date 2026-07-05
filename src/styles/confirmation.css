@@ -1,0 +1,375 @@
+/* ============================================
+   CONFIRMATION PAGE — BLUE & WHITE THEME
+   ============================================ */
+
+/* ── Page Wrapper ── */
+.confirmation-page {
+  background: var(--color-bg, #F8FAFF);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  padding: 60px 0 100px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* ── Decorative Background Orbs ── */
+.confirm-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.confirm-orb-1 {
+  top: 5%;
+  right: -8%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(36, 84, 255, 0.06) 0%, transparent 70%);
+  animation: confirmGlow 6s ease-in-out infinite;
+}
+
+.confirm-orb-2 {
+  bottom: 10%;
+  left: -6%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, transparent 70%);
+  animation: confirmGlow 8s ease-in-out infinite reverse;
+}
+
+.confirm-orb-3 {
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(36, 84, 255, 0.03) 0%, transparent 60%);
+  animation: confirmGlow 10s ease-in-out infinite;
+}
+
+@keyframes confirmGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+/* ── Main Card ── */
+.confirm-card {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  animation: confirmFadeIn 0.8s ease forwards;
+}
+
+@keyframes confirmFadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Steps Indicator (reused from checkout) ── */
+.confirm-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 48px;
+  padding: 0 20px;
+}
+
+.confirm-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary, #2454FF);
+  transition: all 0.3s ease;
+}
+
+.confirm-step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--gradient-primary, linear-gradient(135deg, #2454FF, #4F46E5));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(36, 84, 255, 0.25);
+}
+
+.confirm-step-connector {
+  width: 50px;
+  height: 2px;
+  background: var(--color-primary, #2454FF);
+  margin: 0 10px;
+  border-radius: 2px;
+}
+
+/* ── Success Icon ── */
+.confirm-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+  animation: confirmBounce 0.7s ease 0.3s both;
+}
+
+@keyframes confirmBounce {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { transform: scale(1.08); }
+  70% { transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.confirm-icon-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #14B87A, #0D9F6E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 12px 40px rgba(20, 184, 122, 0.3),
+    0 0 0 8px rgba(20, 184, 122, 0.08),
+    0 0 0 16px rgba(20, 184, 122, 0.04);
+  position: relative;
+}
+
+.confirm-icon-circle::after {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  border: 2px solid rgba(20, 184, 122, 0.12);
+  animation: confirmPulseRing 2s ease-in-out infinite;
+}
+
+@keyframes confirmPulseRing {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0; }
+}
+
+.confirm-icon-check {
+  font-size: 44px;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+/* ── Heading & Text ── */
+.confirm-heading {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-navy, #0B1739);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+  animation: confirmSlide 0.6s ease 0.4s both;
+}
+
+.confirm-subtext {
+  text-align: center;
+  font-size: 15px;
+  color: var(--color-text-gray, #6B7280);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  animation: confirmSlide 0.6s ease 0.5s both;
+}
+
+@keyframes confirmSlide {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Details Card ── */
+.confirm-details-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border, #EDF0F7);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 8px 30px rgba(36, 84, 255, 0.06);
+  margin-bottom: 28px;
+  animation: confirmSlide 0.6s ease 0.55s both;
+}
+
+.confirm-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.confirm-detail-row .label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-gray, #6B7280);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm-detail-row .label i {
+  font-size: 16px;
+  color: var(--color-primary, #2454FF);
+  opacity: 0.6;
+}
+
+.confirm-detail-row .value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-navy, #0B1739);
+}
+
+.confirm-detail-divider {
+  height: 1px;
+  background: var(--color-border, #EDF0F7);
+}
+
+.confirm-detail-row.total {
+  padding-top: 16px;
+}
+
+.confirm-detail-row.total .label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-navy, #0B1739);
+}
+
+.confirm-detail-row.total .value {
+  font-size: 18px;
+  font-weight: 800;
+  background: var(--gradient-primary, linear-gradient(135deg, #2454FF, #4F46E5));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Transaction Badge ── */
+.confirm-txn-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(20, 184, 122, 0.06);
+  border: 1px solid rgba(20, 184, 122, 0.15);
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0D9F6E;
+  animation: confirmSlide 0.6s ease 0.6s both;
+}
+
+.confirm-txn-badge i {
+  font-size: 16px;
+}
+
+/* ── Buttons ── */
+.confirm-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--gradient-primary, linear-gradient(135deg, #2454FF, #4F46E5));
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(36, 84, 255, 0.25);
+  text-decoration: none;
+  margin-bottom: 12px;
+  animation: confirmSlide 0.6s ease 0.65s both;
+}
+
+.confirm-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(36, 84, 255, 0.35);
+  color: #FFFFFF;
+}
+
+.confirm-btn-primary i {
+  font-size: 18px;
+}
+
+.confirm-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  background: transparent;
+  color: var(--color-text-gray, #6B7280);
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid var(--color-border, #EDF0F7);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  animation: confirmSlide 0.6s ease 0.7s both;
+}
+
+.confirm-btn-secondary:hover {
+  border-color: var(--color-primary, #2454FF);
+  color: var(--color-primary, #2454FF);
+  background: rgba(36, 84, 255, 0.04);
+}
+
+/* ── Footer Note ── */
+.confirm-footer-note {
+  text-align: center;
+  font-size: 12px;
+  color: #b0b7c3;
+  margin-top: 28px;
+  line-height: 1.6;
+  animation: confirmSlide 0.6s ease 0.75s both;
+}
+
+.confirm-footer-note i {
+  color: var(--color-primary, #2454FF);
+  opacity: 0.5;
+  margin-right: 4px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 575px) {
+  .confirmation-page {
+    padding: 40px 0 60px;
+  }
+
+  .confirm-heading {
+    font-size: 24px;
+  }
+
+  .confirm-icon-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .confirm-icon-check {
+    font-size: 36px;
+  }
+
+  .confirm-details-card {
+    padding: 20px;
+  }
+
+  .confirm-step-connector {
+    width: 30px;
+  }
+}

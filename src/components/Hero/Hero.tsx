@@ -33,7 +33,7 @@ const Hero: React.FC = () => {
       className="hero-banner-section"
       id="hero"
       aria-label="Hero banner section"
-      style={{ backgroundImage: `url(${heroBg})` }}
+      style={{ backgroundImage: `url(${heroBg.src})` }}
     >
       {/* Left-to-right gradient overlay */}
       <div className="hero-gradient-overlay" aria-hidden="true" />

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
+import subBg from "../../assets/images/subcription_bg.jpeg";
 
 const PricingHero: React.FC = () => {
   const [particles, setParticles] = React.useState<Array<{id: number, size: number, left: number, delay: number, duration: number}>>([]);
@@ -32,7 +33,17 @@ const PricingHero: React.FC = () => {
   }, []);
 
   return (
-    <section className="sub-hero" ref={heroRef} id="pricing-hero">
+    <section
+      className="sub-hero"
+      ref={heroRef}
+      id="pricing-hero"
+      style={{
+        backgroundImage: `url(${subBg.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       {/* Particles */}
       <div className="hero-particles" aria-hidden="true">
         {particles.map((p) => (
