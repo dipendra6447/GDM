@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -195,9 +196,9 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
                     </li>
                   ))}
                 </ul>
-                <a href="#" className={`card-cta-btn${plan.featured ? " primary" : ""}`} id={`${plan.id}-cta`}>
+                <Link href={`/cart?plan=${plan.id}&billing=${billing}`} className={`card-cta-btn${plan.featured ? " primary" : ""}`} id={`${plan.id}-cta`}>
                   {plan.cta}
-                </a>
+                </Link>
               </div>
             ))}
           </div>

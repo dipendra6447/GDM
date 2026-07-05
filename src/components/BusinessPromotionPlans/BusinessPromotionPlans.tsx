@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -144,7 +145,7 @@ const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleS
               <span className="gold-text">Reach Thousands of Professionals</span>
             </h2>
             <p className="sub-subheading">
-              Increase visibility and generate leads with premium business promotion plans.
+              Increase visibility and generate leads with premium business promotion planss.
             </p>
           </div>
 
@@ -189,9 +190,9 @@ const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleS
                     </li>
                   ))}
                 </ul>
-                <a href="#" className={`card-cta-btn${plan.featured ? " primary" : ""}`} id={`${plan.id}-cta`}>
+                <Link href={`/cart?plan=${plan.id}&billing=${billing}`} className={`card-cta-btn${plan.featured ? " primary" : ""}`} id={`${plan.id}-cta`}>
                   {plan.cta}
-                </a>
+                </Link>
               </div>
             ))}
           </div>
