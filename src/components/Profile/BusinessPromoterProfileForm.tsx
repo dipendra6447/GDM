@@ -14,8 +14,11 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
   
   const [formData, setFormData] = useState({
     businessName: initialData?.businessName || '',
+    businessOwnerName: initialData?.businessOwnerName || '',
     businessCategory: initialData?.businessCategory || '',
     about: initialData?.about || '',
+    foundationDate: initialData?.foundationDate ? new Date(initialData.foundationDate).toISOString().split('T')[0] : '',
+    purpose: initialData?.purpose || '',
     contactPhone: initialData?.contactPhone || '',
     contactEmail: initialData?.contactEmail || '',
     address: initialData?.address || '',
@@ -70,8 +73,20 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
             <input type="text" name="businessName" className="profile-input" placeholder="Your Business Name" value={formData.businessName} onChange={handleInputChange} />
           </div>
           <div className="col-md-6 profile-form-group">
+            <label className="profile-label">Business Owner Name</label>
+            <input type="text" name="businessOwnerName" className="profile-input" placeholder="Owner's Full Name" value={formData.businessOwnerName} onChange={handleInputChange} />
+          </div>
+          <div className="col-md-6 profile-form-group">
             <label className="profile-label">Business Category</label>
             <input type="text" name="businessCategory" className="profile-input" placeholder="e.g. Retail, Consulting" value={formData.businessCategory} onChange={handleInputChange} />
+          </div>
+          <div className="col-md-6 profile-form-group">
+            <label className="profile-label">Foundation Date</label>
+            <input type="date" name="foundationDate" className="profile-input" value={formData.foundationDate} onChange={handleInputChange} />
+          </div>
+          <div className="col-md-12 profile-form-group">
+            <label className="profile-label">Purpose</label>
+            <input type="text" name="purpose" className="profile-input" placeholder="What is the primary goal of your promotion?" value={formData.purpose} onChange={handleInputChange} />
           </div>
           <div className="col-md-12 profile-form-group">
             <label className="profile-label">About Business</label>

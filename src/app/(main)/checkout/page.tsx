@@ -1,4 +1,4 @@
-import Page from '@/pages/Checkout/Checkout';
+import Page from '@/views/Checkout/Checkout';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

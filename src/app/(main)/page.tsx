@@ -1,4 +1,4 @@
-import Page from '@/pages/Home/Home';
+import Page from '@/views/Home/Home';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
