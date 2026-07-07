@@ -6,6 +6,7 @@ import '@/styles/responsive.css';
 import '../App.css';
 
 import { Inter } from 'next/font/google';
+import Providers from './Providers';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -22,7 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <div className="app">
-          {children}
+          <Providers>
+            {children}
+          </Providers>
         </div>
       </body>
     </html>

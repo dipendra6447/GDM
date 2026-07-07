@@ -376,3 +376,13 @@
   background: #fef2f2;
   color: #dc2626;
 }
+
+/* ── Post Job Link (Employer) ── */
+.nav-dropdown-post-job {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+.nav-dropdown-post-job:hover {
+  background: rgba(36, 84, 255, 0.06) !important;
+}
