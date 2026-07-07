@@ -1,4 +1,4 @@
-import Page from '@/pages/Subscription/Subscription';
+import Page from '@/views/Subscription/Subscription';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

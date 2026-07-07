@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import Page from '@/pages/Cart/Cart';
+import Page from '@/views/Cart/Cart';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

@@ -1,4 +1,4 @@
-import PostJob from '@/pages/Employer/PostJob';
+import PostJob from '@/views/Employer/PostJob';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

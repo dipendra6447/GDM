@@ -1,4 +1,4 @@
-import BusinessRegister from '@/pages/BusinessRegister/BusinessRegister';
+import BusinessRegister from '@/components/BusinessRegister/BusinessRegister';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

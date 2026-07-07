@@ -1,4 +1,4 @@
-import Page from '@/pages/JobListing/JobListing';
+import Page from '@/views/JobListing/JobListing';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
