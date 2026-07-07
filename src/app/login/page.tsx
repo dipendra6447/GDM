@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { useAuth } from '@/hooks/useAuth';
 import './Login.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -54,6 +55,7 @@ function getPasswordStrength(pw: string): { level: 'weak' | 'medium' | 'strong';
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function AuthPage() {
   const router = useRouter();
+  const { refetch } = useAuth();
   
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -174,6 +176,9 @@ export default function AuthPage() {
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
+
+      // Update global auth state without a hard page reload
+      await refetch();
 
       setSuccessMsg(isLogin ? 'Welcome back! Redirecting...' : 'Account created! Redirecting...');
       setTimeout(() => { router.push('/'); }, 800);
