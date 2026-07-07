@@ -16,6 +16,7 @@ import ValueProps from '../../components/ValueProps/ValueProps';
 import MarketplaceStats from '../../components/MarketplaceStats/MarketplaceStats';
 import MobileBottomNav from '../../components/MobileBottomNav/MobileBottomNav';
 import Newsletter from '../../components/Newsletter/Newsletter';
+import PromotedBusinesses from '../../components/PromotedBusinesses/PromotedBusinesses';
 // Data
 import {
   topPicks,
@@ -63,6 +64,7 @@ const Marketplace: React.FC = () => {
               {/* Right: Sidebar */}
               <aside className="mp-sidebar-col" aria-label="Sidebar widgets">
                 <div className="mp-sidebar-sticky">
+                  <PromotedBusinesses variant="sidebar" />
                   <MapWidget />
                   <TrendingSearches items={trendingSearches} />
                   <ProfilePromo />

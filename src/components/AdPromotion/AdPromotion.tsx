@@ -99,7 +99,7 @@ const AdPromotion: React.FC<AdPromotionProps> = ({
       )} */}
 
       {/* ── Floating Ad Widget ── */}
-      {floatingVisible && (
+      {floatingVisible ? (
         <div
           className="float-ad"
           role="complementary"
@@ -148,6 +148,34 @@ const AdPromotion: React.FC<AdPromotionProps> = ({
             </div>
           </div>
         </div>
+      ) : (
+        <button
+          className="promote-reopen-btn"
+          onClick={() => setFloatingVisible(true)}
+          aria-label="Promote your business"
+          id="promote-reopen-btn"
+        >
+          {/* Pulse ring for attention */}
+          <span className="prb-pulse" aria-hidden="true" />
+
+          {/* Megaphone icon */}
+          <svg
+            className="prb-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 11V13C3 14.1 3.9 15 5 15H7L11 19V5L7 9H5C3.9 9 3 9.9 3 11Z" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+
+          <span className="prb-label">Promote Business</span>
+        </button>
       )}
     </>
   );
