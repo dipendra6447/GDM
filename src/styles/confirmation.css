@@ -7,7 +7,7 @@
   background: var(--color-bg, #F8FAFF);
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
-  padding: 60px 0 100px;
+  padding: 140px 0 100px;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -349,7 +349,7 @@
 /* ── Responsive ── */
 @media (max-width: 575px) {
   .confirmation-page {
-    padding: 40px 0 60px;
+    padding: 100px 0 60px;
   }
 
   .confirm-heading {
