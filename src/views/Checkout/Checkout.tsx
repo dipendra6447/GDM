@@ -188,15 +188,29 @@ const Checkout: React.FC = () => {
 
   /* ── Handle payment ── */
   const handlePayNow = () => {
-    if (!isFormValid) return;
-    setShowSuccess(true);
-  };
+    if (!isFormValid || !item) return;
 
-  /* ── Handle success close ── */
-  const handleSuccessClose = () => {
+    // Store payment details in sessionStorage for the success page to display
+    sessionStorage.setItem("last_payment_info", JSON.stringify({
+      tier: item.tier,
+      tierClass: item.tierClass,
+      categoryLabel: item.categoryLabel,
+      billing: item.billing,
+      total: total,
+      subtotal: subtotal,
+      gst: gst,
+      transactionId: "TXN" + Date.now().toString().slice(-8),
+      date: new Date().toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    }));
+
     clearCart();
-    setShowSuccess(false);
-    router.push("/");
+    router.push("/checkout/success");
   };
 
   if (!item) return null;
@@ -518,49 +532,6 @@ const Checkout: React.FC = () => {
         </div>
       </div>
 
-      {/* Success Modal */}
-      {showSuccess && (
-        <div className="success-overlay" id="success-overlay">
-          <div className="success-modal" id="success-modal">
-            <Confetti />
-
-            <div className="success-checkmark">✓</div>
-            <h2 className="success-title">Payment Successful!</h2>
-            <p className="success-subtitle">
-              Your {item.tier} Plan subscription has been activated. Welcome to JobNest Premium!
-            </p>
-
-            <div className="success-details">
-              <div className="success-detail-row">
-                <span className="label">Plan</span>
-                <span className="value">{item.categoryLabel} — {item.tier}</span>
-              </div>
-              <div className="success-detail-divider" />
-              <div className="success-detail-row">
-                <span className="label">Billing</span>
-                <span className="value" style={{ textTransform: "capitalize" }}>{item.billing}</span>
-              </div>
-              <div className="success-detail-divider" />
-              <div className="success-detail-row">
-                <span className="label">Amount Paid</span>
-                <span className="value" style={{ color: "var(--gold)" }}>₹{total}</span>
-              </div>
-              <div className="success-detail-divider" />
-              <div className="success-detail-row">
-                <span className="label">Transaction ID</span>
-                <span className="value">TXN{Date.now().toString().slice(-8)}</span>
-              </div>
-            </div>
-
-            <button className="success-btn" onClick={handleSuccessClose} id="success-go-home">
-              Go to Dashboard <span>→</span>
-            </button>
-            <button className="success-secondary-btn" onClick={handleSuccessClose}>
-              Back to Home
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
