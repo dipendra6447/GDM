@@ -19,7 +19,13 @@ interface FormErrors {
   description?: string;
 }
 
-const PostJob: React.FC = () => {
+interface PostJobProps {
+  overrideTab?: 'manage' | 'post';
+  editJobId?: string | null;
+  onJobPosted?: () => void;
+}
+
+const PostJob: React.FC<PostJobProps> = ({ overrideTab, editJobId, onJobPosted }) => {
   const { user, isLoading, isLoggedIn } = useAuth();
   const router = useRouter();
 
@@ -39,67 +45,49 @@ const PostJob: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [postedJobTitle, setPostedJobTitle] = useState('');
+  const [initialFetchLoading, setInitialFetchLoading] = useState(!!editJobId);
   
-  const [activeTab, setActiveTab] = useState<'manage' | 'post'>('manage');
+  const [activeTab, setActiveTab] = useState<'manage' | 'post'>(overrideTab || 'manage');
   const [employerJobs, setEmployerJobs] = useState<any[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
 
   useEffect(() => {
-    if (activeTab === 'manage' && isLoggedIn && user?.roles?.includes(2)) {
-      const fetchJobs = async () => {
-        setLoadingJobs(true);
+    if (overrideTab) {
+      setActiveTab(overrideTab);
+    }
+  }, [overrideTab]);
+
+  useEffect(() => {
+    if (editJobId) {
+      const fetchJob = async () => {
         try {
-          const token = localStorage.getItem('token');
-          const res = await fetch(`${API_BASE}/api/jobs/employer/me`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const res = await fetch(`${API_BASE}/api/jobs/${editJobId}`);
           const data = await res.json();
-          if (res.ok) {
-            setEmployerJobs(data.data || []);
+          if (res.ok && data.data) {
+            const job = data.data;
+            setTitle(job.title || '');
+            setDescription(job.description || '');
+            setJobType(job.jobType || '');
+            setWorkMode(job.workMode || '');
+            setLocation(job.location || '');
+            setCategory(job.category || '');
+            setExperience(job.experience || '');
+            setEducation(job.education || '');
+            setSkills(job.skills || '');
+            setSalaryRange(job.salaryRange || '');
+            setBenefits(job.benefits || '');
           }
         } catch (error) {
-          console.error("Error fetching jobs", error);
+          console.error("Failed to load job details", error);
         } finally {
-          setLoadingJobs(false);
+          setInitialFetchLoading(false);
         }
       };
-      fetchJobs();
+      fetchJob();
+    } else {
+      setInitialFetchLoading(false);
     }
-  }, [activeTab, isLoggedIn, user]);
-
-  const handleToggleStatus = async (jobId: string, currentStatus: boolean) => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE}/api/jobs/${jobId}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ isActive: !currentStatus })
-      });
-      if (res.ok) {
-        setEmployerJobs(prev => prev.map(job => job.id === jobId ? { ...job, isActive: !currentStatus } : job));
-      }
-    } catch (error) {
-      console.error("Error toggling status", error);
-    }
-  };
-
-  // Auth guard — redirect unauthenticated users
-  useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      router.push('/login?role=job_poster');
-    }
-  }, [isLoading, isLoggedIn, router]);
-
-  // Role guard — redirect non-employer users back to home
-  useEffect(() => {
-    if (!isLoading && isLoggedIn && user && !user.roles.includes(2)) {
-      router.push('/');
-    }
-  }, [isLoading, isLoggedIn, user, router]);
-
+  }, [editJobId]);
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
 
@@ -128,8 +116,11 @@ const PostJob: React.FC = () => {
     setSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE}/api/jobs`, {
-        method: 'POST',
+      const method = editJobId ? 'PUT' : 'POST';
+      const endpoint = editJobId ? `/api/jobs/${editJobId}` : `/api/jobs`;
+      
+      const res = await fetch(`${API_BASE}${endpoint}`, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -152,7 +143,12 @@ const PostJob: React.FC = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Failed to post job');
+        throw new Error(data.message || (editJobId ? 'Failed to update job' : 'Failed to post job'));
+      }
+
+      if (onJobPosted) {
+        onJobPosted();
+        return;
       }
 
       setPostedJobTitle(title.trim());
@@ -183,7 +179,7 @@ const PostJob: React.FC = () => {
   };
 
   // Loading state
-  if (isLoading) {
+  if (isLoading || initialFetchLoading) {
     return (
       <div className="pj-page">
         <div className="container">
@@ -241,100 +237,8 @@ const PostJob: React.FC = () => {
   }
 
   return (
-    <div className="pj-page">
-      <div className="container">
-        {/* Breadcrumb */}
-        <div className="pj-breadcrumb">
-          <Link href="/">Home</Link>
-          <i className="bi bi-chevron-right" />
-          <span>Employer Dashboard</span>
-        </div>
-
-        {/* Header */}
-        <div className="pj-header">
-          <h1 className="pj-title">Employer Dashboard</h1>
-          <p className="pj-subtitle">
-            Manage your job listings or post a new opportunity to reach candidates.
-          </p>
-        </div>
-
-        {/* Tabs Navigation */}
-        <div className="pj-tabs-nav">
-          <button 
-            className={`pj-tab-btn ${activeTab === 'manage' ? 'active' : ''}`}
-            onClick={() => setActiveTab('manage')}
-          >
-            <i className="bi bi-card-list" /> My Jobs
-          </button>
-          <button 
-            className={`pj-tab-btn ${activeTab === 'post' ? 'active' : ''}`}
-            onClick={() => setActiveTab('post')}
-          >
-            <i className="bi bi-plus-circle" /> Post a Job
-          </button>
-        </div>
-
-        {/* Manage Jobs Tab */}
-        {activeTab === 'manage' && (
-          <div className="pj-manage-jobs">
-            {loadingJobs ? (
-              <div className="pj-loading-inline">
-                <div className="spinner-border spinner-border-sm text-primary" /> Loading your jobs...
-              </div>
-            ) : employerJobs.length === 0 ? (
-              <div className="pj-empty-state">
-                <div className="pj-empty-icon"><i className="bi bi-inbox" /></div>
-                <h3>No jobs posted yet</h3>
-                <p>You haven't posted any jobs. Create your first listing to get started.</p>
-                <button onClick={() => setActiveTab('post')} className="pj-btn-submit mt-3">
-                  <i className="bi bi-plus-lg" /> Post a Job
-                </button>
-              </div>
-            ) : (
-              <div className="pj-jobs-grid">
-                {employerJobs.map(job => (
-                  <div key={job.id} className="pj-manage-card">
-                    <div className="pj-manage-card-header">
-                      <div>
-                        <h3 className="pj-manage-title">{job.title}</h3>
-                        <span className="pj-manage-date">Posted on {new Date(job.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <div className="pj-manage-toggle-wrap">
-                        <span className={`pj-status-badge ${job.isActive ? 'active' : 'inactive'}`}>
-                          {job.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                        <label className="pj-toggle">
-                          <input 
-                            type="checkbox" 
-                            checked={job.isActive} 
-                            onChange={() => handleToggleStatus(job.id, job.isActive)} 
-                          />
-                          <span className="pj-slider"></span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="pj-manage-card-stats">
-                      <div className="pj-stat">
-                        <i className="bi bi-geo-alt" /> {job.location || 'Not specified'}
-                      </div>
-                      <div className="pj-stat">
-                        <i className="bi bi-briefcase" /> {job.jobType || 'Not specified'}
-                      </div>
-                      <div className="pj-stat">
-                        <i className="bi bi-people" /> 0 Applicants
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Post Job Tab */}
-        {activeTab === 'post' && (
-        <div className="pj-layout">
-          {/* LEFT: Form */}
+    <div className="pj-layout">
+      {/* LEFT: Form */}
           <div>
             <form onSubmit={handleSubmit} noValidate>
               <div className="pj-form-card">
@@ -570,9 +474,6 @@ const PostJob: React.FC = () => {
               </div>
             </div>
           </aside>
-        </div>
-        )}
-      </div>
     </div>
   );
 };
