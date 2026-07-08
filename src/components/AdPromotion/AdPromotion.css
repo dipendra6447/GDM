@@ -275,3 +275,201 @@
   width: 14px;
   border-radius: 3px;
 }
+
+/* ══════════════════════════════════════════════
+   Promote Business — Premium Reopen Button
+══════════════════════════════════════════════ */
+
+/* ── Outer wrapper anchored to the right edge ── */
+.promote-reopen-btn {
+  /* Position */
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-float-ad, 1050);
+
+  /* Sizing & shape */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 11px;
+  border: none;
+  border-radius: 16px 0 0 16px;
+  cursor: pointer;
+  outline: none;
+
+  /* Dark glass base */
+  background: linear-gradient(160deg, #1a1a2e 0%, #0d0d1a 100%);
+
+  /* Animated rainbow-gold border on left/top/bottom */
+  box-shadow:
+    /* outer glow */
+    -6px 0 28px rgba(212, 175, 55, 0.50),
+    -2px 0 12px rgba(0, 0, 0, 0.60),
+    /* inset highlight */
+    inset 1px 0 0 rgba(255, 255, 255, 0.06);
+
+  /* Border via outline trick — keeps border-radius */
+  border-left: 2px solid transparent;
+  background-clip: padding-box;
+
+  /* Entry animation */
+  animation: prbSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  /* Transitions */
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+
+  /* Prevent text selection */
+  user-select: none;
+}
+
+/* Gold gradient left-edge accent strip (pseudo-border) */
+.promote-reopen-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px 0 0 16px;
+  padding: 2px 0 2px 2px; /* left + top + bottom border */
+  background: linear-gradient(180deg,
+    #ffd700 0%,
+    #D4AF37 30%,
+    #ff6b35 60%,
+    #D4AF37 80%,
+    #ffd700 100%
+  );
+  background-size: 100% 300%;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: prbBorderFlow 3s linear infinite;
+  pointer-events: none;
+}
+
+/* Subtle shimmer overlay */
+.promote-reopen-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px 0 0 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.00) 60%
+  );
+  pointer-events: none;
+}
+
+/* ── Hover state ── */
+.promote-reopen-btn:hover {
+  transform: translateY(-50%) translateX(-4px);
+  background: linear-gradient(160deg, #1f1f3a 0%, #111128 100%);
+  box-shadow:
+    -10px 0 40px rgba(212, 175, 55, 0.70),
+    -4px 0 16px rgba(0, 0, 0, 0.70),
+    inset 1px 0 0 rgba(255, 255, 255, 0.10);
+}
+
+/* ── Active / press state ── */
+.promote-reopen-btn:active {
+  transform: translateY(-50%) translateX(-2px) scale(0.97);
+  box-shadow:
+    -6px 0 20px rgba(212, 175, 55, 0.55),
+    -2px 0 8px rgba(0, 0, 0, 0.50);
+  transition-duration: 0.1s;
+}
+
+/* ── Pulse ring (attention indicator) ── */
+.prb-pulse {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid rgba(212, 175, 55, 0.6);
+  pointer-events: none;
+  animation: prbPulseRing 2.2s ease-out infinite;
+}
+
+/* ── Megaphone icon ── */
+.prb-icon {
+  width: 20px;
+  height: 20px;
+  color: #D4AF37;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.7));
+  transition: color 0.25s, filter 0.25s, transform 0.3s;
+}
+
+.promote-reopen-btn:hover .prb-icon {
+  color: #ffd700;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.9));
+  transform: scale(1.15);
+}
+
+/* ── Label text ── */
+.prb-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  color: #ffffff;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  transition: color 0.25s, text-shadow 0.25s;
+}
+
+.promote-reopen-btn:hover .prb-label {
+  color: #ffd700;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+/* ── Keyframes ── */
+
+/* Slide in from the right on mount */
+@keyframes prbSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(80px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+/* Animated gradient border */
+@keyframes prbBorderFlow {
+  0%   { background-position: 0% 0%;   }
+  100% { background-position: 0% 100%; }
+}
+
+/* Pulse ring expand-and-fade */
+@keyframes prbPulseRing {
+  0% {
+    transform: translateX(-50%) scale(0.6);
+    opacity: 0.8;
+  }
+  70% {
+    transform: translateX(-50%) scale(1.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.8);
+    opacity: 0;
+  }
+}

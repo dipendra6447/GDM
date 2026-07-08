@@ -6,6 +6,7 @@ import CategorySection from "../../components/CategorySection/CategorySection";
 import TrendingJobs from "../../components/TrendingJobs/TrendingJobs";
 import StatsBanner from "../../components/StatsBanner/StatsBanner";
 import PromotionCards from "../../components/PromotionCards/PromotionCards";
+import PromotedBusinesses from "../../components/PromotedBusinesses/PromotedBusinesses";
 import SpecialPromotions from "../../components/SpecialPromotions/SpecialPromotions";
 import DiscoverJobs from "../../components/DiscoverJobs/DiscoverJobs";
 import HiringBanner from "../../components/HiringBanner/HiringBanner";
@@ -36,6 +37,9 @@ const Home: React.FC = () => {
         <TrendingJobs />
         {/* <StatsBanner /> */}
         <PromotionCards />
+        <div className="container">
+          <PromotedBusinesses variant="home" />
+        </div>
         <SpecialPromotions />
         <DiscoverJobs />
         <JoinCommunity />
