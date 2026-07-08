@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { useAuth } from '@/hooks/useAuth';
 import './Login.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -11,7 +12,10 @@ type UserRole = 'job_seeker' | 'job_poster' | 'business_promoter';
 
 interface ProfileFields {
   // Job Seeker
-  fullName?: string;
+  title?: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
   phone?: string;
   location?: string;
   currentJobTitle?: string;
@@ -50,6 +54,9 @@ function getPasswordStrength(pw: string): { level: 'weak' | 'medium' | 'strong';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function AuthPage() {
+  const router = useRouter();
+  const { refetch } = useAuth();
+  
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,10 +65,21 @@ export default function AuthPage() {
   const [profile, setProfile] = useState<ProfileFields>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [errorList, setErrorList] = useState<{ field: string; message: string }[]>([]);
   const [successMsg, setSuccessMsg] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const role = urlParams.get('role');
+      if (role === 'job_seeker' || role === 'job_poster' || role === 'business_promoter') {
+        setSelectedRole(role as UserRole);
+        setIsLogin(false); // Default to signup if a specific role was passed
+      }
+    }
+  }, []);
 
   const formRef = useRef<HTMLDivElement>(null);
   const leftSideRef = useRef<HTMLDivElement>(null);
@@ -95,6 +113,7 @@ export default function AuthPage() {
       onComplete: () => {
         setIsLogin(prev => !prev);
         setError('');
+        setErrorList([]);
         setSuccessMsg('');
         setProfile({});
         gsap.to(formRef.current, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' });
@@ -112,6 +131,7 @@ export default function AuthPage() {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setErrorList([]);
     setSuccessMsg('');
 
     // Confirm password check for signup
@@ -148,18 +168,26 @@ export default function AuthPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Authentication failed');
+        const err = new Error(data.message || 'Authentication failed') as any;
+        err.errors = data.errors;
+        throw err;
       }
 
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
 
+      // Update global auth state without a hard page reload
+      await refetch();
+
       setSuccessMsg(isLogin ? 'Welcome back! Redirecting...' : 'Account created! Redirecting...');
       setTimeout(() => { router.push('/'); }, 800);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Something went wrong';
+    } catch (err: any) {
+      const message = err.message || 'Something went wrong';
       setError(message);
+      if (err.errors && Array.isArray(err.errors)) {
+        setErrorList(err.errors);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -198,8 +226,21 @@ export default function AuthPage() {
             </p>
           </div>
 
-          {error && <div className="auth-error-msg">{error}</div>}
-          {successMsg && <div className="auth-success-msg">{successMsg}</div>}
+          {error && (
+            <div className="auth-error-msg">
+              <i className="bi bi-exclamation-triangle-fill me-2"></i> {error}
+              {errorList.length > 0 && (
+                <ul className="auth-error-list">
+                  {errorList.map((errItem, idx) => (
+                    <li key={idx}>
+                      <strong>{errItem.field.split('.').pop()?.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> {errItem.message}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+          {successMsg && <div className="auth-success-msg"><i className="bi bi-check-circle-fill me-2"></i> {successMsg}</div>}
 
           {/* GOOGLE OAUTH BUTTON */}
           <a href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/google`} className="auth-social-btn">
@@ -404,9 +445,29 @@ function JobSeekerFields({ profile, updateProfile }: FieldProps) {
       </div>
       <div className="profile-fields-grid">
         <div className="auth-input-group">
-          <label className="auth-label" htmlFor="js-fullName">Full Name</label>
-          <input id="js-fullName" type="text" className="auth-input" placeholder="John Doe"
-            value={profile.fullName || ''} onChange={e => updateProfile('fullName', e.target.value)} />
+          <label className="auth-label" htmlFor="js-title">Title</label>
+          <select id="js-title" className="auth-input" value={profile.title || ''} onChange={e => updateProfile('title', e.target.value)}>
+            <option value="">Select Title</option>
+            <option value="Mr.">Mr.</option>
+            <option value="Mrs.">Mrs.</option>
+            <option value="Ms.">Ms.</option>
+            <option value="Dr.">Dr.</option>
+          </select>
+        </div>
+        <div className="auth-input-group">
+          <label className="auth-label" htmlFor="js-firstName">First Name</label>
+          <input id="js-firstName" type="text" className="auth-input" placeholder="John"
+            value={profile.firstName || ''} onChange={e => updateProfile('firstName', e.target.value)} />
+        </div>
+        <div className="auth-input-group">
+          <label className="auth-label" htmlFor="js-middleName">Middle Name</label>
+          <input id="js-middleName" type="text" className="auth-input" placeholder="Edward (Optional)"
+            value={profile.middleName || ''} onChange={e => updateProfile('middleName', e.target.value)} />
+        </div>
+        <div className="auth-input-group">
+          <label className="auth-label" htmlFor="js-lastName">Last Name</label>
+          <input id="js-lastName" type="text" className="auth-input" placeholder="Doe"
+            value={profile.lastName || ''} onChange={e => updateProfile('lastName', e.target.value)} />
         </div>
         <div className="auth-input-group">
           <label className="auth-label" htmlFor="js-phone">Phone</label>

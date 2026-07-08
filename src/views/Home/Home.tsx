@@ -13,6 +13,7 @@ import HiringBanner from "../../components/HiringBanner/HiringBanner";
 import BlogSection from "../../components/BlogSection/BlogSection";
 import BrowseJobs from "../../components/BrowseJobs/BrowseJobs";
 import AdPromotion from "../../components/AdPromotion/AdPromotion";
+import JoinCommunity from "../../components/JoinCommunity/JoinCommunity";
 
 const BANNER_HEIGHT = 46; // px — keep in sync with AdPromotion.css min-height
 const NAVBAR_HEIGHT = 80; // px — keep in sync with --navbar-height variable
@@ -41,6 +42,7 @@ const Home: React.FC = () => {
         </div>
         <SpecialPromotions />
         <DiscoverJobs />
+        <JoinCommunity />
         <HiringBanner />
         <BlogSection />
         <BrowseJobs />

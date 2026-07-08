@@ -1,9 +1,32 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../hooks/useAuth';
+import RoleUpgradeModal from '../RoleUpgradeModal/RoleUpgradeModal';
 import './HiringBanner.css';
 import hiringBg from '../../assets/images/hiring_banner_bg.png';
 
 const HiringBanner: React.FC = () => {
+  const router = useRouter();
+  const { user, isLoggedIn } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [targetRole, setTargetRole] = useState<1 | 2 | 3 | null>(null);
+
+  const handleActionClick = (role: 1 | 2 | 3) => {
+    if (!isLoggedIn) {
+      const roleStr = role === 2 ? 'job_poster' : role === 3 ? 'business_promoter' : 'job_seeker';
+      router.push(`/login?role=${roleStr}`);
+      return;
+    }
+    if (user?.roles.includes(role)) {
+      router.push(`/profile?tab=${role}`);
+      return;
+    }
+    // Logged in but missing role -> show modal
+    setTargetRole(role);
+    setModalOpen(true);
+  };
+
   return (
     <section
       className="hiring-banner"
@@ -39,24 +62,31 @@ const HiringBanner: React.FC = () => {
 
         {/* RIGHT — CTA buttons */}
         <div className="hiring-right">
-          <a
-            href="#"
+          <button
+            onClick={() => handleActionClick(2)}
             className="hiring-btn-primary"
             id="hiring-browse-btn"
             aria-label="Browse jobs as employer"
           >
-            Browser Job <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
-          </a>
-          <a
-            href="#"
+            Hire Talent <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => handleActionClick(2)}
             className="hiring-btn-outline"
             id="hiring-browse-outline-btn"
             aria-label="Browse jobs listing"
           >
-            Browser Job <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
-          </a>
+            Hire Talent <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
+          </button>
         </div>
       </div>
+      
+      {/* Role Upgrade Modal */}
+      <RoleUpgradeModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        targetRole={targetRole} 
+      />
     </section>
   );
 };

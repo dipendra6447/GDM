@@ -21,7 +21,7 @@ body {
   line-height: var(--line-height-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Headings */
@@ -54,7 +54,7 @@ img {
 /* App wrapper */
 .app {
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ── Global container: 90vw max-width ── */
