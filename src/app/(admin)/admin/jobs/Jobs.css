@@ -1,0 +1,12 @@
+/* ============================================
+   Jobs.css — Styles for Jobs Management
+   ============================================ */
+
+.jobs-page { animation: fadeIn 0.5s ease-out; }
+
+.job-title { font-weight: 500; color: var(--text-primary); }
+
+.row-deleted { opacity: 0.5; }
+.row-deleted td { text-decoration: line-through; }
+
+/* Shared styles from Users.css are imported globally */

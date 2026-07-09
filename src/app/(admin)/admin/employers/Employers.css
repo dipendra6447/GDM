@@ -1,0 +1,24 @@
+.employers-page {
+  padding: 0;
+}
+
+.employer-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.employer-form-grid .form-group {
+  margin-bottom: 0;
+}
+
+.employer-form-grid .form-group:first-child,
+.employer-form-grid .form-group:nth-child(2) {
+  grid-column: 1 / -1; /* Make email/pass span full width if needed, or leave as grid */
+}
+
+@media (max-width: 600px) {
+  .employer-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

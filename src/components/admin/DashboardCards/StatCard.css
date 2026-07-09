@@ -1,0 +1,137 @@
+/* ============================================
+   StatCard Styles — Dashboard Cards
+   ============================================ */
+
+.stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  cursor: default;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+}
+
+/* Gradient accent bar on top */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.stat-card.blue::before { background: var(--gradient-blue); }
+.stat-card.purple::before { background: var(--gradient-purple); }
+.stat-card.cyan::before { background: var(--gradient-cyan); }
+.stat-card.green::before { background: var(--gradient-green); }
+
+/* Background glow */
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  opacity: 0.06;
+  transition: opacity var(--transition-base);
+}
+
+.stat-card:hover::after {
+  opacity: 0.1;
+}
+
+.stat-card.blue::after { background: var(--primary-500); }
+.stat-card.purple::after { background: var(--secondary-500); }
+.stat-card.cyan::after { background: var(--accent-500); }
+.stat-card.green::after { background: var(--success-500); }
+
+/* Card content layout */
+.stat-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.stat-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.stat-card-icon.blue { background: var(--gradient-blue); }
+.stat-card-icon.purple { background: var(--gradient-purple); }
+.stat-card-icon.cyan { background: var(--gradient-cyan); }
+.stat-card-icon.green { background: var(--gradient-green); }
+
+.stat-card-change {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 0.2em 0.6em;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.stat-card-change.positive {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success-600);
+}
+
+.stat-card-change.negative {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--danger-500);
+}
+
+.stat-card-value {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1.2;
+  margin-bottom: var(--space-1);
+}
+
+.stat-card-label {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+/* Mini progress bar */
+.stat-card-progress {
+  margin-top: var(--space-4);
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--gray-100);
+  overflow: hidden;
+}
+
+.stat-card-progress-bar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 1s ease-out;
+}
+
+.stat-card-progress-bar.blue { background: var(--gradient-blue); }
+.stat-card-progress-bar.purple { background: var(--gradient-purple); }
+.stat-card-progress-bar.cyan { background: var(--gradient-cyan); }
+.stat-card-progress-bar.green { background: var(--gradient-green); }

@@ -28,7 +28,7 @@ const ROLE_CONTENT: Record<number, { title: string; desc: string; terms: string 
   }
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function RoleUpgradeModal({ isOpen, onClose, targetRole }: RoleUpgradeModalProps) {
   const { refetch } = useAuth();

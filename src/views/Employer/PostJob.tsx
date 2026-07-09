@@ -9,7 +9,7 @@ import './PostJob.css';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 const TITLE_MAX = 255;
 const DESC_MIN = 10;

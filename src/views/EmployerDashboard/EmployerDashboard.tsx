@@ -18,7 +18,7 @@ import { useAuth } from '@/hooks/useAuth';
 import './EmployerDashboard.css';
 import PostJob from '../Employer/PostJob'; // We will still use this for the Post Job view
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 // Mock Data for Charts
 const mockChartData = [

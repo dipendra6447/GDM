@@ -8,9 +8,10 @@ import BusinessPromoterProfileForm from '../../components/Profile/BusinessPromot
 import ProfileRoleTabs from '../../components/Profile/ProfileRoleTabs';
 import ProfileSettings from '../../components/Profile/ProfileSettings';
 import AvatarUpload from '../../components/AvatarUpload/AvatarUpload';
+import DeleteAccountModal from '../../components/Profile/DeleteAccountModal';
 import './Profile.css';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 const ROLE_LABELS: Record<number, string> = { 1: 'Job Seeker', 2: 'Employer', 3: 'Business Promoter' };
 const ROLE_BADGE:  Record<number, string> = { 1: 'role-badge-seeker', 2: 'role-badge-employer', 3: 'role-badge-promoter' };
@@ -136,6 +137,7 @@ export default function ProfilePage() {
   
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Initialize activeRole once user is loaded
   useEffect(() => {
@@ -346,6 +348,17 @@ export default function ProfilePage() {
 
               {/* Scroll-spy Sidebar Nav */}
               <SidebarNav sections={currentSections} activeId={activeSectionId} onNavClick={handleNavClick} />
+
+              {/* Danger Zone Link */}
+              <div className="mt-4 pt-3 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <button 
+                  className="btn btn-link text-danger text-decoration-none p-0" 
+                  style={{ fontSize: '0.85rem' }}
+                  onClick={() => setShowDeleteModal(true)}
+                >
+                  <i className="bi bi-trash3 me-1"></i> Delete Account
+                </button>
+              </div>
             </aside>
 
             {/* ── RIGHT: Form / Main Area ── */}
@@ -369,6 +382,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+      <DeleteAccountModal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
     </div>
   );
 }

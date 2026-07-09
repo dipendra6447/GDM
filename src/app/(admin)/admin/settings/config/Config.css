@@ -1,0 +1,97 @@
+/* ============================================
+   Config.css — Styles for Global Configuration
+   ============================================ */
+
+.config-page {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.config-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.config-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.config-item:last-child {
+  border-bottom: none;
+}
+
+.config-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.config-info {
+  flex-grow: 1;
+  margin-right: 2rem;
+  min-width: 0; /* allows pre to shrink */
+}
+
+.config-info h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  border: 1px solid var(--border-color);
+}
+
+.config-value-display {
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.config-value-display pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.config-value-display code {
+  font-family: 'Fira Code', Consolas, Monaco, monospace;
+  font-size: 0.875rem;
+  color: #a78bfa; /* Purple 400 */
+}
+
+.config-edit-area {
+  margin-top: 1rem;
+}
+
+.config-textarea {
+  font-family: 'Fira Code', Consolas, Monaco, monospace;
+  font-size: 0.875rem;
+  color: #a78bfa;
+  background: var(--bg-body);
+  resize: vertical;
+}
+
+.config-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.icon-mr-sm {
+  margin-right: 0.35rem;
+}
+
+.edit-btn {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
