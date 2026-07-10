@@ -77,6 +77,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error: any) {
+    console.error('❌ Admin Stats Error:', error.stack || error);
     if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     return NextResponse.json({ success: false, message: 'Failed to fetch admin stats' }, { status: 500 });
   }

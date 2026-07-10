@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Sidebar from '@/components/admin/Sidebar/Sidebar';
 import Navbar from '@/components/admin/Navbar/Navbar';
+import './AdminTheme.css';
 import './AdminLayout.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
