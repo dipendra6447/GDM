@@ -5,7 +5,7 @@ interface RecommendedJobCardProps {
   job: {
     id: string;
     title: string;
-    companyName: string;
+    companyName: string | null;
     location: string;
     salaryRange: string;
     jobType: string;
@@ -15,7 +15,7 @@ interface RecommendedJobCardProps {
 }
 
 const RecommendedJobCard: React.FC<RecommendedJobCardProps> = ({ job, iconColor = '#2454FF', iconInitial }) => {
-  const initial = iconInitial || job.companyName.charAt(0);
+  const initial = iconInitial || job.companyName?.charAt(0) || '?';
   
   return (
     <div className="recommended-job-card">
@@ -25,7 +25,7 @@ const RecommendedJobCard: React.FC<RecommendedJobCardProps> = ({ job, iconColor 
         </div>
         <div className="rjc-title-area">
           <h4 className="rjc-title">{job.title}</h4>
-          <p className="rjc-company">{job.companyName}</p>
+          <p className="rjc-company">{job.companyName || 'Unknown Company'}</p>
         </div>
       </div>
       <div className="rjc-details">

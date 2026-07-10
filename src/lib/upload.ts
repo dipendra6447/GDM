@@ -19,6 +19,7 @@ const ALLOWED_MIMETYPES: Record<string, string[]> = {
   resume: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
   avatar: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   logo: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  image: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
 };
 
 // ─── Ensure Directories ──────────────────────────────────────────────────────
@@ -34,6 +35,7 @@ async function ensureDir(dir: string) {
 function getSubdir(fieldname: string): string {
   if (fieldname === 'resume' || fieldname.startsWith('cert_file_')) return 'resumes';
   if (fieldname === 'avatar' || fieldname === 'logo') return 'avatars';
+  if (fieldname === 'image') return 'categories';
   return 'misc';
 }
 

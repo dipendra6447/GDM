@@ -7,10 +7,29 @@ import { businessCategories } from '@/db/schema';
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const { name } = await req.json();
+    const contentType = req.headers.get('content-type') || '';
+    let name = '';
+    let imageUrl = '';
+
+    if (contentType.includes('multipart/form-data')) {
+      const { parseFormData } = await import('@/lib/upload');
+      const { fields, files } = await parseFormData(req);
+      name = fields.name;
+      imageUrl = fields.imageUrl || '';
+      const imageFile = files.find((f: any) => f.fieldname === 'image');
+      if (imageFile) imageUrl = imageFile.filepath;
+    } else {
+      const data = await req.json();
+      name = data.name;
+      imageUrl = data.imageUrl || '';
+    }
+
     if (!name) return NextResponse.json({ success: false, message: 'Name is required' }, { status: 400 });
 
-    const [updated] = await db.update(businessCategories).set({ name }).where(eq(businessCategories.id, id)).returning();
+    const updateData: any = { name };
+    if (imageUrl !== undefined && imageUrl !== '') updateData.imageUrl = imageUrl;
+
+    const [updated] = await db.update(businessCategories).set(updateData).where(eq(businessCategories.id, id)).returning();
     if (!updated) return NextResponse.json({ success: false, message: 'Category not found' }, { status: 404 });
 
     return NextResponse.json({ success: true, message: 'Business category updated', data: updated });

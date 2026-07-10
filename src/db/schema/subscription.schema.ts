@@ -1,7 +1,23 @@
-import { pgTable, uuid, varchar, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, index, boolean, integer, jsonb } from 'drizzle-orm/pg-core';
 import { users } from './auth.schema';
 
-// ─── Subscriptions ────────────────────────────────────────────────────────────
+// ─── Subscription Plans ────────────────────────────────────────────────────────
+export const subscriptionPlans = pgTable('subscription_plans', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  price: integer('price').notNull(),
+  billingCycle: varchar('billing_cycle', { length: 50 }).default('/month').notNull(),
+  roleTarget: varchar('role_target', { length: 50 }).notNull(), // 'job_seeker' | 'job_poster' | 'business_promoter'
+  features: jsonb('features').default('[]').notNull(),
+  imageUrl: varchar('image_url', { length: 1000 }),
+  isPopular: boolean('is_popular').default(false).notNull(),
+  isBestValue: boolean('is_best_value').default(false).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// ─── Subscriptions (User Instances) ───────────────────────────────────────────
 export const subscriptions = pgTable('subscriptions', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id')

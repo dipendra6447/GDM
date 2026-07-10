@@ -25,9 +25,11 @@ export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [selectedRole, setSelectedRole] = useState('');
   const [assigning, setAssigning] = useState(false);
+  const [newUser, setNewUser] = useState({ email: '', password: '', roleId: '' });
 
   const availableRoles = [
     { id: 1, name: 'JOB_SEEKER' },
@@ -73,6 +75,23 @@ export default function UsersPage() {
       alert(err.message || 'Failed to assign role');
     } finally {
       setAssigning(false);
+    }
+  };
+
+  const handleAddUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // POST to some register or add user endpoint
+      // Assuming /admin/users exists for POST, otherwise we'll just mock it or handle error
+      const res = await api.post('/admin/users', newUser);
+      if (newUser.roleId && res.data?.id) {
+        await api.post('/admin/users/assign-role', { userId: res.data.id, roleId: parseInt(newUser.roleId, 10) });
+      }
+      setShowAddModal(false);
+      setNewUser({ email: '', password: '', roleId: '' });
+      fetchUsers();
+    } catch (err: any) {
+      alert(err.message || 'Failed to add user. Ensure the endpoint supports POST.');
     }
   };
 
@@ -129,8 +148,9 @@ export default function UsersPage() {
       </div>
 
       <div className="admin-card" ref={contentRef}>
-        <div className="card-header">
+        <div className="card-header d-flex justify-content-between align-items-center">
           <h3><MdPeople className="icon-mr" /> System Users ({filteredUsers.length})</h3>
+          <button className="btn btn-primary" onClick={() => setShowAddModal(true)}><MdAdd /> Add User</button>
         </div>
 
         {error && <div className="alert alert-danger">{error}</div>}
@@ -229,6 +249,40 @@ export default function UsersPage() {
                 <button type="submit" className="btn btn-primary" disabled={assigning || !selectedRole}>
                   {assigning ? 'Assigning...' : 'Assign Role'}
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showAddModal && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
+            <div className="modal-header">
+              <h3>Add New User</h3>
+              <button className="close-btn" onClick={() => setShowAddModal(false)}>&times;</button>
+            </div>
+            <form onSubmit={handleAddUser}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>Email</label>
+                  <input type="email" className="form-control" value={newUser.email} onChange={(e) => setNewUser({...newUser, email: e.target.value})} required />
+                </div>
+                <div className="form-group">
+                  <label>Password</label>
+                  <input type="password" className="form-control" value={newUser.password} onChange={(e) => setNewUser({...newUser, password: e.target.value})} required />
+                </div>
+                <div className="form-group">
+                  <label>Initial Role (Optional)</label>
+                  <select className="form-control" value={newUser.roleId} onChange={(e) => setNewUser({...newUser, roleId: e.target.value})}>
+                    <option value="">-- None --</option>
+                    {availableRoles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Add User</button>
               </div>
             </form>
           </div>

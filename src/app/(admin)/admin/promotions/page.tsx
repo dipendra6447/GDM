@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MdListAlt, MdCheck, MdClose } from 'react-icons/md';
+import { MdListAlt, MdCheck, MdClose, MdAdd } from 'react-icons/md';
 import { api } from '@/lib/adminApi';
 import PageHeader from '@/components/admin/Common/PageHeader';
 import { fadeInUp } from '@/lib/animations';
@@ -12,6 +12,9 @@ export default function PromotionsPage() {
   const [promotions, setPromotions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newPromo, setNewPromo] = useState({ businessName: '', bannerUrl: '', userEmail: '' });
 
   const fetchPromotions = async () => {
     try {
@@ -47,6 +50,18 @@ export default function PromotionsPage() {
     }
   };
 
+  const handleAddPromotion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await api.post('/admin/promotions', newPromo);
+      setShowAddModal(false);
+      setNewPromo({ businessName: '', bannerUrl: '', userEmail: '' });
+      fetchPromotions();
+    } catch (err: any) {
+      alert(err.message || 'Failed to add promotion.');
+    }
+  };
+
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'active': return 'badge-success';
@@ -68,8 +83,9 @@ export default function PromotionsPage() {
       />
 
       <div className="admin-card" ref={contentRef}>
-        <div className="card-header">
+        <div className="card-header d-flex justify-content-between align-items-center">
           <h3><MdListAlt className="icon-mr" /> Promotion Listings</h3>
+          <button className="btn btn-primary" onClick={() => setShowAddModal(true)}><MdAdd /> Add Promotion</button>
         </div>
 
         {error && <div className="alert alert-danger">{error}</div>}
@@ -139,6 +155,37 @@ export default function PromotionsPage() {
           </table>
         </div>
       </div>
+
+      {showAddModal && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
+            <div className="modal-header">
+              <h3>Add New Promotion</h3>
+              <button className="close-btn" onClick={() => setShowAddModal(false)}>&times;</button>
+            </div>
+            <form onSubmit={handleAddPromotion}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>Owner Email</label>
+                  <input type="email" className="form-control" value={newPromo.userEmail} onChange={(e) => setNewPromo({...newPromo, userEmail: e.target.value})} required />
+                </div>
+                <div className="form-group">
+                  <label>Business Name</label>
+                  <input type="text" className="form-control" value={newPromo.businessName} onChange={(e) => setNewPromo({...newPromo, businessName: e.target.value})} required />
+                </div>
+                <div className="form-group">
+                  <label>Banner Image URL</label>
+                  <input type="url" className="form-control" value={newPromo.bannerUrl} onChange={(e) => setNewPromo({...newPromo, bannerUrl: e.target.value})} placeholder="https://..." required />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Add Promotion</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -122,6 +122,15 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
             </div>
           ))}
         </nav>
+        <div className="sidebar-footer">
+          <div className="sidebar-footer-info">
+            <div className="sidebar-footer-avatar">DD</div>
+            <div className="sidebar-footer-details">
+              <div className="sidebar-footer-name">Dipendra N.</div>
+              <div className="sidebar-footer-role">Administrator</div>
+            </div>
+          </div>
+        </div>
       </aside>
     </>
   );

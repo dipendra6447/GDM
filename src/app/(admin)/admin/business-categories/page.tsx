@@ -10,6 +10,7 @@ import '../job-categories/Categories.css';
 interface Category {
   id: string;
   name: string;
+  imageUrl?: string;
   isActive: boolean;
   isDeleted: boolean;
   createdAt: string;
@@ -24,6 +25,8 @@ export default function BusinessCategoriesPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [name, setName] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const fetchCategories = async () => {
     try {
@@ -48,14 +51,26 @@ export default function BusinessCategoriesPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (editingCategory) {
-        await api.put(`/admin/categories/business/${editingCategory.id}`, { name });
+      let data: any = { name };
+      if (imageFile) {
+        data = new FormData();
+        data.append('name', name);
+        if (imageUrl) data.append('imageUrl', imageUrl);
+        data.append('image', imageFile);
       } else {
-        await api.post('/admin/categories/business', { name });
+        data.imageUrl = imageUrl;
+      }
+
+      if (editingCategory) {
+        await api.put(`/admin/categories/business/${editingCategory.id}`, data);
+      } else {
+        await api.post('/admin/categories/business', data);
       }
       setShowModal(false);
       setEditingCategory(null);
       setName('');
+      setImageUrl('');
+      setImageFile(null);
       fetchCategories();
     } catch (err: any) {
       alert(err.message || 'Failed to save category');
@@ -84,6 +99,8 @@ export default function BusinessCategoriesPage() {
   const openModal = (category: Category | null = null) => {
     setEditingCategory(category);
     setName(category ? category.name : '');
+    setImageUrl(category?.imageUrl || '');
+    setImageFile(null);
     setShowModal(true);
   };
 
@@ -109,6 +126,7 @@ export default function BusinessCategoriesPage() {
           <table className="admin-table">
             <thead>
               <tr>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Status</th>
                 <th>Created</th>
@@ -123,6 +141,15 @@ export default function BusinessCategoriesPage() {
               ) : (
                 filteredCategories.map((cat) => (
                   <tr key={cat.id}>
+                    <td>
+                      {cat.imageUrl ? (
+                        <img src={cat.imageUrl} alt={cat.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+                      ) : (
+                        <div style={{ width: 40, height: 40, background: '#eee', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
+                          <MdCategory />
+                        </div>
+                      )}
+                    </td>
                     <td><strong>{cat.name}</strong></td>
                     <td>
                       <span className={`status-badge ${cat.isActive ? 'badge-success' : 'badge-warning'}`}>
@@ -164,6 +191,28 @@ export default function BusinessCategoriesPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                  />
+                </div>
+                <div className="form-group" style={{ marginTop: '1rem' }}>
+                  <label>Image Upload (Optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="form-control"
+                    onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)}
+                  />
+                  <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#666' }}>
+                    Or provide an image URL below:
+                  </div>
+                </div>
+                <div className="form-group" style={{ marginTop: '0.5rem' }}>
+                  <input
+                    type="url"
+                    className="form-control"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    placeholder="https://example.com/image.png"
+                    disabled={!!imageFile}
                   />
                 </div>
               </div>

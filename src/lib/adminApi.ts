@@ -9,10 +9,12 @@ export const api = {
     return res.json();
   },
   post: async (endpoint: string, body: any) => {
+    const isFormData = body instanceof FormData;
+    const headers: any = isFormData ? {} : { 'Content-Type': 'application/json' };
     const res = await fetch(`/api${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      headers,
+      body: isFormData ? body : JSON.stringify(body),
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
@@ -21,10 +23,12 @@ export const api = {
     return res.json();
   },
   put: async (endpoint: string, body: any) => {
+    const isFormData = body instanceof FormData;
+    const headers: any = isFormData ? {} : { 'Content-Type': 'application/json' };
     const res = await fetch(`/api${endpoint}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      headers,
+      body: isFormData ? body : JSON.stringify(body),
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));

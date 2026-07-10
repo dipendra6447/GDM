@@ -73,7 +73,7 @@ export default function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
               <div className="navbar-profile-dropdown-name">Admin</div>
               <div className="navbar-profile-dropdown-email">admin@example.com</div>
             </div>
-            <Link href="/admin/settings/profile" className="navbar-profile-dropdown-item" onClick={() => setProfileOpen(false)}>
+            <Link href="/profile" className="navbar-profile-dropdown-item" onClick={() => setProfileOpen(false)}>
               <MdPerson /> Profile
             </Link>
             <Link href="/admin/settings/config" className="navbar-profile-dropdown-item" onClick={() => setProfileOpen(false)}>

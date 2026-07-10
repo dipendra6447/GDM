@@ -16,12 +16,12 @@
 .detail-loading {
   text-align: center;
   padding: 4rem;
-  color: var(--text-secondary);
+  color: var(--gray-500);
 }
 
 .detail-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--gray-200);
   border-radius: 12px;
   margin-bottom: 1.5rem;
   overflow: hidden;
@@ -29,10 +29,10 @@
 
 .detail-card-header {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--gray-200);
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--gray-900);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -61,12 +61,12 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-secondary);
+  color: var(--gray-500);
 }
 
 .detail-value {
   font-size: 0.95rem;
-  color: var(--text-primary);
+  color: var(--gray-900);
   word-break: break-word;
 }
 
@@ -79,13 +79,13 @@
 /* ── Sub-sections (Experience, Education) ── */
 .detail-sub-section {
   padding: 1rem 1.5rem 1.5rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--gray-200);
 }
 
 .detail-sub-section h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--gray-900);
   margin: 0 0 1rem 0;
   display: flex;
   align-items: center;
@@ -95,24 +95,24 @@
 .experience-item {
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--gray-200);
   border-radius: 8px;
   margin-bottom: 0.75rem;
 }
 
 .experience-item strong {
-  color: var(--text-primary);
+  color: var(--gray-900);
 }
 
 .exp-meta {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: var(--gray-500);
   margin-top: 0.25rem;
 }
 
 .exp-desc {
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: var(--gray-500);
   margin-top: 0.5rem;
   margin-bottom: 0;
 }
