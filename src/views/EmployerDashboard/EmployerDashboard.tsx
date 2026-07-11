@@ -85,6 +85,29 @@ export default function EmployerDashboard() {
     }
   };
 
+  const handleUpdateStatus = async (applicationId: string, newStatus: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/jobs/${selectedJob.id}/applicants`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ applicationId, status: newStatus })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setApplicants(prev => prev.map(app => app.id === applicationId ? { ...app, status: newStatus } : app));
+        fetchJobs(); // Refresh jobs to update dashboard aggregates
+      } else {
+        alert(data.message || 'Failed to update applicant status');
+      }
+    } catch (error) {
+      console.error("Error updating status", error);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn && user?.roles?.includes(2)) {
       fetchJobs();
@@ -148,7 +171,7 @@ export default function EmployerDashboard() {
 
   const activeJobsCount = jobs.filter(j => j.isActive).length;
   const totalJobsCount = jobs.length;
-  const totalApplicants = 0; // Mocked for now
+  const totalApplicants = jobs.reduce((sum, j) => sum + (j.applicantCount || 0), 0);
 
   return (
     <div className="emp-dash-layout">
@@ -310,8 +333,8 @@ export default function EmployerDashboard() {
                               </span>
                             </div>
                           </td>
-                          <td>
-                            0 <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>(Mock)</span>
+                           <td>
+                            {job.applicantCount || 0}
                           </td>
                           <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                             {/* Track Button */}
@@ -424,7 +447,26 @@ export default function EmployerDashboard() {
                         <td>{app.email}</td>
                         <td>{new Date(app.appliedAt).toLocaleDateString()}</td>
                         <td>
-                          <span className="emp-status-badge active">{app.status}</span>
+                          <select
+                            value={app.status}
+                            onChange={(e) => handleUpdateStatus(app.id, e.target.value)}
+                            className="form-select form-select-sm"
+                            style={{ 
+                              width: 'auto', 
+                              display: 'inline-block', 
+                              borderRadius: '6px', 
+                              backgroundColor: 'var(--bg-light)', 
+                              color: 'var(--text-primary)',
+                              border: '1px solid var(--border-color)',
+                              padding: '2px 8px'
+                            }}
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="interview">Interview</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="accepted">Accepted</option>
+                          </select>
                         </td>
                       </tr>
                     ))}

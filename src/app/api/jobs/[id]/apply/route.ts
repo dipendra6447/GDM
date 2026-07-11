@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { eq, and, gt } from 'drizzle-orm';
 import { db } from '@/db';
 import { jobApplications, subscriptions, users, globalConfigs } from '@/db/schema';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, getAuthFromRequest } from '@/lib/auth';
 
 const configCache = new Map<string, { value: number; expires: number }>();
 const CACHE_TTL = 1000 * 60 * 60;
@@ -16,6 +16,25 @@ async function getFreeLimit(key: string): Promise<number> {
   const value = config ? parseInt(config.value, 10) : 3;
   configCache.set(key, { value, expires: now + CACHE_TTL });
   return value;
+}
+
+// GET /api/jobs/[id]/apply — Check if the user has already applied to this job
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id: jobId } = await params;
+    const authPayload = await getAuthFromRequest(req);
+    if (!authPayload) {
+      return NextResponse.json({ success: true, applied: false });
+    }
+    const [existing] = await db
+      .select()
+      .from(jobApplications)
+      .where(and(eq(jobApplications.jobId, jobId), eq(jobApplications.applicantId, authPayload.userId)))
+      .limit(1);
+    return NextResponse.json({ success: true, applied: !!existing });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: 'Failed to check application status', applied: false }, { status: 500 });
+  }
 }
 
 // POST /api/jobs/[id]/apply

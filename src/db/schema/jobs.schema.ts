@@ -48,3 +48,20 @@ export const jobApplications = pgTable('job_applications', {
   jobIdIdx: index('job_applications_job_id_idx').on(t.jobId),
   applicantIdIdx: index('job_applications_applicant_id_idx').on(t.applicantId),
 }));
+
+// ─── Saved Jobs (Wishlist) ─────────────────────────────────────────────────────
+export const savedJobs = pgTable('saved_jobs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  jobId: uuid('job_id')
+    .references(() => jobs.id, { onDelete: 'cascade' })
+    .notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (t) => ({
+  userIdIdx: index('saved_jobs_user_id_idx').on(t.userId),
+  jobIdIdx: index('saved_jobs_job_id_idx').on(t.jobId),
+  uniqueUserJob: index('saved_jobs_unique_user_job_idx').on(t.userId, t.jobId),
+}));
+

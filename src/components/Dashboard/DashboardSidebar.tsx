@@ -14,6 +14,7 @@ const DashboardSidebar: React.FC = () => {
     { label: 'Dashboard', icon: 'bi-grid-fill', href: '/dashboard' },
     ...(isEmployer ? [{ label: 'Job Post', icon: 'bi-briefcase-fill', href: '/dashboard/job-post' }] : []),
     { label: 'Applied', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
+    { label: 'Saved Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
     { label: 'Community', icon: 'bi-people-fill', href: '/dashboard/community' },
     { label: 'Message', icon: 'bi-chat-dots-fill', href: '/dashboard/messages' },
     { label: 'Profile Settings', icon: 'bi-person-gear', href: '/profile' },

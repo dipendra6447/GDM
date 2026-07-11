@@ -5,9 +5,12 @@ import './JobDetailsReadyBanner.css';
 interface Props {
   saved: boolean;
   onSave: () => void;
+  applied: boolean;
+  onApply: () => void;
+  jobActive?: boolean;
 }
 
-const JobDetailsReadyBanner: React.FC<Props> = ({ saved, onSave }) => (
+const JobDetailsReadyBanner: React.FC<Props> = ({ saved, onSave, applied, onApply, jobActive = true }) => (
   <section className="jdrb-banner" aria-labelledby="jdrb-heading">
     <div className="jdrb-left">
       <div className="jdrb-icon-wrap" aria-hidden="true">
@@ -26,14 +29,16 @@ const JobDetailsReadyBanner: React.FC<Props> = ({ saved, onSave }) => (
       </div>
     </div>
     <div className="jdrb-actions">
-      <a
-        href="#apply"
+      <button
+        onClick={onApply}
+        disabled={applied || !jobActive}
         className="jdrb-btn-apply"
         id="jdrb-apply-btn"
-        aria-label="Apply Now"
+        style={applied ? { backgroundColor: '#64748b', borderColor: '#64748b', color: '#ffffff', cursor: 'not-allowed' } : !jobActive ? { backgroundColor: '#dc3545', borderColor: '#dc3545', color: '#ffffff', cursor: 'not-allowed' } : { border: 'none' }}
+        aria-label={applied ? "Applied" : !jobActive ? "Closed" : "Apply Now"}
       >
-        Apply Now
-      </a>
+        {applied ? 'Applied' : !jobActive ? 'Closed' : 'Apply Now'}
+      </button>
       <button
         className={`jdrb-btn-save ${saved ? 'saved' : ''}`}
         onClick={onSave}

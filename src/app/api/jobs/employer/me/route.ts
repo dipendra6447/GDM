@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import { db } from '@/db';
-import { jobs, users } from '@/db/schema';
+import { jobs, users, jobApplications } from '@/db/schema';
 import { requireAuth } from '@/lib/auth';
 
 // GET /api/jobs/employer/me — Get all jobs posted by the authenticated employer
@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
         createdAt: jobs.createdAt,
         employerId: jobs.employerId,
         employerEmail: users.email,
+        applicantCount: sql<number>`(select count(*)::int from ${jobApplications} where ${jobApplications.jobId} = ${jobs.id})`,
       })
       .from(jobs)
       .innerJoin(users, eq(jobs.employerId, users.id))

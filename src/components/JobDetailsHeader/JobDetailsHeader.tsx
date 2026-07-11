@@ -5,10 +5,12 @@ import './JobDetailsHeader.css';
 interface Props {
   saved: boolean;
   onSave: () => void;
+  applied: boolean;
+  onApply: () => void;
   job?: any;
 }
 
-const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, job }) => (
+const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, applied, onApply, job }) => (
   <div className="jdh-wrapper">
     {/* Logo + Info */}
     <div className="jdh-left">
@@ -16,8 +18,11 @@ const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, job }) => (
         <span>{(job?.companyName || 'C').substring(0, 2).toUpperCase()}</span>
       </div>
       <div className="jdh-info">
-        <div className="jdh-title-row">
+        <div className="jdh-title-row" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           <h1 className="jdh-job-title">{job?.title}</h1>
+          {!job?.isActive && (
+            <span className="badge bg-danger" style={{ padding: '0.4em 0.8em', fontSize: '0.85rem' }}>Closed / Expired</span>
+          )}
         </div>
         <div className="jdh-company-row">
           <a href="#" className="jdh-company-name" id="jdh-company-link">
@@ -55,14 +60,16 @@ const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, job }) => (
 
     {/* Action buttons */}
     <div className="jdh-actions">
-      <a
-        href="#apply"
-        className="jdh-btn-apply"
+      <button
+        onClick={onApply}
+        disabled={applied || !job?.isActive}
+        className={`jdh-btn-apply ${applied ? 'applied' : ''}`}
         id="jdh-apply-btn"
-        aria-label="Apply Now for Marketing Manager"
+        style={applied ? { backgroundColor: '#64748b', borderColor: '#64748b', color: '#ffffff', cursor: 'not-allowed' } : !job?.isActive ? { backgroundColor: '#dc3545', borderColor: '#dc3545', color: '#ffffff', cursor: 'not-allowed' } : { border: 'none' }}
+        aria-label={applied ? "Applied" : !job?.isActive ? "Closed" : "Apply Now"}
       >
-        Apply Now
-      </a>
+        {applied ? 'Applied' : !job?.isActive ? 'Closed' : 'Apply Now'}
+      </button>
       <button
         className={`jdh-btn-save ${saved ? 'saved' : ''}`}
         onClick={onSave}
