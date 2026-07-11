@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq, desc } from 'drizzle-orm';
+import slugify from 'slugify';
 import { db } from '@/db';
 import { jobs, users } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
 
     const allJobs = await db
       .select({
-        id: jobs.id, title: jobs.title, description: jobs.description, companyName: jobs.companyName,
+        id: jobs.id, slug: jobs.slug, title: jobs.title, description: jobs.description, companyName: jobs.companyName,
         location: jobs.location, salaryRange: jobs.salaryRange, jobType: jobs.jobType,
         workMode: jobs.workMode, experience: jobs.experience, skills: jobs.skills, category: jobs.category,
         isActive: jobs.isActive, isDeleted: jobs.isDeleted, createdAt: jobs.createdAt,
@@ -52,7 +53,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Title, description, and employerId required' }, { status: 400 });
     }
 
-    const [newJob] = await db.insert(jobs).values({ title, description, companyName, location, category, employerId }).returning();
+    const baseSlug = slugify(title, { lower: true, strict: true });
+    const uniqueSuffix = Math.random().toString(36).substring(2, 6);
+    const slug = `${baseSlug}-${uniqueSuffix}`;
+
+    const [newJob] = await db.insert(jobs).values({ slug, title, description, companyName, location, category, employerId }).returning();
     return NextResponse.json({ success: true, message: 'Job added', data: newJob }, { status: 201 });
   } catch (error: any) {
     if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });

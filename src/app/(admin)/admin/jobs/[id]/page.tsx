@@ -13,6 +13,7 @@ import '../Jobs.css';
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 import { use } from 'react';
+import Select from 'react-select';
 
 export default function JobFormPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -127,21 +128,40 @@ export default function JobFormPage({ params }: { params: Promise<{ id: string }
                   <input type="text" name="title" className="form-control" value={formData.title} onChange={handleInputChange} required />
                 </div>
                 
-                {!isEditing && (
-                  <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                    <label>Employer <span className="text-danger">*</span></label>
-                    <select name="employerId" className="form-control" value={formData.employerId} onChange={handleInputChange} required>
-                      <option value="">Select an Employer</option>
-                      {employers.map(emp => (
-                        <option key={emp.id} value={emp.id}>{emp.employerProfile?.companyName || emp.email}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-                
-                <div className="form-group">
-                  <label>Company Name</label>
-                  <input type="text" name="companyName" className="form-control" value={formData.companyName} onChange={handleInputChange} />
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label>Company / Employer <span className="text-danger">*</span></label>
+                  <Select
+                    options={employers.map(emp => ({
+                      value: emp.id,
+                      label: emp.employerProfile?.companyName || emp.email
+                    }))}
+                    value={
+                      formData.employerId
+                        ? {
+                            value: formData.employerId,
+                            label: formData.companyName || employers.find(e => e.id === formData.employerId)?.employerProfile?.companyName || employers.find(e => e.id === formData.employerId)?.email
+                          }
+                        : null
+                    }
+                    onChange={(selectedOption: any) => {
+                      if (selectedOption) {
+                        setFormData({ 
+                          ...formData, 
+                          employerId: selectedOption.value, 
+                          companyName: selectedOption.label 
+                        });
+                      } else {
+                        setFormData({
+                          ...formData,
+                          employerId: '',
+                          companyName: ''
+                        });
+                      }
+                    }}
+                    placeholder="Search and select a company..."
+                    isClearable
+                    required
+                  />
                 </div>
                 
                 <div className="form-group">

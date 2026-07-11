@@ -27,7 +27,9 @@
     "react-image-crop": "^11.1.2",
     "react-phone-input-2": "^2.15.1",
     "react-quill-new": "^3.8.3",
+    "react-select": "^5.10.2",
     "recharts": "^3.9.2",
+    "slugify": "^1.6.9",
     "zod": "^4.4.3"
   },
   "devDependencies": {

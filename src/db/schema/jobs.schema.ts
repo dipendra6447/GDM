@@ -11,6 +11,7 @@ export const jobs = pgTable('jobs', {
   description: text('description').notNull(),
   
   // New Fields
+  slug: varchar('slug', { length: 300 }).unique(),
   companyName: varchar('company_name', { length: 255 }),
   location: varchar('location', { length: 255 }),
   salaryRange: varchar('salary_range', { length: 100 }),

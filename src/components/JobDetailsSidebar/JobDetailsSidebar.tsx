@@ -22,7 +22,11 @@ const benefits = [
   { icon: 'bi-graph-up-arrow', label: 'Professional Development' },
 ];
 
-const JobDetailsSidebar: React.FC = () => {
+interface Props {
+  job?: any;
+}
+
+const JobDetailsSidebar: React.FC<Props> = ({ job }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
@@ -38,14 +42,14 @@ const JobDetailsSidebar: React.FC = () => {
         <h2 className="jds-card-title">Company Overview</h2>
         <div className="jds-company-header">
           <div className="jds-co-logo">
-            <span>DS</span>
+            <span>{(job?.companyName || 'C').substring(0, 2).toUpperCase()}</span>
           </div>
           <div className="jds-co-info">
             <div className="jds-co-name-row">
-              <span className="jds-co-name">DigitalStream Agency</span>
+              <span className="jds-co-name">{job?.companyName || 'Company Name Hidden'}</span>
               <i className="bi bi-patch-check-fill jds-co-verified" aria-label="Verified" />
             </div>
-            <span className="jds-co-industry">Marketing &amp; Advertising</span>
+            <span className="jds-co-industry">{job?.category || 'Not specified'}</span>
           </div>
         </div>
 
@@ -79,17 +83,48 @@ const JobDetailsSidebar: React.FC = () => {
       <div className="jds-card" id="jds-job-overview">
         <h2 className="jds-card-title">Job Overview</h2>
         <ul className="jds-overview-list">
-          {overviewItems.map((item) => (
-            <li key={item.label} className="jds-overview-item">
-              <div className="jds-ov-icon">
-                <i className={`bi ${item.icon}`} aria-hidden="true" />
-              </div>
-              <div className="jds-ov-text">
-                <span className="jds-ov-label">{item.label}</span>
-                <span className="jds-ov-value">{item.value}</span>
-              </div>
-            </li>
-          ))}
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-clock" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Posted</span>
+              <span className="jds-ov-value">{job?.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'Recently'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-bar-chart" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Experience</span>
+              <span className="jds-ov-value">{job?.experience || 'Not specified'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-briefcase" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Employment Type</span>
+              <span className="jds-ov-value">{job?.jobType || 'Full-time'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-building" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Work Mode</span>
+              <span className="jds-ov-value">{job?.workMode || 'On-site'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-currency-dollar" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Salary Range</span>
+              <span className="jds-ov-value">{job?.salaryRange || 'Competitive'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-geo-alt" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Location</span>
+              <span className="jds-ov-value">{job?.location || 'Not specified'}</span>
+            </div>
+          </li>
         </ul>
       </div>
 

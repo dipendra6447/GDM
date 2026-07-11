@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { users, userRoles, roles } from '@/db/schema';
+import { users, userRoles, roles, employerProfiles } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
 import { ROLES } from '@/lib/constants';
 
@@ -21,11 +21,13 @@ export async function GET(req: NextRequest) {
     const rows = await db
       .select({
         id: users.id, email: users.email, jobApplyCount: users.jobApplyCount, jobPostCount: users.jobPostCount,
-        createdAt: users.createdAt, roleId: userRoles.roleId, roleName: roles.name,
+        isActive: users.isActive, isDeleted: users.isDeleted, createdAt: users.createdAt, roleId: userRoles.roleId, roleName: roles.name,
+        employerProfile: employerProfiles,
       })
       .from(users)
       .leftJoin(userRoles, eq(users.id, userRoles.userId))
       .leftJoin(roles, eq(userRoles.roleId, roles.id))
+      .leftJoin(employerProfiles, eq(users.id, employerProfiles.userId))
       .limit(limit)
       .offset(offset);
 
@@ -34,7 +36,9 @@ export async function GET(req: NextRequest) {
       if (!userMap.has(row.id)) {
         userMap.set(row.id, {
           id: row.id, email: row.email, jobApplyCount: row.jobApplyCount,
+          isActive: row.isActive, isDeleted: row.isDeleted,
           jobPostCount: row.jobPostCount, createdAt: row.createdAt, roles: [],
+          employerProfile: row.employerProfile,
         });
       }
       if (row.roleId && row.roleName) {

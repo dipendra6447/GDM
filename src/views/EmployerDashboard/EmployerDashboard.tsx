@@ -267,6 +267,7 @@ export default function EmployerDashboard() {
                     <thead>
                       <tr>
                         <th>Job Title</th>
+                        <th>Category</th>
                         <th>Posted Date</th>
                         <th>Status</th>
                         <th>Applicants</th>
@@ -281,6 +282,17 @@ export default function EmployerDashboard() {
                               <h4>{job.title}</h4>
                               <span>{job.location || 'Location Not Specified'}</span>
                             </div>
+                          </td>
+                          <td>
+                            <span style={{ 
+                              background: 'var(--bg-light)', 
+                              padding: '0.25rem 0.75rem', 
+                              borderRadius: '20px', 
+                              fontSize: '0.85rem',
+                              color: 'var(--text-secondary)'
+                            }}>
+                              {job.category || 'Not specified'}
+                            </span>
                           </td>
                           <td>{new Date(job.createdAt).toLocaleDateString()}</td>
                           <td>

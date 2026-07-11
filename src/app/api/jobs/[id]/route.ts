@@ -11,6 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const [job] = await db
     .select({
       id: jobs.id,
+      slug: jobs.slug,
       title: jobs.title,
       description: jobs.description,
       companyName: jobs.companyName,

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './JobListing.css';
 
 // Shared components
@@ -13,7 +13,7 @@ import Newsletter from '../../components/Newsletter/Newsletter';
 import MobileBottomNav from '../../components/MobileBottomNav/MobileBottomNav';
 
 // Data
-import { mockSearchResults, categoryCounts } from '../../utils/mockSearchResults';
+import { categoryCounts } from '../../utils/mockSearchResults';
 
 type CategoryTab = 'all' | 'jobs' | 'gigs' | 'businesses' | 'services' | 'events';
 
@@ -43,7 +43,44 @@ const JobListing: React.FC = () => {
   const [expLevel, setExpLevel] = useState('all');
   const [sortBy, setSortBy] = useState('relevant');
 
-  const totalPages = 16;
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/jobs?page=${currentPage}&limit=10`);
+        const json = await res.json();
+        if (json.success) {
+          const mapped = json.data.map((j: any) => ({
+            id: j.id,
+            slug: j.slug,
+            type: 'job',
+            title: j.title,
+            company: j.companyName || 'Company Name Hidden',
+            companyInitials: (j.companyName || 'C').substring(0, 2).toUpperCase(),
+            companyColor: '#2454FF',
+            location: j.location || 'Location Not Provided',
+            workMode: j.workMode,
+            employmentType: j.jobType,
+            salary: j.salaryRange,
+            description: j.description?.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...',
+            skills: j.skills ? j.skills.split(',').map((s:string) => s.trim()).filter(Boolean) : [],
+            postedTime: new Date(j.createdAt).toLocaleDateString(),
+          }));
+          setJobs(mapped);
+          setTotalPages(Math.ceil(json.meta.total / json.meta.limit) || 1);
+        }
+      } catch (err) {
+        console.error("Failed to fetch jobs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, [currentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -176,9 +213,15 @@ const JobListing: React.FC = () => {
 
             {/* Search Results List */}
             <div className="jl2-results-list" role="list" aria-label="Search results">
-              {mockSearchResults.map((result) => (
-                <SearchResultCard key={result.id} result={result} />
-              ))}
+              {loading ? (
+                <div style={{ padding: '2rem', textAlign: 'center' }}>Loading jobs...</div>
+              ) : jobs.length === 0 ? (
+                <div style={{ padding: '2rem', textAlign: 'center' }}>No jobs found.</div>
+              ) : (
+                jobs.map((result) => (
+                  <SearchResultCard key={result.id} result={result} />
+                ))
+              )}
             </div>
 
             {/* Pagination */}

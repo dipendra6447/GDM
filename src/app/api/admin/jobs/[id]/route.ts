@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
+import slugify from 'slugify';
 import { db } from '@/db';
 import { jobs } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
@@ -33,9 +34,20 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const { id } = await params;
-    const { title, description, companyName, location, category } = await req.json();
+    const { title, description, companyName, location, category, employerId } = await req.json();
 
-    const [updated] = await db.update(jobs).set({ title, description, companyName, location, category }).where(eq(jobs.id, id)).returning();
+    const [existingJob] = await db.select().from(jobs).where(eq(jobs.id, id)).limit(1);
+    if (!existingJob) return NextResponse.json({ success: false, message: 'Job not found' }, { status: 404 });
+
+    const updateData: any = { title, description, companyName, location, category, employerId };
+
+    if (!existingJob.slug && title) {
+      const baseSlug = slugify(title, { lower: true, strict: true });
+      const uniqueSuffix = Math.random().toString(36).substring(2, 6);
+      updateData.slug = `${baseSlug}-${uniqueSuffix}`;
+    }
+
+    const [updated] = await db.update(jobs).set(updateData).where(eq(jobs.id, id)).returning();
     if (!updated) return NextResponse.json({ success: false, message: 'Job not found' }, { status: 404 });
 
     return NextResponse.json({ success: true, message: 'Job updated', data: updated });

@@ -33,14 +33,11 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       aria-label={`${job.title} at ${job.company}`}
       style={{ '--apply-color': job.applyBtnColor } as React.CSSProperties}
     >
-      {/* Illustration area */}
-      <div className="job-card-illustration" style={{ background: job.cardBg }}>
-        <img
-          src={job.illustrationImg?.src || job.illustrationImg}
-          alt={`${job.title} illustration`}
-          className="job-card-illus-img"
-          loading="lazy"
-        />
+      {/* Top section with icon badge */}
+      <div className="job-card-top">
+        <div className="job-card-icon-badge" style={{ backgroundColor: `${job.applyBtnColor}1a`, color: job.applyBtnColor }}>
+          <i className="bi bi-briefcase"></i>
+        </div>
         <button className="job-bookmark" aria-label={`Save ${job.title}`} id={`bookmark-${job.id}`}>
           <i className="bi bi-bookmark"></i>
         </button>
@@ -53,8 +50,8 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
         {/* Company row */}
         <div className="job-company-row">
-          <i className={`bi ${job.companyLogo} job-company-icon`}></i>
-          <span className="job-company">{job.company}</span>
+          <i className={`bi bi-building job-company-icon`}></i>
+          <span className="job-company">{job.companyName}</span>
         </div>
 
         {/* Meta: location + type */}
@@ -65,29 +62,28 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           </span>
           <span className="job-meta-item">
             <i className="bi bi-briefcase"></i>
-            {job.type}
+            {job.jobType}
           </span>
         </div>
 
         {/* Salary */}
-        <div className="job-salary">{job.salary}</div>
+        <div className="job-salary">{job.salaryRange}</div>
 
         {/* Tags */}
         <div className="job-tags">
-          {job.tags.map((tag) => (
+          {job.tags?.map((tag) => (
             <span key={tag} className="job-tag">{tag}</span>
           ))}
         </div>
 
         {/* Apply button */}
         <a
-          href="#"
+          href={`/jobs/${job.slug}`}
           className="job-apply-btn"
           id={`apply-${job.id}`}
-          aria-label={`Apply for ${job.title}`}
-          onClick={handleApply}
+          aria-label={`View ${job.title}`}
         >
-          Apply Now
+          View Job
         </a>
       </div>
     </article>

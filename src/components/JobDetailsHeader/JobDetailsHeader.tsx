@@ -5,56 +5,49 @@ import './JobDetailsHeader.css';
 interface Props {
   saved: boolean;
   onSave: () => void;
+  job?: any;
 }
 
-const JobDetailsHeader: React.FC<Props> = ({ saved, onSave }) => (
+const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, job }) => (
   <div className="jdh-wrapper">
     {/* Logo + Info */}
     <div className="jdh-left">
-      <div className="jdh-logo" aria-label="DigitalStream Agency logo">
-        <span>DS</span>
+      <div className="jdh-logo" aria-label={`${job?.companyName || 'Company'} logo`}>
+        <span>{(job?.companyName || 'C').substring(0, 2).toUpperCase()}</span>
       </div>
       <div className="jdh-info">
         <div className="jdh-title-row">
-          <h1 className="jdh-job-title">Marketing Manager</h1>
-          <span className="jdh-new-badge">New</span>
+          <h1 className="jdh-job-title">{job?.title}</h1>
         </div>
         <div className="jdh-company-row">
           <a href="#" className="jdh-company-name" id="jdh-company-link">
-            DigitalStream Agency
+            {job?.companyName || 'Company Name Hidden'}
           </a>
-          <span className="jdh-verified" aria-label="Verified company">
-            <i className="bi bi-patch-check-fill" />
-          </span>
         </div>
         <div className="jdh-meta-row">
           <span className="jdh-meta-item">
             <i className="bi bi-geo-alt" />
-            Dayton, OH
+            {job?.location || 'Remote'}
           </span>
           <span className="jdh-dot" aria-hidden="true">•</span>
           <span className="jdh-meta-item">
             <i className="bi bi-building" />
-            On-site
+            {job?.workMode || 'Hybrid'}
           </span>
           <span className="jdh-dot" aria-hidden="true">•</span>
           <span className="jdh-meta-item">
             <i className="bi bi-clock" />
-            Full-time
+            {job?.jobType || 'Full-time'}
           </span>
         </div>
         <div className="jdh-salary-row">
           <i className="bi bi-currency-dollar" />
-          <span className="jdh-salary">$60K – $80K / year</span>
+          <span className="jdh-salary">{job?.salaryRange || 'Competitive'}</span>
         </div>
         <div className="jdh-posted-row">
           <span className="jdh-posted">
             <i className="bi bi-clock-history" />
-            Posted 2 hours ago
-          </span>
-          <span className="jdh-applicants">
-            <i className="bi bi-people" />
-            42 applicants
+            Posted {job?.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'Recently'}
           </span>
         </div>
       </div>

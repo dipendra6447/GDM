@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq, and, gt, desc } from 'drizzle-orm';
+import { eq, and, gt, desc, sql } from 'drizzle-orm';
+import slugify from 'slugify';
 import { db } from '@/db';
 import { jobs, subscriptions, users, globalConfigs, employerProfiles } from '@/db/schema';
 import { requireAuth } from '@/lib/auth';
@@ -30,9 +31,15 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
   const offset = (page - 1) * limit;
 
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(jobs)
+    .where(and(eq(jobs.isDeleted, false), eq(jobs.isActive, true)));
+
   const allJobs = await db
     .select({
       id: jobs.id,
+      slug: jobs.slug,
       title: jobs.title,
       description: jobs.description,
       companyName: jobs.companyName,
@@ -57,7 +64,7 @@ export async function GET(req: NextRequest) {
     .limit(limit)
     .offset(offset);
 
-  return NextResponse.json({ success: true, data: allJobs, meta: { page, limit } });
+  return NextResponse.json({ success: true, data: allJobs, meta: { page, limit, total: Number(count) } });
 }
 
 // POST /api/jobs — Create a new job (authenticated employer)
@@ -110,10 +117,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const baseSlug = slugify(title, { lower: true, strict: true });
+    const uniqueSuffix = Math.random().toString(36).substring(2, 6);
+    const finalSlug = `${baseSlug}-${uniqueSuffix}`;
+
     const [job] = await db
       .insert(jobs)
       .values({
         employerId: userId,
+        slug: finalSlug,
         title, description,
         companyName: finalCompanyName,
         location, salaryRange, jobType, workMode,

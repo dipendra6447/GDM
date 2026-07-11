@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import './SearchResultCard.css';
 
 export interface SearchResult {
-  id: number;
+  id: number | string;
+  slug?: string;
   type: 'job' | 'gig' | 'business' | 'service' | 'event';
   title: string;
   company: string;
@@ -167,7 +168,7 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
             <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
           </button>
           <a
-            href="#"
+            href={r.type === 'job' ? `/jobs/${r.slug || r.id}` : '#'}
             className="sr-cta-btn"
             style={{
               borderColor: ctaColor,

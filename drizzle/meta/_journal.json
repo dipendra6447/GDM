@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1783641120157,
+      "tag": "0000_elite_invisible_woman",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783672977526,
+      "tag": "0001_clammy_switch",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783789621470,
+      "tag": "0002_omniscient_peter_parker",
+      "breakpoints": true
+    }
+  ]
+}
