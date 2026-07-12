@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest) {
 
     const completionFields = [
       'companyName', 'logoUrl', 'industry', 'companySize', 'foundedYear',
-      'about', 'headquarters', 'websiteUrl', 'linkedinUrl', 'twitterUrl',
+      'about', 'benefits', 'headquarters', 'websiteUrl', 'linkedinUrl', 'twitterUrl',
       'hrName', 'hrEmail', 'hrPhone'
     ];
     let filledFields = 0;

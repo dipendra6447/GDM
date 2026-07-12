@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import "./TrendingJobs.css";
 import JobCard from "./JobCard";
+import SkeletonJobCard from "./SkeletonJobCard";
 
 export interface Job {
   id: string;
@@ -71,6 +72,7 @@ const TrendingJobs: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState("All Jobs");
   const [filterTabs, setFilterTabs] = useState<string[]>(["All Jobs"]);
   const [dbJobs, setDbJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
@@ -120,6 +122,8 @@ const TrendingJobs: React.FC = () => {
         }
       } catch (err) {
         console.error("Failed to fetch trending jobs:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchJobs();
@@ -180,11 +184,24 @@ const TrendingJobs: React.FC = () => {
           aria-label="Trending jobs carousel"
         >
           <div className="trend-embla-container">
-            {filteredJobs.map((job) => (
-              <div className="trend-embla-slide" key={job.id}>
-                <JobCard job={job} />
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <div className="trend-embla-slide" key={`skeleton-${index}`}>
+                  <SkeletonJobCard />
+                </div>
+              ))
+            ) : filteredJobs.length === 0 ? (
+              <div className="text-center w-100 py-5 text-muted">
+                <i className="bi bi-info-circle fs-3 d-block mb-2"></i>
+                No trending jobs found in this category.
               </div>
-            ))}
+            ) : (
+              filteredJobs.map((job) => (
+                <div className="trend-embla-slide" key={job.id}>
+                  <JobCard job={job} />
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -195,6 +212,8 @@ const TrendingJobs: React.FC = () => {
             onClick={scrollPrev}
             aria-label="Previous jobs"
             id="trend-prev-btn"
+            disabled={isLoading}
+            style={isLoading ? { opacity: 0.5, cursor: "not-allowed" } : {}}
           >
             <i className="bi bi-chevron-left"></i>
           </button>
@@ -206,6 +225,8 @@ const TrendingJobs: React.FC = () => {
             onClick={scrollNext}
             aria-label="Next jobs"
             id="trend-next-btn"
+            disabled={isLoading}
+            style={isLoading ? { opacity: 0.5, cursor: "not-allowed" } : {}}
           >
             <i className="bi bi-chevron-right"></i>
           </button>

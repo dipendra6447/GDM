@@ -67,6 +67,7 @@ export const employerProfiles = pgTable('employer_profiles', {
   companySize: varchar('company_size', { length: 50 }),        // '1-10' | '11-50' | '51-200' | '201-500' | '500+'
   foundedYear: integer('founded_year'),
   about: text('about'),
+  benefits: text('benefits'),
   headquarters: varchar('headquarters', { length: 255 }),
 
   // Contact / Social

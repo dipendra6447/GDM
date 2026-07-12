@@ -13,6 +13,7 @@ export const subscriptionPlans = pgTable('subscription_plans', {
   isPopular: boolean('is_popular').default(false).notNull(),
   isBestValue: boolean('is_best_value').default(false).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
+  isDeleted: boolean('is_deleted').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

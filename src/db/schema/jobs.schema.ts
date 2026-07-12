@@ -65,3 +65,16 @@ export const savedJobs = pgTable('saved_jobs', {
   uniqueUserJob: index('saved_jobs_unique_user_job_idx').on(t.userId, t.jobId),
 }));
 
+// ─── Saved Searches ───────────────────────────────────────────────────────────
+export const savedSearches = pgTable('saved_searches', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  query: text('query').notNull(), // json or query string containing search filters
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (t) => ({
+  userIdIdx: index('saved_searches_user_id_idx').on(t.userId),
+}));
+

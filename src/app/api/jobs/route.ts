@@ -31,10 +31,31 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
   const offset = (page - 1) * limit;
 
+  // Extract filters
+  const locationFilter = searchParams.get('location');
+  const jobTypeFilter = searchParams.get('jobType');
+  const categoryFilter = searchParams.get('category');
+  const searchKeyword = searchParams.get('keyword');
+
+  const conditions = [eq(jobs.isDeleted, false), eq(jobs.isActive, true)];
+
+  if (locationFilter && locationFilter !== 'all') {
+    conditions.push(sql`LOWER(${jobs.location}) LIKE ${'%' + locationFilter.toLowerCase() + '%'}`);
+  }
+  if (jobTypeFilter && jobTypeFilter !== 'all') {
+    conditions.push(sql`LOWER(${jobs.jobType}) = ${jobTypeFilter.toLowerCase()}`);
+  }
+  if (categoryFilter && categoryFilter !== 'all') {
+    conditions.push(eq(jobs.category, categoryFilter));
+  }
+  if (searchKeyword) {
+    conditions.push(sql`(LOWER(${jobs.title}) LIKE ${'%' + searchKeyword.toLowerCase() + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + searchKeyword.toLowerCase() + '%'})`);
+  }
+
   const [{ count }] = await db
     .select({ count: sql<number>`count(*)` })
     .from(jobs)
-    .where(and(eq(jobs.isDeleted, false), eq(jobs.isActive, true)));
+    .where(and(...conditions));
 
   const allJobs = await db
     .select({
@@ -59,7 +80,7 @@ export async function GET(req: NextRequest) {
     })
     .from(jobs)
     .innerJoin(users, eq(jobs.employerId, users.id))
-    .where(and(eq(jobs.isDeleted, false), eq(jobs.isActive, true)))
+    .where(and(...conditions))
     .orderBy(desc(jobs.createdAt))
     .limit(limit)
     .offset(offset);

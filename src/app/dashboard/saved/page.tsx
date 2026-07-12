@@ -1,8 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function SavedJobsPage() {
+  const { user, isLoading: authLoading } = useAuth();
   const [savedJobs, setSavedJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -52,8 +54,40 @@ export default function SavedJobsPage() {
   };
 
   useEffect(() => {
-    fetchSavedJobs();
-  }, []);
+    if (!authLoading) {
+      fetchSavedJobs();
+    }
+  }, [authLoading]);
+
+  if (authLoading) {
+    return (
+      <div className="dashboard-content-wrapper" style={{ padding: '2rem', textAlign: 'center' }}>
+        <div style={{ padding: '3rem' }}>Loading user session...</div>
+      </div>
+    );
+  }
+
+  const isJobSeeker = user?.roles?.includes(1);
+
+  if (!user) {
+    return (
+      <div className="dashboard-content-wrapper" style={{ padding: '2rem' }}>
+        <h2 className="mb-4">Saved Jobs (Wishlist)</h2>
+        <div className="alert alert-danger">Please log in to view saved jobs.</div>
+      </div>
+    );
+  }
+
+  if (!isJobSeeker) {
+    return (
+      <div className="dashboard-content-wrapper" style={{ padding: '2rem' }}>
+        <h2 className="mb-4">Saved Jobs (Wishlist)</h2>
+        <div className="alert alert-danger">
+          Access Denied. Only Job Seekers can view saved jobs.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-content-wrapper" style={{ padding: '2rem' }}>
@@ -77,7 +111,7 @@ export default function SavedJobsPage() {
           {savedJobs.map((job) => (
             <div 
               key={job.id} 
-              className="dash-user-card p-4 d-flex justify-content-between align-items-center flex-wrap" 
+              className="dash-user-card p-4 d-flex flex-row justify-content-between align-items-center flex-wrap" 
               style={{ gap: '1rem', opacity: job.isActive ? 1 : 0.75 }}
             >
               <div>

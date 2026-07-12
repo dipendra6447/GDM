@@ -8,9 +8,10 @@ interface Props {
   applied: boolean;
   onApply: () => void;
   jobActive?: boolean;
+  applicantCount?: number;
 }
 
-const JobDetailsReadyBanner: React.FC<Props> = ({ saved, onSave, applied, onApply, jobActive = true }) => (
+const JobDetailsReadyBanner: React.FC<Props> = ({ saved, onSave, applied, onApply, jobActive = true, applicantCount = 0 }) => (
   <section className="jdrb-banner" aria-labelledby="jdrb-heading">
     <div className="jdrb-left">
       <div className="jdrb-icon-wrap" aria-hidden="true">
@@ -21,7 +22,13 @@ const JobDetailsReadyBanner: React.FC<Props> = ({ saved, onSave, applied, onAppl
       </div>
       <div className="jdrb-text">
         <h2 className="jdrb-heading" id="jdrb-heading">Ready to apply?</h2>
-        <p className="jdrb-sub">Join 42 other applicants who have already shown interest.</p>
+        <p className="jdrb-sub">
+          {applicantCount > 0 ? (
+            `Join ${applicantCount} other applicant${applicantCount > 1 ? 's' : ''} who have already shown interest.`
+          ) : (
+            "Be the first one to show interest in this job!"
+          )}
+        </p>
         <div className="jdrb-security">
           <i className="bi bi-shield-check" aria-hidden="true" />
           <span>Your information is secure and private.</span>

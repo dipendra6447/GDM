@@ -42,7 +42,7 @@ export default function SubscriptionsPage() {
     try {
       setLoading(true);
       const [subsRes, plansRes] = await Promise.all([
-        api.get('/admin/subscriptions'),
+        api.get('/subscriptions'),
         api.get('/admin/subscription-plans')
       ]);
       if (subsRes.success) setSubs(subsRes.data);
@@ -66,7 +66,7 @@ export default function SubscriptionsPage() {
   const handleExpire = async (id: string) => {
     if (!window.confirm('Are you sure you want to expire this subscription?')) return;
     try {
-      await api.patch(`/admin/subscriptions/${id}/expire`, {});
+      await api.patch(`/subscriptions/${id}/expire`, {});
       fetchData();
     } catch (err: any) {
       alert(err.message || 'Failed to expire subscription');
@@ -286,7 +286,7 @@ export default function SubscriptionsPage() {
                   <label>Target Role</label>
                   <select name="roleTarget" className="form-control" value={planFormData.roleTarget} onChange={handlePlanInputChange} required>
                     <option value="job_seeker">Job Seeker</option>
-                    <option value="employer">Employer</option>
+                    <option value="job_poster">Employer (Job Poster)</option>
                     <option value="business_promoter">Business Promoter</option>
                   </select>
                 </div>

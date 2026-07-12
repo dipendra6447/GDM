@@ -30,7 +30,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     <article
       className="job-card"
       id={`job-card-${job.id}`}
-      aria-label={`${job.title} at ${job.company}`}
+      aria-label={`${job.title} at ${job.companyName}`}
       style={{ '--apply-color': job.applyBtnColor } as React.CSSProperties}
     >
       {/* Top section with icon badge */}

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 import { db } from '@/db';
-import { jobs, users } from '@/db/schema';
+import { jobs, users, employerProfiles, jobApplications } from '@/db/schema';
 
 // GET /api/jobs/by-slug/[slug]
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
@@ -27,9 +27,20 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
       createdAt: jobs.createdAt,
       employerId: jobs.employerId,
       employerEmail: users.email,
+      companyAbout: employerProfiles.about,
+      companyBenefits: employerProfiles.benefits,
+      companyLogoUrl: employerProfiles.logoUrl,
+      companySize: employerProfiles.companySize,
+      companyFoundedYear: employerProfiles.foundedYear,
+      companyHeadquarters: employerProfiles.headquarters,
+      companyWebsiteUrl: employerProfiles.websiteUrl,
+      companyLinkedinUrl: employerProfiles.linkedinUrl,
+      companyTwitterUrl: employerProfiles.twitterUrl,
+      companyIndustry: employerProfiles.industry,
     })
     .from(jobs)
     .innerJoin(users, eq(jobs.employerId, users.id))
+    .leftJoin(employerProfiles, eq(employerProfiles.userId, jobs.employerId))
     .where(and(eq(jobs.slug, slug), eq(jobs.isDeleted, false)))
     .limit(1);
 
@@ -37,5 +48,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     return NextResponse.json({ success: false, message: 'Job not found' }, { status: 404 });
   }
 
-  return NextResponse.json({ success: true, data: job });
+  // Fetch applicant count
+  const [appCountRes] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(jobApplications)
+    .where(eq(jobApplications.jobId, job.id));
+  const applicantCount = appCountRes ? Number(appCountRes.count) : 0;
+
+  return NextResponse.json({ success: true, data: { ...job, applicantCount } });
 }

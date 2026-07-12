@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { db } from '@/db';
 import { subscriptionPlans } from '@/db/schema';
+
+// GET /api/admin/subscription-plans/[id]
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const [plan] = await db.select().from(subscriptionPlans).where(and(eq(subscriptionPlans.id, id), eq(subscriptionPlans.isDeleted, false))).limit(1);
+    if (!plan) return NextResponse.json({ success: false, message: 'Subscription plan not found' }, { status: 404 });
+    return NextResponse.json({ success: true, data: plan });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: 'Failed to fetch subscription plan' }, { status: 500 });
+  }
+}
 
 // PUT /api/admin/subscription-plans/[id]
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -33,11 +45,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-// DELETE /api/admin/subscription-plans/[id]
+// DELETE /api/admin/subscription-plans/[id] (Soft Delete)
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const [deleted] = await db.delete(subscriptionPlans).where(eq(subscriptionPlans.id, id)).returning();
+    const [deleted] = await db
+      .update(subscriptionPlans)
+      .set({ isDeleted: true, updatedAt: new Date() })
+      .where(and(eq(subscriptionPlans.id, id), eq(subscriptionPlans.isDeleted, false)))
+      .returning();
+      
     if (!deleted) return NextResponse.json({ success: false, message: 'Subscription plan not found' }, { status: 404 });
 
     return NextResponse.json({ success: true, message: 'Subscription plan deleted' });

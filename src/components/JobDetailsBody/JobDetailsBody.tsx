@@ -47,7 +47,15 @@ const JobDetailsBody: React.FC<JobDetailsBodyProps> = ({ job }) => {
       </section>
     )}
 
-    {/* Removed hardcoded sections since description is HTML */}
+    {(job?.companyBenefits || job?.benefits) && (
+      <section className="jdb-section" aria-labelledby="jdb-benefits">
+        <h2 className="jdb-section-title" id="jdb-benefits">Benefits &amp; Perks</h2>
+        <div 
+          className="jdb-para" 
+          dangerouslySetInnerHTML={{ __html: job?.companyBenefits || `<p>${job?.benefits}</p>` }} 
+        />
+      </section>
+    )}
 
     {/* Job Summary Chips */}
     <section className="jdb-meta-grid" aria-label="Job summary">

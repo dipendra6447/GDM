@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { subscriptionPlans } from '@/db/schema';
 
 // GET /api/admin/subscription-plans
 export async function GET() {
   try {
-    const plans = await db.select().from(subscriptionPlans).orderBy(desc(subscriptionPlans.createdAt));
+    const plans = await db.select().from(subscriptionPlans).where(eq(subscriptionPlans.isDeleted, false)).orderBy(desc(subscriptionPlans.createdAt));
     return NextResponse.json({ success: true, data: plans });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: 'Failed to fetch subscription plans' }, { status: 500 });

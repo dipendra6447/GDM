@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { db } from '@/db';
 import {
   users, userRoles, roles, jobSeekerProfiles, employerProfiles,
-  businessPromoterProfiles, workExperiences, educations, certifications, subscriptions
+  businessPromoterProfiles, workExperiences, educations, certifications, subscriptions,
+  savedJobs, jobs
 } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
 import { ROLES } from '@/lib/constants';
@@ -49,11 +50,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     let experiences: any[] = [];
     let educationList: any[] = [];
     let certificationList: any[] = [];
+    let userSavedJobs: any[] = [];
 
     if (roleIds.includes(1)) {
       experiences = await db.select().from(workExperiences).where(eq(workExperiences.userId, userId));
       educationList = await db.select().from(educations).where(eq(educations.userId, userId));
       certificationList = await db.select().from(certifications).where(eq(certifications.userId, userId));
+      userSavedJobs = await db
+        .select({
+          id: jobs.id,
+          title: jobs.title,
+          companyName: jobs.companyName,
+          location: jobs.location,
+          salaryRange: jobs.salaryRange,
+          jobType: jobs.jobType,
+          isActive: jobs.isActive,
+          createdAt: jobs.createdAt,
+        })
+        .from(savedJobs)
+        .innerJoin(jobs, eq(savedJobs.jobId, jobs.id))
+        .where(and(eq(savedJobs.userId, userId), eq(jobs.isDeleted, false)));
     }
 
     const userSubs = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId));
@@ -64,6 +80,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         id: user.id, email: user.email, jobApplyCount: user.jobApplyCount, jobPostCount: user.jobPostCount,
         createdAt: user.createdAt, roles: userRoleRows, seekerProfile, employerProfile,
         promoterProfile, experiences, educations: educationList, certifications: certificationList, subscriptions: userSubs,
+        savedJobs: userSavedJobs,
       },
     });
   } catch (error: any) {

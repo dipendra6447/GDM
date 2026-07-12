@@ -182,6 +182,46 @@ export default function UserDetailPage() {
           </div>
         </div>
       )}
+
+      {user.savedJobs && user.savedJobs.length > 0 && (
+        <div className="detail-card">
+          <div className="detail-card-header"><MdWork /> Saved Jobs / Wishlist ({user.savedJobs.length})</div>
+          <div className="table-responsive">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Job Title</th>
+                  <th>Company</th>
+                  <th>Location</th>
+                  <th>Job Type</th>
+                  <th>Salary Range</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {user.savedJobs.map((job: any) => (
+                  <tr key={job.id}>
+                    <td>
+                      <strong>{job.title}</strong>
+                    </td>
+                    <td>{job.companyName}</td>
+                    <td>{job.location || 'Remote'}</td>
+                    <td>{job.jobType || 'Full-time'}</td>
+                    <td>{job.salaryRange || 'Competitive'}</td>
+                    <td>
+                      {job.isActive ? (
+                        <span className="status-badge badge-success">Active</span>
+                      ) : (
+                        <span className="status-badge badge-secondary" style={{ backgroundColor: '#6c757d', color: '#fff' }}>Closed</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
