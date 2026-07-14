@@ -249,6 +249,9 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
                 <Link href={`/cart?plan=${plan.id}&billing=${billing}`} className={`card-cta-btn${plan.featured ? " primary" : ""}`} id={`${plan.id}-cta`}>
                   {plan.cta}
                 </Link>
+                <p className="plan-tc-link">
+                  <Link href="/terms" target="_blank">Terms &amp; Conditions apply</Link>
+                </p>
               </div>
             ))}
           </div>

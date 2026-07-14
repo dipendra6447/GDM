@@ -29,6 +29,35 @@
   color: var(--text-white);
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
+  padding-top: 80px;
+}
+
+/* ── Dark Breadcrumb Override for Subscription Page ── */
+.subscription-page .breadcrumb-nav {
+  background: rgba(17, 17, 17, 0.97);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.subscription-page .breadcrumb-link {
+  color: var(--gold, #D4AF37);
+}
+
+.subscription-page .breadcrumb-link:hover {
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--gold, #D4AF37);
+}
+
+.subscription-page .breadcrumb-separator {
+  color: #555;
+}
+
+.subscription-page .breadcrumb-current {
+  color: #ffffff;
+}
+
+.subscription-page .breadcrumb-current::after {
+  background: var(--gradient-gold, linear-gradient(135deg, #D4AF37, #B8860B));
 }
 
 /* ── Section Base ── */
@@ -524,6 +553,29 @@
 .card-cta-btn.primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 40px rgba(212, 175, 55, 0.4);
+}
+
+/* ── T&C Link on Plan Cards ── */
+.plan-tc-link {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 11px;
+}
+
+.plan-tc-link a {
+  color: var(--text-muted, #666666);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.plan-tc-link a:hover {
+  color: var(--gold, #D4AF37);
+  text-decoration: underline;
+}
+
+/* ── Three Column Grid ── */
+.pricing-cards-row.three-col {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 /* Admin note */

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useAuth } from '../../hooks/useAuth';
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import 'react-quill-new/dist/quill.snow.css';
 import './PostJob.css';
 
@@ -257,6 +258,12 @@ const PostJob: React.FC<PostJobProps> = ({ overrideTab, editJobId, onJobPosted }
 
   return (
     <div className="pj-layout">
+      {!overrideTab && (
+        <Breadcrumb items={[
+          { label: 'Employer', href: '/' },
+          { label: 'Post a Job' },
+        ]} />
+      )}
       {/* LEFT: Form */}
           <div>
             <form onSubmit={handleSubmit} noValidate>

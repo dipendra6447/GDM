@@ -4,10 +4,71 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { useCart } from "../../hooks/CartContext";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import "../../styles/checkout.css";
 
 /* ── Payment Method Types ── */
-type PaymentMethodType = "credit-card" | "debit-card" | "upi" | "net-banking" | "emi";
+type PaymentMethodType = "credit-card" | "debit-card" | "other" | "net-banking";
+
+type OtherWalletId = "amazon-pay" | "paypal" | "swift" | "razorpay" | "stripe";
+
+const OTHER_WALLETS: { id: OtherWalletId; name: string; logo: React.ReactNode }[] = [
+  {
+    id: "amazon-pay",
+    name: "Amazon Pay",
+    logo: (
+      <svg viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="60" height="24">
+        <text x="0" y="17" fontFamily="Arial Black,Arial" fontWeight="900" fontSize="13" fill="#FF9900">amazon</text>
+        <text x="40" y="17" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="10" fill="#232F3E">pay</text>
+      </svg>
+    ),
+  },
+  {
+    id: "paypal",
+    name: "PayPal",
+    logo: (
+      <svg viewBox="0 0 80 24" xmlns="http://www.w3.org/2000/svg" width="72" height="22">
+        <path d="M16.5 4H11c-.4 0-.7.3-.8.6L7.8 16c0 .2.1.4.4.4h2.6c.4 0 .7-.3.8-.6l.5-3.1c.1-.4.4-.6.8-.6h1.6c3.3 0 5.2-1.6 5.7-4.8.2-1.4 0-2.5-.6-3.2-.7-.8-1.9-1.1-3.1-1.1zm.6 4.7c-.3 1.7-1.6 1.7-2.9 1.7h-.7l.5-3.2c0-.2.2-.4.4-.4h.3c.9 0 1.7 0 2.2.5.2.3.3.8.2 1.4z" fill="#253B80"/>
+        <path d="M30.2 8.6h-2.6c-.2 0-.4.1-.4.4l-.1.7-.2-.3c-.6-.9-2-1.2-3.3-1.2-3.1 0-5.7 2.3-6.2 5.6-.3 1.6.1 3.2 1 4.3.9 1 2.1 1.4 3.6 1.4 2.5 0 3.9-1.6 3.9-1.6l-.1.7c0 .2.1.4.4.4h2.3c.4 0 .7-.3.8-.6l1.4-8.5c0-.2-.1-.4-.5-.3zm-3.5 5.4c-.3 1.6-1.5 2.7-3.1 2.7-.8 0-1.4-.3-1.8-.7-.4-.5-.5-1.1-.4-1.8.3-1.6 1.5-2.7 3.1-2.7.8 0 1.4.3 1.8.7.4.5.5 1.2.4 1.8z" fill="#253B80"/>
+        <path d="M44.4 8.6h-2.6c-.3 0-.5.1-.7.4L38 14.5l-1.3-5.3c-.1-.3-.4-.6-.8-.6h-2.5c-.3 0-.4.3-.4.5l2.5 7.3-2.3 3.3c-.2.3 0 .6.3.6h2.6c.3 0 .5-.1.7-.4l7.4-10.7c.2-.2 0-.6-.4-.6z" fill="#253B80"/>
+        <path d="M52.5 4h-5.4c-.4 0-.7.3-.8.6L43.9 16c0 .2.1.4.4.4h2.7c.3 0 .5-.2.5-.4l.5-3.3c.1-.4.4-.6.8-.6h1.6c3.3 0 5.2-1.6 5.7-4.8.2-1.4 0-2.5-.6-3.2-.7-.8-1.9-1.1-3-1.1zm.5 4.7c-.3 1.7-1.6 1.7-2.9 1.7h-.7l.5-3.2c0-.2.2-.4.4-.4h.3c.9 0 1.7 0 2.2.5.3.3.4.8.2 1.4z" fill="#179BD7"/>
+        <path d="M66.2 8.6h-2.6c-.2 0-.4.1-.4.4l-.1.7-.2-.3c-.6-.9-2-1.2-3.3-1.2-3.1 0-5.7 2.3-6.2 5.6-.3 1.6.1 3.2 1 4.3.9 1 2.1 1.4 3.6 1.4 2.5 0 3.9-1.6 3.9-1.6l-.1.7c0 .2.1.4.4.4h2.3c.4 0 .7-.3.8-.6l1.4-8.5c0-.2-.2-.4-.5-.3zm-3.5 5.4c-.3 1.6-1.5 2.7-3.1 2.7-.8 0-1.4-.3-1.8-.7-.4-.5-.5-1.1-.4-1.8.3-1.6 1.5-2.7 3.1-2.7.8 0 1.4.3 1.8.7.4.5.5 1.2.4 1.8z" fill="#179BD7"/>
+        <path d="M69.5 4.3l-2.5 15.8c0 .2.1.4.4.4h2.2c.4 0 .7-.3.8-.6L72.7 4c0-.2-.1-.4-.4-.4h-2.4c-.3 0-.4.2-.4.4v.3z" fill="#179BD7"/>
+      </svg>
+    ),
+  },
+  {
+    id: "swift",
+    name: "Swift",
+    logo: (
+      <svg viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg" width="60" height="24">
+        <rect x="0" y="3" width="18" height="18" rx="4" fill="#F05138"/>
+        <path d="M14.5 7c-2.2 2-4.7 4.8-4.7 4.8S8.2 13.2 6 14c1.4.3 3-.3 4.3-1.4l2.3 2.4H15l-3-3.2c2.2-1.8 3.2-4.2 2.5-4.8z" fill="white"/>
+        <text x="22" y="17" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="13" fill="#333">Swift</text>
+      </svg>
+    ),
+  },
+  {
+    id: "razorpay",
+    name: "Razorpay",
+    logo: (
+      <svg viewBox="0 0 90 24" xmlns="http://www.w3.org/2000/svg" width="88" height="24">
+        <polygon points="8,4 16,4 10,12 14,12 4,22 7,14 3,14" fill="#2D8FF0"/>
+        <text x="20" y="17" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="13" fill="#1A2B6D">Razorpay</text>
+      </svg>
+    ),
+  },
+  {
+    id: "stripe",
+    name: "Stripe",
+    logo: (
+      <svg viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg" width="56" height="24">
+        <rect width="60" height="24" rx="4" fill="#635BFF"/>
+        <text x="8" y="16" fontFamily="Arial,sans-serif" fontWeight="800" fontSize="12" fill="white">stripe</text>
+      </svg>
+    ),
+  },
+];
 
 interface CardFormState {
   cardNumber: string;
@@ -25,12 +86,6 @@ const BANKS = [
   { id: "pnb", name: "PNB", icon: "🏛️" },
 ];
 
-const EMI_TENURES = [
-  { months: 3, label: "3 Months" },
-  { months: 6, label: "6 Months" },
-  { months: 9, label: "9 Months" },
-  { months: 12, label: "12 Months" },
-];
 
 const PAYMENT_METHODS = [
   {
@@ -46,22 +101,16 @@ const PAYMENT_METHODS = [
     icon: "💳",
   },
   {
-    id: "upi" as PaymentMethodType,
-    name: "UPI",
-    desc: "Google Pay, PhonePe, Paytm",
-    icon: "📱",
-  },
-  {
     id: "net-banking" as PaymentMethodType,
     name: "Net Banking",
     desc: "All major banks",
     icon: "🏦",
   },
   {
-    id: "emi" as PaymentMethodType,
-    name: "EMI",
-    desc: "Easy installments",
-    icon: "📦",
+    id: "other" as PaymentMethodType,
+    name: "Other",
+    desc: "Amazon Pay, PayPal, Razorpay, Stripe & more",
+    icon: "🌐",
   },
 ];
 
@@ -116,10 +165,8 @@ const Checkout: React.FC = () => {
   const [debitForm, setDebitForm] = useState<CardFormState>({
     cardNumber: "", expiry: "", cvv: "", cardHolder: "",
   });
-  const [upiId, setUpiId] = useState("");
+  const [selectedWallet, setSelectedWallet] = useState<OtherWalletId | "">("");
   const [selectedBank, setSelectedBank] = useState("");
-  const [emiBank, setEmiBank] = useState("");
-  const [emiTenure, setEmiTenure] = useState<number | null>(null);
 
   /* ── Price calculations ── */
   const subtotal = getPriceNum();
@@ -157,16 +204,14 @@ const Checkout: React.FC = () => {
           debitForm.cvv.length >= 3 &&
           debitForm.cardHolder.trim().length > 0
         );
-      case "upi":
-        return upiId.includes("@") && upiId.length > 3;
+      case "other":
+        return selectedWallet.length > 0;
       case "net-banking":
         return selectedBank.length > 0;
-      case "emi":
-        return emiBank.length > 0 && emiTenure !== null;
       default:
         return false;
     }
-  }, [selectedMethod, creditForm, debitForm, upiId, selectedBank, emiBank, emiTenure]);
+  }, [selectedMethod, creditForm, debitForm, selectedWallet, selectedBank]);
 
   /* ── Redirect if no item ── */
   useEffect(() => {
@@ -313,24 +358,36 @@ const Checkout: React.FC = () => {
         return renderCardForm(creditForm, setCreditForm, "cc");
       case "debit-card":
         return renderCardForm(debitForm, setDebitForm, "dc");
-      case "upi":
+      case "other":
         return (
           <>
             <div className="payment-form-divider" />
-            <div className="payment-form-row single">
-              <div className="payment-form-group">
-                <label className="payment-form-label" htmlFor="upi-id">UPI ID</label>
-                <div className="upi-input-wrapper">
+            <label className="payment-form-label" style={{ marginBottom: 14, display: "block" }}>
+              Select Wallet / Payment Gateway
+            </label>
+            <div className="wallet-radio-grid">
+              {OTHER_WALLETS.map((wallet) => (
+                <label
+                  key={wallet.id}
+                  className={`wallet-radio-card${selectedWallet === wallet.id ? " selected" : ""}`}
+                  htmlFor={`wallet-${wallet.id}`}
+                >
                   <input
-                    type="text"
-                    id="upi-id"
-                    placeholder="yourname"
-                    value={upiId.split("@")[0] || upiId}
-                    onChange={(e) => setUpiId(e.target.value.includes("@") ? e.target.value : e.target.value + "@upi")}
+                    type="radio"
+                    id={`wallet-${wallet.id}`}
+                    name="other-wallet"
+                    value={wallet.id}
+                    checked={selectedWallet === wallet.id}
+                    onChange={() => setSelectedWallet(wallet.id)}
+                    className="wallet-radio-input"
                   />
-                  <span className="upi-suffix">@upi</span>
-                </div>
-              </div>
+                  <div className="wallet-radio-check">
+                    <div className="wallet-radio-dot" />
+                  </div>
+                  <div className="wallet-logo">{wallet.logo}</div>
+                  <div className="wallet-name">{wallet.name}</div>
+                </label>
+              ))}
             </div>
           </>
         );
@@ -379,49 +436,6 @@ const Checkout: React.FC = () => {
             </div>
           </>
         );
-      case "emi":
-        return (
-          <>
-            <div className="payment-form-divider" />
-            <div className="payment-form-row single">
-              <div className="payment-form-group">
-                <label className="payment-form-label" htmlFor="emi-bank">Select Bank for EMI</label>
-                <select
-                  className="payment-form-select"
-                  id="emi-bank"
-                  value={emiBank}
-                  onChange={(e) => setEmiBank(e.target.value)}
-                >
-                  <option value="">Choose a bank...</option>
-                  <option value="hdfc">HDFC Bank</option>
-                  <option value="icici">ICICI Bank</option>
-                  <option value="sbi">SBI Card</option>
-                  <option value="axis">Axis Bank</option>
-                  <option value="kotak">Kotak Bank</option>
-                </select>
-              </div>
-            </div>
-            <label className="payment-form-label" style={{ marginBottom: 12, marginTop: 8, display: "block" }}>
-              Select Tenure
-            </label>
-            <div className="emi-tenure-grid">
-              {EMI_TENURES.map((t) => (
-                <div
-                  key={t.months}
-                  className={`emi-tenure-option${emiTenure === t.months ? " selected" : ""}`}
-                  onClick={() => setEmiTenure(t.months)}
-                  id={`emi-tenure-${t.months}`}
-                >
-                  <div className="emi-tenure-months">{t.months}</div>
-                  <div className="emi-tenure-label">Months</div>
-                  <div className="emi-tenure-amount">
-                    ₹{Math.round(total / t.months)}/mo
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        );
       default:
         return null;
     }
@@ -433,7 +447,12 @@ const Checkout: React.FC = () => {
       <div className="checkout-glow-orb checkout-glow-orb-1" />
       <div className="checkout-glow-orb checkout-glow-orb-2" />
 
-      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+      <Breadcrumb items={[
+        { label: 'Subscription', href: '/subscription' },
+        { label: 'Cart', href: '/cart' },
+        { label: 'Checkout' },
+      ]} />
+      <div className="container" style={{ position: "relative", zIndex: 1, paddingTop: "32px" }}>
         {/* Steps Indicator */}
         <div className="checkout-steps">
           <div className="checkout-step completed">
