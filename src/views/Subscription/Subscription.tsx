@@ -12,6 +12,7 @@ import FAQ from "../../components/FAQ/FAQ";
 import SubscriptionCTA from "../../components/SubscriptionCTA/SubscriptionCTA";
 import StatsStrip from "../../components/StatsStrip/StatsStrip";
 import RoleSwitcherModal, { UserRole } from "../../components/RoleSwitcherModal/RoleSwitcherModal";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 
 interface RoleSwitchState {
   open: boolean;
@@ -63,6 +64,7 @@ const Subscription: React.FC = () => {
 
   return (
     <div className="subscription-page">
+      <Breadcrumb items={[{ label: 'Subscription & Pricing' }]} />
       <main style={{ paddingTop: "0" }}>
         {/* 1. Hero */}
         <PricingHero />

@@ -4,6 +4,7 @@ import './JobListing.css';
 
 // Shared components
 import MarketplaceHeader from '../../components/MarketplaceHeader/MarketplaceHeader';
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 
 import MapWidget from '../../components/MapWidget/MapWidget';
 import RefineSearch from '../../components/RefineSearch/RefineSearch';
@@ -156,11 +157,11 @@ const JobListing: React.FC = () => {
     <>
       {/* Marketplace-style header */}
       <MarketplaceHeader />
-
       <main
         className="jl2-main"
         style={{ paddingTop: `${HEADER_HEIGHT}px` }}
       >
+        <Breadcrumb items={[{ label: 'Find Jobs' }]} />
         <div className="jl2-layout">
           {/* ── Center: Main Content ── */}
           <div className="jl2-center">
