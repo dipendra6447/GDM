@@ -151,9 +151,63 @@ const Cart: React.FC = () => {
     const planId = searchParams.get("plan");
     const billing = (searchParams.get("billing") || "monthly") as BillingPeriod;
 
-    if (planId && PLANS_REGISTRY[planId]) {
-      addToCart({ ...PLANS_REGISTRY[planId], billing });
-      hasInitialized.current = true;
+    if (planId) {
+      if (PLANS_REGISTRY[planId]) {
+        addToCart({ ...PLANS_REGISTRY[planId], billing });
+        hasInitialized.current = true;
+      } else {
+        const fetchPlan = async () => {
+          try {
+            const res = await fetch(`/api/admin/subscription-plans/${planId}`);
+            const json = await res.json();
+            if (json.success && json.data) {
+              const p = json.data;
+              
+              const featuresList = p.features ? p.features.map((f: string) => ({
+                text: f,
+                included: true
+              })) : [];
+
+              const category = p.roleTarget === "job_seeker" ? "jobseeker" : p.roleTarget === "job_poster" ? "employer" : "business";
+              const categoryLabel = p.roleTarget === "job_seeker" ? "Job Seeker" : p.roleTarget === "job_poster" ? "Employer" : "Business Promotion";
+              
+              const allPlansRes = await fetch("/api/admin/subscription-plans");
+              const allPlansJson = await allPlansRes.json();
+              if (allPlansJson.success && Array.isArray(allPlansJson.data)) {
+                const tierPlans = allPlansJson.data.filter(
+                  (tp: any) => tp.name.toLowerCase() === p.name.toLowerCase() && tp.roleTarget === p.roleTarget
+                );
+                
+                const dailyPlan = tierPlans.find((tp: any) => tp.billingCycle === "/day");
+                const weeklyPlan = tierPlans.find((tp: any) => tp.billingCycle === "/week");
+                const monthlyPlan = tierPlans.find((tp: any) => tp.billingCycle === "/month");
+
+                const cartItem: CartItem = {
+                  id: p.id,
+                  tier: p.name,
+                  tierClass: `tier-${p.name.toLowerCase()}`,
+                  category: category as any,
+                  categoryLabel,
+                  badge: p.isPopular ? "⭐ Most Popular" : p.isBestValue ? "👑 Best Value" : null,
+                  billing,
+                  priceDaily: dailyPlan ? `₹${dailyPlan.price}` : "N/A",
+                  priceWeekly: weeklyPlan ? `₹${weeklyPlan.price}` : "N/A",
+                  priceMonthly: monthlyPlan ? `₹${monthlyPlan.price}` : "N/A",
+                  desc: p.name === "Silver" ? "Perfect for active entry" : p.name === "Gold" ? "Most popular choice" : "Maximum acceleration benefits",
+                  features: featuresList,
+                  featured: !!p.isPopular,
+                };
+                
+                addToCart(cartItem);
+                hasInitialized.current = true;
+              }
+            }
+          } catch (err) {
+            console.error("Error fetching plan for cart:", err);
+          }
+        };
+        fetchPlan();
+      }
     }
   }, [searchParams, addToCart]);
 

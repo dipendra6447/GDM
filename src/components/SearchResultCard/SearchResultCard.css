@@ -345,3 +345,111 @@
     -webkit-line-clamp: 1;
   }
 }
+
+/* ============================================
+   SKELETON LOADER STYLES
+   ============================================ */
+
+@keyframes shimmer-sr {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%);
+  background-size: 200% 100%;
+  animation: shimmer-sr 1.4s infinite linear;
+}
+
+.skeleton-sr-card {
+  pointer-events: none;
+  background: #ffffff;
+  border-color: var(--color-border);
+}
+
+.skeleton-block {
+  border-radius: 6px;
+  background-color: #e5e7eb;
+}
+
+.skeleton-sr-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+
+.skeleton-sr-title {
+  height: 16px;
+  width: 80%;
+}
+
+.skeleton-sr-posted {
+  height: 12px;
+  width: 100%;
+}
+
+.skeleton-sr-company {
+  height: 13px;
+  width: 140px;
+}
+
+.skeleton-sr-meta {
+  height: 12px;
+  width: 90px;
+}
+
+.skeleton-sr-salary {
+  height: 14px;
+  width: 110px;
+}
+
+.skeleton-sr-desc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.skeleton-sr-desc-line {
+  height: 13px;
+  width: 95%;
+}
+
+.skeleton-sr-desc-line-short {
+  height: 13px;
+  width: 65%;
+}
+
+.skeleton-sr-tag {
+  height: 20px;
+  width: 70px;
+  border-radius: 6px;
+}
+
+.skeleton-sr-save-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.skeleton-sr-cta {
+  width: 110px;
+  height: 34px;
+  border-radius: var(--radius-button);
+}
+
+@media (max-width: 767px) {
+  .skeleton-sr-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+  .skeleton-sr-posted {
+    display: none;
+  }
+}

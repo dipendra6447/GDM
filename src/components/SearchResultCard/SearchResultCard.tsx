@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import './SearchResultCard.css';
 
 export interface SearchResult {
-  id: number;
+  id: number | string;
+  slug?: string;
   type: 'job' | 'gig' | 'business' | 'service' | 'event';
   title: string;
   company: string;
@@ -23,6 +24,7 @@ export interface SearchResult {
   postedTime: string;
   badge?: 'Featured' | 'New' | 'Top Rated' | 'Urgent';
   badgeColor?: string;
+  isSaved?: boolean;
 }
 
 const ctaMap: Record<string, string> = {
@@ -46,9 +48,45 @@ interface SearchResultCardProps {
 }
 
 const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
-  const [saved, setSaved] = useState(false);
   const r = result;
+  const [saved, setSaved] = useState(r.isSaved || false);
   const ctaColor = ctaColorMap[r.type] || 'var(--color-primary)';
+
+  React.useEffect(() => {
+    setSaved(r.isSaved || false);
+  }, [r.isSaved]);
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+    try {
+      const method = saved ? 'DELETE' : 'POST';
+      const url = saved ? `/api/jobs/saved/${r.id}` : `/api/jobs/saved`;
+      const options: RequestInit = {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          ...(method === 'POST' ? { 'Content-Type': 'application/json' } : {})
+        },
+        ...(method === 'POST' ? { body: JSON.stringify({ jobId: r.id }) } : {})
+      };
+      
+      const res = await fetch(url, options);
+      const json = await res.json();
+      if (json.success) {
+        setSaved(!saved);
+      } else {
+        alert(json.message || 'Failed to update saved status');
+      }
+    } catch (err) {
+      console.error("Error saving job:", err);
+    }
+  };
 
   return (
     <article
@@ -160,14 +198,14 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
         <div className="sr-actions">
           <button
             className={`sr-save-btn ${saved ? 'sr-saved' : ''}`}
-            onClick={() => setSaved(!saved)}
+            onClick={handleSave}
             aria-label={saved ? `Unsave ${r.title}` : `Save ${r.title}`}
             type="button"
           >
             <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
           </button>
           <a
-            href="#"
+            href={r.type === 'job' ? `/jobs/${r.slug || r.id}` : '#'}
             className="sr-cta-btn"
             style={{
               borderColor: ctaColor,

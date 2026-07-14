@@ -800,3 +800,63 @@
   color: #64748b;
   font-size: 0.9rem;
 }
+
+/* React Quill custom style for Profile */
+.profile-quill-wrapper {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.profile-quill-wrapper .ql-toolbar {
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.profile-quill-wrapper .ql-container {
+  border: none !important;
+  font-family: inherit !important;
+  font-size: 0.9rem !important;
+  min-height: 150px;
+}
+
+.profile-quill-wrapper .ql-editor {
+  color: #f1f5f9 !important;
+  min-height: 150px;
+}
+
+.profile-quill-wrapper .ql-editor.ql-blank::before {
+  color: #334155 !important;
+  font-style: normal !important;
+}
+
+.profile-quill-wrapper:focus-within {
+  border-color: rgba(36, 84, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.12);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* Fix icons and dropdowns for dark mode */
+.profile-quill-wrapper .ql-snow .ql-stroke {
+  stroke: #94a3b8 !important;
+}
+.profile-quill-wrapper .ql-snow .ql-fill {
+  fill: #94a3b8 !important;
+}
+.profile-quill-wrapper .ql-snow .ql-picker {
+  color: #94a3b8 !important;
+}
+.profile-quill-wrapper .ql-snow .ql-picker-options {
+  background-color: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+}
+.profile-quill-wrapper .ql-snow .ql-picker-item {
+  color: #94a3b8 !important;
+}
+.profile-quill-wrapper .ql-snow .ql-picker-item:hover,
+.profile-quill-wrapper .ql-snow .ql-picker-item.ql-selected {
+  color: #f1f5f9 !important;
+}

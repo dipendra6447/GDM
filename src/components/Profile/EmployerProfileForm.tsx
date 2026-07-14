@@ -1,6 +1,10 @@
 "use client";
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useAuth } from '../../hooks/useAuth';
+import 'react-quill-new/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 interface Props {
   initialData: any;
@@ -19,6 +23,7 @@ export default function EmployerProfileForm({ initialData, roleId = 2 }: Props) 
     foundedYear: initialData?.foundedYear || '',
     headquarters: initialData?.headquarters || '',
     about: initialData?.about || '',
+    benefits: initialData?.benefits || '',
     websiteUrl: initialData?.websiteUrl || '',
     linkedinUrl: initialData?.linkedinUrl || '',
     twitterUrl: initialData?.twitterUrl || '',
@@ -93,7 +98,25 @@ export default function EmployerProfileForm({ initialData, roleId = 2 }: Props) 
           </div>
           <div className="col-md-12 profile-form-group">
             <label className="profile-label">About Company</label>
-            <textarea name="about" className="profile-textarea" placeholder="Tell candidates what makes your company great…" value={formData.about} onChange={handleInputChange}></textarea>
+            <div className="profile-quill-wrapper">
+              <ReactQuill 
+                theme="snow"
+                value={formData.about} 
+                onChange={(val) => setFormData(prev => ({ ...prev, about: val }))}
+                placeholder="Tell candidates what makes your company great…"
+              />
+            </div>
+          </div>
+          <div className="col-md-12 profile-form-group">
+            <label className="profile-label">Benefits &amp; Perks</label>
+            <div className="profile-quill-wrapper">
+              <ReactQuill 
+                theme="snow"
+                value={formData.benefits} 
+                onChange={(val) => setFormData(prev => ({ ...prev, benefits: val }))}
+                placeholder="List company-wide benefits &amp; perks like healthcare, learning budgets, flexible hours..."
+              />
+            </div>
           </div>
         </div>
       </div>

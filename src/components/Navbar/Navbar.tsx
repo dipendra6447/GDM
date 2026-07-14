@@ -222,6 +222,9 @@ const Navbar: React.FC = () => {
                       </div>
 
                       <div className="nav-dropdown-divider" />
+                      <Link href="/dashboard" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                        <i className="bi bi-grid-fill" /> Dashboard
+                      </Link>
                       {user?.roles?.includes(2) && (
                         <>
                           <Link
@@ -240,6 +243,20 @@ const Navbar: React.FC = () => {
                       <Link href="/subscription" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                         <i className="bi bi-star" /> Subscription
                       </Link>
+                      {user?.roles?.includes(4) && (
+                        <>
+                          <div className="nav-dropdown-divider" />
+                          <a
+                            href="http://localhost:5173"
+                            className="nav-dropdown-item"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setDropdownOpen(false)}
+                          >
+                            <i className="bi bi-shield-lock" /> Admin Panel
+                          </a>
+                        </>
+                      )}
                       <div className="nav-dropdown-divider" />
                       <button
                         className="nav-dropdown-item nav-dropdown-logout"

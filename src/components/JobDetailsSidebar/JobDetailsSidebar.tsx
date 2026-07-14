@@ -2,27 +2,18 @@
 import React, { useState } from 'react';
 import './JobDetailsSidebar.css';
 
-const overviewItems = [
-  { icon: 'bi-clock', label: 'Posted', value: '2 hours ago' },
-  { icon: 'bi-people', label: 'Applicants', value: '42' },
-  { icon: 'bi-bar-chart', label: 'Experience', value: '3 – 5 years' },
-  { icon: 'bi-briefcase', label: 'Employment Type', value: 'Full-time' },
-  { icon: 'bi-building', label: 'Work Mode', value: 'On-site' },
-  { icon: 'bi-currency-dollar', label: 'Salary Range', value: '$60K – $80K / year' },
-  { icon: 'bi-geo-alt', label: 'Location', value: 'Dayton, OH' },
-  { icon: 'bi-tag', label: 'Industry', value: 'Marketing & Advertising' },
-];
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
-const benefits = [
-  { icon: 'bi-heart-pulse', label: 'Health Insurance' },
-  { icon: 'bi-tooth', label: 'Dental Insurance' },
-  { icon: 'bi-piggy-bank', label: '401(k) Retirement Plan' },
-  { icon: 'bi-calendar-check', label: 'Paid Time Off' },
-  { icon: 'bi-shield-check', label: 'Life Insurance' },
-  { icon: 'bi-graph-up-arrow', label: 'Professional Development' },
-];
+const stripHtml = (html: string) => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '');
+};
 
-const JobDetailsSidebar: React.FC = () => {
+interface Props {
+  job?: any;
+}
+
+const JobDetailsSidebar: React.FC<Props> = ({ job }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
@@ -38,14 +29,21 @@ const JobDetailsSidebar: React.FC = () => {
         <h2 className="jds-card-title">Company Overview</h2>
         <div className="jds-company-header">
           <div className="jds-co-logo">
-            <span>DS</span>
+            {job?.companyLogoUrl ? (
+              <img 
+                src={job.companyLogoUrl.startsWith('http') || job.companyLogoUrl.startsWith('/') ? job.companyLogoUrl : `${API_BASE}${job.companyLogoUrl}`} 
+                alt={job.companyName} 
+              />
+            ) : (
+              <span>{(job?.companyName || 'C').substring(0, 2).toUpperCase()}</span>
+            )}
           </div>
           <div className="jds-co-info">
             <div className="jds-co-name-row">
-              <span className="jds-co-name">DigitalStream Agency</span>
+              <span className="jds-co-name">{job?.companyName || 'Company Name Hidden'}</span>
               <i className="bi bi-patch-check-fill jds-co-verified" aria-label="Verified" />
             </div>
-            <span className="jds-co-industry">Marketing &amp; Advertising</span>
+            <span className="jds-co-industry">{job?.companyIndustry || job?.category || 'Not specified'}</span>
           </div>
         </div>
 
@@ -62,15 +60,22 @@ const JobDetailsSidebar: React.FC = () => {
 
         <div className="jds-co-size">
           <i className="bi bi-people" />
-          25 – 50 employees
+          {job?.companySize ? `${job.companySize} employees` : 'Company size not specified'}
         </div>
 
         <p className="jds-co-desc">
-          DigitalStream Agency is a full-service digital marketing agency helping brands grow
-          creative strategies, data-driven campaigns, and measurable results.
+          {job?.companyAbout ? (
+            stripHtml(job.companyAbout).substring(0, 180) + (stripHtml(job.companyAbout).length > 180 ? '...' : '')
+          ) : (
+            'No company overview provided by the employer yet.'
+          )}
         </p>
 
-        <a href="#" className="jds-co-profile-link" id="jds-view-company">
+        <a 
+          href={job?.companyName ? `/jobs?keyword=${encodeURIComponent(job.companyName)}` : '/jobs'} 
+          className="jds-co-profile-link" 
+          id="jds-view-company"
+        >
           View Company Profile <i className="bi bi-arrow-right" />
         </a>
       </div>
@@ -79,34 +84,74 @@ const JobDetailsSidebar: React.FC = () => {
       <div className="jds-card" id="jds-job-overview">
         <h2 className="jds-card-title">Job Overview</h2>
         <ul className="jds-overview-list">
-          {overviewItems.map((item) => (
-            <li key={item.label} className="jds-overview-item">
-              <div className="jds-ov-icon">
-                <i className={`bi ${item.icon}`} aria-hidden="true" />
-              </div>
-              <div className="jds-ov-text">
-                <span className="jds-ov-label">{item.label}</span>
-                <span className="jds-ov-value">{item.value}</span>
-              </div>
-            </li>
-          ))}
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-clock" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Posted</span>
+              <span className="jds-ov-value">{job?.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'Recently'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-bar-chart" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Experience</span>
+              <span className="jds-ov-value">{job?.experience || 'Not specified'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-briefcase" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Employment Type</span>
+              <span className="jds-ov-value">{job?.jobType || 'Full-time'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-building" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Work Mode</span>
+              <span className="jds-ov-value">{job?.workMode || 'On-site'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-currency-dollar" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Salary Range</span>
+              <span className="jds-ov-value">{job?.salaryRange || 'Competitive'}</span>
+            </div>
+          </li>
+          <li className="jds-overview-item">
+            <div className="jds-ov-icon"><i className="bi bi-geo-alt" /></div>
+            <div className="jds-ov-text">
+              <span className="jds-ov-label">Location</span>
+              <span className="jds-ov-value">{job?.location || 'Not specified'}</span>
+            </div>
+          </li>
         </ul>
       </div>
 
       {/* Benefits & Perks */}
-      <div className="jds-card" id="jds-benefits">
-        <h2 className="jds-card-title">Benefits &amp; Perks</h2>
-        <ul className="jds-benefits-list">
-          {benefits.map((b) => (
-            <li key={b.label} className="jds-benefit-item">
-              <div className="jds-benefit-icon">
-                <i className={`bi ${b.icon}`} aria-hidden="true" />
-              </div>
-              <span>{b.label}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {(job?.companyBenefits || job?.benefits) ? (
+        <div className="jds-card" id="jds-benefits">
+          <h2 className="jds-card-title">Benefits &amp; Perks</h2>
+          {job.companyBenefits ? (
+            <div 
+              className="jds-benefits-content"
+              dangerouslySetInnerHTML={{ __html: job.companyBenefits }}
+            />
+          ) : (
+            <ul className="jds-benefits-list">
+              {job.benefits.split(',').map((b: string) => (
+                <li key={b} className="jds-benefit-item">
+                  <div className="jds-benefit-icon">
+                    <i className="bi bi-check-circle-fill" aria-hidden="true" />
+                  </div>
+                  <span>{b.trim()}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ) : null}
 
       {/* Share */}
       <div className="jds-card" id="jds-share">

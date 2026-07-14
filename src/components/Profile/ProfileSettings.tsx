@@ -78,26 +78,6 @@ export default function ProfileSettings() {
         </div>
       </div>
 
-      {/* Danger Zone */}
-      <div className="profile-section-divider">
-        <span className="profile-section-divider-label text-danger">Danger Zone</span>
-        <div className="profile-section-divider-line" style={{ background: 'rgba(239, 68, 68, 0.2)' }} />
-      </div>
-
-      <div className="profile-item-card" style={{ borderColor: 'rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)' }}>
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <div className="text-white fw-semibold mb-1" style={{ fontSize: '0.9rem' }}>Delete Account</div>
-            <div className="text-secondary" style={{ fontSize: '0.8rem' }}>
-              Permanently remove your account and all associated data. This action is irreversible.
-            </div>
-          </div>
-          <button type="button" className="btn btn-sm btn-danger" onClick={handleDeleteAccount}>
-            Delete Account
-          </button>
-        </div>
-      </div>
-
     </div>
   );
 }

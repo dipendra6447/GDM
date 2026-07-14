@@ -5,56 +5,54 @@ import './JobDetailsHeader.css';
 interface Props {
   saved: boolean;
   onSave: () => void;
+  applied: boolean;
+  onApply: () => void;
+  job?: any;
 }
 
-const JobDetailsHeader: React.FC<Props> = ({ saved, onSave }) => (
+const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, applied, onApply, job }) => (
   <div className="jdh-wrapper">
     {/* Logo + Info */}
     <div className="jdh-left">
-      <div className="jdh-logo" aria-label="DigitalStream Agency logo">
-        <span>DS</span>
+      <div className="jdh-logo" aria-label={`${job?.companyName || 'Company'} logo`}>
+        <span>{(job?.companyName || 'C').substring(0, 2).toUpperCase()}</span>
       </div>
       <div className="jdh-info">
-        <div className="jdh-title-row">
-          <h1 className="jdh-job-title">Marketing Manager</h1>
-          <span className="jdh-new-badge">New</span>
+        <div className="jdh-title-row" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <h1 className="jdh-job-title">{job?.title}</h1>
+          {!job?.isActive && (
+            <span className="badge bg-danger" style={{ padding: '0.4em 0.8em', fontSize: '0.85rem' }}>Closed / Expired</span>
+          )}
         </div>
         <div className="jdh-company-row">
           <a href="#" className="jdh-company-name" id="jdh-company-link">
-            DigitalStream Agency
+            {job?.companyName || 'Company Name Hidden'}
           </a>
-          <span className="jdh-verified" aria-label="Verified company">
-            <i className="bi bi-patch-check-fill" />
-          </span>
         </div>
         <div className="jdh-meta-row">
           <span className="jdh-meta-item">
             <i className="bi bi-geo-alt" />
-            Dayton, OH
+            {job?.location || 'Remote'}
           </span>
           <span className="jdh-dot" aria-hidden="true">•</span>
           <span className="jdh-meta-item">
             <i className="bi bi-building" />
-            On-site
+            {job?.workMode || 'Hybrid'}
           </span>
           <span className="jdh-dot" aria-hidden="true">•</span>
           <span className="jdh-meta-item">
             <i className="bi bi-clock" />
-            Full-time
+            {job?.jobType || 'Full-time'}
           </span>
         </div>
         <div className="jdh-salary-row">
           <i className="bi bi-currency-dollar" />
-          <span className="jdh-salary">$60K – $80K / year</span>
+          <span className="jdh-salary">{job?.salaryRange || 'Competitive'}</span>
         </div>
         <div className="jdh-posted-row">
           <span className="jdh-posted">
             <i className="bi bi-clock-history" />
-            Posted 2 hours ago
-          </span>
-          <span className="jdh-applicants">
-            <i className="bi bi-people" />
-            42 applicants
+            Posted {job?.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'Recently'}
           </span>
         </div>
       </div>
@@ -62,14 +60,16 @@ const JobDetailsHeader: React.FC<Props> = ({ saved, onSave }) => (
 
     {/* Action buttons */}
     <div className="jdh-actions">
-      <a
-        href="#apply"
-        className="jdh-btn-apply"
+      <button
+        onClick={onApply}
+        disabled={applied || !job?.isActive}
+        className={`jdh-btn-apply ${applied ? 'applied' : ''}`}
         id="jdh-apply-btn"
-        aria-label="Apply Now for Marketing Manager"
+        style={applied ? { backgroundColor: '#64748b', borderColor: '#64748b', color: '#ffffff', cursor: 'not-allowed' } : !job?.isActive ? { backgroundColor: '#dc3545', borderColor: '#dc3545', color: '#ffffff', cursor: 'not-allowed' } : { border: 'none' }}
+        aria-label={applied ? "Applied" : !job?.isActive ? "Closed" : "Apply Now"}
       >
-        Apply Now
-      </a>
+        {applied ? 'Applied' : !job?.isActive ? 'Closed' : 'Apply Now'}
+      </button>
       <button
         className={`jdh-btn-save ${saved ? 'saved' : ''}`}
         onClick={onSave}

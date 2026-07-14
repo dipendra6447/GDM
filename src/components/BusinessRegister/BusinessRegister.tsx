@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import '../../styles/business-register.css';
 import { useAuth } from '../../hooks/useAuth';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 const BusinessRegister: React.FC = () => {
   const router = useRouter();
@@ -12,7 +12,6 @@ const BusinessRegister: React.FC = () => {
   
   const [formData, setFormData] = useState({
     businessName: '',
-    businessOwnerName: '',
     category: '',
     businessContactDetails: '',
     foundationDate: '',
@@ -94,19 +93,6 @@ const BusinessRegister: React.FC = () => {
               value={formData.businessName}
               onChange={handleChange}
               placeholder="E.g., TechNova Solutions"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="businessOwnerName">Business Owner Name *</label>
-            <input 
-              type="text" 
-              id="businessOwnerName" 
-              name="businessOwnerName" 
-              required
-              value={formData.businessOwnerName}
-              onChange={handleChange}
-              placeholder="Your Full Name"
             />
           </div>
           

@@ -26,7 +26,7 @@ interface AuthState {
   updateProfile?: (data: FormData, roleId?: number) => Promise<void>;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 // ─── Context ─────────────────────────────────────────────────────────────────
 
