@@ -447,7 +447,7 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
                         <div className="resume-download-filename">certificate_{idx + 1}</div>
                       </div>
                     </div>
-                    <a href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${cert.fileUrl}`} target="_blank" rel="noreferrer" className="resume-download-btn">
+                    <a href={`${process.env.NEXT_PUBLIC_API_URL || ''}${cert.fileUrl}`} target="_blank" rel="noreferrer" className="resume-download-btn">
                       <i className="bi bi-eye me-2" /> View File
                     </a>
                   </div>
@@ -490,7 +490,7 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
                 </div>
               </div>
               <a
-                href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${initialData.resumeUrl}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL || ''}${initialData.resumeUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 download

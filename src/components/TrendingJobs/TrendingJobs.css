@@ -357,3 +357,95 @@
   .trending-filters { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
   .trend-filter-btn { flex-shrink: 0; }
 }
+
+/* ============================================
+   SKELETON LOADER STYLES
+   ============================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeleton-card {
+  pointer-events: none;
+  background: #ffffff;
+  border-color: #EDF0F7;
+}
+
+.skeleton-block {
+  border-radius: 6px;
+  background-color: #e5e7eb;
+}
+
+.skeleton-icon-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+}
+
+.skeleton-bookmark-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.skeleton-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.skeleton-title-line {
+  height: 18px;
+  width: 90%;
+}
+
+.skeleton-title-line-short {
+  height: 18px;
+  width: 60%;
+}
+
+.skeleton-company {
+  height: 14px;
+  width: 50%;
+}
+
+.skeleton-meta-item {
+  height: 13px;
+  width: 35%;
+}
+
+.skeleton-salary {
+  height: 18px;
+  width: 45%;
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.skeleton-tag {
+  height: 20px;
+  width: 60px;
+  border-radius: 50px;
+}
+
+.skeleton-apply-btn {
+  height: 40px;
+  width: 100%;
+  border-radius: 10px;
+  margin-top: auto;
+}

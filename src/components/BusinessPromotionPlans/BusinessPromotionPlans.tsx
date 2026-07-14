@@ -88,12 +88,62 @@ const compareRows = [
 interface BusinessPromotionPlansProps {
   onRoleSwitch: (role: "jobseeker" | "employer") => void;
   isLight?: boolean;
+  dbPlans?: any[];
+  loading?: boolean;
 }
 
-const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleSwitch, isLight = false }) => {
+const getDynamicPlans = (dbPlans: any[], billing: BillingPeriod) => {
+  const tiers = ["Silver", "Gold", "Platinum"];
+  return tiers.map(tierName => {
+    const tierPlans = dbPlans.filter(p => p.name.toLowerCase() === tierName.toLowerCase());
+    
+    // Find billing options
+    const dailyPlan = tierPlans.find(p => p.billingCycle === "/day");
+    const weeklyPlan = tierPlans.find(p => p.billingCycle === "/week");
+    const monthlyPlan = tierPlans.find(p => p.billingCycle === "/month");
+    
+    // Default fallback features
+    const samplePlan = monthlyPlan || weeklyPlan || dailyPlan || tierPlans[0];
+    
+    // Determine target ID for checkout based on current billing cycle
+    let selectedId = "";
+    if (billing === "daily") selectedId = dailyPlan?.id || samplePlan?.id;
+    else if (billing === "weekly") selectedId = weeklyPlan?.id || samplePlan?.id;
+    else selectedId = monthlyPlan?.id || samplePlan?.id;
+
+    // Badging
+    let badge = null;
+    if (samplePlan?.isPopular) badge = "✨ Best Choice";
+    else if (samplePlan?.isBestValue) badge = "🚀 Maximum Reach";
+
+    // Transform DB features list to the UI format (assumed all in list are included)
+    const featuresList = samplePlan?.features ? samplePlan.features.map((f: string) => ({
+      text: f,
+      included: true
+    })) : [];
+
+    return {
+      id: selectedId,
+      tier: tierName,
+      badge,
+      tierClass: `tier-${tierName.toLowerCase()}`,
+      priceDaily: dailyPlan ? `₹${dailyPlan.price}` : "N/A",
+      priceWeekly: weeklyPlan ? `₹${weeklyPlan.price}` : "N/A",
+      priceMonthly: monthlyPlan ? `₹${monthlyPlan.price}` : "N/A",
+      desc: tierName === "Silver" ? "Entry-level business visibility" : tierName === "Gold" ? "Maximum brand exposure" : "Enterprise-grade promotion",
+      features: featuresList,
+      cta: `Get ${tierName}`,
+      featured: tierName === "Gold"
+    };
+  });
+};
+
+const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleSwitch, isLight = false, dbPlans = [], loading = false }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [billing, setBilling] = useState<BillingPeriod>("monthly");
   const [showCompare, setShowCompare] = useState(false);
+
+  const renderedPlans = dbPlans.length > 0 ? getDynamicPlans(dbPlans, billing) : plans;
 
   const getPrice = (p: typeof plans[0]) => {
     if (billing === "daily") return p.priceDaily;
@@ -164,7 +214,7 @@ const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleS
           </div>
 
           <div className="pricing-cards-row three-col">
-            {plans.map((plan) => (
+            {renderedPlans.map((plan) => (
               <div
                 key={plan.id}
                 className={`pricing-card biz-promo-card${plan.featured ? " featured" : ""} ${plan.tierClass}`}
@@ -181,7 +231,7 @@ const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleS
                 </div>
                 <div className="card-divider" />
                 <ul className="feature-list">
-                  {plan.features.map((f) => (
+                  {plan.features.map((f: any) => (
                     <li key={f.text} className={`feature-item${f.included ? " included" : ""}`}>
                       <span className={`feature-check ${f.included ? "yes" : "no"}`}>
                         {f.included ? "✓" : "✗"}

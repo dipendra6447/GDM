@@ -1,0 +1,71 @@
+/* ============================================
+   PageHeader Styles
+   ============================================ */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.page-header-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.page-header-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  margin-top: var(--space-1);
+}
+
+.page-header-breadcrumb ol {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+}
+
+.page-header-breadcrumb li {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.page-header-breadcrumb li + li::before {
+  content: '/';
+  margin-right: var(--space-2);
+  color: var(--gray-300);
+}
+
+.page-header-breadcrumb a {
+  color: var(--primary-500);
+  font-weight: 500;
+}
+
+.page-header-breadcrumb a:hover {
+  color: var(--primary-700);
+  text-decoration: underline;
+}
+
+.page-header-breadcrumb .current {
+  color: var(--gray-700);
+  font-weight: 600;
+}
+
+@media (max-width: 575.98px) {
+  .page-header {
+    flex-direction: column;
+  }
+
+  .page-header-title {
+    font-size: var(--font-size-xl);
+  }
+}

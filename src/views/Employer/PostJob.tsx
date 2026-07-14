@@ -9,7 +9,7 @@ import './PostJob.css';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 const TITLE_MAX = 255;
 const DESC_MIN = 10;
@@ -42,6 +42,8 @@ const PostJob: React.FC<PostJobProps> = ({ overrideTab, editJobId, onJobPosted }
   const [benefits, setBenefits] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const [apiError, setApiError] = useState('');
+  const [categoriesList, setCategoriesList] = useState<{id: string, name: string}[]>([]);
+  const [fetchingCategories, setFetchingCategories] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [postedJobTitle, setPostedJobTitle] = useState('');
@@ -56,6 +58,23 @@ const PostJob: React.FC<PostJobProps> = ({ overrideTab, editJobId, onJobPosted }
       setActiveTab(overrideTab);
     }
   }, [overrideTab]);
+
+  useEffect(() => {
+    const fetchCats = async () => {
+      try {
+        const res = await fetch('/api/categories/job');
+        const json = await res.json();
+        if (json.success) {
+          setCategoriesList(json.data);
+        }
+      } catch (err) {
+        console.error("Failed to load categories", err);
+      } finally {
+        setFetchingCategories(false);
+      }
+    };
+    fetchCats();
+  }, []);
 
   useEffect(() => {
     if (editJobId) {
@@ -291,14 +310,10 @@ const PostJob: React.FC<PostJobProps> = ({ overrideTab, editJobId, onJobPosted }
                     <div className="pj-field">
                       <label className="pj-label" htmlFor="pj-category">Category</label>
                       <select className="pj-select" id="pj-category" value={category} onChange={(e) => setCategory(e.target.value)}>
-                        <option value="">Select Category</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Design">Design</option>
-                        <option value="Business">Business</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="Data Science">Data Science</option>
+                        <option value="">{fetchingCategories ? 'Loading...' : 'Select Category'}</option>
+                        {categoriesList.map(c => (
+                          <option key={c.id} value={c.name}>{c.name}</option>
+                        ))}
                       </select>
                     </div>
                     <div className="pj-field">

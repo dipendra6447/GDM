@@ -2,8 +2,8 @@
    BOOTSTRAP OVERRIDES
    ============================================ */
 
-/* Override Bootstrap primary color */
-.btn-primary {
+/* Avoid overriding the Admin Panel */
+.app:not(:has(.admin-layout)) .btn-primary {
   background: var(--gradient-primary) !important;
   border: none !important;
   border-radius: var(--radius-button) !important;
@@ -13,35 +13,35 @@
   transition: var(--transition-base) !important;
 }
 
-.btn-primary:hover {
+.app:not(:has(.admin-layout)) .btn-primary:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 12px 32px rgba(36, 84, 255, 0.4) !important;
 }
 
 /* Navbar override */
-.navbar {
+.app:not(:has(.admin-layout)) .navbar {
   border-bottom: 1px solid var(--color-border) !important;
 }
 
 /* Container max-width */
-.container {
+.app:not(:has(.admin-layout)) .container {
   max-width: 1280px;
 }
 
 /* Card overrides */
-.card {
+.app:not(:has(.admin-layout)) .card {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-md);
 }
 
 /* Badge overrides */
-.badge {
+.app:not(:has(.admin-layout)) .badge {
   font-weight: var(--font-weight-medium);
 }
 
 /* Form overrides */
-.form-control {
+.app:not(:has(.admin-layout)) .form-control {
   border-radius: var(--radius-input);
   border: 1px solid var(--color-border);
   padding: 12px 20px;
@@ -50,14 +50,14 @@
   transition: var(--transition-base);
 }
 
-.form-control:focus {
+.app:not(:has(.admin-layout)) .form-control:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.1);
   outline: none;
 }
 
 /* Select */
-.form-select {
+.app:not(:has(.admin-layout)) .form-select {
   border-radius: var(--radius-input);
   border: 1px solid var(--color-border);
   padding: 12px 20px;
@@ -65,17 +65,17 @@
   transition: var(--transition-base);
 }
 
-.form-select:focus {
+.app:not(:has(.admin-layout)) .form-select:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.1);
 }
 
 /* Nav tabs override */
-.nav-tabs {
+.app:not(:has(.admin-layout)) .nav-tabs {
   border: none;
 }
 
-.nav-tabs .nav-link {
+.app:not(:has(.admin-layout)) .nav-tabs .nav-link {
   border: none;
   border-radius: var(--radius-button) !important;
   color: var(--color-text-gray);
@@ -84,13 +84,13 @@
   transition: var(--transition-base);
 }
 
-.nav-tabs .nav-link.active {
+.app:not(:has(.admin-layout)) .nav-tabs .nav-link.active {
   background: var(--color-primary) !important;
   color: white !important;
   border: none !important;
 }
 
-.nav-tabs .nav-link:hover:not(.active) {
+.app:not(:has(.admin-layout)) .nav-tabs .nav-link:hover:not(.active) {
   background: rgba(36, 84, 255, 0.08);
   color: var(--color-primary);
 }

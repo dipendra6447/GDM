@@ -107,6 +107,7 @@ const Checkout: React.FC = () => {
 
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodType | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   /* ── Card form state ── */
   const [creditForm, setCreditForm] = useState<CardFormState>({
@@ -187,30 +188,56 @@ const Checkout: React.FC = () => {
   // }, [item]);
 
   /* ── Handle payment ── */
-  const handlePayNow = () => {
+  const handlePayNow = async () => {
     if (!isFormValid || !item) return;
 
-    // Store payment details in sessionStorage for the success page to display
-    sessionStorage.setItem("last_payment_info", JSON.stringify({
-      tier: item.tier,
-      tierClass: item.tierClass,
-      categoryLabel: item.categoryLabel,
-      billing: item.billing,
-      total: total,
-      subtotal: subtotal,
-      gst: gst,
-      transactionId: "TXN" + Date.now().toString().slice(-8),
-      date: new Date().toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      })
-    }));
+    setProcessing(true);
 
-    clearCart();
-    router.push("/checkout/success");
+    try {
+      const mappedRole = item.category === "jobseeker" ? "job_seeker" : item.category === "employer" ? "job_poster" : "business_promoter";
+      const res = await fetch("/api/subscriptions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subscriptionType: mappedRole,
+          tier: item.billing,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok && res.status !== 409) {
+        throw new Error(data.message || "Failed to activate subscription.");
+      }
+
+      // Store payment details in sessionStorage for the success page to display
+      sessionStorage.setItem("last_payment_info", JSON.stringify({
+        tier: item.tier,
+        tierClass: item.tierClass,
+        categoryLabel: item.categoryLabel,
+        billing: item.billing,
+        total: total,
+        subtotal: subtotal,
+        gst: gst,
+        transactionId: "TXN" + Date.now().toString().slice(-8),
+        date: new Date().toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      }));
+
+      clearCart();
+      router.push("/checkout/success");
+    } catch (err: any) {
+      console.error("Subscription activation error:", err);
+      alert(err.message || "Something went wrong while activating your subscription. Please try again.");
+    } finally {
+      setProcessing(false);
+    }
   };
 
   if (!item) return null;
@@ -509,12 +536,16 @@ const Checkout: React.FC = () => {
 
             {/* Pay Now */}
             <button
-              className={`pay-now-btn ${isFormValid ? "active" : "disabled"}`}
+              className={`pay-now-btn ${isFormValid && !processing ? "active" : "disabled"}`}
               onClick={handlePayNow}
-              disabled={!isFormValid}
+              disabled={!isFormValid || processing}
               id="pay-now-btn"
             >
-              {isFormValid ? (
+              {processing ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" style={{ width: '1rem', height: '1rem', display: 'inline-block', border: '0.15em solid currentColor', borderRightColor: 'transparent', borderRadius: '50%', verticalAlign: 'text-bottom' }}></span> Activating Plan...
+                </>
+              ) : isFormValid ? (
                 <>
                   <i className="bi bi-lock-fill" /> Pay ₹{total} Now
                 </>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/subscription.css";
 import PricingHero from "../../components/PricingHero/PricingHero";
 import JobSeekerPlans from "../../components/JobSeekerPlans/JobSeekerPlans";
@@ -25,6 +25,25 @@ const Subscription: React.FC = () => {
     from: "jobseeker",
     to: "employer",
   });
+  const [plans, setPlans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await fetch("/api/admin/subscription-plans");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setPlans(json.data);
+        }
+      } catch (err) {
+        console.error("Error fetching pricing plans:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPlans();
+  }, []);
 
   const openRoleSwitch = (from: UserRole, to: UserRole) => {
     setRoleSwitch({ open: true, from, to });
@@ -37,6 +56,10 @@ const Subscription: React.FC = () => {
   const confirmRoleSwitch = () => {
     setRoleSwitch((prev) => ({ ...prev, open: false }));
   };
+
+  const seekerPlans = plans.filter((p) => p.roleTarget === "job_seeker" && p.isActive);
+  const employerPlans = plans.filter((p) => p.roleTarget === "job_poster" && p.isActive);
+  const businessPlans = plans.filter((p) => p.roleTarget === "business_promoter" && p.isActive);
 
   return (
     <div className="subscription-page">
@@ -53,6 +76,8 @@ const Subscription: React.FC = () => {
         {/* 2. Job Seeker Plans — with per-section billing + compare popup + role switch trigger */}
         <JobSeekerPlans
           onRoleSwitch={(to) => openRoleSwitch("jobseeker", to)}
+          dbPlans={seekerPlans}
+          loading={loading}
         />
 
         {/* Section Divider */}
@@ -61,6 +86,8 @@ const Subscription: React.FC = () => {
         {/* 3. Employer Plans — with per-section billing + compare popup + role switch trigger */}
         <EmployerPlans
           onRoleSwitch={(to) => openRoleSwitch("employer", to)}
+          dbPlans={employerPlans}
+          loading={loading}
         />
 
         {/* Section Divider */}
@@ -69,6 +96,8 @@ const Subscription: React.FC = () => {
         {/* 4. Business Promotion Plans — with per-section billing + compare popup + role switch trigger */}
         <BusinessPromotionPlans
           onRoleSwitch={(to) => openRoleSwitch("business", to)}
+          dbPlans={businessPlans}
+          loading={loading}
         />
 
         {/* Section Divider */}

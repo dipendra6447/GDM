@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './JobFilters.css';
 
 interface FilterState {
@@ -21,18 +21,6 @@ interface JobFiltersProps {
 }
 
 const filterData = {
-  categories: [
-    'Technology & IT',
-    'Design & Creative',
-    'Marketing & Sales',
-    'Finance & Accounting',
-    'Healthcare',
-    'Engineering',
-    'Education',
-    'Human Resources',
-    'Legal',
-    'Operations',
-  ],
   jobTypes: ['Full Time', 'Part Time', 'Contract', 'Freelance', 'Internship'],
   workModes: ['Remote', 'Hybrid', 'On-site'],
   experience: ['Entry Level (0-2 yrs)', 'Mid Level (2-5 yrs)', 'Senior (5-10 yrs)', 'Executive (10+ yrs)'],
@@ -73,6 +61,23 @@ const defaultFilters: FilterState = {
 
 const JobFilters: React.FC<JobFiltersProps> = ({ filters, onFiltersChange, mobileOpen, onMobileClose }) => {
   const [openSections, setOpenSections] = useState<string[]>(['categories', 'jobTypes', 'workModes']);
+  const [categoryNames, setCategoryNames] = useState<string[]>([]);
+
+  // Fetch categories from admin-managed DB
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/categories/job');
+        const json = await res.json();
+        if (json.success && json.data.length > 0) {
+          setCategoryNames(json.data.map((c: any) => c.name));
+        }
+      } catch (err) {
+        console.error('Failed to fetch job categories for filters:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) =>
@@ -159,10 +164,10 @@ const JobFilters: React.FC<JobFiltersProps> = ({ filters, onFiltersChange, mobil
       </div>
 
       <div className="jf-body">
-        {/* Job Categories */}
+        {/* Job Categories — from DB */}
         {renderSection('categories', 'Job Category', 'bi-briefcase', (
           <div className="jf-checkboxes">
-            {filterData.categories.map((cat) => (
+            {categoryNames.map((cat) => (
               <label key={cat} className="jf-checkbox-label" htmlFor={`cat-${cat.replace(/\s+/g, '-').toLowerCase()}`}>
                 <input
                   type="checkbox"

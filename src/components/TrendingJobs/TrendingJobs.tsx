@@ -1,128 +1,49 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import "./TrendingJobs.css";
 import JobCard from "./JobCard";
-
-import jobFullstack from "../../assets/images/jobs/job-fullstack.png";
-import jobMarketing from "../../assets/images/jobs/job-marketing.png";
-import jobUiux from "../../assets/images/jobs/job-uiux.png";
-import jobAnalyst from "../../assets/images/jobs/job-analyst.png";
-import jobDevops from "../../assets/images/jobs/job-devops.png";
-import jobProduct from "../../assets/images/jobs/job-product.png";
+import SkeletonJobCard from "./SkeletonJobCard";
 
 export interface Job {
-  id: number;
+  id: string;
+  slug: string;
   title: string;
-  company: string;
-  companyLogo: string; // bootstrap icon class
+  companyName: string;
   location: string;
-  type: string;
-  salary: string;
-  cardBg: string; // soft bg color for the image area
-  illustrationImg: any;
-  tags: string[];
-  applyBtnColor: string; // hex color for the Apply Now button
+  jobType: string;
+  salaryRange: string;
   category: string;
+  tags?: string[];
+  applyBtnColor?: string;
 }
 
-const jobs: Job[] = [
-  {
-    id: 1,
-    title: "Full Stack Developer",
-    company: "Tech Solutions Inc.",
-    companyLogo: "bi-building",
-    location: "Bangalore, India",
-    type: "Full-time",
-    salary: "₹12 – ₹20 LPA",
-    cardBg: "#EEF0FF",
-    illustrationImg: jobFullstack,
-    tags: ["React", "Node.js", "MongoDB"],
-    applyBtnColor: "#7B3EFF",
-    category: "Technology",
-  },
-  {
-    id: 2,
-    title: "Digital Marketing Manager",
-    company: "BrandBoost Pvt. Ltd.",
-    companyLogo: "bi-building",
-    location: "Mumbai, India",
-    type: "Full-time",
-    salary: "₹8 – ₹15 LPA",
-    cardBg: "#EDFCF2",
-    illustrationImg: jobMarketing,
-    tags: ["SEO", "Google Ads", "Analytics"],
-    applyBtnColor: "#14B87A",
-    category: "Marketing",
-  },
-  {
-    id: 3,
-    title: "UI/UX Designer",
-    company: "Creative Minds Studio",
-    companyLogo: "bi-building",
-    location: "Delhi, India",
-    type: "Full-time",
-    salary: "₹6 – ₹12 LPA",
-    cardBg: "#EBF4FF",
-    illustrationImg: jobUiux,
-    tags: ["Figma", "UI Design", "Prototyping"],
-    applyBtnColor: "#2454FF",
-    category: "Design",
-  },
-  {
-    id: 4,
-    title: "Data Analyst",
-    company: "Data Insights",
-    companyLogo: "bi-building",
-    location: "Hyderabad, India",
-    type: "Full-time",
-    salary: "₹7 – ₹13 LPA",
-    cardBg: "#FFF6ED",
-    illustrationImg: jobAnalyst,
-    tags: ["SQL", "Excel", "Power BI"],
-    applyBtnColor: "#F59E0B",
-    category: "Technology",
-  },
-  {
-    id: 5,
-    title: "DevOps Engineer",
-    company: "CloudTech Systems",
-    companyLogo: "bi-building",
-    location: "Pune, India",
-    type: "Full-time",
-    salary: "₹10 – ₹18 LPA",
-    cardBg: "#EDFCF2",
-    illustrationImg: jobDevops,
-    tags: ["AWS", "Docker", "Kubernetes"],
-    applyBtnColor: "#14B87A",
-    category: "Technology",
-  },
-  {
-    id: 6,
-    title: "Product Manager",
-    company: "InnovateTech",
-    companyLogo: "bi-building",
-    location: "Bengaluru, India",
-    type: "Full-time",
-    salary: "₹15 – ₹25 LPA",
-    cardBg: "#F6EEFF",
-    illustrationImg: jobProduct,
-    tags: ["Roadmap", "Agile", "Strategy"],
-    applyBtnColor: "#7B3EFF",
-    category: "Business",
-  },
-];
+const DEFAULT_COLORS = ["#7B3EFF", "#14B87A", "#2454FF", "#F59E0B"];
 
-const filterTabs = [
-  "All Jobs",
-  "Technology",
-  "Marketing",
-  "Design",
-  "Business",
-  "Finance",
-  "Healthcare",
-  "Data Science",
-];
+// Icon map for common category names
+const CATEGORY_ICONS: Record<string, string> = {
+  "technology": "bi-code-slash",
+  "it & software": "bi-code-slash",
+  "marketing": "bi-megaphone",
+  "design": "bi-brush",
+  "business": "bi-briefcase",
+  "finance": "bi-currency-dollar",
+  "healthcare": "bi-heart-pulse",
+  "data science": "bi-database",
+  "education": "bi-mortarboard",
+  "engineering": "bi-gear",
+  "sales": "bi-cart",
+  "customer support": "bi-headset",
+  "media & entertainment": "bi-play-circle",
+  "hospitality": "bi-cup-hot",
+  "logistics": "bi-truck",
+  "human resources": "bi-people",
+  "legal": "bi-briefcase",
+};
+
+function getCategoryIcon(name: string): string {
+  return CATEGORY_ICONS[name.toLowerCase().trim()] || "bi-tag";
+}
 
 const statsItems = [
   {
@@ -149,6 +70,9 @@ const statsItems = [
 
 const TrendingJobs: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState("All Jobs");
+  const [filterTabs, setFilterTabs] = useState<string[]>(["All Jobs"]);
+  const [dbJobs, setDbJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
@@ -160,10 +84,55 @@ const TrendingJobs: React.FC = () => {
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
+  // Fetch dynamic categories from admin-managed DB
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories/job");
+        const json = await res.json();
+        if (json.success && json.data.length > 0) {
+          const categoryNames = json.data.map((c: any) => c.name);
+          setFilterTabs(["All Jobs", ...categoryNames]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch job categories for filter tabs:", err);
+      }
+    };
+    fetchCategories();
+
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch("/api/jobs?limit=12");
+        const json = await res.json();
+        if (json.success && json.data.length > 0) {
+          // Map to interface, handling missing fields
+          const mapped = json.data.map((j: any, i: number) => ({
+            id: j.id,
+            slug: j.slug || j.id,
+            title: j.title,
+            companyName: j.companyName || "Company Name Hidden",
+            location: j.location || "Location Not Provided",
+            jobType: j.jobType || "Full-time",
+            salaryRange: j.salaryRange || "Competitive",
+            category: j.category || "Other",
+            tags: j.skills ? j.skills.split(',').map((s:string) => s.trim()).filter(Boolean) : [],
+            applyBtnColor: DEFAULT_COLORS[i % DEFAULT_COLORS.length],
+          }));
+          setDbJobs(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch trending jobs:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
+
   const filteredJobs =
     activeFilter === "All Jobs"
-      ? jobs
-      : jobs.filter((j) => j.category === activeFilter);
+      ? dbJobs
+      : dbJobs.filter((j) => j.category === activeFilter);
 
   return (
     <section
@@ -202,22 +171,7 @@ const TrendingJobs: React.FC = () => {
               onClick={() => setActiveFilter(tab)}
               id={`filter-tab-${tab.toLowerCase().replace(/\s+/g, "-")}`}
             >
-              {tab === "All Jobs" && <i className="bi bi-grid-fill me-2"></i>}
-              {tab === "Technology" && (
-                <i className="bi bi-code-slash me-2"></i>
-              )}
-              {tab === "Marketing" && <i className="bi bi-megaphone me-2"></i>}
-              {tab === "Design" && <i className="bi bi-brush me-2"></i>}
-              {tab === "Business" && <i className="bi bi-briefcase me-2"></i>}
-              {tab === "Finance" && (
-                <i className="bi bi-currency-dollar me-2"></i>
-              )}
-              {tab === "Healthcare" && (
-                <i className="bi bi-heart-pulse me-2"></i>
-              )}
-              {tab === "Data Science" && (
-                <i className="bi bi-database me-2"></i>
-              )}
+              <i className={`bi ${tab === "All Jobs" ? "bi-grid-fill" : getCategoryIcon(tab)} me-2`}></i>
               {tab}
             </button>
           ))}
@@ -230,11 +184,24 @@ const TrendingJobs: React.FC = () => {
           aria-label="Trending jobs carousel"
         >
           <div className="trend-embla-container">
-            {filteredJobs.map((job) => (
-              <div className="trend-embla-slide" key={job.id}>
-                <JobCard job={job} />
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <div className="trend-embla-slide" key={`skeleton-${index}`}>
+                  <SkeletonJobCard />
+                </div>
+              ))
+            ) : filteredJobs.length === 0 ? (
+              <div className="text-center w-100 py-5 text-muted">
+                <i className="bi bi-info-circle fs-3 d-block mb-2"></i>
+                No trending jobs found in this category.
               </div>
-            ))}
+            ) : (
+              filteredJobs.map((job) => (
+                <div className="trend-embla-slide" key={job.id}>
+                  <JobCard job={job} />
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -245,6 +212,8 @@ const TrendingJobs: React.FC = () => {
             onClick={scrollPrev}
             aria-label="Previous jobs"
             id="trend-prev-btn"
+            disabled={isLoading}
+            style={isLoading ? { opacity: 0.5, cursor: "not-allowed" } : {}}
           >
             <i className="bi bi-chevron-left"></i>
           </button>
@@ -256,6 +225,8 @@ const TrendingJobs: React.FC = () => {
             onClick={scrollNext}
             aria-label="Next jobs"
             id="trend-next-btn"
+            disabled={isLoading}
+            style={isLoading ? { opacity: 0.5, cursor: "not-allowed" } : {}}
           >
             <i className="bi bi-chevron-right"></i>
           </button>
