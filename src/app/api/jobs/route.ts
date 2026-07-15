@@ -49,7 +49,31 @@ export async function GET(req: NextRequest) {
     conditions.push(eq(jobs.category, categoryFilter));
   }
   if (searchKeyword) {
-    conditions.push(sql`(LOWER(${jobs.title}) LIKE ${'%' + searchKeyword.toLowerCase() + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + searchKeyword.toLowerCase() + '%'})`);
+    const cleanKeyword = searchKeyword.trim().toLowerCase();
+    const terms = cleanKeyword.split(/\s+/).filter(Boolean);
+    const normalizedPhrase = cleanKeyword.replace(/[\s\.]/g, '');
+    
+    if (terms.length > 0) {
+      let sqlFragment = sql`(`;
+      
+      // 1. Full phrase match (in title, description, or skills)
+      sqlFragment = sql`${sqlFragment} (LOWER(${jobs.title}) LIKE ${'%' + cleanKeyword + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + cleanKeyword + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + cleanKeyword + '%'})`;
+      
+      // 2. Normalized phrase match (e.g., "react js" -> "reactjs")
+      if (normalizedPhrase !== cleanKeyword) {
+        sqlFragment = sql`${sqlFragment} OR (LOWER(${jobs.title}) LIKE ${'%' + normalizedPhrase + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + normalizedPhrase + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + normalizedPhrase + '%'})`;
+      }
+      
+      // 3. Individual terms matching
+      terms.forEach(term => {
+        if (term.length > 1) { // ignore single letters
+          sqlFragment = sql`${sqlFragment} OR (LOWER(${jobs.title}) LIKE ${'%' + term + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + term + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + term + '%'})`;
+        }
+      });
+      
+      sqlFragment = sql`${sqlFragment})`;
+      conditions.push(sqlFragment);
+    }
   }
 
   const [{ count }] = await db

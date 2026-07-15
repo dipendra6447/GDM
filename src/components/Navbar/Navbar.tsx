@@ -19,6 +19,7 @@ const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentTab, setCurrentTab] = useState('overview');
   const [modalOpen, setModalOpen] = useState(false);
   const [targetRole, setTargetRole] = useState<1 | 2 | 3 | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -57,6 +58,13 @@ const Navbar: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (dropdownOpen && typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setCurrentTab(params.get('tab') || 'overview');
+    }
+  }, [dropdownOpen, pathname]);
 
   const getUserInitial = () => {
     if (user?.email) return user.email.charAt(0).toUpperCase();
@@ -222,14 +230,23 @@ const Navbar: React.FC = () => {
                       </div>
 
                       <div className="nav-dropdown-divider" />
-                      <Link href="/dashboard" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                      <Link 
+                        href={user?.roles?.includes(1) ? "/dashboard" : user?.roles?.includes(2) ? "/employer/post-job?tab=overview" : "/dashboard"} 
+                        className={`nav-dropdown-item ${
+                          (user?.roles?.includes(1) && pathname === '/dashboard') ||
+                          (!user?.roles?.includes(1) && pathname === '/employer/post-job' && (currentTab === 'overview' || currentTab === 'jobs' || currentTab === 'edit'))
+                            ? 'active' 
+                            : ''
+                        }`} 
+                        onClick={() => setDropdownOpen(false)}
+                      >
                         <i className="bi bi-grid-fill" /> Dashboard
                       </Link>
                       {user?.roles?.includes(2) && (
                         <>
                           <Link
-                            href="/employer/post-job"
-                            className="nav-dropdown-item nav-dropdown-post-job"
+                            href="/employer/post-job?tab=post"
+                            className={`nav-dropdown-item nav-dropdown-post-job ${pathname === '/employer/post-job' && currentTab === 'post' ? 'active' : ''}`}
                             id="nav-dropdown-post-job"
                             onClick={() => setDropdownOpen(false)}
                           >

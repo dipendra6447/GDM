@@ -8,9 +8,10 @@ interface Props {
   applied: boolean;
   onApply: () => void;
   job?: any;
+  isEmployer?: boolean;
 }
 
-const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, applied, onApply, job }) => (
+const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, applied, onApply, job, isEmployer }) => (
   <div className="jdh-wrapper">
     {/* Logo + Info */}
     <div className="jdh-left">
@@ -60,26 +61,30 @@ const JobDetailsHeader: React.FC<Props> = ({ saved, onSave, applied, onApply, jo
 
     {/* Action buttons */}
     <div className="jdh-actions">
-      <button
-        onClick={onApply}
-        disabled={applied || !job?.isActive}
-        className={`jdh-btn-apply ${applied ? 'applied' : ''}`}
-        id="jdh-apply-btn"
-        style={applied ? { backgroundColor: '#64748b', borderColor: '#64748b', color: '#ffffff', cursor: 'not-allowed' } : !job?.isActive ? { backgroundColor: '#dc3545', borderColor: '#dc3545', color: '#ffffff', cursor: 'not-allowed' } : { border: 'none' }}
-        aria-label={applied ? "Applied" : !job?.isActive ? "Closed" : "Apply Now"}
-      >
-        {applied ? 'Applied' : !job?.isActive ? 'Closed' : 'Apply Now'}
-      </button>
-      <button
-        className={`jdh-btn-save ${saved ? 'saved' : ''}`}
-        onClick={onSave}
-        type="button"
-        id="jdh-save-btn"
-        aria-label={saved ? 'Unsave job' : 'Save job'}
-      >
-        <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
-        {saved ? 'Saved' : 'Save Job'}
-      </button>
+      {!isEmployer && (
+        <>
+          <button
+            onClick={onApply}
+            disabled={applied || !job?.isActive}
+            className={`jdh-btn-apply ${applied ? 'applied' : ''}`}
+            id="jdh-apply-btn"
+            style={applied ? { backgroundColor: '#64748b', borderColor: '#64748b', color: '#ffffff', cursor: 'not-allowed' } : !job?.isActive ? { backgroundColor: '#dc3545', borderColor: '#dc3545', color: '#ffffff', cursor: 'not-allowed' } : { border: 'none' }}
+            aria-label={applied ? "Applied" : !job?.isActive ? "Closed" : "Apply Now"}
+          >
+            {applied ? 'Applied' : !job?.isActive ? 'Closed' : 'Apply Now'}
+          </button>
+          <button
+            className={`jdh-btn-save ${saved ? 'saved' : ''}`}
+            onClick={onSave}
+            type="button"
+            id="jdh-save-btn"
+            aria-label={saved ? 'Unsave job' : 'Save job'}
+          >
+            <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
+            {saved ? 'Saved' : 'Save Job'}
+          </button>
+        </>
+      )}
       <button className="jdh-btn-share" type="button" id="jdh-share-btn" aria-label="Share job">
         <i className="bi bi-share" />
         Share

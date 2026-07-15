@@ -31,20 +31,32 @@ const mockChartData = [
   { name: 'Jul', applicants: 34, views: 430 },
 ];
 
+import { useSearchParams } from 'next/navigation';
+
 export default function EmployerDashboard() {
   const { user, isLoading, isLoggedIn } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'post' | 'edit'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'post' | 'edit' | 'subscription'>('overview');
   const [jobs, setJobs] = useState<any[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
 
-  // Applicant Tracking State
-  const [showTrackModal, setShowTrackModal] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<any>(null);
-  const [applicants, setApplicants] = useState<any[]>([]);
-  const [loadingApplicants, setLoadingApplicants] = useState(false);
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'overview' || tab === 'jobs' || tab === 'post' || tab === 'edit' || tab === 'subscription') {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tab: 'overview' | 'jobs' | 'post' | 'edit' | 'subscription') => {
+    setActiveTab(tab);
+    router.push(`/employer/post-job?tab=${tab}`, { scroll: false });
+  };
+
+
 
   // Fetch Jobs
   const fetchJobs = async () => {
@@ -65,52 +77,27 @@ export default function EmployerDashboard() {
     }
   };
 
-  const handleTrack = async (job: any) => {
-    setSelectedJob(job);
-    setShowTrackModal(true);
-    setLoadingApplicants(true);
+
+
+  const fetchSubscriptions = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE}/api/jobs/${job.id}/applicants`, {
+      const res = await fetch(`${API_BASE}/api/subscriptions/my`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      if (res.ok) {
-        setApplicants(data.data || []);
-      }
-    } catch (error) {
-      console.error("Error fetching applicants", error);
-    } finally {
-      setLoadingApplicants(false);
-    }
-  };
-
-  const handleUpdateStatus = async (applicationId: string, newStatus: string) => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE}/api/jobs/${selectedJob.id}/applicants`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ applicationId, status: newStatus })
-      });
-      const data = await res.json();
       if (res.ok && data.success) {
-        setApplicants(prev => prev.map(app => app.id === applicationId ? { ...app, status: newStatus } : app));
-        fetchJobs(); // Refresh jobs to update dashboard aggregates
-      } else {
-        alert(data.message || 'Failed to update applicant status');
+        setSubscriptions(data.data || []);
       }
     } catch (error) {
-      console.error("Error updating status", error);
+      console.error("Error fetching subscriptions", error);
     }
   };
 
   useEffect(() => {
     if (isLoggedIn && user?.roles?.includes(2)) {
       fetchJobs();
+      fetchSubscriptions();
     }
   }, [isLoggedIn, user]);
 
@@ -164,7 +151,7 @@ export default function EmployerDashboard() {
 
   const handleEdit = (jobId: string) => {
     setEditingJobId(jobId);
-    setActiveTab('edit');
+    handleTabChange('edit');
   };
 
   if (isLoading || (!isLoggedIn && !user)) return <div style={{ padding: '2rem' }}>Loading Dashboard...</div>;
@@ -180,21 +167,27 @@ export default function EmployerDashboard() {
         <div className="emp-dash-nav">
           <button 
             className={`emp-dash-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
+            onClick={() => handleTabChange('overview')}
           >
             <i className="bi bi-grid" /> Overview
           </button>
           <button 
             className={`emp-dash-nav-item ${(activeTab === 'jobs' || activeTab === 'edit') ? 'active' : ''}`}
-            onClick={() => setActiveTab('jobs')}
+            onClick={() => handleTabChange('jobs')}
           >
             <i className="bi bi-briefcase" /> My Jobs
           </button>
           <button 
             className={`emp-dash-nav-item ${activeTab === 'post' ? 'active' : ''}`}
-            onClick={() => setActiveTab('post')}
+            onClick={() => handleTabChange('post')}
           >
             <i className="bi bi-plus-circle" /> Post New Job
+          </button>
+          <button 
+            className={`emp-dash-nav-item ${activeTab === 'subscription' ? 'active' : ''}`}
+            onClick={() => handleTabChange('subscription')}
+          >
+            <i className="bi bi-credit-card" /> My Subscription
           </button>
           {/* Settings links back to standard profile for now */}
           <Link href="/profile" className="emp-dash-nav-item">
@@ -213,7 +206,7 @@ export default function EmployerDashboard() {
                 <h1 className="emp-dash-title">Dashboard Overview</h1>
                 <p className="emp-dash-subtitle">Track your recruitment performance</p>
               </div>
-              <button className="emp-primary-btn" onClick={() => setActiveTab('post')}>
+              <button className="emp-primary-btn" onClick={() => handleTabChange('post')}>
                 <i className="bi bi-plus" /> Post Job
               </button>
             </div>
@@ -269,7 +262,7 @@ export default function EmployerDashboard() {
                 <h1 className="emp-dash-title">Manage Jobs</h1>
                 <p className="emp-dash-subtitle">View, edit, and track applicants for your job listings.</p>
               </div>
-              <button className="emp-primary-btn" onClick={() => setActiveTab('post')}>
+              <button className="emp-primary-btn" onClick={() => handleTabChange('post')}>
                 <i className="bi bi-plus" /> Post Job
               </button>
             </div>
@@ -282,7 +275,7 @@ export default function EmployerDashboard() {
                   <i className="bi bi-inbox" />
                   <h4>No Jobs Found</h4>
                   <p>You haven't posted any jobs yet.</p>
-                  <button className="emp-primary-btn" onClick={() => setActiveTab('post')}>Post your first job</button>
+                  <button className="emp-primary-btn" onClick={() => handleTabChange('post')}>Post your first job</button>
                 </div>
               ) : (
                 <div className="emp-table-wrapper">
@@ -338,7 +331,7 @@ export default function EmployerDashboard() {
                           </td>
                           <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                             {/* Track Button */}
-                            <button className="emp-action-btn" title="View Applicants" onClick={() => handleTrack(job)}>
+                            <button className="emp-action-btn" title="View Applicants" onClick={() => router.push(`/employer/post-job/applicants/${job.id}`)}>
                               <i className="bi bi-people" />
                             </button>
                             
@@ -391,7 +384,7 @@ export default function EmployerDashboard() {
                 <h1 className="emp-dash-title">Edit Job</h1>
                 <p className="emp-dash-subtitle">Update the details of your job listing.</p>
               </div>
-              <button className="emp-action-btn" onClick={() => setActiveTab('jobs')}>
+              <button className="emp-action-btn" onClick={() => handleTabChange('jobs')}>
                 <i className="bi bi-arrow-left" /> Back to Jobs
               </button>
             </div>
@@ -401,82 +394,171 @@ export default function EmployerDashboard() {
                 editJobId={editingJobId} 
                 onJobPosted={() => {
                   fetchJobs();
-                  setActiveTab('jobs');
+                  handleTabChange('jobs');
                 }} 
               />
             </div>
           </div>
         )}
-      </main>
 
-      {/* TRACK APPLICANTS MODAL */}
-      {showTrackModal && (
-        <div className="emp-modal-overlay">
-          <div className="emp-modal">
-            <div className="emp-modal-header">
-              <h2>Applicants for {selectedJob?.title}</h2>
-              <button className="emp-modal-close" onClick={() => setShowTrackModal(false)}>
-                <i className="bi bi-x-lg" />
-              </button>
-            </div>
-            <div className="emp-modal-content">
-              {loadingApplicants ? (
-                <div style={{ textAlign: 'center', padding: '2rem' }}>Loading applicants...</div>
-              ) : applicants.length === 0 ? (
-                <div className="emp-empty-state">
-                  <i className="bi bi-people" />
-                  <h4>No Applicants Yet</h4>
-                  <p>Check back later to see who has applied.</p>
+        {/* SUBSCRIPTION TAB */}
+        {activeTab === 'subscription' && (() => {
+          const activeSub = subscriptions.find(
+            (sub) => sub.subscriptionType === 'job_poster' && sub.status === 'active' && new Date(sub.expiresAt) > new Date()
+          );
+          const postedCount = jobs.length;
+          const freeLimit = 3;
+
+          return (
+            <div>
+              <div className="emp-dash-header">
+                <div>
+                  <h1 className="emp-dash-title">My Subscription</h1>
+                  <p className="emp-dash-subtitle">Manage and track your employer recruiting plan</p>
                 </div>
-              ) : (
-                <table className="emp-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Applied Date</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {applicants.map((app) => (
-                      <tr key={app.id}>
-                        <td>
-                          <strong>{app.firstName} {app.lastName}</strong>
-                        </td>
-                        <td>{app.email}</td>
-                        <td>{new Date(app.appliedAt).toLocaleDateString()}</td>
-                        <td>
-                          <select
-                            value={app.status}
-                            onChange={(e) => handleUpdateStatus(app.id, e.target.value)}
-                            className="form-select form-select-sm"
+              </div>
+
+              <div className="row g-4 mt-2">
+                <div className="col-lg-6">
+                  {activeSub ? (
+                    /* PREMIUM PLAN CARD */
+                    <div 
+                      className="card text-white p-4" 
+                      style={{ 
+                        borderRadius: '16px', 
+                        background: 'linear-gradient(135deg, #111111 0%, #1a1a1a 100%)', 
+                        border: '1px solid rgba(212, 175, 55, 0.3)',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                      }}
+                    >
+                      <div className="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                          <span 
+                            className="badge mb-2" 
                             style={{ 
-                              width: 'auto', 
-                              display: 'inline-block', 
-                              borderRadius: '6px', 
-                              backgroundColor: 'var(--bg-light)', 
-                              color: 'var(--text-primary)',
-                              border: '1px solid var(--border-color)',
-                              padding: '2px 8px'
+                              backgroundColor: '#D4AF37', 
+                              color: '#0A0A0A', 
+                              fontWeight: 600,
+                              boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)' 
                             }}
                           >
-                            <option value="pending">Pending</option>
-                            <option value="reviewed">Reviewed</option>
-                            <option value="interview">Interview</option>
-                            <option value="rejected">Rejected</option>
-                            <option value="accepted">Accepted</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+                            ✨ PROFESSIONAL MEMBER
+                          </span>
+                          <h3 className="mb-1" style={{ color: '#D4AF37', fontWeight: 700 }}>Employer Professional</h3>
+                          <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeSub.tier} Plan</p>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <p className="mb-0 text-secondary" style={{ fontSize: '0.8rem' }}>Billing Price</p>
+                          <h4 style={{ fontWeight: 700, margin: 0 }}>
+                            {activeSub.tier === 'daily' ? '₹49/day' : activeSub.tier === 'weekly' ? '₹199/week' : '₹599/month'}
+                          </h4>
+                        </div>
+                      </div>
+
+                      <hr style={{ borderColor: 'rgba(212, 175, 55, 0.2)' }} />
+
+                      <div className="mb-4 text-secondary" style={{ fontSize: '0.95rem' }}>
+                        <div className="d-flex align-items-center gap-2 mb-2">
+                          <i className="bi bi-check-circle-fill text-success"></i>
+                          <span>Status: <strong className="text-white">Active</strong></span>
+                        </div>
+                        <div className="d-flex align-items-center gap-2 mb-2">
+                          <i className="bi bi-calendar-event text-warning"></i>
+                          <span>Purchased: {new Date(activeSub.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <div className="d-flex align-items-center gap-2">
+                          <i className="bi bi-clock-history text-danger"></i>
+                          <span>Expires: <strong className="text-white">{new Date(activeSub.expiresAt).toLocaleDateString()}</strong></span>
+                        </div>
+                      </div>
+
+                      <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                        Manage Subscription
+                      </Link>
+                    </div>
+                  ) : (
+                    /* FREE PLAN CARD */
+                    <div className="card p-4" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
+                      <div className="mb-3">
+                        <span className="badge bg-secondary mb-2" style={{ fontWeight: 500 }}>CURRENT PLAN</span>
+                        <h3 className="mb-1" style={{ fontWeight: 700 }}>Free Employer Plan</h3>
+                        <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: ₹0 (Free Tier)</p>
+                      </div>
+
+                      <hr />
+
+                      <div className="mb-4">
+                        <h5 className="mb-2" style={{ fontSize: '0.95rem', fontWeight: 600 }}>Free Job Postings Remaining</h5>
+                        <div className="d-flex justify-content-between mb-1" style={{ fontSize: '0.85rem' }}>
+                          <span className="text-secondary">Used: {postedCount} of {freeLimit} postings</span>
+                          <span className="font-weight-bold">{postedCount >= freeLimit ? 'Limit reached' : `${freeLimit - postedCount} left`}</span>
+                        </div>
+                        <div className="progress" style={{ height: '8px', borderRadius: '4px' }}>
+                          <div 
+                            className={`progress-bar ${postedCount >= freeLimit ? 'bg-danger' : 'bg-primary'}`} 
+                            role="progressbar" 
+                            style={{ width: `${Math.min((postedCount / freeLimit) * 100, 100)}%` }}
+                            aria-valuenow={postedCount} 
+                            aria-valuemin={0} 
+                            aria-valuemax={freeLimit}
+                          ></div>
+                        </div>
+                        {postedCount >= freeLimit && (
+                          <div className="alert alert-warning mt-3 mb-0 py-2" style={{ fontSize: '0.85rem' }}>
+                            <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                            You have run out of free job postings. Upgrade to write more listings!
+                          </div>
+                        )}
+                      </div>
+
+                      <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                        Upgrade to Professional
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="card p-4" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
+                    <h4 className="mb-3" style={{ fontWeight: 600 }}>Professional Plan Benefits</h4>
+                    <ul className="list-unstyled mb-0" style={{ display: 'grid', gap: '0.75rem' }}>
+                      <li className="d-flex align-items-start gap-2">
+                        <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
+                        <div>
+                          <strong>Unlimited Job Posting</strong>
+                          <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Post and manage as many active listings as your business needs.</p>
+                        </div>
+                      </li>
+                      <li className="d-flex align-items-start gap-2">
+                        <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
+                        <div>
+                          <strong>Featured Jobs Badge</strong>
+                          <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Mark listings as featured to gain up to 10x higher response rates.</p>
+                        </div>
+                      </li>
+                      <li className="d-flex align-items-start gap-2">
+                        <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
+                        <div>
+                          <strong>Advanced Recruitment Dashboard</strong>
+                          <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Shortlist, label, track candidates, and access analytics details.</p>
+                        </div>
+                      </li>
+                      <li className="d-flex align-items-start gap-2">
+                        <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
+                        <div>
+                          <strong>Company Verification Badge</strong>
+                          <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Build company trust with candidates via a verified recruiter mark.</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          );
+        })()}
+      </main>
+
     </div>
   );
 }

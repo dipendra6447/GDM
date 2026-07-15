@@ -1,11 +1,30 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import './MarketplaceHeader.css';
 
 const MarketplaceHeader: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [scrolled, setScrolled] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(() => searchParams.get('keyword') || '');
   const [searchFocused, setSearchFocused] = useState(false);
+
+  useEffect(() => {
+    setSearchValue(searchParams.get('keyword') || '');
+  }, [searchParams]);
+
+  const triggerSearch = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (searchValue.trim()) {
+      params.set('keyword', searchValue.trim());
+    } else {
+      params.delete('keyword');
+    }
+    params.set('page', '1');
+    router.push(`/jobs?${params.toString()}`);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -31,6 +50,11 @@ const MarketplaceHeader: React.FC = () => {
             onChange={(e) => setSearchValue(e.target.value)}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                triggerSearch();
+              }
+            }}
             aria-label="Search opportunities"
             id="mp-global-search"
           />
@@ -47,7 +71,7 @@ const MarketplaceHeader: React.FC = () => {
         </div>
 
         {/* Search Button */}
-        <button className="mp-search-btn" type="button" id="mp-search-submit">
+        <button className="mp-search-btn" type="button" id="mp-search-submit" onClick={triggerSearch}>
           Search
         </button>
 

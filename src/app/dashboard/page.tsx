@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import StatCard from '@/components/Dashboard/StatCard';
 import ApplicationChart from '@/components/Dashboard/ApplicationChart';
@@ -79,6 +80,22 @@ export default function DashboardPage() {
             <i className="bi bi-chevron-down text-secondary ms-1" style={{ fontSize: '0.8rem' }}></i>
           </button>
         </div>
+      </div>
+
+      {/* Breadcrumb */}
+      <div className="dashboard-breadcrumb-wrapper" style={{ padding: '0 0 16px' }}>
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb mb-0" style={{ fontSize: '0.875rem' }}>
+            <li className="breadcrumb-item">
+              <Link href="/" className="text-decoration-none" style={{ color: '#2454FF' }}>
+                <i className="bi bi-house-fill me-1" />Home
+              </Link>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page" style={{ color: '#64748b' }}>
+              Dashboard
+            </li>
+          </ol>
+        </nav>
       </div>
 
       <div className="dash-top-grid">

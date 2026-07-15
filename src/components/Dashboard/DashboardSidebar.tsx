@@ -17,7 +17,8 @@ const DashboardSidebar: React.FC = () => {
     ...(isJobSeeker ? [
       { label: 'Applied', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
       { label: 'Saved Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
-      { label: 'Saved Searches', icon: 'bi-search', href: '/dashboard/saved-searches' }
+      { label: 'Saved Searches', icon: 'bi-search', href: '/dashboard/saved-searches' },
+      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription' }
     ] : []),
     { label: 'Community', icon: 'bi-people-fill', href: '/dashboard/community' },
     { label: 'Message', icon: 'bi-chat-dots-fill', href: '/dashboard/messages' },
