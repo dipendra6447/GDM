@@ -260,6 +260,14 @@ const Navbar: React.FC = () => {
                       <Link href="/subscription" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                         <i className="bi bi-star" /> Subscription
                       </Link>
+                      <Link 
+                        href={user?.roles?.includes(2) ? "/dashboard/subscription?role=2" : user?.roles?.includes(3) ? "/dashboard/subscription?role=3" : "/dashboard/subscription?role=1"} 
+                        className="nav-dropdown-item" 
+                        id="nav-dropdown-my-orders"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        <i className="bi bi-receipt" /> My Orders
+                      </Link>
                       {user?.roles?.includes(4) && (
                         <>
                           <div className="nav-dropdown-divider" />

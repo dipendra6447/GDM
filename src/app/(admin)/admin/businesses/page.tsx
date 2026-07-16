@@ -153,8 +153,8 @@ export default function BusinessesPage() {
                     </td>
                     <td>{new Date(bus.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <div className="action-buttons">
-                        <button className="btn-icon text-info" onClick={() => router.push(`/admin/users/${bus.id}`)} title="View Detail"><MdVisibility /></button>
+                       <div className="action-buttons">
+                         <button className="btn-icon text-info" onClick={() => router.push(`/admin/businesses/${bus.id}`)} title="View Detail"><MdVisibility /></button>
                         <button className="btn-icon text-primary" onClick={() => openModal(bus)} title="Edit"><MdEdit /></button>
                         <button className={`btn-icon ${bus.isActive ? 'text-success' : 'text-warning'}`} onClick={() => handleToggle(bus.id, bus.isActive)} title="Toggle Status">
                           {bus.isActive ? <MdToggleOn /> : <MdToggleOff />}

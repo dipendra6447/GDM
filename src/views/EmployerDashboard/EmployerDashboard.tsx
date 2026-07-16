@@ -17,6 +17,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import './EmployerDashboard.css';
 import PostJob from '../Employer/PostJob'; // We will still use this for the Post Job view
+import StatCard from '@/components/Dashboard/StatCard';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -31,12 +32,14 @@ const mockChartData = [
   { name: 'Jul', applicants: 34, views: 430 },
 ];
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
 
 export default function EmployerDashboard() {
   const { user, isLoading, isLoggedIn } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const isMainDashboard = pathname === '/dashboard';
 
   const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'post' | 'edit' | 'subscription'>('overview');
   const [jobs, setJobs] = useState<any[]>([]);
@@ -53,7 +56,11 @@ export default function EmployerDashboard() {
 
   const handleTabChange = (tab: 'overview' | 'jobs' | 'post' | 'edit' | 'subscription') => {
     setActiveTab(tab);
-    router.push(`/employer/post-job?tab=${tab}`, { scroll: false });
+    if (isMainDashboard) {
+      router.push(`/dashboard?role=2&tab=${tab}`, { scroll: false });
+    } else {
+      router.push(`/employer/post-job?tab=${tab}`, { scroll: false });
+    }
   };
 
 
@@ -161,43 +168,78 @@ export default function EmployerDashboard() {
   const totalApplicants = jobs.reduce((sum, j) => sum + (j.applicantCount || 0), 0);
 
   return (
-    <div className="emp-dash-layout">
-      {/* Sidebar Navigation */}
-      <aside className="emp-dash-sidebar">
-        <div className="emp-dash-nav">
-          <button 
-            className={`emp-dash-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => handleTabChange('overview')}
-          >
-            <i className="bi bi-grid" /> Overview
-          </button>
-          <button 
-            className={`emp-dash-nav-item ${(activeTab === 'jobs' || activeTab === 'edit') ? 'active' : ''}`}
-            onClick={() => handleTabChange('jobs')}
-          >
-            <i className="bi bi-briefcase" /> My Jobs
-          </button>
-          <button 
-            className={`emp-dash-nav-item ${activeTab === 'post' ? 'active' : ''}`}
-            onClick={() => handleTabChange('post')}
-          >
-            <i className="bi bi-plus-circle" /> Post New Job
-          </button>
-          <button 
-            className={`emp-dash-nav-item ${activeTab === 'subscription' ? 'active' : ''}`}
-            onClick={() => handleTabChange('subscription')}
-          >
-            <i className="bi bi-credit-card" /> My Subscription
-          </button>
-          {/* Settings links back to standard profile for now */}
-          <Link href="/profile" className="emp-dash-nav-item">
-            <i className="bi bi-gear" /> Settings
-          </Link>
-        </div>
-      </aside>
+    <div className={isMainDashboard ? "" : "emp-dash-layout"}>
+      {/* Sidebar Navigation (only show if not on main dashboard) */}
+      {!isMainDashboard && (
+        <aside className="emp-dash-sidebar">
+          <div className="emp-dash-nav">
+            <button 
+              className={`emp-dash-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
+              onClick={() => handleTabChange('overview')}
+            >
+              <i className="bi bi-grid" /> Overview
+            </button>
+            <button 
+              className={`emp-dash-nav-item ${(activeTab === 'jobs' || activeTab === 'edit') ? 'active' : ''}`}
+              onClick={() => handleTabChange('jobs')}
+            >
+              <i className="bi bi-briefcase" /> My Jobs
+            </button>
+            <button 
+              className={`emp-dash-nav-item ${activeTab === 'post' ? 'active' : ''}`}
+              onClick={() => handleTabChange('post')}
+            >
+              <i className="bi bi-plus-circle" /> Post New Job
+            </button>
+            <button 
+              className={`emp-dash-nav-item ${activeTab === 'subscription' ? 'active' : ''}`}
+              onClick={() => handleTabChange('subscription')}
+            >
+              <i className="bi bi-credit-card" /> My Subscription
+            </button>
+            {/* Settings links back to standard profile for now */}
+            <Link href="/profile" className="emp-dash-nav-item">
+              <i className="bi bi-gear" /> Settings
+            </Link>
+          </div>
+        </aside>
+      )}
 
       {/* Main Content Area */}
-      <main className="emp-dash-main">
+      <main className={isMainDashboard ? "" : "emp-dash-main"}>
+        {isMainDashboard && (
+          <div className="d-flex gap-2 mb-4 flex-wrap pb-3" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+            {(['overview', 'jobs', 'post', 'subscription'] as const).map(tab => {
+              const isActive = activeTab === tab || (tab === 'jobs' && activeTab === 'edit');
+              const label = 
+                tab === 'overview' ? 'Overview' :
+                tab === 'jobs' ? 'My Jobs' :
+                tab === 'post' ? 'Post New Job' : 'My Subscription';
+              const icon =
+                tab === 'overview' ? 'bi-grid' :
+                tab === 'jobs' ? 'bi-briefcase' :
+                tab === 'post' ? 'bi-plus-circle' : 'bi-credit-card';
+
+              return (
+                <button
+                  key={tab}
+                  className="btn btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-2"
+                  onClick={() => handleTabChange(tab)}
+                  style={{
+                    borderRadius: '12px',
+                    transition: 'all 0.2s',
+                    background: isActive ? 'rgba(36, 84, 255, 0.1)' : 'transparent',
+                    color: isActive ? '#2454ff' : '#64748b',
+                    border: isActive ? '1px solid rgba(36, 84, 255, 0.2)' : '1px solid transparent',
+                  }}
+                >
+                  <i className={`bi ${icon}`} />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <div>
@@ -206,46 +248,79 @@ export default function EmployerDashboard() {
                 <h1 className="emp-dash-title">Dashboard Overview</h1>
                 <p className="emp-dash-subtitle">Track your recruitment performance</p>
               </div>
-              <button className="emp-primary-btn" onClick={() => handleTabChange('post')}>
+              <button 
+                className="btn btn-primary px-4 py-2 fw-semibold d-flex align-items-center gap-2" 
+                style={{ borderRadius: '12px', background: '#2454ff', border: 'none' }}
+                onClick={() => handleTabChange('post')}
+              >
                 <i className="bi bi-plus" /> Post Job
               </button>
             </div>
 
-            <div className="emp-dash-stats-grid">
-              <div className="emp-dash-stat-card">
-                <div className="emp-dash-stat-icon primary"><i className="bi bi-briefcase" /></div>
-                <div className="emp-dash-stat-info">
-                  <h3>Total Jobs</h3>
-                  <p>{totalJobsCount}</p>
+            {isMainDashboard ? (
+              <div className="dash-stats-grid mb-4">
+                <StatCard 
+                  title="Total Jobs" 
+                  value={totalJobsCount} 
+                  icon="bi-briefcase" 
+                  colorScheme="blue" 
+                />
+                <StatCard 
+                  title="Active Jobs" 
+                  value={activeJobsCount} 
+                  icon="bi-check-circle" 
+                  colorScheme="green" 
+                />
+                <StatCard 
+                  title="Total Applicants" 
+                  value={totalApplicants} 
+                  icon="bi-people" 
+                  colorScheme="orange" 
+                />
+                <StatCard 
+                  title="Active Subscription" 
+                  value={subscriptions.length > 0 ? (subscriptions.find(s => s.status === 'active')?.tier?.toUpperCase() || 'FREE') : 'FREE'} 
+                  icon="bi-credit-card" 
+                  colorScheme="purple" 
+                />
+              </div>
+            ) : (
+              <div className="emp-dash-stats-grid">
+                <div className="emp-dash-stat-card">
+                  <div className="emp-dash-stat-icon primary"><i className="bi bi-briefcase" /></div>
+                  <div className="emp-dash-stat-info">
+                    <h3>Total Jobs</h3>
+                    <p>{totalJobsCount}</p>
+                  </div>
+                </div>
+                <div className="emp-dash-stat-card">
+                  <div className="emp-dash-stat-icon success"><i className="bi bi-check-circle" /></div>
+                  <div className="emp-dash-stat-info">
+                    <h3>Active Jobs</h3>
+                    <p>{activeJobsCount}</p>
+                  </div>
+                </div>
+                <div className="emp-dash-stat-card">
+                  <div className="emp-dash-stat-icon warning"><i className="bi bi-people" /></div>
+                  <div className="emp-dash-stat-info">
+                    <h3>Total Applicants</h3>
+                    <p>{totalApplicants}</p>
+                  </div>
                 </div>
               </div>
-              <div className="emp-dash-stat-card">
-                <div className="emp-dash-stat-icon success"><i className="bi bi-check-circle" /></div>
-                <div className="emp-dash-stat-info">
-                  <h3>Active Jobs</h3>
-                  <p>{activeJobsCount}</p>
-                </div>
-              </div>
-              <div className="emp-dash-stat-card">
-                <div className="emp-dash-stat-icon warning"><i className="bi bi-people" /></div>
-                <div className="emp-dash-stat-info">
-                  <h3>Total Applicants</h3>
-                  <p>{totalApplicants}</p>
-                </div>
-              </div>
-            </div>
+            )}
 
-            <div className="emp-dash-chart-card">
-              <div className="emp-dash-chart-header">Application Trends</div>
+            <div className={isMainDashboard ? "card border-0 shadow-sm p-4 mb-4" : "emp-dash-chart-card"}>
+              <div className={isMainDashboard ? "fw-bold mb-3 fs-5 text-dark" : "emp-dash-chart-header"}>Application Trends</div>
               <div style={{ width: '100%', height: 300 }}>
                 <ResponsiveContainer>
                   <BarChart data={mockChartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                    <YAxis axisLine={false} tickLine={false} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
                     <Tooltip cursor={{fill: '#f1f5f9'}} />
                     <Legend />
-                    <Bar dataKey="applicants" fill="#2563eb" radius={[4, 4, 0, 0]} name="Applicants" />
+                    <Bar dataKey="applicants" fill="#2454ff" radius={[4, 4, 0, 0]} name="Applicants" />
                     <Bar dataKey="views" fill="#94a3b8" radius={[4, 4, 0, 0]} name="Views" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -262,24 +337,34 @@ export default function EmployerDashboard() {
                 <h1 className="emp-dash-title">Manage Jobs</h1>
                 <p className="emp-dash-subtitle">View, edit, and track applicants for your job listings.</p>
               </div>
-              <button className="emp-primary-btn" onClick={() => handleTabChange('post')}>
+              <button 
+                className="btn btn-primary px-4 py-2 fw-semibold d-flex align-items-center gap-2" 
+                style={{ borderRadius: '12px', background: '#2454ff', border: 'none' }}
+                onClick={() => handleTabChange('post')}
+              >
                 <i className="bi bi-plus" /> Post Job
               </button>
             </div>
 
-            <div className="emp-dash-table-card">
+            <div className={isMainDashboard ? "card border-0 shadow-sm p-4" : "emp-dash-table-card"}>
               {loadingJobs ? (
                 <div style={{ padding: '2rem', textAlign: 'center' }}>Loading jobs...</div>
               ) : jobs.length === 0 ? (
-                <div className="emp-empty-state">
-                  <i className="bi bi-inbox" />
+                <div className="emp-empty-state text-center p-5">
+                  <i className="bi bi-inbox fs-1 text-secondary mb-3" />
                   <h4>No Jobs Found</h4>
-                  <p>You haven't posted any jobs yet.</p>
-                  <button className="emp-primary-btn" onClick={() => handleTabChange('post')}>Post your first job</button>
+                  <p className="text-secondary mb-4">You haven't posted any jobs yet.</p>
+                  <button 
+                    className="btn btn-primary px-4 py-2" 
+                    style={{ borderRadius: '10px' }}
+                    onClick={() => handleTabChange('post')}
+                  >
+                    Post your first job
+                  </button>
                 </div>
               ) : (
-                <div className="emp-table-wrapper">
-                  <table className="emp-table">
+                <div className="table-responsive">
+                  <table className={isMainDashboard ? "table align-middle table-hover mb-0" : "emp-table"}>
                     <thead>
                       <tr>
                         <th>Job Title</th>
@@ -295,22 +380,21 @@ export default function EmployerDashboard() {
                         <tr key={job.id}>
                           <td>
                             <div className="emp-job-title-col">
-                              <h4>{job.title}</h4>
-                              <span>{job.location || 'Location Not Specified'}</span>
+                              <h4 className="fw-bold mb-1" style={{ fontSize: '1rem', color: '#1e293b' }}>{job.title}</h4>
+                              <span className="text-secondary" style={{ fontSize: '0.82rem' }}>{job.location || 'Location Not Specified'}</span>
                             </div>
                           </td>
                           <td>
-                            <span style={{ 
-                              background: 'var(--bg-light)', 
-                              padding: '0.25rem 0.75rem', 
-                              borderRadius: '20px', 
-                              fontSize: '0.85rem',
-                              color: 'var(--text-secondary)'
-                            }}>
+                            <span 
+                              className="badge bg-light text-secondary px-3 py-2 fw-semibold" 
+                              style={{ borderRadius: '8px', fontSize: '0.78rem' }}
+                            >
                               {job.category || 'Not specified'}
                             </span>
                           </td>
-                          <td>{new Date(job.createdAt).toLocaleDateString()}</td>
+                          <td className="text-secondary" style={{ fontSize: '0.88rem' }}>
+                            {new Date(job.createdAt).toLocaleDateString()}
+                          </td>
                           <td>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                               <label className="emp-toggle">
@@ -321,28 +405,42 @@ export default function EmployerDashboard() {
                                 />
                                 <span className="emp-slider"></span>
                               </label>
-                              <span style={{ fontSize: '0.85rem', color: job.isActive ? '#10b981' : '#64748b', fontWeight: 500 }}>
+                              <span style={{ fontSize: '0.85rem', color: job.isActive ? '#10b981' : '#64748b', fontWeight: 600 }}>
                                 {job.isActive ? 'Active' : 'Inactive'}
                               </span>
                             </div>
                           </td>
-                           <td>
-                            {job.applicantCount || 0}
+                          <td>
+                            <span className="badge bg-primary-subtle text-primary px-3 py-2 fw-bold" style={{ borderRadius: '8px', fontSize: '0.78rem' }}>
+                              {job.applicantCount || 0} Applied
+                            </span>
                           </td>
                           <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                             {/* Track Button */}
-                            <button className="emp-action-btn" title="View Applicants" onClick={() => router.push(`/employer/post-job/applicants/${job.id}`)}>
-                              <i className="bi bi-people" />
+                            <button 
+                              className="btn btn-sm btn-link text-primary me-2" 
+                              title="View Applicants" 
+                              onClick={() => router.push(`/employer/post-job/applicants/${job.id}`)}
+                            >
+                              <i className="bi bi-people fs-5" />
                             </button>
                             
                             {/* Edit Button */}
-                            <button className="emp-action-btn" title="Edit Job" onClick={() => handleEdit(job.id)}>
-                              <i className="bi bi-pencil" />
+                            <button 
+                              className="btn btn-sm btn-link text-secondary me-2" 
+                              title="Edit Job" 
+                              onClick={() => handleEdit(job.id)}
+                            >
+                              <i className="bi bi-pencil-square fs-5" />
                             </button>
 
                             {/* Delete Button */}
-                            <button className="emp-action-btn delete" title="Delete Job" onClick={() => handleDelete(job.id)}>
-                              <i className="bi bi-trash" />
+                            <button 
+                              className="btn btn-sm btn-link text-danger" 
+                              title="Delete Job" 
+                              onClick={() => handleDelete(job.id)}
+                            >
+                              <i className="bi bi-trash fs-5" />
                             </button>
                           </td>
                         </tr>

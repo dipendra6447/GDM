@@ -151,15 +151,15 @@ export default function EmployerProfileForm({ initialData, roleId = 2 }: Props) 
         </div>
         <div className="row">
           <div className="col-md-4 profile-form-group">
-            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Website</label>
+            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Website (Optional)</label>
             <input type="url" name="websiteUrl" className="profile-input" placeholder="https://company.com" value={formData.websiteUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-4 profile-form-group">
-            <label className="profile-label"><i className="bi bi-linkedin me-1" style={{ color: '#0077b5' }} />LinkedIn</label>
+            <label className="profile-label"><i className="bi bi-linkedin me-1" style={{ color: '#0077b5' }} />LinkedIn (Optional)</label>
             <input type="url" name="linkedinUrl" className="profile-input" placeholder="https://linkedin.com/company/..." value={formData.linkedinUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-4 profile-form-group">
-            <label className="profile-label"><i className="bi bi-twitter-x me-1" style={{ color: '#94a3b8' }} />Twitter / X</label>
+            <label className="profile-label"><i className="bi bi-twitter-x me-1" style={{ color: '#94a3b8' }} />Twitter / X (Optional)</label>
             <input type="url" name="twitterUrl" className="profile-input" placeholder="https://twitter.com/..." value={formData.twitterUrl} onChange={handleInputChange} />
           </div>
         </div>

@@ -505,15 +505,15 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
 
         <div className="row">
           <div className="col-md-4 profile-form-group">
-            <label className="profile-label"><i className="bi bi-linkedin me-1" style={{ color: '#0077b5' }} />LinkedIn</label>
+            <label className="profile-label"><i className="bi bi-linkedin me-1" style={{ color: '#0077b5' }} />LinkedIn (Optional)</label>
             <input type="url" name="linkedinUrl" className="profile-input" placeholder="https://linkedin.com/in/..." value={formData.linkedinUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-4 profile-form-group">
-            <label className="profile-label"><i className="bi bi-github me-1" style={{ color: '#94a3b8' }} />GitHub</label>
+            <label className="profile-label"><i className="bi bi-github me-1" style={{ color: '#94a3b8' }} />GitHub (Optional)</label>
             <input type="url" name="githubUrl" className="profile-input" placeholder="https://github.com/..." value={formData.githubUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-4 profile-form-group">
-            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Portfolio</label>
+            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Portfolio (Optional)</label>
             <input type="url" name="portfolioUrl" className="profile-input" placeholder="https://yoursite.com" value={formData.portfolioUrl} onChange={handleInputChange} />
           </div>
         </div>
