@@ -6,6 +6,7 @@ import './JobListing.css';
 
 // Shared components
 import MarketplaceHeader from '../../components/MarketplaceHeader/MarketplaceHeader';
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 
 import MapWidget from '../../components/MapWidget/MapWidget';
 import RefineSearch from '../../components/RefineSearch/RefineSearch';
@@ -185,27 +186,11 @@ const JobListing: React.FC = () => {
     <>
       {/* Marketplace-style header */}
       <MarketplaceHeader />
-
       <main
         className="jl2-main"
         style={{ paddingTop: `${HEADER_HEIGHT}px` }}
       >
-        {/* Breadcrumb */}
-        <div className="jl2-breadcrumb-wrapper" style={{ maxWidth: '90vw', margin: '0 auto', padding: '16px 0 0' }}>
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb mb-0" style={{ fontSize: '0.9rem' }}>
-              <li className="breadcrumb-item">
-                <Link href="/" className="text-decoration-none" style={{ color: '#2454FF' }}>
-                  <i className="bi bi-house-fill me-1" />Home
-                </Link>
-              </li>
-              <li className="breadcrumb-item active" aria-current="page" style={{ color: '#64748b' }}>
-                Jobs
-              </li>
-            </ol>
-          </nav>
-        </div>
-
+        <Breadcrumb items={[{ label: 'Find Jobs' }]} />
         <div className="jl2-layout">
           {/* ── Center: Main Content ── */}
           <div className="jl2-center">

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import "../../styles/confirmation.css";
 
 interface PaymentInfo {
@@ -57,7 +58,15 @@ const Success: React.FC = () => {
       <div className="confirm-orb confirm-orb-2" />
       <div className="confirm-orb confirm-orb-3" />
 
-      <div className="confirm-card">
+      <Breadcrumb items={[
+        { label: 'Subscription', href: '/subscription' },
+        { label: 'Checkout', href: '/checkout' },
+        { label: 'Payment Confirmed' },
+      ]} />
+
+      <div className="container" style={{ position: "relative", zIndex: 1, paddingTop: "32px" }}>
+
+        <div className="confirm-card">
         {/* Steps Indicator */}
         <div className="confirm-steps">
           <div className="confirm-step">
@@ -147,8 +156,8 @@ const Success: React.FC = () => {
         <Link href="/" className="confirm-btn-primary">
           <i className="bi bi-grid-fill"></i> Go to Dashboard
         </Link>
-        <Link href="/" className="confirm-btn-secondary">
-          Back to Home Page
+        <Link href="/jobs" className="confirm-btn-secondary">
+          <i className="bi bi-search" /> Explore Jobs
         </Link>
 
         {/* Footer Note */}
@@ -157,7 +166,8 @@ const Success: React.FC = () => {
         </p>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default Success;

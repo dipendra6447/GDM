@@ -7,12 +7,9 @@
   background: var(--color-bg, #F8FAFF);
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
-  padding: 140px 0 100px;
+  padding: 80px 0 80px;
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
 }
 
 /* ── Decorative Background Orbs ── */

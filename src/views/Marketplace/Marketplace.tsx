@@ -4,6 +4,7 @@ import './Marketplace.css';
 
 // Components
 import MarketplaceHeader from '../../components/MarketplaceHeader/MarketplaceHeader';
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import MarketplaceHero from '../../components/MarketplaceHero/MarketplaceHero';
 import CategoryNav, { CategoryKey } from '../../components/CategoryNav/CategoryNav';
 import FilterBar from '../../components/FilterBar/FilterBar';
@@ -33,11 +34,11 @@ const Marketplace: React.FC = () => {
     <>
       {/* Sticky Header */}
       <MarketplaceHeader />
-
       <main
         className="mp-page"
         style={{ paddingTop: `${HEADER_HEIGHT}px` }}
       >
+        <Breadcrumb items={[{ label: 'Marketplace' }]} />
         {/* ── Top Section ── */}
         <section className="mp-top-section" aria-label="Discover opportunities">
           <div className="container">

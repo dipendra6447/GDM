@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { useCart, BillingPeriod, PlanCategory, CartItem } from "../../hooks/CartContext";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import "../../styles/cart.css";
 
 /* ── Plan registry: maps plan IDs to full details ── */
@@ -253,16 +254,11 @@ const Cart: React.FC = () => {
       <div className="cart-glow-orb cart-glow-orb-1" />
       <div className="cart-glow-orb cart-glow-orb-2" />
 
-      <div className="container" style={{ position: "relative", zIndex: 1 }}>
-        {/* Breadcrumb */}
-        <div className="cart-breadcrumb">
-          <Link href="/">Home</Link>
-          <span className="breadcrumb-separator">›</span>
-          <Link href="/subscription">Pricing</Link>
-          <span className="breadcrumb-separator">›</span>
-          <span className="breadcrumb-current">Cart</span>
-        </div>
-
+      <Breadcrumb items={[
+        { label: 'Subscription', href: '/subscription' },
+        { label: 'Cart' },
+      ]} />
+      <div className="container" style={{ position: "relative", zIndex: 1, paddingTop: "32px" }}>
         {/* Header */}
         <div className="cart-header">
           <div className="cart-header-left">
