@@ -46,9 +46,12 @@ const ctaColorMap: Record<string, string> = {
 
 interface SearchResultCardProps {
   result: SearchResult;
+  isSelected?: boolean;
+  onSelect?: () => void;
+  onSaveToggle?: (newSavedState: boolean) => void;
 }
 
-const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
+const SearchResultCard: React.FC<SearchResultCardProps> = ({ result, isSelected, onSelect, onSaveToggle }) => {
   const r = result;
   const { user, isLoggedIn } = useAuth();
   const isEmployer = isLoggedIn && !user?.roles?.includes(1);
@@ -82,7 +85,11 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
       const res = await fetch(url, options);
       const json = await res.json();
       if (json.success) {
-        setSaved(!saved);
+        const nextSaved = !saved;
+        setSaved(nextSaved);
+        if (onSaveToggle) {
+          onSaveToggle(nextSaved);
+        }
       } else {
         alert(json.message || 'Failed to update saved status');
       }
@@ -91,11 +98,25 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
     }
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent selection if user is clicking on save button
+    if ((e.target as HTMLElement).closest('.sr-save-btn')) {
+      return;
+    }
+    if (typeof window !== 'undefined' && window.innerWidth >= 992) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (onSelect) onSelect();
+    }
+  };
+
   return (
     <article
-      className={`sr-card ${r.badge === 'Featured' ? 'sr-card-featured' : ''}`}
+      className={`sr-card ${r.badge === 'Featured' ? 'sr-card-featured' : ''} ${isSelected ? 'sr-card-active' : ''}`}
       id={`sr-card-${r.id}`}
       aria-label={`${r.title} at ${r.company}`}
+      onClick={handleCardClick}
+      style={{ cursor: typeof window !== 'undefined' && window.innerWidth >= 992 ? 'pointer' : 'default' }}
     >
       <div className="sr-card-inner">
         {/* Left: Company Logo */}
@@ -217,6 +238,13 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
               color: ctaColor,
             }}
             id={`sr-cta-${r.id}`}
+            onClick={(e) => {
+              if (typeof window !== 'undefined' && window.innerWidth >= 992) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onSelect) onSelect();
+              }
+            }}
           >
             {ctaMap[r.type]}
           </a>

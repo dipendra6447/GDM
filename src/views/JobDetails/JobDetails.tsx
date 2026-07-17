@@ -63,34 +63,11 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
     fetchJob();
   }, [slug]);
 
-  const handleSave = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+  const handleSave = () => {
+    if (!isLoggedIn) {
       router.push('/login');
-      return;
-    }
-    try {
-      const method = saved ? 'DELETE' : 'POST';
-      const url = saved ? `/api/jobs/saved/${job.id}` : `/api/jobs/saved`;
-      const options: RequestInit = {
-        method,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          ...(method === 'POST' ? { 'Content-Type': 'application/json' } : {})
-        },
-        ...(method === 'POST' ? { body: JSON.stringify({ jobId: job.id }) } : {})
-      };
-      
-      const res = await fetch(url, options);
-      const json = await res.json();
-      
-      if (json.success) {
-        setSaved(!saved);
-      } else {
-        alert(json.message || 'Failed to update saved status');
-      }
-    } catch (err) {
-      console.error("Error saving job:", err);
+    } else {
+      router.push('/dashboard/saved');
     }
   };
 

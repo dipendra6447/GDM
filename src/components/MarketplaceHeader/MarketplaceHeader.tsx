@@ -136,7 +136,18 @@ const MarketplaceHeader: React.FC = () => {
         </button>
 
         {/* Save Search */}
-        <button className="mp-save-search" type="button" id="mp-save-search">
+        <button
+          className="mp-save-search"
+          type="button"
+          id="mp-save-search"
+          onClick={() => {
+            if (!isLoggedIn) {
+              router.push('/login');
+            } else {
+              router.push('/dashboard/saved');
+            }
+          }}
+        >
           <i className="bi bi-bookmark" />
           <span>Save Search</span>
         </button>

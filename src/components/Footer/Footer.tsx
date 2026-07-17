@@ -6,7 +6,7 @@ import './Footer.css';
 const footerColumns = [
   {
     title: 'Company',
-    links: ['About Us', 'Careers', 'Press', 'Blog', 'Partners', 'Investors'],
+    links: ['About Us', 'Careers', 'Press', 'Services', 'Partners', 'Investors'],
   },
   {
     title: 'Job Categories',

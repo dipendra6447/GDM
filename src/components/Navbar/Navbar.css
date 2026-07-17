@@ -91,19 +91,19 @@
 
 /* CTA Buttons */
 .btn-login {
-  color: var(--color-navy);
+  color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
   font-size: 15px;
   padding: 10px 22px;
   border-radius: var(--radius-button);
   transition: var(--transition-base);
-  border: 2px solid var(--color-border);
+  border: 2px solid rgba(36, 84, 255, 0.3);
 }
 
 .btn-login:hover {
-  color: var(--color-primary);
+  color: white;
   border-color: var(--color-primary);
-  background: rgba(36, 84, 255, 0.05);
+  background: var(--color-primary);
 }
 
 .btn-register {

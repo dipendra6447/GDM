@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import './JobListing.css';
+
+import { useAuth } from '@/hooks/useAuth';
 
 // Shared components
 import MarketplaceHeader from '../../components/MarketplaceHeader/MarketplaceHeader';
@@ -39,6 +41,10 @@ const HEADER_HEIGHT = 74;
 
 const JobListing: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { user, isLoggedIn } = useAuth();
+  const isEmployer = isLoggedIn && !user?.roles?.includes(1);
+
   const [activeTab, setActiveTab] = useState<CategoryTab>('all');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -52,6 +58,36 @@ const JobListing: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
+
+  const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [selectedJobSaved, setSelectedJobSaved] = useState(false);
+  const [selectedJobApplied, setSelectedJobApplied] = useState(false);
+
+  const selectJob = async (job: any) => {
+    setSelectedJob(job);
+    if (!job) {
+      setSelectedJobSaved(false);
+      setSelectedJobApplied(false);
+      return;
+    }
+    setSelectedJobSaved(job.isSaved);
+    setSelectedJobApplied(false);
+
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (token && job) {
+      try {
+        const res = await fetch(`/api/jobs/${job.id}/apply`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          setSelectedJobApplied(json.applied);
+        }
+      } catch (err) {
+        console.error("Failed to check apply status:", err);
+      }
+    }
+  };
 
   useEffect(() => {
     setKeyword(searchParams.get('keyword') || '');
@@ -106,23 +142,34 @@ const JobListing: React.FC = () => {
             salary: j.salaryRange,
             description: j.description
               ? j.description
-                  .replace(/<[^>]*>?/gm, '')
-                  .replace(/&nbsp;/g, ' ')
-                  .replace(/&amp;/g, '&')
-                  .replace(/&lt;/g, '<')
-                  .replace(/&gt;/g, '>')
-                  .replace(/&quot;/g, '"')
-                  .replace(/&#39;/g, "'")
-                  .replace(/\s+/g, ' ')
-                  .trim()
-                  .substring(0, 150) + '...'
+                .replace(/<[^>]*>?/gm, '')
+                .replace(/&nbsp;/g, ' ')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/\s+/g, ' ')
+                .trim()
+                .substring(0, 150) + '...'
               : '',
-            skills: j.skills ? j.skills.split(',').map((s:string) => s.trim()).filter(Boolean) : [],
+            rawDescription: j.description || '',
+            experience: j.experience,
+            education: j.education,
+            benefits: j.benefits,
+            category: j.category,
+            skills: j.skills ? j.skills.split(',').map((s: string) => s.trim()).filter(Boolean) : [],
             postedTime: new Date(j.createdAt).toLocaleDateString(),
             isSaved: savedJobIds.has(j.id) || savedJobIds.has(String(j.id)),
           }));
           setJobs(mapped);
           setTotalPages(Math.ceil(json.meta.total / json.meta.limit) || 1);
+
+          if (mapped.length > 0) {
+            selectJob(mapped[0]);
+          } else {
+            selectJob(null);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch jobs:", err);
@@ -138,47 +185,51 @@ const JobListing: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSaveSelectedJob = () => {
+    if (!isLoggedIn) {
+      router.push('/login');
+    } else {
+      router.push('/dashboard/saved');
+    }
+  };
 
-
-  const handleSaveSearch = async () => {
+  const handleApplySelectedJob = async () => {
+    if (!selectedJob) return;
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Please log in to save searches.');
       window.location.href = '/login';
       return;
     }
-
-    const title = prompt('Enter a label for this saved search:', 'My Job Search');
-    if (!title) return;
-
-    const params = new URLSearchParams();
-    if (location && location !== 'all') params.set('location', location);
-    if (distance && distance !== 'all') params.set('distance', distance);
-    if (jobType && jobType !== 'all') params.set('jobType', jobType);
-    if (expLevel && expLevel !== 'all') params.set('expLevel', expLevel);
-    if (sortBy && sortBy !== 'relevant') params.set('sortBy', sortBy);
-    if (activeTab && activeTab !== 'all') params.set('activeTab', activeTab);
-    
-    const query = params.toString();
-
+    if (selectedJobApplied) return;
     try {
-      const res = await fetch('/api/saved-searches', {
+      const res = await fetch(`/api/jobs/${selectedJob.id}/apply`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ title, query })
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
       const json = await res.json();
-      if (json.success) {
-        alert('Search saved successfully!');
+
+      if (res.ok && json.success) {
+        setSelectedJobApplied(true);
+        alert('Application submitted successfully!');
+      } else if (res.status === 403) {
+        alert(json.message || 'Limit reached. Please buy a plan.');
+        window.location.href = '/subscription';
       } else {
-        alert(json.message || 'Failed to save search');
+        alert(json.message || 'Failed to submit application');
       }
     } catch (err) {
-      console.error('Error saving search:', err);
-      alert('Failed to save search');
+      console.error("Error applying to job:", err);
+    }
+  };
+
+  const handleSaveSearch = () => {
+    if (!isLoggedIn) {
+      router.push('/login');
+    } else {
+      router.push('/dashboard/saved');
     }
   };
 
@@ -221,25 +272,6 @@ const JobListing: React.FC = () => {
                 </button>
               </div>
 
-              {/* Category Tabs */}
-              <div className="jl2-tabs-row">
-                <div className="jl2-tabs-scroll">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.key}
-                      className={`jl2-tab ${activeTab === tab.key ? 'jl2-tab-active' : ''}`}
-                      onClick={() => { setActiveTab(tab.key); setCurrentPage(1); }}
-                      type="button"
-                      id={`jl2-tab-${tab.key}`}
-                    >
-                      {tab.label}
-                      <span className="jl2-tab-count">
-                        ({categoryCounts[tab.key]})
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
 
               {/* Filter Row */}
               <div className="jl2-filter-row">
@@ -333,7 +365,12 @@ const JobListing: React.FC = () => {
                 <div style={{ padding: '2rem', textAlign: 'center' }}>No jobs found.</div>
               ) : (
                 jobs.map((result) => (
-                  <SearchResultCard key={result.id} result={result} />
+                  <SearchResultCard
+                    key={result.id}
+                    result={result}
+                    isSelected={selectedJob?.id === result.id}
+                    onSelect={() => selectJob(result)}
+                  />
                 ))
               )}
             </div>
@@ -346,19 +383,142 @@ const JobListing: React.FC = () => {
             />
           </div>
 
-          {/* ── Right Sidebar ── */}
-          <aside className="jl2-right-sidebar" aria-label="Map and filters">
+          {/* ── Right Sidebar: Job Details Box ── */}
+          <aside className="jl2-right-sidebar" aria-label="Job details">
             <div className="jl2-right-sticky">
-              {/* Map — rename title */}
-              <div className="jl2-map-wrapper">
-                <MapWidget />
-              </div>
-              <RefineSearch />
+              {!selectedJob ? (
+                <div className="jl2-details-placeholder">
+                  <i className="bi bi-briefcase" style={{ fontSize: '3rem', color: 'var(--color-text-gray)', marginBottom: '1rem' }} />
+                  <p>Select a job to view details</p>
+                </div>
+              ) : (
+                <div className="jl2-details-card">
+                  {/* Details Header */}
+                  <div className="jl2-details-header">
+                    <div className="jl2-details-header-main">
+                      <div className="jl2-details-title-row">
+                        <h2 className="jl2-details-title">{selectedJob.title}</h2>
+                        <div className="jl2-details-actions">
+                          {!isEmployer && (
+                            <button
+                              className={`jl2-action-btn ${selectedJobSaved ? 'jl2-saved' : ''}`}
+                              onClick={handleSaveSelectedJob}
+                              title={selectedJobSaved ? 'Saved' : 'Save job'}
+                              aria-label="Save job"
+                            >
+                              <i className={`bi ${selectedJobSaved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
+                            </button>
+                          )}
+
+
+                          {/* Apply Now button (top) */}
+                          {!isEmployer && (
+                            <button
+                              className={`jl2-apply-btn-top ${selectedJobApplied ? 'jl2-applied' : ''}`}
+                              onClick={handleApplySelectedJob}
+                              disabled={selectedJobApplied}
+                            >
+                              {selectedJobApplied ? 'Applied' : (
+                                <>
+                                  Apply now <i className="bi bi-chevron-right" />
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="jl2-details-company">{selectedJob.company}</div>
+
+                      {/* Tags */}
+                      <div className="jl2-details-tags">
+                        {selectedJob.location && <span className="jl2-details-tag">{selectedJob.location}</span>}
+                        {selectedJob.workMode && <span className="jl2-details-tag">{selectedJob.workMode}</span>}
+                        {selectedJob.salary && <span className="jl2-details-tag-highlight">{selectedJob.salary}</span>}
+                        {selectedJob.employmentType && <span className="jl2-details-tag">{selectedJob.employmentType}</span>}
+                      </div>
+                    </div>
+                  </div>
+
+
+                  {/* Scrollable details content */}
+                  <div className="jl2-details-content-scroll">
+                    {/* Job Summary */}
+                    {selectedJob.experience || selectedJob.education || selectedJob.category ? (
+                      <div className="jl2-details-section">
+                        <h3 className="jl2-details-section-title">Job summary</h3>
+                        <div className="jl2-summary-grid">
+                          {selectedJob.experience && (
+                            <div className="jl2-summary-item">
+                              <span className="jl2-summary-label">Experience:</span>
+                              <span className="jl2-summary-val">{selectedJob.experience}</span>
+                            </div>
+                          )}
+                          {selectedJob.education && (
+                            <div className="jl2-summary-item">
+                              <span className="jl2-summary-label">Education:</span>
+                              <span className="jl2-summary-val">{selectedJob.education}</span>
+                            </div>
+                          )}
+                          {selectedJob.category && (
+                            <div className="jl2-summary-item">
+                              <span className="jl2-summary-label">Category:</span>
+                              <span className="jl2-summary-val">{selectedJob.category}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {/* Job Description */}
+                    <div className="jl2-details-section">
+                      <h3 className="jl2-details-section-title">Job description</h3>
+                      <div
+                        className="jl2-details-description-html"
+                        dangerouslySetInnerHTML={{ __html: selectedJob.rawDescription || selectedJob.description }}
+                      />
+                    </div>
+
+                    {/* Skills */}
+                    {selectedJob.skills && selectedJob.skills.length > 0 && (
+                      <div className="jl2-details-section">
+                        <h3 className="jl2-details-section-title">Skills</h3>
+                        <div className="jl2-details-skills-wrap">
+                          {selectedJob.skills.map((skill: string) => (
+                            <span key={skill} className="jl2-details-skill-tag">{skill}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Benefits */}
+                    {selectedJob.benefits && (
+                      <div className="jl2-details-section">
+                        <h3 className="jl2-details-section-title">Benefits &amp; Perks</h3>
+                        <p className="jl2-details-text">{selectedJob.benefits}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Apply Now button (bottom) */}
+                  {!isEmployer && (
+                    <div className="jl2-details-footer">
+                      <button
+                        className={`jl2-apply-btn-bottom ${selectedJobApplied ? 'jl2-applied' : ''}`}
+                        onClick={handleApplySelectedJob}
+                        disabled={selectedJobApplied}
+                      >
+                        {selectedJobApplied ? 'Applied Successfully' : 'Apply now'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </aside>
         </div>
 
-        {/* Newsletter & Footer (full width) */}
+        {/* Footer Newsletter */}
         <Newsletter />
       </main>
       <MobileBottomNav />
