@@ -24,6 +24,7 @@ const menuItems = [
   { label: 'Platform Management', items: [
       { name: 'Jobs', icon: MdListAlt, path: '/admin/jobs' },
       { name: 'Subscriptions', icon: MdSettings, path: '/admin/subscriptions' },
+      { name: 'Invoices', icon: MdListAlt, path: '/admin/invoices' },
   ]},
   { label: 'Moderation', items: [
       { name: 'Promotions', icon: MdListAlt, path: '/admin/promotions' },

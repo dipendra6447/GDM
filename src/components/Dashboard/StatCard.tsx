@@ -2,9 +2,9 @@ import React from 'react';
 
 interface StatCardProps {
   title: string;
-  value: number;
+  value: string | number;
   icon: string;
-  colorScheme: 'blue' | 'orange' | 'green' | 'purple';
+  colorScheme: 'blue' | 'orange' | 'green' | 'purple' | 'cyan';
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, colorScheme }) => {

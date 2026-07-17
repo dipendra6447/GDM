@@ -14,12 +14,15 @@ import BlogSection from "../../components/BlogSection/BlogSection";
 import BrowseJobs from "../../components/BrowseJobs/BrowseJobs";
 import AdPromotion from "../../components/AdPromotion/AdPromotion";
 import JoinCommunity from "../../components/JoinCommunity/JoinCommunity";
+import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import { useAuth } from "../../hooks/useAuth";
 
 const BANNER_HEIGHT = 46; // px — keep in sync with AdPromotion.css min-height
 const NAVBAR_HEIGHT = 80; // px — keep in sync with --navbar-height variable
 
 const Home: React.FC = () => {
   const [bannerVisible, setBannerVisible] = useState(true);
+  const { isLoggedIn } = useAuth();
 
   const headerHeight = (bannerVisible ? BANNER_HEIGHT : 0) + NAVBAR_HEIGHT;
 
@@ -33,19 +36,48 @@ const Home: React.FC = () => {
       </div>
       <main style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
         <Hero />
-        <CategorySection />
-        <TrendingJobs />
-        {/* <StatsBanner /> */}
-        <PromotionCards />
-        <div className="container">
-          <PromotedBusinesses variant="home" />
-        </div>
-        <SpecialPromotions />
-        <DiscoverJobs />
-        <JoinCommunity />
-        <HiringBanner />
-        <BlogSection />
-        <BrowseJobs />
+
+        {isLoggedIn ? (
+          <div className="container home-split-layout mt-5">
+            <div className="row g-4 align-items-start">
+              {/* Left Sidebar (Sticky, hidden on mobile, max 300px) */}
+              <aside className="col-lg-3 d-none d-lg-block sticky-sidebar" style={{ maxWidth: '300px' }}>
+                <ProfileSidebar />
+              </aside>
+
+              {/* Right Main Content */}
+              <div className="col-lg-9 col-12 home-main-content">
+                <CategorySection />
+                <TrendingJobs />
+                {/* <PromotionCards /> */}
+                <div className="container p-0">
+                  <PromotedBusinesses variant="home" />
+                </div>
+                {/* <SpecialPromotions /> */}
+                <DiscoverJobs />
+                {/* <JoinCommunity /> */}
+                {/* <HiringBanner /> */}
+                <BlogSection />
+                {/* <BrowseJobs /> */}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <CategorySection />
+            <TrendingJobs />
+            {/* <PromotionCards /> */}
+            <div className="container">
+              <PromotedBusinesses variant="home" />
+            </div>
+            {/* <SpecialPromotions /> */}
+            <DiscoverJobs />
+            {/* <JoinCommunity /> */}
+            {/* <HiringBanner /> */}
+            <BlogSection />
+            {/* <BrowseJobs /> */}
+          </>
+        )}
       </main>
     </>
   );

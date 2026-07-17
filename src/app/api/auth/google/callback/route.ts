@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { users, userRoles } from '@/db/schema';
-import { signToken } from '@/lib/auth';
+import { signToken, getAuthFromRequest } from '@/lib/auth';
 import { COOKIE_OPTIONS } from '@/lib/constants';
 
 // GET /api/auth/google/callback — Handle Google OAuth callback
 export async function GET(req: NextRequest) {
   const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+  let loggedInUserId: string | null = null;
 
   try {
     const code = req.nextUrl.searchParams.get('code');
@@ -55,29 +56,49 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(`${FRONTEND_URL}/login?error=oauth_failed`);
     }
 
-    // Check if user exists by googleId
-    let [user] = await db.select().from(users).where(eq(users.googleId, googleId)).limit(1);
+    // Check if the user is already logged in
+    const authPayload = await getAuthFromRequest(req);
+    loggedInUserId = authPayload?.userId || null;
 
-    if (!user) {
-      // Check if user exists by email (to link accounts)
-      [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    let user;
 
-      if (user) {
-        // Update user to link Google ID and avatar
-        [user] = await db.update(users)
-          .set({ googleId, avatarUrl })
-          .where(eq(users.id, user.id))
-          .returning();
-      } else {
-        // Create brand new user
-        [user] = await db.insert(users).values({
-          email,
-          googleId,
-          avatarUrl,
-        }).returning();
+    if (loggedInUserId) {
+      // User is already logged in, trying to connect Google account
+      const [existingUserWithGoogle] = await db.select().from(users).where(eq(users.googleId, googleId)).limit(1);
+      
+      if (existingUserWithGoogle && existingUserWithGoogle.id !== loggedInUserId) {
+        return NextResponse.redirect(`${FRONTEND_URL}/profile?tab=settings&error=google_already_linked`);
+      }
 
-        // Default role: job_seeker (roleId = 1)
-        await db.insert(userRoles).values({ userId: user.id, roleId: 1 });
+      [user] = await db.update(users)
+        .set({ googleId, avatarUrl })
+        .where(eq(users.id, loggedInUserId))
+        .returning();
+    } else {
+      // Normal sign in/up flow
+      let [existingUser] = await db.select().from(users).where(eq(users.googleId, googleId)).limit(1);
+      user = existingUser;
+
+      if (!user) {
+        // Check if user exists by email (to link accounts)
+        const [userByEmail] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+        if (userByEmail) {
+          [user] = await db.update(users)
+            .set({ googleId, avatarUrl })
+            .where(eq(users.id, userByEmail.id))
+            .returning();
+        } else {
+          // Create brand new user
+          [user] = await db.insert(users).values({
+            email,
+            googleId,
+            avatarUrl,
+          }).returning();
+
+          // Default role: job_seeker (roleId = 1)
+          await db.insert(userRoles).values({ userId: user.id, roleId: 1 });
+        }
       }
     }
 
@@ -87,11 +108,17 @@ export async function GET(req: NextRequest) {
 
     const token = await signToken({ userId: user.id, email: user.email, roles: roleIds });
 
-    const response = NextResponse.redirect(`${FRONTEND_URL}/?token=${token}`);
+    let response;
+    if (loggedInUserId) {
+      response = NextResponse.redirect(`${FRONTEND_URL}/profile?tab=settings&success=google_connected`);
+    } else {
+      response = NextResponse.redirect(`${FRONTEND_URL}/?token=${token}`);
+    }
     response.cookies.set('token', token, COOKIE_OPTIONS);
     return response;
   } catch (error: any) {
     console.error('❌ Google OAuth callback error:', error.message);
-    return NextResponse.redirect(`${FRONTEND_URL}/login?error=oauth_failed`);
+    const destination = loggedInUserId ? 'profile?tab=settings' : 'login';
+    return NextResponse.redirect(`${FRONTEND_URL}/${destination}?error=oauth_failed`);
   }
 }

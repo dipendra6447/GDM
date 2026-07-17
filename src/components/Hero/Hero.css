@@ -166,6 +166,13 @@
   padding-right: 20px;
 }
 
+.hero-select-field {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
 .hero-search-input::placeholder {
   color: #b0b7c3;
 }

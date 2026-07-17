@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 
 interface Props {
@@ -11,6 +11,7 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
   const { updateProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   
   const [formData, setFormData] = useState({
     businessName: initialData?.businessName || '',
@@ -29,6 +30,23 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
   });
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/categories/business');
+        if (res.ok) {
+          const result = await res.json();
+          if (result.success) {
+            setCategories(result.data);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch business categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -73,7 +91,12 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
           </div>
           <div className="col-md-6 profile-form-group">
             <label className="profile-label">Business Category</label>
-            <input type="text" name="businessCategory" className="profile-input" placeholder="e.g. Retail, Consulting" value={formData.businessCategory} onChange={handleInputChange} />
+            <select name="businessCategory" className="profile-select" value={formData.businessCategory} onChange={handleInputChange}>
+              <option value="">Select Category</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.name}>{cat.name}</option>
+              ))}
+            </select>
           </div>
           <div className="col-md-6 profile-form-group">
             <label className="profile-label">Foundation Date</label>
@@ -124,19 +147,19 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
         </div>
         <div className="row">
           <div className="col-md-6 profile-form-group">
-            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Website URL</label>
+            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Website URL (Optional)</label>
             <input type="url" name="websiteUrl" className="profile-input" placeholder="https://yourbusiness.com" value={formData.websiteUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-6 profile-form-group">
-            <label className="profile-label"><i className="bi bi-linkedin me-1" style={{ color: '#0077b5' }} />LinkedIn URL</label>
+            <label className="profile-label"><i className="bi bi-linkedin me-1" style={{ color: '#0077b5' }} />LinkedIn URL (Optional)</label>
             <input type="url" name="linkedinUrl" className="profile-input" placeholder="https://linkedin.com/company/..." value={formData.linkedinUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-6 profile-form-group">
-            <label className="profile-label"><i className="bi bi-instagram me-1" style={{ color: '#e1306c' }} />Instagram URL</label>
+            <label className="profile-label"><i className="bi bi-instagram me-1" style={{ color: '#e1306c' }} />Instagram URL (Optional)</label>
             <input type="url" name="instagramUrl" className="profile-input" placeholder="https://instagram.com/..." value={formData.instagramUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-6 profile-form-group">
-            <label className="profile-label"><i className="bi bi-facebook me-1" style={{ color: '#1877f2' }} />Facebook URL</label>
+            <label className="profile-label"><i className="bi bi-facebook me-1" style={{ color: '#1877f2' }} />Facebook URL (Optional)</label>
             <input type="url" name="facebookUrl" className="profile-input" placeholder="https://facebook.com/..." value={formData.facebookUrl} onChange={handleInputChange} />
           </div>
         </div>

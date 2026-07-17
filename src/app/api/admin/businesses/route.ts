@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { users, userRoles, businessPromoterProfiles } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
@@ -16,6 +17,13 @@ export async function POST(req: NextRequest) {
     const { email, password, businessName, businessCategory, gstNumber, contactPhone } = await req.json();
     if (!email || !password) {
       return NextResponse.json({ success: false, message: 'Email and password required' }, { status: 400 });
+    }
+
+    if (businessName) {
+      const [existing] = await db.select().from(businessPromoterProfiles).where(eq(businessPromoterProfiles.businessName, businessName)).limit(1);
+      if (existing) {
+        return NextResponse.json({ success: false, message: 'A business with this name is already registered.' }, { status: 400 });
+      }
     }
 
     const passwordHash = await bcrypt.hash(password, 12);

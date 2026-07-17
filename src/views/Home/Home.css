@@ -10,4 +10,40 @@
   width: 100%;
 }
 
+/* ── Sticky Sidebar Layout for Logged In State ── */
+.home-layout-row {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
+.sticky-sidebar {
+  align-self: start;
+}
+
+@media (min-width: 992px) {
+  .home-layout-row {
+    flex-direction: row;
+    align-items: start;
+  }
+
+  .sticky-sidebar {
+    position: sticky;
+    top: 104px; /* navbar height (80px) + spacing (24px) */
+    z-index: 10;
+    width: 300px;
+    flex: 0 0 300px;
+  }
+
+  .home-main-content {
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+
+  .home-main-content .container {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100% !important;
+  }
+}

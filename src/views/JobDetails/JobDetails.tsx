@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import './JobDetails.css';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import JobDetailsBreadcrumb from '../../components/JobDetailsBreadcrumb/JobDetailsBreadcrumb';
@@ -17,6 +18,8 @@ type TabKey = 'details' | 'company' | 'reviews' | 'applicants';
 
 const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
   const router = useRouter();
+  const { user, isLoggedIn } = useAuth();
+  const isEmployer = isLoggedIn && !user?.roles?.includes(1);
   const [activeTab, setActiveTab] = useState<TabKey>('details');
   const [saved, setSaved] = useState(false);
   const [applied, setApplied] = useState(false);
@@ -60,34 +63,11 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
     fetchJob();
   }, [slug]);
 
-  const handleSave = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+  const handleSave = () => {
+    if (!isLoggedIn) {
       router.push('/login');
-      return;
-    }
-    try {
-      const method = saved ? 'DELETE' : 'POST';
-      const url = saved ? `/api/jobs/saved/${job.id}` : `/api/jobs/saved`;
-      const options: RequestInit = {
-        method,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          ...(method === 'POST' ? { 'Content-Type': 'application/json' } : {})
-        },
-        ...(method === 'POST' ? { body: JSON.stringify({ jobId: job.id }) } : {})
-      };
-      
-      const res = await fetch(url, options);
-      const json = await res.json();
-      
-      if (json.success) {
-        setSaved(!saved);
-      } else {
-        alert(json.message || 'Failed to update saved status');
-      }
-    } catch (err) {
-      console.error("Error saving job:", err);
+    } else {
+      router.push('/dashboard/saved');
     }
   };
 
@@ -241,6 +221,7 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
             applied={applied}
             onApply={handleApply}
             job={job}
+            isEmployer={isEmployer}
           />
 
           {/* Tabs */}
@@ -408,14 +389,16 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
           <SimilarJobs category={job?.category} currentJobId={job?.id} />
 
           {/* Ready to Apply Banner */}
-          <JobDetailsReadyBanner
-            saved={saved}
-            onSave={handleSave}
-            applied={applied}
-            onApply={handleApply}
-            jobActive={job?.isActive}
-            applicantCount={job?.applicantCount}
-          />
+          {!isEmployer && (
+            <JobDetailsReadyBanner
+              saved={saved}
+              onSave={handleSave}
+              applied={applied}
+              onApply={handleApply}
+              jobActive={job?.isActive}
+              applicantCount={job?.applicantCount}
+            />
+          )}
         </div>
 
         {/* Newsletter */}

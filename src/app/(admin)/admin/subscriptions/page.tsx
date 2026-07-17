@@ -22,6 +22,11 @@ export default function SubscriptionsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Filtering States
+  const [emailSearch, setEmailSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+
   // Plan Modal States
   const [showModal, setShowModal] = useState(false);
   const [showUserSubModal, setShowUserSubModal] = useState(false);
@@ -175,6 +180,59 @@ export default function SubscriptionsPage() {
 
         {error && <div className="alert alert-danger">{error}</div>}
 
+        {activeTab === 'users' && (
+          <div className="row g-3 mb-4 p-3 mx-0 bg-light rounded align-items-end" style={{ border: '1px solid #dee2e6' }}>
+            <div className="col-md-5">
+              <label className="form-label font-weight-bold" style={{ fontSize: '0.85rem', color: '#495057' }}>Search by User Email</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder="e.g. user@example.com" 
+                value={emailSearch}
+                onChange={(e) => setEmailSearch(e.target.value)} 
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label font-weight-bold" style={{ fontSize: '0.85rem', color: '#495057' }}>Subscription Type</label>
+              <select 
+                className="form-select"
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+              >
+                <option value="all">All Types</option>
+                <option value="job_seeker">Job Seeker</option>
+                <option value="job_poster">Employer</option>
+                <option value="business_promoter">Business Promoter</option>
+              </select>
+            </div>
+            <div className="col-md-3">
+              <label className="form-label font-weight-bold" style={{ fontSize: '0.85rem', color: '#495057' }}>Status</label>
+              <select 
+                className="form-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+            <div className="col-md-1 d-grid">
+              <button 
+                className="btn btn-outline-secondary" 
+                type="button"
+                onClick={() => {
+                  setEmailSearch('');
+                  setTypeFilter('all');
+                  setStatusFilter('all');
+                }}
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="table-responsive">
           {activeTab === 'users' ? (
             <table className="admin-table">
@@ -191,24 +249,33 @@ export default function SubscriptionsPage() {
               <tbody>
                 {loading ? (
                   <tr><td colSpan={6} className="text-center py-4">Loading...</td></tr>
-                ) : subs.length === 0 ? (
-                  <tr><td colSpan={6} className="text-center py-4">No user subscriptions found.</td></tr>
-                ) : (
-                  subs.map((sub) => (
+                ) : (() => {
+                  const filtered = subs.filter(sub => {
+                    const matchesEmail = !emailSearch || sub.userEmail?.toLowerCase().includes(emailSearch.toLowerCase());
+                    const matchesType = typeFilter === 'all' || sub.subscriptionType === typeFilter;
+                    const matchesStatus = statusFilter === 'all' || sub.status === statusFilter;
+                    return matchesEmail && matchesType && matchesStatus;
+                  });
+
+                  if (filtered.length === 0) {
+                    return <tr><td colSpan={6} className="text-center py-4">No matching user subscriptions found.</td></tr>;
+                  }
+
+                  return filtered.map((sub) => (
                     <tr key={sub.id}>
                       <td><span className="user-email">{sub.userEmail}</span></td>
-                      <td><span className="badge badge-secondary">{sub.subscriptionType}</span></td>
+                      <td><span className="badge bg-secondary text-capitalize">{sub.subscriptionType?.replace('_', ' ')}</span></td>
                       <td className="text-capitalize">{sub.tier}</td>
-                      <td><span className={`status-badge ${sub.status === 'active' ? 'badge-success' : 'badge-secondary'}`}>{sub.status}</span></td>
+                      <td><span className={`badge ${sub.status === 'active' ? 'bg-success' : 'bg-secondary'}`}>{sub.status}</span></td>
                       <td>{new Date(sub.expiresAt).toLocaleDateString()}</td>
                       <td>
                         {sub.status === 'active' && (
-                          <button className="btn-icon text-danger" onClick={() => handleExpire(sub.id)}><MdCancel /></button>
+                          <button className="btn btn-sm btn-outline-danger" onClick={() => handleExpire(sub.id)}><MdCancel className="fs-5" /></button>
                         )}
                       </td>
                     </tr>
-                  ))
-                )}
+                  ));
+                })()}
               </tbody>
             </table>
           ) : (

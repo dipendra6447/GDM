@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import './SimilarJobs.css';
 
 interface SimilarJobsProps {
@@ -22,6 +23,8 @@ const getInitials = (name: string) => {
 };
 
 const SimilarJobs: React.FC<SimilarJobsProps> = ({ category, currentJobId }) => {
+  const { user, isLoggedIn } = useAuth();
+  const isEmployer = isLoggedIn && !user?.roles?.includes(1);
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -106,9 +109,9 @@ const SimilarJobs: React.FC<SimilarJobsProps> = ({ category, currentJobId }) => 
                   href={`/jobs/${job.slug}`}
                   className="sj-apply-btn"
                   id={`sj-apply-${job.id}`}
-                  aria-label={`Apply for ${job.title}`}
+                  aria-label={isEmployer ? `View ${job.title}` : `Apply for ${job.title}`}
                 >
-                  Apply <i className="bi bi-arrow-right" />
+                  {isEmployer ? 'View' : 'Apply'} <i className="bi bi-arrow-right" />
                 </a>
               </div>
             </article>

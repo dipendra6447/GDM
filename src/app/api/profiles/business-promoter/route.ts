@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm';
 import { db } from '@/db';
 import { businessPromoterProfiles } from '@/db/schema';
 import { requireAuth } from '@/lib/auth';
@@ -25,6 +25,25 @@ export async function PUT(req: NextRequest) {
     const userId = authPayload.userId;
     const { fields, files } = await parseFormData(req);
     const updateData: any = { ...fields };
+
+    if (updateData.businessName) {
+      const [existingBusiness] = await db.select()
+        .from(businessPromoterProfiles)
+        .where(
+          and(
+            eq(businessPromoterProfiles.businessName, updateData.businessName),
+            ne(businessPromoterProfiles.userId, userId)
+          )
+        )
+        .limit(1);
+
+      if (existingBusiness) {
+        return NextResponse.json({
+          success: false,
+          message: 'A business with this name is already registered.'
+        }, { status: 400 });
+      }
+    }
 
     const logoFile = files.find(f => f.fieldname === 'logo');
     if (logoFile) updateData.logoUrl = logoFile.filepath;

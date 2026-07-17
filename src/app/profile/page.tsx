@@ -326,7 +326,7 @@ export default function ProfilePage() {
 
               {/* Profile Completion (specific to active role tab) */}
               <div className="profile-completion-block">
-                <div className="profile-completion-header">
+                <div className="profile-completion-header d-flex justify-content-between align-items-center mb-2">
                   <span className="profile-completion-label">
                     {ROLE_LABELS[activeRole]} Profile Strength
                   </span>

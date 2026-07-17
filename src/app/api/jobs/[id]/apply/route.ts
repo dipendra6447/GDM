@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const { id: jobId } = await params;
     const authPayload = await getAuthFromRequest(req);
-    if (!authPayload) {
+    if (!authPayload || !authPayload.roles.includes(1)) {
       return NextResponse.json({ success: true, applied: false });
     }
     const [existing] = await db
@@ -42,6 +42,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id: jobId } = await params;
     const authPayload = await requireAuth(req);
+    if (!authPayload.roles.includes(1)) {
+      return NextResponse.json({ success: false, message: 'Employers are not allowed to apply for jobs.' }, { status: 403 });
+    }
     const userId = authPayload.userId;
 
     // Check active subscription or free limit

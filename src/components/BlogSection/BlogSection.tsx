@@ -1,11 +1,11 @@
 "use client";
 import React from 'react';
 import './BlogSection.css';
-import blogCareerTips from '../../assets/images/blog_career_tips.png';
-import blogIndustryInsights from '../../assets/images/blog_industry_insights.png';
-import blogSalaryGuide from '../../assets/images/blog_salary_guide.png';
+import serviceBuildWebsite from '../../assets/images/service_build_website.png';
+import serviceBuildMobileApp from '../../assets/images/service_build_mobile_app.png';
+import serviceSeoOptimization from '../../assets/images/service_seo_optimization.png';
 
-interface BlogPost {
+interface ServiceItem {
   id: number;
   image: any;
   imageAlt: string;
@@ -21,156 +21,156 @@ interface BlogPost {
   excerpt: string;
 }
 
-const blogs: BlogPost[] = [
+const services: ServiceItem[] = [
   {
     id: 1,
-    image: blogCareerTips,
-    imageAlt: 'Career coach presenting strategies on a whiteboard',
-    category: 'Career Tips',
+    image: serviceBuildWebsite,
+    imageAlt: 'High-tech coding monitor concept',
+    category: 'Web Development',
     categoryColor: '#2454FF',
     categoryBg: 'rgba(36,84,255,0.1)',
-    date: 'May 18, 2024',
-    author: 'Sarah Johnson',
-    authorInitials: 'SJ',
+    date: 'Est. 2-3 Weeks',
+    author: 'Dev Team',
+    authorInitials: 'DT',
     authorAvatarColor: '#2454FF',
-    readTime: '5 min read',
-    title: '10 Resume Mistakes That Are Costing You Interviews in 2024',
+    readTime: 'Custom Quote',
+    title: 'Custom Website Design & Development',
     excerpt:
-      'Discover the most common resume mistakes job seekers make and learn how to fix them to dramatically increase your interview rate.',
+      'We design and build high-performance, responsive websites with state-of-the-art animations, clean interfaces, and robust backend systems.',
   },
   {
     id: 2,
-    image: blogIndustryInsights,
-    imageAlt: 'Tech professionals reviewing hiring data on a laptop',
-    category: 'Industry Insights',
+    image: serviceBuildMobileApp,
+    imageAlt: 'Premium smartphone mockup showing interactive UI dashboard',
+    category: 'App Development',
     categoryColor: '#7B3EFF',
     categoryBg: 'rgba(123,62,255,0.1)',
-    date: 'May 15, 2024',
-    author: 'Marcus Lee',
-    authorInitials: 'ML',
+    date: 'Est. 4-6 Weeks',
+    author: 'App Team',
+    authorInitials: 'AT',
     authorAvatarColor: '#7B3EFF',
-    readTime: '7 min read',
-    title: 'Tech Job Market in 2024: What You Need to Know',
+    readTime: 'Custom Quote',
+    title: 'Native & Cross-Platform Mobile Applications',
     excerpt:
-      "The tech job market is evolving rapidly. Here's a look at which roles are in demand and what skills companies are paying premiums for.",
+      'Launch premium mobile apps for iOS and Android built with Flutter or React Native, featuring smooth transitions and beautiful native UX.',
   },
   {
     id: 3,
-    image: blogSalaryGuide,
-    imageAlt: 'Professionals shaking hands after salary negotiation',
-    category: 'Salary Guide',
+    image: serviceSeoOptimization,
+    imageAlt: 'SEO search analytics dashboard on a laptop',
+    category: 'SEO & Marketing',
     categoryColor: '#14B87A',
     categoryBg: 'rgba(20,184,122,0.1)',
-    date: 'May 12, 2024',
-    author: 'Emma Rodriguez',
-    authorInitials: 'ER',
+    date: 'Est. 1-2 Weeks',
+    author: 'SEO Team',
+    authorInitials: 'ST',
     authorAvatarColor: '#14B87A',
-    readTime: '6 min read',
-    title: 'How to Negotiate Your Salary: Scripts That Actually Work',
+    readTime: 'Custom Quote',
+    title: 'Search Engine Optimization & Google Audit',
     excerpt:
-      'Salary negotiation is a skill. Learn proven frameworks, exact scripts, and timing strategies that result in 15–30% higher compensation.',
+      'Drive organic search rankings, enhance page loading speeds, perform technical audits, and execute keyword targeting to scale conversions.',
   },
 ];
 
 const BlogSection: React.FC = () => {
   return (
-    <section className="blog-section section-padding" id="blog" aria-label="Expert advice and insights">
+    <section className="blog-section section-padding" id="blog" aria-label="Our Extra Services">
       <div className="container">
 
         {/* ── Section Header ── */}
         <div className="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-5">
           <div>
             <div className="section-label">
-              <i className="bi bi-journal-text me-2"></i>Career Tips
+              <i className="bi bi-gear-fill me-2"></i>Extra Services
             </div>
             <h2 className="section-heading mb-2">
-              Expert <span className="gradient-text">Advice &amp; Insights</span>
+              Premium <span className="gradient-text">Business Solutions</span>
             </h2>
             <p className="section-subtext" style={{ margin: 0 }}>
-              Stay ahead with the latest career strategies and industry insights
+              Accelerate your digital presence with our customized design, app development, and search marketing
             </p>
           </div>
-          <a href="#" className="btn-outline-custom" id="view-all-blog-btn" aria-label="View all articles">
-            All Articles <i className="bi bi-arrow-right ms-2"></i>
+          <a href="/#contact" className="btn-outline-custom" id="view-all-blog-btn" aria-label="Get custom quotation">
+            Contact Us <i className="bi bi-arrow-right ms-2"></i>
           </a>
         </div>
 
-        {/* ── Blog Cards Grid ── */}
+        {/* ── Services Cards Grid ── */}
         <div className="blog-grid">
-          {blogs.map((blog) => (
+          {services.map((service) => (
             <article
-              key={blog.id}
-              id={`blog-card-${blog.id}`}
+              key={service.id}
+              id={`blog-card-${service.id}`}
               className="blog-card"
-              aria-label={blog.title}
+              aria-label={service.title}
             >
               {/* Cover Image */}
               <div className="blog-card-img-wrap">
                 <img
-                  src={blog.image.src || blog.image}
-                  alt={blog.imageAlt}
+                  src={service.image.src || service.image}
+                  alt={service.imageAlt}
                   className="blog-card-img"
                   loading="lazy"
                 />
                 {/* Category badge floated over image */}
                 <span
                   className="blog-img-badge"
-                  style={{ background: blog.categoryColor }}
+                  style={{ background: service.categoryColor }}
                 >
-                  {blog.category}
+                  {service.category}
                 </span>
               </div>
 
               {/* Card Body */}
               <div className="blog-card-body">
 
-                {/* Meta row: date • author */}
+                {/* Meta row: duration • team */}
                 <div className="blog-meta-row">
                   <span className="blog-meta-date">
                     <i className="bi bi-calendar3 me-1"></i>
-                    {blog.date}
+                    {service.date}
                   </span>
                   <span className="blog-meta-sep">•</span>
                   <span className="blog-meta-author">
                     <span
                       className="blog-author-initials"
-                      style={{ background: blog.authorAvatarColor }}
+                      style={{ background: service.authorAvatarColor }}
                       aria-hidden="true"
                     >
-                      {blog.authorInitials}
+                      {service.authorInitials}
                     </span>
-                    By {blog.author}
+                    By {service.author}
                   </span>
                 </div>
 
                 {/* Category tag */}
                 <span
                   className="blog-category-tag"
-                  style={{ color: blog.categoryColor, background: blog.categoryBg }}
+                  style={{ color: service.categoryColor, background: service.categoryBg }}
                 >
-                  <i className="bi bi-tag me-1"></i>
-                  {blog.category}
+                  <i className="bi bi-code-slash me-1"></i>
+                  {service.category}
                 </span>
 
                 {/* Title */}
-                <h3 className="blog-title">{blog.title}</h3>
+                <h3 className="blog-title">{service.title}</h3>
 
                 {/* Excerpt */}
-                <p className="blog-excerpt">{blog.excerpt}</p>
+                <p className="blog-excerpt">{service.excerpt}</p>
 
                 {/* Footer */}
                 <div className="blog-card-footer">
                   <span className="blog-read-time">
-                    <i className="bi bi-clock me-1"></i>
-                    {blog.readTime}
+                    <i className="bi bi-currency-dollar me-1"></i>
+                    {service.readTime}
                   </span>
                   <a
-                    href="#"
+                    href="/#contact"
                     className="blog-read-link"
-                    id={`blog-read-${blog.id}`}
-                    aria-label={`Read article: ${blog.title}`}
+                    id={`blog-read-${service.id}`}
+                    aria-label={`Get quote for: ${service.title}`}
                   >
-                    Read More <i className="bi bi-arrow-right ms-1"></i>
+                    Get Quote <i className="bi bi-arrow-right ms-1"></i>
                   </a>
                 </div>
 

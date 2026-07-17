@@ -4,6 +4,7 @@ import Link from 'next/link';
 interface RecommendedJobCardProps {
   job: {
     id: string;
+    slug: string;
     title: string;
     companyName: string | null;
     location: string;
@@ -33,7 +34,7 @@ const RecommendedJobCard: React.FC<RecommendedJobCardProps> = ({ job, iconColor 
         <span className="rjc-tag"><i className="bi bi-geo-alt"></i> {job.location || 'Remote'}</span>
         <span className="rjc-tag"><i className="bi bi-briefcase"></i> {job.jobType ? job.jobType.replace('_', ' ') : 'Full Time'}</span>
       </div>
-      <Link href={`/jobs/${job.id}`} className="rjc-btn">
+      <Link href={`/jobs/${job.slug}`} className="rjc-btn">
         View Details
       </Link>
     </div>

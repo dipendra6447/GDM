@@ -453,3 +453,11 @@
     display: none;
   }
 }
+
+.sr-card-active {
+  border-color: #0B1739 !important; /* Premium dark navy/black border */
+  border-width: 1.5px !important;
+  box-shadow: 0 4px 16px rgba(11, 23, 57, 0.08) !important;
+  background-color: #fff !important;
+}
+

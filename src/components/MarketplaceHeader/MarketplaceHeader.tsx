@@ -1,14 +1,18 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from "../../hooks/useAuth";
 import RoleUpgradeModal from '../RoleUpgradeModal/RoleUpgradeModal';
 import './MarketplaceHeader.css';
 
 const MarketplaceHeader: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [scrolled, setScrolled] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(() => searchParams.get('keyword') || '');
   const [searchFocused, setSearchFocused] = useState(false);
   
   // Auth state from Navbar
@@ -18,7 +22,6 @@ const MarketplaceHeader: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const { user, isLoading, isLoggedIn, logout } = useAuth();
-  const router = useRouter();
 
   const handleActionClick = (role: 1 | 2 | 3) => {
     if (!isLoggedIn) {
@@ -32,6 +35,21 @@ const MarketplaceHeader: React.FC = () => {
     }
     setTargetRole(role);
     setModalOpen(true);
+  };
+
+  useEffect(() => {
+    setSearchValue(searchParams.get('keyword') || '');
+  }, [searchParams]);
+
+  const triggerSearch = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (searchValue.trim()) {
+      params.set('keyword', searchValue.trim());
+    } else {
+      params.delete('keyword');
+    }
+    params.set('page', '1');
+    router.push(`/jobs?${params.toString()}`);
   };
 
   useEffect(() => {
@@ -92,6 +110,11 @@ const MarketplaceHeader: React.FC = () => {
             onChange={(e) => setSearchValue(e.target.value)}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                triggerSearch();
+              }
+            }}
             aria-label="Search opportunities"
             id="mp-global-search"
           />
@@ -108,12 +131,23 @@ const MarketplaceHeader: React.FC = () => {
         </div>
 
         {/* Search Button */}
-        <button className="mp-search-btn" type="button" id="mp-search-submit">
+        <button className="mp-search-btn" type="button" id="mp-search-submit" onClick={triggerSearch}>
           Search
         </button>
 
         {/* Save Search */}
-        <button className="mp-save-search" type="button" id="mp-save-search">
+        <button
+          className="mp-save-search"
+          type="button"
+          id="mp-save-search"
+          onClick={() => {
+            if (!isLoggedIn) {
+              router.push('/login');
+            } else {
+              router.push('/dashboard/saved');
+            }
+          }}
+        >
           <i className="bi bi-bookmark" />
           <span>Save Search</span>
         </button>

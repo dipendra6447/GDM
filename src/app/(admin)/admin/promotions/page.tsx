@@ -96,6 +96,11 @@ export default function PromotionsPage() {
               <tr>
                 <th>Business Name</th>
                 <th>Owner Email</th>
+                <th>Impressions</th>
+                <th>Clicks</th>
+                <th>CTR</th>
+                <th>Avg CPC</th>
+                <th>Total Spent</th>
                 <th>Submitted</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -104,11 +109,11 @@ export default function PromotionsPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-4">Loading promotions...</td>
+                  <td colSpan={10} className="text-center py-4">Loading promotions...</td>
                 </tr>
               ) : promotions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-4">No promotions found.</td>
+                  <td colSpan={10} className="text-center py-4">No promotions found.</td>
                 </tr>
               ) : (
                 promotions.map(promo => (
@@ -122,6 +127,11 @@ export default function PromotionsPage() {
                       )}
                     </td>
                     <td>{promo.userEmail}</td>
+                    <td>{promo.impressions !== undefined ? promo.impressions : '0'}</td>
+                    <td>{promo.clicks !== undefined ? promo.clicks : '0'}</td>
+                    <td>{promo.ctr !== undefined ? `${promo.ctr}%` : '0.00%'}</td>
+                    <td>{promo.cpc !== undefined ? `₹${promo.cpc}` : '₹0.00'}</td>
+                    <td>{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</td>
                     <td>{new Date(promo.createdAt).toLocaleDateString()}</td>
                     <td>
                       <span className={`status-badge ${getStatusBadgeClass(promo.status)}`}>
@@ -132,17 +142,17 @@ export default function PromotionsPage() {
                       {promo.status === 'pending_approval' && (
                         <div className="action-buttons">
                           <button 
-                            className="btn-icon text-success"
-                            onClick={() => handleUpdateStatus(promo.id, 'active')}
-                            title="Approve"
-                          >
+                             className="btn-icon text-success"
+                             onClick={() => handleUpdateStatus(promo.id, 'active')}
+                             title="Approve"
+                           >
                             <MdCheck />
                           </button>
                           <button 
-                            className="btn-icon text-danger"
-                            onClick={() => handleUpdateStatus(promo.id, 'rejected')}
-                            title="Reject"
-                          >
+                             className="btn-icon text-danger"
+                             onClick={() => handleUpdateStatus(promo.id, 'rejected')}
+                             title="Reject"
+                           >
                             <MdClose />
                           </button>
                         </div>

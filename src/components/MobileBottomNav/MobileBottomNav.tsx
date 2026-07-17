@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import './MobileBottomNav.css';
 
 interface NavItem {
@@ -19,7 +21,49 @@ const navItems: NavItem[] = [
 ];
 
 const MobileBottomNav: React.FC = () => {
-  const [active, setActive] = useState('home');
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isLoggedIn } = useAuth();
+
+  // Determine active item based on current pathname
+  let active = 'home';
+  if (pathname === '/') {
+    active = 'home';
+  } else if (pathname.startsWith('/jobs')) {
+    active = 'search';
+  } else if (pathname.startsWith('/dashboard/saved')) {
+    active = 'saved';
+  } else if (pathname.startsWith('/profile')) {
+    active = 'profile';
+  } else if (pathname.startsWith('/dashboard')) {
+    active = 'notifications';
+  }
+
+  const handleNavClick = (key: string) => {
+    if (key === 'home') {
+      router.push('/');
+    } else if (key === 'search') {
+      router.push('/jobs');
+    } else if (key === 'saved') {
+      if (!isLoggedIn) {
+        router.push('/login');
+      } else {
+        router.push('/dashboard/saved');
+      }
+    } else if (key === 'profile') {
+      if (!isLoggedIn) {
+        router.push('/login');
+      } else {
+        router.push('/profile');
+      }
+    } else if (key === 'notifications') {
+      if (!isLoggedIn) {
+        router.push('/login');
+      } else {
+        router.push('/dashboard');
+      }
+    }
+  };
 
   return (
     <nav className="mp-bottom-nav" aria-label="Mobile navigation" id="mp-bottom-nav">
@@ -27,7 +71,7 @@ const MobileBottomNav: React.FC = () => {
         <button
           key={item.key}
           className={`mp-bn-item ${active === item.key ? 'mp-bn-active' : ''}`}
-          onClick={() => setActive(item.key)}
+          onClick={() => handleNavClick(item.key)}
           aria-label={item.label}
           type="button"
           id={`mp-bn-${item.key}`}

@@ -1,5 +1,6 @@
 import EmployerDashboard from '@/views/EmployerDashboard/EmployerDashboard';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Employer Dashboard | JobNest',
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function EmployerDashboardPage() {
-  return <EmployerDashboard />;
+  return (
+    <Suspense fallback={<div style={{ padding: '2rem' }}>Loading Dashboard...</div>}>
+      <EmployerDashboard />
+    </Suspense>
+  );
 }

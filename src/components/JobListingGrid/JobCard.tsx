@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { ViewMode } from '../JobResultsHeader/JobResultsHeader';
 
 export interface Job {
@@ -41,6 +42,8 @@ const jobTypeColors: Record<string, string> = {
 };
 
 const JobCard: React.FC<JobCardProps> = ({ job, viewMode }) => {
+  const { user, isLoggedIn } = useAuth();
+  const isEmployer = isLoggedIn && !user?.roles?.includes(1);
   const [saved, setSaved] = useState(false);
   const modeColor = workModeColors[job.workMode] || '#6B7280';
   const typeColor = jobTypeColors[job.jobType] || '#6B7280';
@@ -72,15 +75,17 @@ const JobCard: React.FC<JobCardProps> = ({ job, viewMode }) => {
             </span>
           )}
         </div>
-        <button
-          className={`jc-save-btn ${saved ? 'saved' : ''}`}
-          onClick={() => setSaved(!saved)}
-          aria-label={saved ? `Unsave job: ${job.title}` : `Save job: ${job.title}`}
-          id={`save-job-${job.id}`}
-          type="button"
-        >
-          <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
-        </button>
+        {!isEmployer && (
+          <button
+            className={`jc-save-btn ${saved ? 'saved' : ''}`}
+            onClick={() => setSaved(!saved)}
+            aria-label={saved ? `Unsave job: ${job.title}` : `Save job: ${job.title}`}
+            id={`save-job-${job.id}`}
+            type="button"
+          >
+            <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
+          </button>
+        )}
       </div>
 
       {/* Content */}
@@ -150,15 +155,21 @@ const JobCard: React.FC<JobCardProps> = ({ job, viewMode }) => {
             </span>
           )}
         </div>
-        <a
-          href="#"
-          className="jc-apply-btn"
-          id={`apply-job-${job.id}`}
-          aria-label={`Apply for ${job.title} at ${job.company}`}
-        >
-          Apply Now
-          <i className="bi bi-arrow-right ms-2" />
-        </a>
+        {!isEmployer ? (
+          <a
+            href="#"
+            className="jc-apply-btn"
+            id={`apply-job-${job.id}`}
+            aria-label={`Apply for ${job.title} at ${job.company}`}
+          >
+            Apply Now
+            <i className="bi bi-arrow-right ms-2" />
+          </a>
+        ) : (
+          <span className="jc-apply-btn disabled-btn" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+            Employer Account
+          </span>
+        )}
       </div>
     </article>
   );
