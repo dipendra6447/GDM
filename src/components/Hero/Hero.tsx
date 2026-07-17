@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import "./Hero.css";
 import heroBg from "../../assets/images/hero_city_bg.png";
 
@@ -12,6 +13,7 @@ const popularSearches = [
 ];
 
 const Hero: React.FC = () => {
+  const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
@@ -20,7 +22,11 @@ const Hero: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ keyword, location, category });
+    const params = new URLSearchParams();
+    if (keyword) params.set("keyword", keyword);
+    if (location) params.set("location", location);
+    if (category) params.set("category", category);
+    router.push(`/jobs?${params.toString()}`);
   };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -112,13 +118,13 @@ const Hero: React.FC = () => {
                       className="hero-search-label"
                       htmlFor="hero-location"
                     >
-                      What?
+                      Where?
                     </label>
                     <input
                       id="hero-location"
                       type="text"
                       className="hero-search-input"
-                      placeholder="Job, Company, Title..."
+                      placeholder="Location, City, Country..."
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       aria-label="Location"
@@ -137,13 +143,13 @@ const Hero: React.FC = () => {
                       className="hero-search-label"
                       htmlFor="hero-category"
                     >
-                      What?
+                      Category?
                     </label>
                     <input
                       id="hero-category"
                       type="text"
                       className="hero-search-input"
-                      placeholder="Job, Company, Title..."
+                      placeholder="Design, Developer, HR..."
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       aria-label="Category"
@@ -178,6 +184,10 @@ const Hero: React.FC = () => {
                       .toLowerCase()
                       .replace(/\s+/g, "-")}`}
                     type="button"
+                    onClick={() => {
+                      setKeyword(term);
+                      router.push(`/jobs?keyword=${encodeURIComponent(term)}`);
+                    }}
                   >
                     {term}
                   </button>

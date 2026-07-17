@@ -21,6 +21,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Email already registered' }, { status: 409 });
     }
 
+    if (role === 'business_promoter' && profile?.businessName) {
+      const [existingBusiness] = await db.select()
+        .from(businessPromoterProfiles)
+        .where(eq(businessPromoterProfiles.businessName, profile.businessName as string))
+        .limit(1);
+      if (existingBusiness) {
+        return NextResponse.json({ success: false, message: 'A business with this name is already registered.' }, { status: 400 });
+      }
+    }
+
     // Map role name to roleId
     const ROLE_MAP: Record<string, number> = {
       job_seeker: 1,

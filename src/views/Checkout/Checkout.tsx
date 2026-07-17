@@ -248,6 +248,7 @@ const Checkout: React.FC = () => {
         body: JSON.stringify({
           subscriptionType: mappedRole,
           tier: item.billing,
+          amount: subtotal,
         }),
       });
 

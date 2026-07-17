@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq, and, gt } from 'drizzle-orm';
+import { eq, and, gt, sql } from 'drizzle-orm';
 import { db } from '@/db';
-import { businessPromotions, subscriptions, users } from '@/db/schema';
+import { businessPromotions, subscriptions, users, adAnalytics } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
+import { parseFormData } from '@/lib/upload';
 import { ROLES } from '@/lib/constants';
 
 // GET /api/promotions (admin — all promotions)
@@ -17,7 +18,30 @@ export async function GET(req: NextRequest) {
       bannerUrl: businessPromotions.bannerUrl, status: businessPromotions.status,
       createdAt: businessPromotions.createdAt, userId: businessPromotions.userId, userEmail: users.email,
     }).from(businessPromotions).innerJoin(users, eq(businessPromotions.userId, users.id));
-    return NextResponse.json({ success: true, data: promos });
+
+    // Fetch metrics from ad_analytics
+    const metrics = await db.select({
+      promotionId: adAnalytics.promotionId,
+      impressions: sql<number>`sum(impressions)::int`,
+      clicks: sql<number>`sum(clicks)::int`,
+      spent: sql<number>`sum(spent)::int`,
+    }).from(adAnalytics).groupBy(adAnalytics.promotionId);
+
+    const data = promos.map(promo => {
+      const metric = metrics.find(m => m.promotionId === promo.id) || { impressions: 0, clicks: 0, spent: 0 };
+      const ctr = metric.impressions > 0 ? parseFloat(((metric.clicks / metric.impressions) * 100).toFixed(2)) : 0;
+      const cpc = metric.clicks > 0 ? parseFloat((metric.spent / metric.clicks).toFixed(2)) : 0;
+      return {
+        ...promo,
+        impressions: metric.impressions,
+        clicks: metric.clicks,
+        spent: metric.spent,
+        ctr,
+        cpc
+      };
+    });
+
+    return NextResponse.json({ success: true, data });
   } catch (error: any) {
     if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     return NextResponse.json({ success: false, message: 'Failed to fetch promotions' }, { status: 500 });
@@ -28,9 +52,16 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const authPayload = await requireAuth(req);
-    const { subscriptionId, businessName, category, businessDescription, businessContactDetails, foundationDate, purpose, bannerUrl } = await req.json();
+    const { fields, files } = await parseFormData(req);
+    const { 
+      subscriptionId, businessName, category, businessDescription, 
+      businessContactDetails, foundationDate, purpose 
+    } = fields;
     const userId = authPayload.userId;
     let finalStatus = 'draft';
+
+    const bannerFile = files.find(f => f.fieldname === 'banner');
+    const bannerUrl = bannerFile ? bannerFile.filepath : (fields.bannerUrl || null);
 
     if (subscriptionId) {
       const [sub] = await db.select().from(subscriptions).where(
@@ -43,7 +74,7 @@ export async function POST(req: NextRequest) {
     const [promotion] = await db.insert(businessPromotions).values({
       userId, subscriptionId: subscriptionId || null, businessName, category, businessDescription,
       businessContactDetails, foundationDate: foundationDate ? new Date(foundationDate) : null,
-      purpose, bannerUrl: bannerUrl || null, status: finalStatus,
+      purpose, bannerUrl, status: finalStatus,
     }).returning();
 
     return NextResponse.json({

@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import './JobListing.css';
 
 // Shared components
@@ -36,18 +38,26 @@ const tabs: TabItem[] = [
 const HEADER_HEIGHT = 74;
 
 const JobListing: React.FC = () => {
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<CategoryTab>('all');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [location, setLocation] = useState('dayton');
+  const [keyword, setKeyword] = useState(() => searchParams.get('keyword') || '');
+  const [location, setLocation] = useState(() => searchParams.get('location') || 'all');
   const [distance, setDistance] = useState('25');
-  const [jobType, setJobType] = useState('all');
+  const [jobType, setJobType] = useState(() => searchParams.get('jobType') || 'all');
   const [expLevel, setExpLevel] = useState('all');
   const [sortBy, setSortBy] = useState('relevant');
 
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    setKeyword(searchParams.get('keyword') || '');
+    setLocation(searchParams.get('location') || 'all');
+    setJobType(searchParams.get('jobType') || 'all');
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -72,7 +82,14 @@ const JobListing: React.FC = () => {
           }
         }
 
-        const res = await fetch(`/api/jobs?page=${currentPage}&limit=10`);
+        const params = new URLSearchParams();
+        params.set('page', String(currentPage));
+        params.set('limit', '10');
+        if (keyword) params.set('keyword', keyword);
+        if (location && location !== 'all') params.set('location', location);
+        if (jobType && jobType !== 'all') params.set('jobType', jobType);
+
+        const res = await fetch(`/api/jobs?${params.toString()}`);
         const json = await res.json();
         if (json.success) {
           const mapped = json.data.map((j: any) => ({
@@ -87,7 +104,19 @@ const JobListing: React.FC = () => {
             workMode: j.workMode,
             employmentType: j.jobType,
             salary: j.salaryRange,
-            description: j.description?.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...',
+            description: j.description
+              ? j.description
+                  .replace(/<[^>]*>?/gm, '')
+                  .replace(/&nbsp;/g, ' ')
+                  .replace(/&amp;/g, '&')
+                  .replace(/&lt;/g, '<')
+                  .replace(/&gt;/g, '>')
+                  .replace(/&quot;/g, '"')
+                  .replace(/&#39;/g, "'")
+                  .replace(/\s+/g, ' ')
+                  .trim()
+                  .substring(0, 150) + '...'
+              : '',
             skills: j.skills ? j.skills.split(',').map((s:string) => s.trim()).filter(Boolean) : [],
             postedTime: new Date(j.createdAt).toLocaleDateString(),
             isSaved: savedJobIds.has(j.id) || savedJobIds.has(String(j.id)),
@@ -102,7 +131,7 @@ const JobListing: React.FC = () => {
       }
     };
     fetchJobs();
-  }, [currentPage]);
+  }, [currentPage, keyword, location, jobType]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -170,10 +199,14 @@ const JobListing: React.FC = () => {
               <div className="jl2-results-header-top d-flex justify-content-between align-items-center flex-wrap" style={{ gap: '1rem' }}>
                 <div>
                   <h1 className="jl2-search-title">
-                    Search results for "<span className="jl2-keyword">marketing manager</span>"
+                    {keyword ? (
+                      <>Search results for "<span className="jl2-keyword">{keyword}</span>"</>
+                    ) : (
+                      <>All Available Jobs</>
+                    )}
                   </h1>
                   <p className="jl2-search-meta">
-                    {categoryCounts.all} results found in <strong>Dayton, OH</strong>
+                    {jobs.length} results found {location && location !== 'all' && <>in <strong>{location}</strong></>}
                   </p>
                 </div>
                 <button
@@ -219,9 +252,13 @@ const JobListing: React.FC = () => {
                       onChange={(e) => setLocation(e.target.value)}
                       aria-label="Location"
                     >
+                      <option value="all">All Locations</option>
                       <option value="dayton">Dayton, OH</option>
                       <option value="columbus">Columbus, OH</option>
                       <option value="remote">Remote</option>
+                      {location && location !== 'all' && location !== 'dayton' && location !== 'columbus' && location !== 'remote' && (
+                        <option value={location}>{location}</option>
+                      )}
                     </select>
                   </div>
                   <div className="jl2-filter-group">

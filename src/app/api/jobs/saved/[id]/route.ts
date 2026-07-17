@@ -9,6 +9,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const { id: jobId } = await params;
     const authPayload = await requireAuth(req);
+    if (!authPayload.roles.includes(1)) {
+      return NextResponse.json({ success: true, saved: false });
+    }
     const userId = authPayload.userId;
 
     const [saved] = await db
@@ -31,6 +34,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   try {
     const { id: jobId } = await params;
     const authPayload = await requireAuth(req);
+    if (!authPayload.roles.includes(1)) {
+      return NextResponse.json({ success: false, message: 'Employers are not allowed to save/unsave jobs.' }, { status: 403 });
+    }
     const userId = authPayload.userId;
 
     await db

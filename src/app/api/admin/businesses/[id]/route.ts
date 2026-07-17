@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm';
 import { db } from '@/db';
 import { users, businessPromoterProfiles } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
@@ -14,6 +14,21 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
     const { id: userId } = await params;
     const { businessName, businessCategory, gstNumber, contactPhone } = await req.json();
+
+    if (businessName) {
+      const [existing] = await db.select()
+        .from(businessPromoterProfiles)
+        .where(
+          and(
+            eq(businessPromoterProfiles.businessName, businessName),
+            ne(businessPromoterProfiles.userId, userId)
+          )
+        )
+        .limit(1);
+      if (existing) {
+        return NextResponse.json({ success: false, message: 'A business with this name is already registered.' }, { status: 400 });
+      }
+    }
 
     const [updated] = await db.update(businessPromoterProfiles).set({ businessName, businessCategory, gstNumber, contactPhone, updatedAt: new Date() }).where(eq(businessPromoterProfiles.userId, userId)).returning();
     if (!updated) return NextResponse.json({ success: false, message: 'Business not found' }, { status: 404 });

@@ -379,10 +379,18 @@
 
 /* ── Post Job Link (Employer) ── */
 .nav-dropdown-post-job {
-  color: var(--color-primary) !important;
-  font-weight: 600 !important;
+  color: #374151;
+  font-weight: 500;
 }
 
 .nav-dropdown-post-job:hover {
-  background: rgba(36, 84, 255, 0.06) !important;
+  background: #f1f5f9;
+  color: var(--color-primary) !important;
+}
+
+/* ── Active Dropdown Item Style ── */
+.nav-dropdown-item.active {
+  background: rgba(36, 84, 255, 0.06);
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
 }

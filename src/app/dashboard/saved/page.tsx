@@ -9,6 +9,25 @@ export default function SavedJobsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Confirmation Modal State
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [selectedJobTitle, setSelectedJobTitle] = useState<string>('');
+
+  const promptUnsave = (jobId: string, jobTitle: string) => {
+    setSelectedJobId(jobId);
+    setSelectedJobTitle(jobTitle);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmUnsave = async () => {
+    if (!selectedJobId) return;
+    await handleUnsave(selectedJobId);
+    setShowConfirmModal(false);
+    setSelectedJobId(null);
+    setSelectedJobTitle('');
+  };
+
   const fetchSavedJobs = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -134,7 +153,7 @@ export default function SavedJobsPage() {
                   View Details
                 </Link>
                 <button 
-                  onClick={() => handleUnsave(job.id)} 
+                  onClick={() => promptUnsave(job.id, job.title)} 
                   className="btn btn-outline-danger" 
                   style={{ borderRadius: '8px' }}
                   title="Remove from Saved"
@@ -144,6 +163,83 @@ export default function SavedJobsPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* CUSTOM CONFIRMATION MODAL */}
+      {showConfirmModal && (
+        <div 
+          className="modal-backdrop-blur"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(15, 23, 42, 0.4)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 1050,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div 
+            className="card"
+            style={{
+              width: '400px',
+              borderRadius: '16px',
+              border: '1px solid rgba(255, 255, 255, 0.8)',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              background: '#ffffff',
+              padding: '24px',
+            }}
+          >
+            <div className="text-center mb-3">
+              <div 
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  backgroundColor: '#fee2e2',
+                  color: '#ef4444',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.5rem',
+                  marginBottom: '1rem'
+                }}
+              >
+                <i className="bi bi-exclamation-triangle-fill"></i>
+              </div>
+              <h4 style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>Remove Saved Job?</h4>
+            </div>
+            
+            <p className="text-center text-secondary mb-4" style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>
+              Are you sure you want to remove <strong>{selectedJobTitle}</strong> from your saved list? You will need to find and bookmark it again to apply later.
+            </p>
+            
+            <div className="d-flex gap-2 justify-content-center">
+              <button 
+                className="btn btn-outline-secondary" 
+                style={{ borderRadius: '8px', padding: '10px 20px', fontWeight: 500, flex: 1 }}
+                onClick={() => {
+                  setShowConfirmModal(false);
+                  setSelectedJobId(null);
+                  setSelectedJobTitle('');
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-danger" 
+                style={{ borderRadius: '8px', padding: '10px 20px', fontWeight: 500, flex: 1, backgroundColor: '#ef4444', border: 'none' }}
+                onClick={handleConfirmUnsave}
+              >
+                Yes, Remove
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

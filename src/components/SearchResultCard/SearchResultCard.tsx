@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import './SearchResultCard.css';
 
 export interface SearchResult {
@@ -49,6 +50,8 @@ interface SearchResultCardProps {
 
 const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
   const r = result;
+  const { user, isLoggedIn } = useAuth();
+  const isEmployer = isLoggedIn && !user?.roles?.includes(1);
   const [saved, setSaved] = useState(r.isSaved || false);
   const ctaColor = ctaColorMap[r.type] || 'var(--color-primary)';
 
@@ -196,14 +199,16 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
 
         {/* Right: Actions */}
         <div className="sr-actions">
-          <button
-            className={`sr-save-btn ${saved ? 'sr-saved' : ''}`}
-            onClick={handleSave}
-            aria-label={saved ? `Unsave ${r.title}` : `Save ${r.title}`}
-            type="button"
-          >
-            <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
-          </button>
+          {!isEmployer && (
+            <button
+              className={`sr-save-btn ${saved ? 'sr-saved' : ''}`}
+              onClick={handleSave}
+              aria-label={saved ? `Unsave ${r.title}` : `Save ${r.title}`}
+              type="button"
+            >
+              <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`} />
+            </button>
+          )}
           <a
             href={r.type === 'job' ? `/jobs/${r.slug || r.id}` : '#'}
             className="sr-cta-btn"

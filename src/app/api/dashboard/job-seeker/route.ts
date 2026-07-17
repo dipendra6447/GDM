@@ -36,14 +36,14 @@ export async function GET(req: NextRequest) {
     let recommendedJobs;
     if (appliedIds.length > 0) {
       recommendedJobs = await db.select({
-        id: jobs.id, title: jobs.title, companyName: jobs.companyName, location: jobs.location,
+        id: jobs.id, slug: jobs.slug, title: jobs.title, companyName: jobs.companyName, location: jobs.location,
         salaryRange: jobs.salaryRange, jobType: jobs.jobType, workMode: jobs.workMode, category: jobs.category, createdAt: jobs.createdAt,
       }).from(jobs).where(and(eq(jobs.isActive, true), eq(jobs.isDeleted, false),
         sql`${jobs.id} NOT IN (${sql.join(appliedIds.map(id => sql`${id}`), sql`, `)})`
       )).orderBy(sql`${jobs.createdAt} DESC`).limit(4);
     } else {
       recommendedJobs = await db.select({
-        id: jobs.id, title: jobs.title, companyName: jobs.companyName, location: jobs.location,
+        id: jobs.id, slug: jobs.slug, title: jobs.title, companyName: jobs.companyName, location: jobs.location,
         salaryRange: jobs.salaryRange, jobType: jobs.jobType, workMode: jobs.workMode, category: jobs.category, createdAt: jobs.createdAt,
       }).from(jobs).where(and(eq(jobs.isActive, true), eq(jobs.isDeleted, false))).orderBy(sql`${jobs.createdAt} DESC`).limit(4);
     }

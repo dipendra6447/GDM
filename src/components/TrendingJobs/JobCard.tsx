@@ -9,6 +9,7 @@ interface JobCardProps {
 
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const { user, isLoggedIn } = useAuth();
+  const isEmployer = isLoggedIn && !user?.roles?.includes(1);
 
   const handleApply = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -38,9 +39,11 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
         <div className="job-card-icon-badge" style={{ backgroundColor: `${job.applyBtnColor}1a`, color: job.applyBtnColor }}>
           <i className="bi bi-briefcase"></i>
         </div>
-        <button className="job-bookmark" aria-label={`Save ${job.title}`} id={`bookmark-${job.id}`}>
-          <i className="bi bi-bookmark"></i>
-        </button>
+        {!isEmployer && (
+          <button className="job-bookmark" aria-label={`Save ${job.title}`} id={`bookmark-${job.id}`}>
+            <i className="bi bi-bookmark"></i>
+          </button>
+        )}
       </div>
 
       {/* Card body */}

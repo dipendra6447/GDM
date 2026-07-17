@@ -8,6 +8,9 @@ import { requireAuth } from '@/lib/auth';
 export async function GET(req: NextRequest) {
   try {
     const authPayload = await requireAuth(req);
+    if (!authPayload.roles.includes(1)) {
+      return NextResponse.json({ success: false, message: 'Employers do not have a saved jobs list.' }, { status: 403 });
+    }
     const userId = authPayload.userId;
 
     const list = await db
@@ -47,6 +50,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const authPayload = await requireAuth(req);
+    if (!authPayload.roles.includes(1)) {
+      return NextResponse.json({ success: false, message: 'Employers are not allowed to save jobs.' }, { status: 403 });
+    }
     const userId = authPayload.userId;
     const { jobId } = await req.json();
 
