@@ -1,0 +1,135 @@
+/* Employer Profile Sidebar Styling */
+.emp-sidebar-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.emp-sidebar-top {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 20px;
+}
+
+.emp-avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.emp-avatar-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.25);
+  margin: 0 auto;
+}
+
+.emp-company-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.emp-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 50px;
+  border: 1px solid rgba(5, 150, 105, 0.2);
+}
+
+.emp-perf-box {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  margin-top: 20px;
+}
+
+.emp-perf-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.emp-perf-metric-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.emp-perf-metric-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.emp-sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 20px;
+}
+
+.emp-sidebar-link-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #475569;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+}
+
+.emp-sidebar-link-item:hover,
+.emp-sidebar-link-item.active {
+  background: rgba(36, 84, 255, 0.08);
+  color: #2454ff;
+}
+
+.emp-sidebar-link-item i {
+  font-size: 1.1rem;
+}
+
+.emp-switch-role-btn {
+  background: #0a0a0a;
+  color: #d4af37;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+}
+
+.emp-switch-role-btn:hover {
+  background: #171717;
+  border-color: #d4af37;
+}

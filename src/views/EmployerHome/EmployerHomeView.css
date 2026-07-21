@@ -1,0 +1,20 @@
+/* Employer Home View Styling */
+.emp-home-main {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.emp-home-banner-strip {
+  background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.emp-home-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
