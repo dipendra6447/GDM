@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function SavedSearchesPage() {
@@ -112,6 +113,7 @@ export default function SavedSearchesPage() {
 
   return (
     <div className="dashboard-content-wrapper" style={{ padding: '2rem' }}>
+      <Breadcrumb items={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Saved Searches' }]} className="mb-3" />
       <h2 className="mb-4">Saved Searches</h2>
       
       {loading ? (

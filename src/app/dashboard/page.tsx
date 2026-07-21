@@ -9,6 +9,7 @@ import RecommendedJobCard from '@/components/Dashboard/RecommendedJobCard';
 import BusinessPromoterDashboard from '@/components/Dashboard/BusinessPromoterDashboard';
 import EmployerDashboard from '@/views/EmployerDashboard/EmployerDashboard';
 import DashboardRoleTabs from '@/components/Dashboard/DashboardRoleTabs';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 // Dummy chart data mimicking the design
 const chartData = [
@@ -105,27 +106,17 @@ export default function DashboardPage() {
       </div>
 
       {/* Breadcrumb */}
-      <div className="dashboard-breadcrumb-wrapper" style={{ padding: '0 0 16px' }}>
-        <nav aria-label="breadcrumb">
-          <ol className="breadcrumb mb-0" style={{ fontSize: '0.875rem' }}>
-            <li className="breadcrumb-item">
-              <Link href="/" className="text-decoration-none" style={{ color: '#2454FF' }}>
-                <i className="bi bi-house-fill me-1" />Home
-              </Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page" style={{ color: '#64748b' }}>
-              Dashboard
-            </li>
-          </ol>
-        </nav>
-      </div>
+      <Breadcrumb items={[{ label: 'Dashboard' }]} className="mb-3" />
 
       {/* Unified Switcher Tabs for multiple roles */}
       {dashboardRoles.length > 1 && (
         <DashboardRoleTabs 
           roles={dashboardRoles} 
           activeRole={activeRole} 
-          onSwitch={(roleId) => router.push(`/dashboard?role=${roleId}`)} 
+          onSwitch={(roleId) => {
+            localStorage.setItem('activeHomeRole', roleId.toString());
+            router.push(`/dashboard?role=${roleId}`);
+          }} 
         />
       )}
 

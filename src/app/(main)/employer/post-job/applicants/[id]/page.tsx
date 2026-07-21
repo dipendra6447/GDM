@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import '@/views/EmployerDashboard/EmployerDashboard.css';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
@@ -120,6 +121,7 @@ export default function JobApplicantsPage() {
 
       {/* Main Content Area */}
       <main className="emp-dash-main">
+        <Breadcrumb items={[{ label: 'Employer', href: '/employer/post-job' }, { label: 'Applicants' }]} className="mb-3" />
         <div className="emp-dash-header">
           <div>
             <h1 className="emp-dash-title">Applicants</h1>

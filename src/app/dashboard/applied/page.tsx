@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 const statusBadgeClassMap: Record<string, string> = {
   pending: 'bg-secondary',
@@ -46,6 +47,7 @@ export default function AppliedPage() {
 
   return (
     <div className="dashboard-content-wrapper" style={{ padding: '2rem' }}>
+      <Breadcrumb items={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Applied Jobs' }]} className="mb-3" />
       <h2 className="mb-4">Applied Jobs (Applications Tracker)</h2>
       
       {loading ? (

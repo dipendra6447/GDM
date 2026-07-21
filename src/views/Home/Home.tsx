@@ -12,7 +12,7 @@ import AdPromotion from "../../components/AdPromotion/AdPromotion";
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
 import EmployerHomeView from "../EmployerHome/EmployerHomeView";
 import { useAuth } from "../../hooks/useAuth";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const NAVBAR_HEIGHT = 80;
 
@@ -20,7 +20,6 @@ const Home: React.FC = () => {
   const [bannerVisible, setBannerVisible] = useState(true);
   const { isLoggedIn, user } = useAuth();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   // Active Role state: 1 = Job Seeker, 2 = Employer
   const [activeRole, setActiveRole] = useState<number>(1);
@@ -32,23 +31,23 @@ const Home: React.FC = () => {
     } else if (roleParam === '1' || roleParam === 'jobseeker') {
       setActiveRole(1);
     } else if (user?.roles?.length) {
-      // Default to employer if primary role is 2, else 1
       if (user.roles.includes(2) && !user.roles.includes(1)) {
+        // Employer only
         setActiveRole(2);
+      } else if (user.roles.includes(1) && !user.roles.includes(2)) {
+        // Job Seeker only
+        setActiveRole(1);
       } else {
+        // Dual role or multiple roles: check saved preference
         const savedRole = localStorage.getItem('activeHomeRole');
-        if (savedRole) setActiveRole(Number(savedRole));
+        if (savedRole) {
+          setActiveRole(Number(savedRole));
+        } else {
+          setActiveRole(user.roles[0] || 1);
+        }
       }
     }
   }, [searchParams, user]);
-
-  const handleSwitchRole = (roleId: number) => {
-    setActiveRole(roleId);
-    localStorage.setItem('activeHomeRole', roleId.toString());
-    const params = new URLSearchParams(window.location.search);
-    params.set('role', roleId.toString());
-    router.push(`/?${params.toString()}`);
-  };
 
   return (
     <>
@@ -58,44 +57,6 @@ const Home: React.FC = () => {
           onBannerClose={() => setBannerVisible(false)}
         />
       </div>
-
-      {/* Role Switcher Floating Bar for Logged-In Users */}
-      {isLoggedIn && (
-        <div 
-          className="role-mode-switcher-bar bg-dark text-white py-2 px-3 d-flex justify-content-center align-items-center gap-3"
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            zIndex: 9999,
-            borderRadius: '50px',
-            border: '1px solid rgba(212,175,55,0.4)',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-            background: 'rgba(10, 10, 10, 0.95)',
-            backdropFilter: 'blur(12px)'
-          }}
-        >
-          <span className="small text-secondary fw-semibold">View Mode:</span>
-          <div className="btn-group btn-group-sm" role="group">
-            <button
-              type="button"
-              className={`btn ${activeRole === 1 ? 'btn-primary fw-bold' : 'btn-outline-secondary text-white'}`}
-              style={{ borderRadius: '50px 0 0 50px', fontSize: '0.8rem' }}
-              onClick={() => handleSwitchRole(1)}
-            >
-              <i className="bi bi-person me-1" /> Job Seeker
-            </button>
-            <button
-              type="button"
-              className={`btn ${activeRole === 2 ? 'btn-warning fw-bold text-dark' : 'btn-outline-secondary text-white'}`}
-              style={{ borderRadius: '0 50px 50px 0', fontSize: '0.8rem' }}
-              onClick={() => handleSwitchRole(2)}
-            >
-              <i className="bi bi-briefcase-fill me-1" /> Employer
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* ── 1. ANONYMOUS USER VIEW ── */}
       {!isLoggedIn && (
@@ -140,7 +101,7 @@ const Home: React.FC = () => {
 
       {/* ── 3. EMPLOYER MODE ── */}
       {isLoggedIn && activeRole === 2 && (
-        <EmployerHomeView onSwitchRole={handleSwitchRole} />
+        <EmployerHomeView />
       )}
     </>
   );

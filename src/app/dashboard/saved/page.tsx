@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { useAuth } from '@/hooks/useAuth';
 
 // Components
@@ -250,6 +251,7 @@ export default function SavedJobsPage() {
 
   return (
     <div className="dashboard-content-wrapper">
+      <Breadcrumb items={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Saved Jobs' }]} className="mb-3" />
       <div className="jl2-layout" style={{ maxWidth: '100%', margin: 0, padding: 0 }}>
         {/* ── Left Column: Saved Jobs List ── */}
         <div className="jl2-center">
