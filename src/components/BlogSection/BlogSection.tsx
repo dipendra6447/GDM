@@ -84,7 +84,7 @@ const BlogSection: React.FC = () => {
               <i className="bi bi-gear-fill me-2"></i>Extra Services
             </div>
             <h2 className="section-heading mb-2">
-              Premium <span className="gradient-text">Business Solutions</span>
+              Digital <span className="gradient-text">Services</span>
             </h2>
             <p className="section-subtext" style={{ margin: 0 }}>
               Accelerate your digital presence with our customized design, app development, and search marketing

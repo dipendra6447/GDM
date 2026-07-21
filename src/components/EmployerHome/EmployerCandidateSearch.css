@@ -1,0 +1,137 @@
+/* Employer Candidate Search & Showcase Styling */
+.emp-cand-section {
+  padding: 40px 0;
+}
+
+.emp-cand-header {
+  margin-bottom: 28px;
+}
+
+.emp-cand-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.emp-cand-subtitle {
+  color: #64748b;
+  font-size: 0.98rem;
+}
+
+.emp-cand-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.emp-cand-pill {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emp-cand-pill:hover,
+.emp-cand-pill.active {
+  background: #2454ff;
+  color: #ffffff;
+  border-color: #2454ff;
+  box-shadow: 0 4px 12px rgba(36, 84, 255, 0.25);
+}
+
+.emp-cand-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.emp-cand-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  border-color: rgba(36, 84, 255, 0.3);
+}
+
+.emp-cand-top-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.emp-cand-avatar-lg {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.emp-cand-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.emp-cand-role {
+  font-size: 0.88rem;
+  color: #2454ff;
+  font-weight: 600;
+  margin: 0;
+}
+
+.emp-cand-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.emp-cand-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.emp-skill-tag {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.emp-cand-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.emp-cand-actions button,
+.emp-cand-actions a {
+  flex: 1;
+}

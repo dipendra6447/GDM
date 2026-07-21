@@ -1,0 +1,240 @@
+/* Employer Hero Section Styling */
+.emp-hero-wrapper {
+  background: linear-gradient(135deg, #090d16 0%, #0d1527 50%, #080a10 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 80px 0 60px;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.emp-hero-bg-glow {
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(36, 84, 255, 0.25) 0%, rgba(212, 175, 55, 0.1) 50%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.emp-hero-bg-glow-2 {
+  position: absolute;
+  bottom: -150px;
+  left: -100px;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.18) 0%, rgba(36, 84, 255, 0.08) 50%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.emp-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 50px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.emp-hero-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.emp-hero-title-accent {
+  background: linear-gradient(135deg, #2454ff 0%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.emp-hero-subtitle {
+  font-size: 1.15rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 620px;
+}
+
+.emp-search-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 8px;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.emp-search-input-group {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.emp-search-input-group i {
+  color: #d4af37;
+  font-size: 1.2rem;
+}
+
+.emp-search-input-group input,
+.emp-search-input-group select {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  width: 100%;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.emp-search-input-group select option {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.emp-search-btn {
+  background: linear-gradient(135deg, #2454ff 0%, #1a40c4 100%);
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.emp-search-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(36, 84, 255, 0.4);
+}
+
+.emp-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.emp-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emp-stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(36, 84, 255, 0.15);
+  border: 1px solid rgba(36, 84, 255, 0.3);
+  color: #2454ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.emp-stat-icon.gold {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+}
+
+.emp-stat-info h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+.emp-stat-info p {
+  font-size: 0.8rem;
+  margin: 0;
+  color: #94a3b8;
+}
+
+.emp-hero-card-preview {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 20px;
+  padding: 24px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.emp-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.emp-preview-candidate {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.emp-preview-candidate:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.emp-cand-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2454ff, #d4af37);
+  color: #ffffff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 991px) {
+  .emp-hero-title {
+    font-size: 2.2rem;
+  }
+  .emp-hero-wrapper {
+    padding: 50px 0 40px;
+  }
+}

@@ -34,6 +34,8 @@ const mockChartData = [
 
 import { useSearchParams, usePathname } from 'next/navigation';
 
+import EmployerCandidateSearch from '@/components/EmployerHome/EmployerCandidateSearch';
+
 export default function EmployerDashboard() {
   const { user, isLoading, isLoggedIn } = useAuth();
   const router = useRouter();
@@ -41,7 +43,7 @@ export default function EmployerDashboard() {
   const pathname = usePathname();
   const isMainDashboard = pathname === '/dashboard';
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'post' | 'edit' | 'subscription'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'post' | 'edit' | 'subscription' | 'candidates'>('overview');
   const [jobs, setJobs] = useState<any[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
@@ -49,12 +51,12 @@ export default function EmployerDashboard() {
 
   useEffect(() => {
     const tab = searchParams.get('tab');
-    if (tab === 'overview' || tab === 'jobs' || tab === 'post' || tab === 'edit' || tab === 'subscription') {
-      setActiveTab(tab);
+    if (tab === 'overview' || tab === 'jobs' || tab === 'post' || tab === 'edit' || tab === 'subscription' || tab === 'candidates') {
+      setActiveTab(tab as any);
     }
   }, [searchParams]);
 
-  const handleTabChange = (tab: 'overview' | 'jobs' | 'post' | 'edit' | 'subscription') => {
+  const handleTabChange = (tab: 'overview' | 'jobs' | 'post' | 'edit' | 'subscription' | 'candidates') => {
     setActiveTab(tab);
     if (isMainDashboard) {
       router.push(`/dashboard?role=2&tab=${tab}`, { scroll: false });
@@ -209,16 +211,18 @@ export default function EmployerDashboard() {
       <main className={isMainDashboard ? "" : "emp-dash-main"}>
         {isMainDashboard && (
           <div className="d-flex gap-2 mb-4 flex-wrap pb-3" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-            {(['overview', 'jobs', 'post', 'subscription'] as const).map(tab => {
+            {(['overview', 'jobs', 'post', 'candidates', 'subscription'] as const).map(tab => {
               const isActive = activeTab === tab || (tab === 'jobs' && activeTab === 'edit');
               const label = 
                 tab === 'overview' ? 'Overview' :
                 tab === 'jobs' ? 'My Jobs' :
-                tab === 'post' ? 'Post New Job' : 'My Subscription';
+                tab === 'post' ? 'Post New Job' :
+                tab === 'candidates' ? 'Search Candidates' : 'My Subscription';
               const icon =
                 tab === 'overview' ? 'bi-grid' :
                 tab === 'jobs' ? 'bi-briefcase' :
-                tab === 'post' ? 'bi-plus-circle' : 'bi-credit-card';
+                tab === 'post' ? 'bi-plus-circle' :
+                tab === 'candidates' ? 'bi-people' : 'bi-credit-card';
 
               return (
                 <button
@@ -496,6 +500,19 @@ export default function EmployerDashboard() {
                 }} 
               />
             </div>
+          </div>
+        )}
+
+        {/* CANDIDATES TAB */}
+        {activeTab === 'candidates' && (
+          <div>
+            <div className="emp-dash-header">
+              <div>
+                <h1 className="emp-dash-title">Search Candidates</h1>
+                <p className="emp-dash-subtitle">Find and connect with pre-screened, verified job seekers.</p>
+              </div>
+            </div>
+            <EmployerCandidateSearch />
           </div>
         )}
 

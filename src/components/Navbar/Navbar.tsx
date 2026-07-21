@@ -19,17 +19,29 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const links = isLoggedIn ? [
+  const isEmployerRole = user?.roles?.includes(2);
+
+  const links = isLoggedIn ? (
+    isEmployerRole ? [
+      { label: "Employer Home", href: "/employer" },
+      { label: "Post a Job", href: "/employer/post-job?tab=post" },
+      { label: "Manage Jobs", href: "/dashboard?role=2&tab=jobs" },
+      { label: "Find Candidates", href: "/employer#candidates" },
+      { label: "Pricing", href: "/subscription" },
+      { label: "Contact", href: "/#contact" },
+    ] : [
+      { label: "Home", href: "/" },
+      { label: "About Us", href: "/#about" },
+      { label: "Find Job", href: "/jobs" },
+      { label: "Save jobs", href: "/dashboard/saved" },
+      { label: "Pricing", href: "/subscription" },
+      { label: "Contact", href: "/#contact" },
+    ]
+  ) : [
     { label: "Home", href: "/" },
-    { label: "About Us", href: "/#about" },
-    { label: "Find Job", href: "/jobs" },
-    { label: "Save jobs", href: "/dashboard/saved" },
+    { label: "For Employers", href: "/employer" },
     { label: "Pricing", href: "/subscription" },
-    { label: "Contact", href: "/#contact" },
-  ] : [
-    { label: "Home", href: "/" },
     { label: "About Us", href: "/#about" },
-    { label: "Pricing", href: "/subscription" },
     { label: "Contact", href: "/#contact" },
   ];
 
@@ -86,15 +98,25 @@ const Navbar: React.FC = () => {
   const isJobSeeker = isLoggedIn && user?.roles?.includes(1);
 
   // Drawer links
-  const drawerLinks = isLoggedIn ? [
-    { label: "Search job", href: "/jobs", icon: "bi-search" },
-    { label: "Recomended job", href: "/jobs?recommended=true", icon: "bi-stars" },
-    { label: "Save job", href: "/dashboard/saved", icon: "bi-bookmark-heart" },
-    { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
-    { label: "About us", href: "/#about", icon: "bi-info-circle" },
-  ] : [
+  const drawerLinks = isLoggedIn ? (
+    isEmployerRole ? [
+      { label: "Employer Home", href: "/employer", icon: "bi-building" },
+      { label: "Post a Job", href: "/employer/post-job?tab=post", icon: "bi-plus-circle" },
+      { label: "Manage Jobs", href: "/dashboard?role=2&tab=jobs", icon: "bi-briefcase" },
+      { label: "Candidate Search", href: "/employer#candidates", icon: "bi-people" },
+      { label: "Employer Dashboard", href: "/dashboard?role=2", icon: "bi-grid" },
+      { label: "Pricing", href: "/subscription", icon: "bi-tags" },
+      { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
+    ] : [
+      { label: "Search job", href: "/jobs", icon: "bi-search" },
+      { label: "Recomended job", href: "/jobs?recommended=true", icon: "bi-stars" },
+      { label: "Save job", href: "/dashboard/saved", icon: "bi-bookmark-heart" },
+      { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
+      { label: "About us", href: "/#about", icon: "bi-info-circle" },
+    ]
+  ) : [
     { label: "Login", href: "/login", icon: "bi-box-arrow-in-right" },
-    { label: "For Employers", href: "/login?role=job_poster", icon: "bi-briefcase" },
+    { label: "For Employers", href: "/employer", icon: "bi-briefcase" },
     { label: "Search job", href: "/jobs", icon: "bi-search" },
     { label: "Price", href: "/subscription", icon: "bi-tags" },
     { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
