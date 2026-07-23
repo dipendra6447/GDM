@@ -33,6 +33,11 @@ export default function DashboardPage() {
   const activeRole = Number(searchParams.get('role')) || primaryRole;
 
   useEffect(() => {
+    if (user && !isLoading && activeRole === 2) {
+      router.replace('/employer/post-job?tab=overview');
+      return;
+    }
+
     const fetchDashboard = async () => {
       const token = localStorage.getItem('token');
       try {
@@ -56,7 +61,7 @@ export default function DashboardPage() {
     } else {
       setLoading(false);
     }
-  }, [user, isLoading, activeRole]);
+  }, [user, isLoading, activeRole, router]);
 
   if (isLoading) {
     return (
@@ -115,7 +120,11 @@ export default function DashboardPage() {
           activeRole={activeRole} 
           onSwitch={(roleId) => {
             localStorage.setItem('activeHomeRole', roleId.toString());
-            router.push(`/dashboard?role=${roleId}`);
+            if (roleId === 2) {
+              router.push('/employer/post-job?tab=overview');
+            } else {
+              router.push(`/dashboard?role=${roleId}`);
+            }
           }} 
         />
       )}
@@ -250,7 +259,14 @@ export default function DashboardPage() {
         </>
       )}
 
-      {activeRole === 2 && <EmployerDashboard />}
+      {activeRole === 2 && (
+        <div className="d-flex flex-column align-items-center justify-content-center py-5">
+          <div className="spinner-border text-primary mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-secondary">Redirecting to Employer Dashboard...</p>
+        </div>
+      )}
 
       {activeRole === 3 && <BusinessPromoterDashboard />}
     </>

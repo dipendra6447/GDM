@@ -114,7 +114,7 @@ const EmployerCandidateSearch: React.FC = () => {
             <h2 className="emp-cand-title">Discover Featured Candidates</h2>
             <p className="emp-cand-subtitle mb-0">Directly connect with top verified professionals looking for their next opportunity.</p>
           </div>
-          <Link href="/dashboard?role=2&tab=candidates" className="btn btn-outline-primary fw-semibold px-4 py-2 mt-3 mt-md-0" style={{ borderRadius: '10px' }}>
+          <Link href="/employer/post-job?tab=candidates" className="btn btn-outline-primary fw-semibold px-4 py-2 mt-3 mt-md-0" style={{ borderRadius: '10px' }}>
             View All 10,000+ Resumes <i className="bi bi-arrow-right ms-1"></i>
           </Link>
         </div>
@@ -178,7 +178,7 @@ const EmployerCandidateSearch: React.FC = () => {
                     )}
                   </button>
                   <Link
-                    href={`/dashboard?role=2&tab=candidates&id=${cand.id}`}
+                    href={`/employer/post-job?tab=candidates&id=${cand.id}`}
                     className="btn btn-sm btn-outline-secondary fw-semibold"
                     style={{ borderRadius: '8px', padding: '8px 12px' }}
                   >
