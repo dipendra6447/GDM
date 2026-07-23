@@ -41,7 +41,7 @@ export default function EmployerDashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const isMainDashboard = pathname === '/dashboard';
+  const isMainDashboard = false;
 
   const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'post' | 'edit' | 'subscription' | 'candidates'>('overview');
   const [jobs, setJobs] = useState<any[]>([]);
@@ -58,11 +58,7 @@ export default function EmployerDashboard() {
 
   const handleTabChange = (tab: 'overview' | 'jobs' | 'post' | 'edit' | 'subscription' | 'candidates') => {
     setActiveTab(tab);
-    if (isMainDashboard) {
-      router.push(`/dashboard?role=2&tab=${tab}`, { scroll: false });
-    } else {
-      router.push(`/employer/post-job?tab=${tab}`, { scroll: false });
-    }
+    router.push(`/employer/post-job?tab=${tab}`, { scroll: false });
   };
 
 

@@ -99,15 +99,15 @@ const EmployerProfileSidebar: React.FC<Props> = ({ onSwitchRole }) => {
           <i className="bi bi-house-door" />
           <span>Employer Home</span>
         </Link>
-        <Link href="/dashboard?role=2&tab=jobs" className="emp-sidebar-link-item">
+        <Link href="/employer/post-job?tab=jobs" className="emp-sidebar-link-item">
           <i className="bi bi-briefcase" />
           <span>Manage Jobs</span>
         </Link>
-        <Link href="/dashboard?role=2&tab=post" className="emp-sidebar-link-item">
+        <Link href="/employer/post-job?tab=post" className="emp-sidebar-link-item">
           <i className="bi bi-plus-square" />
           <span>Post New Job</span>
         </Link>
-        <Link href="/dashboard?role=2&tab=candidates" className="emp-sidebar-link-item">
+        <Link href="/employer/post-job?tab=candidates" className="emp-sidebar-link-item">
           <i className="bi bi-people" />
           <span>Candidate Database</span>
         </Link>
@@ -115,7 +115,7 @@ const EmployerProfileSidebar: React.FC<Props> = ({ onSwitchRole }) => {
           <i className="bi bi-building" />
           <span>Company Profile</span>
         </Link>
-        <Link href="/dashboard/subscription?role=2" className="emp-sidebar-link-item">
+        <Link href="/employer/post-job?tab=subscription" className="emp-sidebar-link-item">
           <i className="bi bi-credit-card-fill text-warning" />
           <span>Employer Subscription</span>
         </Link>

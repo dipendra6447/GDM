@@ -41,42 +41,6 @@ const PROMOTED_BUSINESSES: PromotedBusiness[] = [
   {
     id: 2,
     heroImage:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&auto=format&fit=crop&q=80",
-    accentImages: [
-      "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=400&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=80",
-    ],
-    name: "GreenLeaf Organic Co.",
-    category: "Food & Beverages",
-    tagline: "Farm-to-Table, Every Single Day",
-    description:
-      "Premium organic produce delivered fresh. Trusted by 10,000+ households. Certified organic & sustainably sourced.",
-    offer: "🌿 First Order 20% OFF",
-    ctaLabel: "Order Now",
-    ctaHref: "#",
-    accent: "#14B87A",
-  },
-  {
-    id: 3,
-    heroImage:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80",
-    accentImages: [
-      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=80",
-    ],
-    name: "UrbanSpace Interiors",
-    category: "Interior Design",
-    tagline: "Spaces That Inspire & Elevate",
-    description:
-      "Award-winning interior design for homes, offices & commercial spaces. Bringing your dream space to life.",
-    offer: "✨ Free 3D Design Preview",
-    ctaLabel: "View Portfolio",
-    ctaHref: "#",
-    accent: "#7B3EFF",
-  },
-  {
-    id: 4,
-    heroImage:
       "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop&q=80",
     accentImages: [
       "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&auto=format&fit=crop&q=80",

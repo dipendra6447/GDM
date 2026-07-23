@@ -25,22 +25,21 @@ const Navbar: React.FC = () => {
     isEmployerRole ? [
       { label: "Employer Home", href: "/employer" },
       { label: "Post a Job", href: "/employer/post-job?tab=post" },
-      { label: "Manage Jobs", href: "/dashboard?role=2&tab=jobs" },
+      { label: "Manage Jobs", href: "/employer/post-job?tab=jobs" },
       { label: "Find Candidates", href: "/employer#candidates" },
-      { label: "Pricing", href: "/subscription" },
+      { label: "Pricing", href: "/subscription-light" },
       { label: "Contact", href: "/#contact" },
     ] : [
       { label: "Home", href: "/" },
       { label: "About Us", href: "/#about" },
       { label: "Find Job", href: "/jobs" },
       { label: "Save jobs", href: "/dashboard/saved" },
-      { label: "Pricing", href: "/subscription" },
+      { label: "Pricing", href: "/subscription-light" },
       { label: "Contact", href: "/#contact" },
     ]
   ) : [
     { label: "Home", href: "/" },
-    { label: "For Employers", href: "/employer" },
-    { label: "Pricing", href: "/subscription" },
+    { label: "Pricing", href: "/subscription-light" },
     { label: "About Us", href: "/#about" },
     { label: "Contact", href: "/#contact" },
   ];
@@ -102,9 +101,9 @@ const Navbar: React.FC = () => {
     isEmployerRole ? [
       { label: "Employer Home", href: "/employer", icon: "bi-building" },
       { label: "Post a Job", href: "/employer/post-job?tab=post", icon: "bi-plus-circle" },
-      { label: "Manage Jobs", href: "/dashboard?role=2&tab=jobs", icon: "bi-briefcase" },
+      { label: "Manage Jobs", href: "/employer/post-job?tab=jobs", icon: "bi-briefcase" },
       { label: "Candidate Search", href: "/employer#candidates", icon: "bi-people" },
-      { label: "Employer Dashboard", href: "/dashboard?role=2", icon: "bi-grid" },
+      { label: "Employer Dashboard", href: "/employer/post-job?tab=overview", icon: "bi-grid" },
       { label: "Pricing", href: "/subscription", icon: "bi-tags" },
       { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
     ] : [
@@ -303,7 +302,7 @@ const Navbar: React.FC = () => {
                         <i className="bi bi-star" /> Subscription
                       </Link>
                       <Link
-                        href={user?.roles?.includes(2) ? "/dashboard/subscription?role=2" : user?.roles?.includes(3) ? "/dashboard/subscription?role=3" : "/dashboard/subscription?role=1"}
+                        href={user?.roles?.includes(2) ? "/employer/post-job?tab=subscription" : user?.roles?.includes(3) ? "/dashboard/subscription?role=3" : "/dashboard/subscription?role=1"}
                         className="nav-dropdown-item"
                         id="nav-dropdown-my-orders"
                         onClick={() => setDropdownOpen(false)}
@@ -341,7 +340,7 @@ const Navbar: React.FC = () => {
                   <Link href="/login" className="btn-login" id="nav-login-btn" style={{ textDecoration: 'none' }}>
                     Login
                   </Link>
-                  <Link href="/login?role=job_poster" className="btn-register" id="nav-register-btn" style={{ textDecoration: 'none' }}>
+                  <Link href="/login" className="btn-register" id="nav-register-btn" style={{ textDecoration: 'none' }}>
                     For Employers
                   </Link>
                 </>

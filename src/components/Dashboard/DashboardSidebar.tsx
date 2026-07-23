@@ -17,13 +17,12 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
   const isBusinessPromoter = activeRole === 3;
 
   const navItems = [
-    { label: 'Dashboard', icon: 'bi-grid-fill', href: `/dashboard?role=${activeRole}` },
     ...(isEmployer ? [
       { label: 'Employer Home', icon: 'bi-house-door-fill', href: '/employer' },
-      { label: 'Manage Jobs', icon: 'bi-briefcase-fill', href: '/dashboard?role=2&tab=jobs' },
-      { label: 'Post a Job', icon: 'bi-plus-circle-fill', href: '/dashboard?role=2&tab=post' },
-      { label: 'Search Candidates', icon: 'bi-people-fill', href: '/dashboard?role=2&tab=candidates' },
-      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=2' }
+      { label: 'Manage Jobs', icon: 'bi-briefcase-fill', href: '/employer/post-job?tab=jobs' },
+      { label: 'Post a Job', icon: 'bi-plus-circle-fill', href: '/employer/post-job?tab=post' },
+      { label: 'Search Candidates', icon: 'bi-people-fill', href: '/employer/post-job?tab=candidates' },
+      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/employer/post-job?tab=subscription' }
     ] : []),
     ...(isJobSeeker ? [
       { label: 'Applied', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
