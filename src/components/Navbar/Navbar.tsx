@@ -18,6 +18,17 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [targetRole, setTargetRole] = useState<1 | 2 | 3 | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [activeSub, setActiveSub] = useState<{
+    type: string;
+    tier: string;
+    badgeLabel: string;
+    color: string;
+    bgColor: string;
+    borderColor: string;
+    badgeBg: string;
+    badgeTextColor: string;
+    glowColor: string;
+  } | null>(null);
 
   const { user, isLoading, isLoggedIn, activeRole, switchRole, logout } = useAuth();
   const router = useRouter();
@@ -89,6 +100,94 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
       setCurrentTab(params.get('tab') || 'overview');
     }
   }, [dropdownOpen, pathname]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setActiveSub(null);
+      return;
+    }
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    fetch('/api/subscriptions/my', { headers, credentials: 'include' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          const now = new Date();
+          const activeSubs = data.data.filter(
+            (s: any) => s.status === 'active' && new Date(s.expiresAt) > now
+          );
+          if (activeSubs.length > 0) {
+            let sub = activeSubs.find(
+              (s: any) =>
+                (activeRole === 1 && s.subscriptionType === 'job_seeker') ||
+                (activeRole === 2 && s.subscriptionType === 'job_poster') ||
+                (activeRole === 3 && s.subscriptionType === 'business_promoter')
+            );
+            if (!sub) sub = activeSubs[0];
+
+            const type = sub.subscriptionType;
+            const tierStr = sub.tier ? sub.tier.toUpperCase() : '';
+
+            if (type === 'job_seeker') {
+              setActiveSub({
+                type,
+                tier: sub.tier,
+                badgeLabel: tierStr ? `✨ SEEKER ${tierStr}` : '✨ SEEKER PRO',
+                color: '#D4AF37',
+                bgColor: 'rgba(212, 175, 55, 0.1)',
+                borderColor: '#D4AF37',
+                badgeBg: 'linear-gradient(135deg, #D4AF37, #B8860B)',
+                badgeTextColor: '#000000',
+                glowColor: 'rgba(212, 175, 55, 0.4)',
+              });
+            } else if (type === 'job_poster') {
+              setActiveSub({
+                type,
+                tier: sub.tier,
+                badgeLabel: tierStr ? `✨ EMPLOYER ${tierStr}` : '✨ EMPLOYER PRO',
+                color: '#3B82F6',
+                bgColor: 'rgba(59, 130, 246, 0.1)',
+                borderColor: '#3B82F6',
+                badgeBg: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+                badgeTextColor: '#FFFFFF',
+                glowColor: 'rgba(59, 130, 246, 0.4)',
+              });
+            } else if (type === 'business_promoter') {
+              setActiveSub({
+                type,
+                tier: sub.tier,
+                badgeLabel: tierStr ? `✨ PROMOTER ${tierStr}` : '✨ BUSINESS PRO',
+                color: '#F59E0B',
+                bgColor: 'rgba(245, 158, 11, 0.1)',
+                borderColor: '#F59E0B',
+                badgeBg: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                badgeTextColor: '#000000',
+                glowColor: 'rgba(245, 158, 11, 0.4)',
+              });
+            } else {
+              setActiveSub({
+                type,
+                tier: sub.tier,
+                badgeLabel: '✨ PREMIUM',
+                color: '#D4AF37',
+                bgColor: 'rgba(212, 175, 55, 0.1)',
+                borderColor: '#D4AF37',
+                badgeBg: 'linear-gradient(135deg, #D4AF37, #B8860B)',
+                badgeTextColor: '#000000',
+                glowColor: 'rgba(212, 175, 55, 0.4)',
+              });
+            }
+          } else {
+            setActiveSub(null);
+          }
+        } else {
+          setActiveSub(null);
+        }
+      })
+      .catch(() => setActiveSub(null));
+  }, [isLoggedIn, activeRole]);
 
   const getUserInitial = () => {
     if (user?.email) return user.email.charAt(0).toUpperCase();
@@ -172,8 +271,17 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
               </Link>
             </div>
 
-            {/* Show login button if not logged in on mobile */}
-            {!isLoggedIn && (
+            {/* Show Get Premium or Login on mobile */}
+            {isLoggedIn ? (
+              <Link
+                href="/subscription"
+                className="btn-get-premium"
+                style={{ fontSize: '12px', padding: '6px 12px' }}
+              >
+                <i className="bi bi-star-fill" style={{ fontSize: '10px' }} />
+                Get Premium
+              </Link>
+            ) : (
               <Link
                 href="/login"
                 className="btn-register"
@@ -220,26 +328,65 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
               {isLoading ? (
                 <div className="nav-auth-skeleton" />
               ) : isLoggedIn ? (
-                /* ── Logged In: Show Profile Dropdown Only ── */
-                <div className="nav-profile-wrapper" ref={dropdownRef}>
-                  <button
-                    className="nav-profile-btn"
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    aria-label="User menu"
-                    id="nav-user-menu-btn"
-                    type="button"
+                /* ── Logged In: Show Golden Get Premium Button + Profile Dropdown ── */
+                <>
+                  <Link
+                    href="/subscription"
+                    className="btn-get-premium"
+                    id="nav-get-premium-btn"
                   >
-                    {user?.avatarUrl ? (
-                      <img
-                        src={user.avatarUrl}
-                        alt="Profile"
-                        className="nav-profile-avatar"
-                      />
-                    ) : (
-                      <div className="nav-profile-initial">{getUserInitial()}</div>
+                    <i className="bi bi-star-fill" style={{ fontSize: '12px' }} />
+                    Get Premium
+                  </Link>
+
+                  <div className="nav-profile-wrapper" ref={dropdownRef}>
+                    {activeSub && (
+                      <span
+                        className="nav-sub-badge-top"
+                        style={{
+                          background: activeSub.badgeBg,
+                          color: activeSub.badgeTextColor,
+                          boxShadow: `0 2px 10px ${activeSub.glowColor}`,
+                          border: '1px solid rgba(255, 255, 255, 0.6)'
+                        }}
+                      >
+                        {activeSub.badgeLabel}
+                      </span>
                     )}
-                    <i className={`bi bi-chevron-${dropdownOpen ? 'up' : 'down'} nav-profile-chevron`} />
-                  </button>
+
+                    <button
+                      className="nav-profile-btn"
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      aria-label="User menu"
+                      id="nav-user-menu-btn"
+                      type="button"
+                      style={activeSub ? {
+                        borderColor: activeSub.borderColor,
+                        background: activeSub.bgColor,
+                        boxShadow: `0 0 14px ${activeSub.glowColor}`,
+                        color: activeSub.color
+                      } : undefined}
+                    >
+                      {user?.avatarUrl ? (
+                        <img
+                          src={user.avatarUrl}
+                          alt="Profile"
+                          className="nav-profile-avatar"
+                          style={activeSub ? { border: `2px solid ${activeSub.color}` } : undefined}
+                        />
+                      ) : (
+                        <div
+                          className="nav-profile-initial"
+                          style={activeSub ? { background: activeSub.badgeBg, color: activeSub.badgeTextColor } : undefined}
+                        >
+                          {getUserInitial()}
+                        </div>
+                      )}
+                      <i
+                        className={`bi bi-chevron-${dropdownOpen ? 'up' : 'down'} nav-profile-chevron`}
+                        style={activeSub ? { color: activeSub.color } : undefined}
+                      />
+                    </button>
 
                   {dropdownOpen && (
                     <div className="nav-profile-dropdown">
@@ -433,6 +580,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
                     </div>
                   )}
                 </div>
+                </>
               ) : (
                 /* ── Logged Out: Show Login & Register ── */
                 <>
