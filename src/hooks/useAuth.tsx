@@ -21,6 +21,8 @@ interface AuthState {
   user: User | null;
   isLoading: boolean;
   isLoggedIn: boolean;
+  activeRole: number;
+  switchRole: (roleId: number) => void;
   logout: () => Promise<void>;
   refetch: () => Promise<void>;
   updateProfile?: (data: FormData, roleId?: number) => Promise<void>;
@@ -37,7 +39,31 @@ const AuthContext = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeRole, setActiveRoleState] = useState<number>(1);
   const router = useRouter();
+
+  useEffect(() => {
+    if (user?.roles?.length) {
+      const saved = typeof window !== 'undefined' ? localStorage.getItem('activeRole') : null;
+      const savedRoleNum = saved ? Number(saved) : null;
+      if (savedRoleNum && user.roles.includes(savedRoleNum)) {
+        setActiveRoleState(savedRoleNum);
+      } else {
+        setActiveRoleState(user.roles[0]);
+      }
+    } else {
+      setActiveRoleState(1);
+    }
+  }, [user]);
+
+  const switchRole = useCallback((roleId: number) => {
+    localStorage.setItem('activeRole', String(roleId));
+    setActiveRoleState(roleId);
+    let dest = '/seeker';
+    if (roleId === 2) dest = '/employer';
+    if (roleId === 3) dest = '/dashboard';
+    window.location.href = dest;
+  }, []);
 
   const fetchUser = useCallback(async () => {
     try {
@@ -138,7 +164,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, fetchUser]);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isLoggedIn: !!user, logout, refetch: fetchUser, updateProfile }}>
+    <AuthContext.Provider value={{ user, isLoading, isLoggedIn: !!user, activeRole, switchRole, logout, refetch: fetchUser, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

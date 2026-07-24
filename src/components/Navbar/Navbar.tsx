@@ -6,7 +6,11 @@ import Link from 'next/link';
 import RoleUpgradeModal from '../RoleUpgradeModal/RoleUpgradeModal';
 import "./Navbar.css";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  variant?: 'default' | 'minimal';
+}
+
+const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -15,22 +19,26 @@ const Navbar: React.FC = () => {
   const [targetRole, setTargetRole] = useState<1 | 2 | 3 | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { user, isLoading, isLoggedIn, logout } = useAuth();
+  const { user, isLoading, isLoggedIn, activeRole, switchRole, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
-  const isEmployerRole = user?.roles?.includes(2);
+  const logoHref = isLoggedIn ? (activeRole === 2 ? '/employer' : activeRole === 3 ? '/dashboard' : '/seeker') : '/';
 
   const links = isLoggedIn ? (
-    isEmployerRole ? [
+    activeRole === 2 ? [
       { label: "Employer Home", href: "/employer" },
       { label: "Post a Job", href: "/employer/post-job?tab=post" },
       { label: "Manage Jobs", href: "/employer/post-job?tab=jobs" },
       { label: "Find Candidates", href: "/employer#candidates" },
       { label: "Pricing", href: "/subscription-light" },
       { label: "Contact", href: "/#contact" },
+    ] : activeRole === 3 && !user?.roles?.includes(1) && !user?.roles?.includes(2) ? [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Pricing", href: "/subscription-light" },
+      { label: "Contact", href: "/#contact" },
     ] : [
-      { label: "Home", href: "/" },
+      { label: "Home", href: "/seeker" },
       { label: "About Us", href: "/#about" },
       { label: "Find Job", href: "/jobs" },
       { label: "Save jobs", href: "/dashboard/saved" },
@@ -88,17 +96,17 @@ const Navbar: React.FC = () => {
   };
 
   const getRoleLabel = () => {
-    if (user?.roles?.includes(2)) return "Employer";
-    if (user?.roles?.includes(3)) return "Business Promoter";
+    if (activeRole === 2) return "Employer";
+    if (activeRole === 3) return "Business Promoter";
     return "Job Seeker";
   };
 
   // Determine if logged in as Job Seeker
-  const isJobSeeker = isLoggedIn && user?.roles?.includes(1);
+  const isJobSeeker = isLoggedIn && activeRole === 1;
 
   // Drawer links
   const drawerLinks = isLoggedIn ? (
-    isEmployerRole ? [
+    activeRole === 2 ? [
       { label: "Employer Home", href: "/employer", icon: "bi-building" },
       { label: "Post a Job", href: "/employer/post-job?tab=post", icon: "bi-plus-circle" },
       { label: "Manage Jobs", href: "/employer/post-job?tab=jobs", icon: "bi-briefcase" },
@@ -106,7 +114,12 @@ const Navbar: React.FC = () => {
       { label: "Employer Dashboard", href: "/employer/post-job?tab=overview", icon: "bi-grid" },
       { label: "Pricing", href: "/subscription", icon: "bi-tags" },
       { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
+    ] : activeRole === 3 && !user?.roles?.includes(1) && !user?.roles?.includes(2) ? [
+      { label: "Dashboard", href: "/dashboard", icon: "bi-grid" },
+      { label: "Pricing", href: "/subscription", icon: "bi-tags" },
+      { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
     ] : [
+      { label: "Job Seeker Home", href: "/seeker", icon: "bi-house" },
       { label: "Search job", href: "/jobs", icon: "bi-search" },
       { label: "Recomended job", href: "/jobs?recommended=true", icon: "bi-stars" },
       { label: "Save job", href: "/dashboard/saved", icon: "bi-bookmark-heart" },
@@ -114,8 +127,9 @@ const Navbar: React.FC = () => {
       { label: "About us", href: "/#about", icon: "bi-info-circle" },
     ]
   ) : [
+    { label: "Home", href: "/", icon: "bi-house" },
     { label: "Login", href: "/login", icon: "bi-box-arrow-in-right" },
-    { label: "For Employers", href: "/employer", icon: "bi-briefcase" },
+    { label: "Register", href: "/register", icon: "bi-person-plus" },
     { label: "Search job", href: "/jobs", icon: "bi-search" },
     { label: "Price", href: "/subscription", icon: "bi-tags" },
     { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
@@ -146,7 +160,7 @@ const Navbar: React.FC = () => {
                 <span></span>
                 <span></span>
               </button>
-              <Link className="navbar-brand m-0" href="/" aria-label="JobNest Home">
+              <Link className="navbar-brand m-0" href={logoHref} aria-label="JobNest Home">
                 <div className="logo-mark">
                   <span className="logo-icon">
                     <i className="bi bi-briefcase-fill"></i>
@@ -173,7 +187,7 @@ const Navbar: React.FC = () => {
           {/* ── DESKTOP NAV HEADER (Visible on lg and up screens) ── */}
           <div className="d-none d-lg-flex align-items-center justify-content-between w-100">
             {/* Logo */}
-            <Link className="navbar-brand" href="/" aria-label="JobNest Home">
+            <Link className="navbar-brand" href={logoHref} aria-label="JobNest Home">
               <div className="logo-mark">
                 <span className="logo-icon">
                   <i className="bi bi-briefcase-fill"></i>
@@ -184,20 +198,22 @@ const Navbar: React.FC = () => {
               </div>
             </Link>
 
-            {/* Nav links */}
-            <ul className="navbar-nav mx-auto mb-2 mb-lg-0 nav-links flex-row gap-3">
-              {links.map((link) => (
-                <li className="nav-item" key={link.label}>
-                  <Link
-                    className="nav-link"
-                    href={link.href}
-                    id={`nav-${link.label.toLowerCase().replace(" ", "-")}`}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Nav links (hidden in minimal mode) */}
+            {variant !== 'minimal' && (
+              <ul className="navbar-nav mx-auto mb-2 mb-lg-0 nav-links flex-row gap-3">
+                {links.map((link) => (
+                  <li className="nav-item" key={link.label}>
+                    <Link
+                      className="nav-link"
+                      href={link.href}
+                      id={`nav-${link.label.toLowerCase().replace(" ", "-")}`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {/* CTA Buttons — Auth Aware */}
             <div className="navbar-cta d-flex align-items-center gap-3">
@@ -323,6 +339,89 @@ const Navbar: React.FC = () => {
                           </a>
                         </>
                       )}
+                      {/* Multi-Role Switcher Section */}
+                      {user?.roles && user.roles.length > 1 && (
+                        <>
+                          <div className="nav-dropdown-divider" />
+                          <div className="px-3 py-2">
+                            <span style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700, display: 'block', marginBottom: '8px' }}>
+                              <i className="bi bi-arrow-repeat me-1"></i> Switch Role
+                            </span>
+                            <div className="d-flex flex-column gap-1">
+                              {user.roles.includes(1) && (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                  style={{
+                                    fontSize: '0.8rem',
+                                    fontWeight: 600,
+                                    borderRadius: '8px',
+                                    padding: '6px 12px',
+                                    background: activeRole === 1 ? '#2454FF' : '#f8fafc',
+                                    color: activeRole === 1 ? '#ffffff' : '#334155',
+                                    border: activeRole === 1 ? 'none' : '1px solid #e2e8f0',
+                                    transition: 'all 0.15s ease'
+                                  }}
+                                  onClick={() => {
+                                    setDropdownOpen(false);
+                                    switchRole(1);
+                                  }}
+                                >
+                                  <span><i className="bi bi-search me-2"></i>Job Seeker</span>
+                                  {activeRole === 1 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                                </button>
+                              )}
+                              {user.roles.includes(2) && (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                  style={{
+                                    fontSize: '0.8rem',
+                                    fontWeight: 600,
+                                    borderRadius: '8px',
+                                    padding: '6px 12px',
+                                    background: activeRole === 2 ? '#2454FF' : '#f8fafc',
+                                    color: activeRole === 2 ? '#ffffff' : '#334155',
+                                    border: activeRole === 2 ? 'none' : '1px solid #e2e8f0',
+                                    transition: 'all 0.15s ease'
+                                  }}
+                                  onClick={() => {
+                                    setDropdownOpen(false);
+                                    switchRole(2);
+                                  }}
+                                >
+                                  <span><i className="bi bi-building me-2"></i>Employer</span>
+                                  {activeRole === 2 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                                </button>
+                              )}
+                              {user.roles.includes(3) && (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                  style={{
+                                    fontSize: '0.8rem',
+                                    fontWeight: 600,
+                                    borderRadius: '8px',
+                                    padding: '6px 12px',
+                                    background: activeRole === 3 ? '#2454FF' : '#f8fafc',
+                                    color: activeRole === 3 ? '#ffffff' : '#334155',
+                                    border: activeRole === 3 ? 'none' : '1px solid #e2e8f0',
+                                    transition: 'all 0.15s ease'
+                                  }}
+                                  onClick={() => {
+                                    setDropdownOpen(false);
+                                    switchRole(3);
+                                  }}
+                                >
+                                  <span><i className="bi bi-megaphone me-2"></i>Business Promoter</span>
+                                  {activeRole === 3 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
                       <div className="nav-dropdown-divider" />
                       <button
                         className="nav-dropdown-item nav-dropdown-logout"
@@ -335,13 +434,13 @@ const Navbar: React.FC = () => {
                   )}
                 </div>
               ) : (
-                /* ── Logged Out: Show Login & For Employers ── */
+                /* ── Logged Out: Show Login & Register ── */
                 <>
                   <Link href="/login" className="btn-login" id="nav-login-btn" style={{ textDecoration: 'none' }}>
                     Login
                   </Link>
-                  <Link href="/login" className="btn-register" id="nav-register-btn" style={{ textDecoration: 'none' }}>
-                    For Employers
+                  <Link href="/register" className="btn-register" id="nav-register-btn" style={{ textDecoration: 'none' }}>
+                    Register
                   </Link>
                 </>
               )}
@@ -458,6 +557,86 @@ const Navbar: React.FC = () => {
               >
                 Update profile <i className="bi bi-chevron-right" style={{ fontSize: '10px' }}></i>
               </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Multi-Role Switcher in Mobile Drawer */}
+        {isLoggedIn && user?.roles && user.roles.length > 1 && (
+          <div className="mobile-role-switcher mb-3 p-3" style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.2)' }}>
+            <span style={{ fontSize: '11px', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700, display: 'block', marginBottom: '8px' }}>
+              <i className="bi bi-arrow-repeat me-1"></i> Switch Role
+            </span>
+            <div className="d-flex flex-column gap-2">
+              {user.roles.includes(1) && (
+                <button
+                  type="button"
+                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    background: activeRole === 1 ? '#D4AF37' : 'rgba(255,255,255,0.08)',
+                    color: activeRole === 1 ? '#000000' : '#ffffff',
+                    border: activeRole === 1 ? 'none' : '1px solid rgba(255,255,255,0.15)',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    switchRole(1);
+                  }}
+                >
+                  <span><i className="bi bi-search me-2"></i>Job Seeker</span>
+                  {activeRole === 1 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#000000' }}></i>}
+                </button>
+              )}
+              {user.roles.includes(2) && (
+                <button
+                  type="button"
+                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    background: activeRole === 2 ? '#D4AF37' : 'rgba(255,255,255,0.08)',
+                    color: activeRole === 2 ? '#000000' : '#ffffff',
+                    border: activeRole === 2 ? 'none' : '1px solid rgba(255,255,255,0.15)',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    switchRole(2);
+                  }}
+                >
+                  <span><i className="bi bi-building me-2"></i>Employer</span>
+                  {activeRole === 2 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#000000' }}></i>}
+                </button>
+              )}
+              {user.roles.includes(3) && (
+                <button
+                  type="button"
+                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    background: activeRole === 3 ? '#D4AF37' : 'rgba(255,255,255,0.08)',
+                    color: activeRole === 3 ? '#000000' : '#ffffff',
+                    border: activeRole === 3 ? 'none' : '1px solid rgba(255,255,255,0.15)',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    switchRole(3);
+                  }}
+                >
+                  <span><i className="bi bi-megaphone me-2"></i>Business Promoter</span>
+                  {activeRole === 3 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#000000' }}></i>}
+                </button>
+              )}
             </div>
           </div>
         )}

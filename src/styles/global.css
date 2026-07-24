@@ -256,3 +256,17 @@ img {
 .fade-in-up {
   animation: fadeInUp 0.6s ease forwards;
 }
+
+/* ── Sticky Sidebar Utility ── */
+.sticky-sidebar {
+  align-self: flex-start !important;
+}
+
+@media (min-width: 992px) {
+  .sticky-sidebar {
+    position: sticky !important;
+    top: calc(var(--navbar-height, 80px) + 24px) !important;
+    z-index: 20 !important;
+  }
+}
+

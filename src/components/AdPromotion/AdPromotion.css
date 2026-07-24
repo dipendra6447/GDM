@@ -80,7 +80,7 @@
   right: 22px;
   width: 190px;
   height: 390px;
-  z-index: var(--z-float-ad);
+  z-index: var(--z-float-ad, 99999) !important;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, .32), 0 0 0 1px rgba(255, 255, 255, .08);
@@ -287,7 +287,7 @@
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  z-index: var(--z-float-ad, 1050);
+  z-index: var(--z-float-ad, 99999) !important;
 
   /* Sizing & shape */
   display: flex;

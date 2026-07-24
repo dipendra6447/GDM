@@ -84,6 +84,8 @@
 
   /* Z-Index */
   --z-navbar: 1000;
+  --z-promote: 1040;
+  --z-float-ad: 99999;
   --z-modal: 2000;
   --z-tooltip: 3000;
 }
