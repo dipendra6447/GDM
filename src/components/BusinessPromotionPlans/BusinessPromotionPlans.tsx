@@ -1,8 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useAuth } from "@/hooks/useAuth";
+import { UserRole } from "../RoleSwitcherModal/RoleSwitcherModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -86,7 +89,7 @@ const compareRows = [
 ];
 
 interface BusinessPromotionPlansProps {
-  onRoleSwitch: (role: "jobseeker" | "employer") => void;
+  onRoleSwitch: (from: UserRole, to: UserRole) => void;
   isLight?: boolean;
   dbPlans?: any[];
   loading?: boolean;
@@ -139,11 +142,27 @@ const getDynamicPlans = (dbPlans: any[], billing: BillingPeriod) => {
 };
 
 const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleSwitch, isLight = false, dbPlans = [], loading = false }) => {
+  const { user, isLoggedIn, activeRole } = useAuth();
+  const router = useRouter();
   const sectionRef = useRef<HTMLElement>(null);
   const [billing, setBilling] = useState<BillingPeriod>("monthly");
   const [showCompare, setShowCompare] = useState(false);
 
   const renderedPlans = dbPlans.length > 0 ? getDynamicPlans(dbPlans, billing) : plans;
+
+  const handleSelectPlan = (e: React.MouseEvent, planId: string) => {
+    e.preventDefault();
+    if (!isLoggedIn || !user) {
+      router.push(`/login?redirect=${encodeURIComponent(`/cart?plan=${planId}&billing=${billing}`)}`);
+      return;
+    }
+    if (activeRole !== 3) {
+      const currentRoleKey: UserRole = activeRole === 2 ? "employer" : "jobseeker";
+      onRoleSwitch(currentRoleKey, "business");
+      return;
+    }
+    router.push(`/cart?plan=${planId}&billing=${billing}`);
+  };
 
   const getPrice = (p: typeof plans[0]) => {
     if (billing === "daily") return p.priceDaily;
@@ -240,9 +259,14 @@ const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleS
                     </li>
                   ))}
                 </ul>
-                <Link href={`/cart?plan=${plan.id}&billing=${billing}`} className={`card-cta-btn${plan.featured ? " primary" : ""}`} id={`${plan.id}-cta`}>
+                <button
+                  type="button"
+                  onClick={(e) => handleSelectPlan(e, plan.id)}
+                  className={`card-cta-btn${plan.featured ? " primary" : ""}`}
+                  id={`${plan.id}-cta`}
+                >
                   {plan.cta}
-                </Link>
+                </button>
                 <p className="plan-tc-link">
                   <Link href="/terms" target="_blank">Terms &amp; Conditions apply</Link>
                 </p>
@@ -264,10 +288,10 @@ const BusinessPromotionPlans: React.FC<BusinessPromotionPlansProps> = ({ onRoleS
             </button>
             <div className="role-switch-inline">
               <span className="role-switch-label">Switch role:</span>
-              <button className="role-pill" onClick={() => onRoleSwitch("jobseeker")} id="biz-switch-js">
+              <button className="role-pill" onClick={() => onRoleSwitch("business", "jobseeker")} id="biz-switch-js">
                 🔍 Job Seeker
               </button>
-              <button className="role-pill" onClick={() => onRoleSwitch("employer")} id="biz-switch-emp">
+              <button className="role-pill" onClick={() => onRoleSwitch("business", "employer")} id="biz-switch-emp">
                 🏢 Employer
               </button>
             </div>

@@ -1,10 +1,5 @@
-import Page from '@/views/Subscription/Subscription';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'JobNest Premium — Subscription & Pricing Plans',
-};
+import { redirect } from 'next/navigation';
 
 export default function SubscriptionPage() {
-  return <Page />;
+  redirect('/subscription-light');
 }

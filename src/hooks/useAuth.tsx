@@ -22,7 +22,7 @@ interface AuthState {
   isLoading: boolean;
   isLoggedIn: boolean;
   activeRole: number;
-  switchRole: (roleId: number) => void;
+  switchRole: (roleId: number, redirectUrl?: string) => void;
   logout: () => Promise<void>;
   refetch: () => Promise<void>;
   updateProfile?: (data: FormData, roleId?: number) => Promise<void>;
@@ -56,13 +56,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  const switchRole = useCallback((roleId: number) => {
+  const switchRole = useCallback((roleId: number, redirectUrl?: string) => {
     localStorage.setItem('activeRole', String(roleId));
     setActiveRoleState(roleId);
-    let dest = '/seeker';
-    if (roleId === 2) dest = '/employer';
-    if (roleId === 3) dest = '/dashboard';
-    window.location.href = dest;
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      let dest = '/seeker';
+      if (roleId === 2) dest = '/employer';
+      if (roleId === 3) dest = '/dashboard';
+      window.location.href = dest;
+    }
   }, []);
 
   const fetchUser = useCallback(async () => {

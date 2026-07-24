@@ -93,7 +93,7 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
         alert('Application submitted successfully!');
       } else if (res.status === 403) {
         alert(json.message || 'Limit reached. Please buy a plan.');
-        router.push('/subscription');
+        router.push('/subscription-light');
       } else {
         alert(json.message || 'Failed to submit application');
       }

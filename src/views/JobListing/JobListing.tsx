@@ -216,7 +216,7 @@ const JobListing: React.FC = () => {
         alert('Application submitted successfully!');
       } else if (res.status === 403) {
         alert(json.message || 'Limit reached. Please buy a plan.');
-        window.location.href = '/subscription';
+        window.location.href = '/subscription-light';
       } else {
         alert(json.message || 'Failed to submit application');
       }

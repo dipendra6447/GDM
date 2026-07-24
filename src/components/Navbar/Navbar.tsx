@@ -119,65 +119,64 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
             (s: any) => s.status === 'active' && new Date(s.expiresAt) > now
           );
           if (activeSubs.length > 0) {
-            let sub = activeSubs.find(
-              (s: any) =>
-                (activeRole === 1 && s.subscriptionType === 'job_seeker') ||
-                (activeRole === 2 && s.subscriptionType === 'job_poster') ||
-                (activeRole === 3 && s.subscriptionType === 'business_promoter')
-            );
-            if (!sub) sub = activeSubs[0];
+            const targetType =
+              activeRole === 2 ? 'job_poster' :
+              activeRole === 3 ? 'business_promoter' :
+              'job_seeker';
 
-            const type = sub.subscriptionType;
-            const tierStr = sub.tier ? sub.tier.toUpperCase() : '';
+            const sub = activeSubs.find((s: any) => s.subscriptionType === targetType);
 
-            if (type === 'job_seeker') {
+            if (sub) {
+              const type = sub.subscriptionType;
+              const rawTier = (sub.tier || '').toLowerCase();
+              
+              let badgeLabel = '✨ GOLD';
+              let color = '#D4AF37';
+              let bgColor = 'rgba(212, 175, 55, 0.1)';
+              let borderColor = '#D4AF37';
+              let badgeBg = 'linear-gradient(135deg, #D4AF37, #B8860B)';
+              let badgeTextColor = '#000000';
+              let glowColor = 'rgba(212, 175, 55, 0.4)';
+
+              if (rawTier.includes('platinum') || rawTier.includes('monthly') || rawTier === 'platinum') {
+                badgeLabel = '✨ PLATINUM';
+                color = '#38BDF8';
+                bgColor = 'rgba(56, 189, 248, 0.1)';
+                borderColor = '#38BDF8';
+                badgeBg = 'linear-gradient(135deg, #38BDF8, #1E40AF)';
+                badgeTextColor = '#FFFFFF';
+                glowColor = 'rgba(56, 189, 248, 0.4)';
+              } else if (rawTier.includes('silver') || rawTier.includes('daily') || rawTier === 'silver') {
+                badgeLabel = '✨ SILVER';
+                color = '#C0C0C0';
+                bgColor = 'rgba(192, 192, 192, 0.1)';
+                borderColor = '#C0C0C0';
+                badgeBg = 'linear-gradient(135deg, #E0E0E0, #808080)';
+                badgeTextColor = '#000000';
+                glowColor = 'rgba(192, 192, 192, 0.4)';
+              } else {
+                badgeLabel = '✨ GOLD';
+                color = '#D4AF37';
+                bgColor = 'rgba(212, 175, 55, 0.1)';
+                borderColor = '#D4AF37';
+                badgeBg = 'linear-gradient(135deg, #D4AF37, #B8860B)';
+                badgeTextColor = '#000000';
+                glowColor = 'rgba(212, 175, 55, 0.4)';
+              }
+
               setActiveSub({
                 type,
                 tier: sub.tier,
-                badgeLabel: tierStr ? `✨ SEEKER ${tierStr}` : '✨ SEEKER PRO',
-                color: '#D4AF37',
-                bgColor: 'rgba(212, 175, 55, 0.1)',
-                borderColor: '#D4AF37',
-                badgeBg: 'linear-gradient(135deg, #D4AF37, #B8860B)',
-                badgeTextColor: '#000000',
-                glowColor: 'rgba(212, 175, 55, 0.4)',
-              });
-            } else if (type === 'job_poster') {
-              setActiveSub({
-                type,
-                tier: sub.tier,
-                badgeLabel: tierStr ? `✨ EMPLOYER ${tierStr}` : '✨ EMPLOYER PRO',
-                color: '#3B82F6',
-                bgColor: 'rgba(59, 130, 246, 0.1)',
-                borderColor: '#3B82F6',
-                badgeBg: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
-                badgeTextColor: '#FFFFFF',
-                glowColor: 'rgba(59, 130, 246, 0.4)',
-              });
-            } else if (type === 'business_promoter') {
-              setActiveSub({
-                type,
-                tier: sub.tier,
-                badgeLabel: tierStr ? `✨ PROMOTER ${tierStr}` : '✨ BUSINESS PRO',
-                color: '#F59E0B',
-                bgColor: 'rgba(245, 158, 11, 0.1)',
-                borderColor: '#F59E0B',
-                badgeBg: 'linear-gradient(135deg, #F59E0B, #D97706)',
-                badgeTextColor: '#000000',
-                glowColor: 'rgba(245, 158, 11, 0.4)',
+                badgeLabel,
+                color,
+                bgColor,
+                borderColor,
+                badgeBg,
+                badgeTextColor,
+                glowColor,
               });
             } else {
-              setActiveSub({
-                type,
-                tier: sub.tier,
-                badgeLabel: '✨ PREMIUM',
-                color: '#D4AF37',
-                bgColor: 'rgba(212, 175, 55, 0.1)',
-                borderColor: '#D4AF37',
-                badgeBg: 'linear-gradient(135deg, #D4AF37, #B8860B)',
-                badgeTextColor: '#000000',
-                glowColor: 'rgba(212, 175, 55, 0.4)',
-              });
+              setActiveSub(null);
             }
           } else {
             setActiveSub(null);
@@ -211,11 +210,11 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
       { label: "Manage Jobs", href: "/employer/post-job?tab=jobs", icon: "bi-briefcase" },
       { label: "Candidate Search", href: "/employer#candidates", icon: "bi-people" },
       { label: "Employer Dashboard", href: "/employer/post-job?tab=overview", icon: "bi-grid" },
-      { label: "Pricing", href: "/subscription", icon: "bi-tags" },
+      { label: "Pricing", href: "/subscription-light", icon: "bi-tags" },
       { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
     ] : activeRole === 3 && !user?.roles?.includes(1) && !user?.roles?.includes(2) ? [
       { label: "Dashboard", href: "/dashboard", icon: "bi-grid" },
-      { label: "Pricing", href: "/subscription", icon: "bi-tags" },
+      { label: "Pricing", href: "/subscription-light", icon: "bi-tags" },
       { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
     ] : [
       { label: "Job Seeker Home", href: "/seeker", icon: "bi-house" },
@@ -230,7 +229,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
     { label: "Login", href: "/login", icon: "bi-box-arrow-in-right" },
     { label: "Register", href: "/register", icon: "bi-person-plus" },
     { label: "Search job", href: "/jobs", icon: "bi-search" },
-    { label: "Price", href: "/subscription", icon: "bi-tags" },
+    { label: "Price", href: "/subscription-light", icon: "bi-tags" },
     { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
     { label: "About us", href: "/#about", icon: "bi-info-circle" },
   ];
@@ -273,14 +272,16 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
 
             {/* Show Get Premium or Login on mobile */}
             {isLoggedIn ? (
-              <Link
-                href="/subscription"
-                className="btn-get-premium"
-                style={{ fontSize: '12px', padding: '6px 12px' }}
-              >
-                <i className="bi bi-star-fill" style={{ fontSize: '10px' }} />
-                Get Premium
-              </Link>
+              !activeSub && (
+                <Link
+                  href="/subscription-light"
+                  className="btn-get-premium"
+                  style={{ fontSize: '12px', padding: '6px 12px' }}
+                >
+                  <i className="bi bi-star-fill" style={{ fontSize: '10px' }} />
+                  Get Premium
+                </Link>
+              )
             ) : (
               <Link
                 href="/login"
@@ -330,14 +331,16 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
               ) : isLoggedIn ? (
                 /* ── Logged In: Show Golden Get Premium Button + Profile Dropdown ── */
                 <>
-                  <Link
-                    href="/subscription"
-                    className="btn-get-premium"
-                    id="nav-get-premium-btn"
-                  >
-                    <i className="bi bi-star-fill" style={{ fontSize: '12px' }} />
-                    Get Premium
-                  </Link>
+                  {!activeSub && (
+                    <Link
+                      href="/subscription-light"
+                      className="btn-get-premium"
+                      id="nav-get-premium-btn"
+                    >
+                      <i className="bi bi-star-fill" style={{ fontSize: '12px' }} />
+                      Get Premium
+                    </Link>
+                  )}
 
                   <div className="nav-profile-wrapper" ref={dropdownRef}>
                     {activeSub && (
@@ -388,198 +391,198 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
                       />
                     </button>
 
-                  {dropdownOpen && (
-                    <div className="nav-profile-dropdown">
-                      <div className="nav-dropdown-header">
-                        {user?.avatarUrl ? (
-                          <img
-                            src={user.avatarUrl}
-                            alt="Profile"
-                            className="nav-dropdown-avatar"
-                          />
-                        ) : (
-                          <div className="nav-dropdown-initial">{getUserInitial()}</div>
-                        )}
-                        <div className="nav-dropdown-info">
-                          <span className="nav-dropdown-email">{user?.email}</span>
-                          <span className="nav-dropdown-role">{getRoleLabel()}</span>
-                        </div>
-                      </div>
-
-                      {/* Profile Completion Section */}
-                      <div className="nav-dropdown-completion px-3 py-2">
-                        <div className="d-flex justify-content-between align-items-center mb-1">
-                          <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Profile Completion</span>
-                          <span style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: 600 }}>{user?.profileCompletion || 0}%</span>
-                        </div>
-                        <div className="progress" style={{ height: '6px', background: 'rgba(255,255,255,0.1)' }}>
-                          <div
-                            className={`progress-bar ${(user?.profileCompletion || 0) < 50 ? 'bg-danger' : (user?.profileCompletion || 0) < 80 ? 'bg-warning' : 'bg-success'}`}
-                            role="progressbar"
-                            style={{ width: `${user?.profileCompletion || 0}%` }}
-                            aria-valuenow={user?.profileCompletion || 0}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          ></div>
-                        </div>
-                        {(user?.profileCompletion || 0) < 100 && (
-                          <Link
-                            href="/profile"
-                            className="btn btn-sm btn-outline-primary w-100 mt-2"
-                            style={{ fontSize: '0.8rem', borderRadius: '8px', display: 'inline-block', textAlign: 'center' }}
-                            onClick={() => setDropdownOpen(false)}
-                          >
-                            Complete Profile
-                          </Link>
-                        )}
-                      </div>
-
-                      <div className="nav-dropdown-divider" />
-                      <Link
-                        href={user?.roles?.includes(1) ? "/dashboard" : user?.roles?.includes(2) ? "/employer/post-job?tab=overview" : "/dashboard"}
-                        className={`nav-dropdown-item ${(user?.roles?.includes(1) && pathname === '/dashboard') ||
-                          (!user?.roles?.includes(1) && pathname === '/employer/post-job' && (currentTab === 'overview' || currentTab === 'jobs' || currentTab === 'edit'))
-                          ? 'active'
-                          : ''
-                          }`}
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        <i className="bi bi-grid-fill" /> Dashboard
-                      </Link>
-                      {user?.roles?.includes(2) && (
-                        <>
-                          <Link
-                            href="/employer/post-job?tab=post"
-                            className={`nav-dropdown-item nav-dropdown-post-job ${pathname === '/employer/post-job' && currentTab === 'post' ? 'active' : ''}`}
-                            id="nav-dropdown-post-job"
-                            onClick={() => setDropdownOpen(false)}
-                          >
-                            <i className="bi bi-plus-circle" /> Post a Job
-                          </Link>
-                        </>
-                      )}
-                      <Link href="/jobs" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
-                        <i className="bi bi-search" /> Find Jobs
-                      </Link>
-                      <Link href="/subscription" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
-                        <i className="bi bi-star" /> Subscription
-                      </Link>
-                      <Link
-                        href={user?.roles?.includes(2) ? "/employer/post-job?tab=subscription" : user?.roles?.includes(3) ? "/dashboard/subscription?role=3" : "/dashboard/subscription?role=1"}
-                        className="nav-dropdown-item"
-                        id="nav-dropdown-my-orders"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        <i className="bi bi-receipt" /> My Orders
-                      </Link>
-                      {user?.roles?.includes(4) && (
-                        <>
-                          <div className="nav-dropdown-divider" />
-                          <a
-                            href="http://localhost:5173"
-                            className="nav-dropdown-item"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setDropdownOpen(false)}
-                          >
-                            <i className="bi bi-shield-lock" /> Admin Panel
-                          </a>
-                        </>
-                      )}
-                      {/* Multi-Role Switcher Section */}
-                      {user?.roles && user.roles.length > 1 && (
-                        <>
-                          <div className="nav-dropdown-divider" />
-                          <div className="px-3 py-2">
-                            <span style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700, display: 'block', marginBottom: '8px' }}>
-                              <i className="bi bi-arrow-repeat me-1"></i> Switch Role
-                            </span>
-                            <div className="d-flex flex-column gap-1">
-                              {user.roles.includes(1) && (
-                                <button
-                                  type="button"
-                                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
-                                  style={{
-                                    fontSize: '0.8rem',
-                                    fontWeight: 600,
-                                    borderRadius: '8px',
-                                    padding: '6px 12px',
-                                    background: activeRole === 1 ? '#2454FF' : '#f8fafc',
-                                    color: activeRole === 1 ? '#ffffff' : '#334155',
-                                    border: activeRole === 1 ? 'none' : '1px solid #e2e8f0',
-                                    transition: 'all 0.15s ease'
-                                  }}
-                                  onClick={() => {
-                                    setDropdownOpen(false);
-                                    switchRole(1);
-                                  }}
-                                >
-                                  <span><i className="bi bi-search me-2"></i>Job Seeker</span>
-                                  {activeRole === 1 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
-                                </button>
-                              )}
-                              {user.roles.includes(2) && (
-                                <button
-                                  type="button"
-                                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
-                                  style={{
-                                    fontSize: '0.8rem',
-                                    fontWeight: 600,
-                                    borderRadius: '8px',
-                                    padding: '6px 12px',
-                                    background: activeRole === 2 ? '#2454FF' : '#f8fafc',
-                                    color: activeRole === 2 ? '#ffffff' : '#334155',
-                                    border: activeRole === 2 ? 'none' : '1px solid #e2e8f0',
-                                    transition: 'all 0.15s ease'
-                                  }}
-                                  onClick={() => {
-                                    setDropdownOpen(false);
-                                    switchRole(2);
-                                  }}
-                                >
-                                  <span><i className="bi bi-building me-2"></i>Employer</span>
-                                  {activeRole === 2 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
-                                </button>
-                              )}
-                              {user.roles.includes(3) && (
-                                <button
-                                  type="button"
-                                  className="btn btn-sm d-flex align-items-center justify-content-between w-100"
-                                  style={{
-                                    fontSize: '0.8rem',
-                                    fontWeight: 600,
-                                    borderRadius: '8px',
-                                    padding: '6px 12px',
-                                    background: activeRole === 3 ? '#2454FF' : '#f8fafc',
-                                    color: activeRole === 3 ? '#ffffff' : '#334155',
-                                    border: activeRole === 3 ? 'none' : '1px solid #e2e8f0',
-                                    transition: 'all 0.15s ease'
-                                  }}
-                                  onClick={() => {
-                                    setDropdownOpen(false);
-                                    switchRole(3);
-                                  }}
-                                >
-                                  <span><i className="bi bi-megaphone me-2"></i>Business Promoter</span>
-                                  {activeRole === 3 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
-                                </button>
-                              )}
-                            </div>
+                    {dropdownOpen && (
+                      <div className="nav-profile-dropdown">
+                        <div className="nav-dropdown-header">
+                          {user?.avatarUrl ? (
+                            <img
+                              src={user.avatarUrl}
+                              alt="Profile"
+                              className="nav-dropdown-avatar"
+                            />
+                          ) : (
+                            <div className="nav-dropdown-initial">{getUserInitial()}</div>
+                          )}
+                          <div className="nav-dropdown-info">
+                            <span className="nav-dropdown-email">{user?.email}</span>
+                            <span className="nav-dropdown-role">{getRoleLabel()}</span>
                           </div>
-                        </>
-                      )}
+                        </div>
 
-                      <div className="nav-dropdown-divider" />
-                      <button
-                        className="nav-dropdown-item nav-dropdown-logout"
-                        onClick={logout}
-                        type="button"
-                      >
-                        <i className="bi bi-box-arrow-right" /> Sign Out
-                      </button>
-                    </div>
-                  )}
-                </div>
+                        {/* Profile Completion Section */}
+                        <div className="nav-dropdown-completion px-3 py-2">
+                          <div className="d-flex justify-content-between align-items-center mb-1">
+                            <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Profile Completion</span>
+                            <span style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: 600 }}>{user?.profileCompletion || 0}%</span>
+                          </div>
+                          <div className="progress" style={{ height: '6px', background: 'rgba(255,255,255,0.1)' }}>
+                            <div
+                              className={`progress-bar ${(user?.profileCompletion || 0) < 50 ? 'bg-danger' : (user?.profileCompletion || 0) < 80 ? 'bg-warning' : 'bg-success'}`}
+                              role="progressbar"
+                              style={{ width: `${user?.profileCompletion || 0}%` }}
+                              aria-valuenow={user?.profileCompletion || 0}
+                              aria-valuemin={0}
+                              aria-valuemax={100}
+                            ></div>
+                          </div>
+                          {(user?.profileCompletion || 0) < 100 && (
+                            <Link
+                              href="/profile"
+                              className="btn btn-sm btn-outline-primary w-100 mt-2"
+                              style={{ fontSize: '0.8rem', borderRadius: '8px', display: 'inline-block', textAlign: 'center' }}
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              Complete Profile
+                            </Link>
+                          )}
+                        </div>
+
+                        <div className="nav-dropdown-divider" />
+                        <Link
+                          href={user?.roles?.includes(1) ? "/dashboard" : user?.roles?.includes(2) ? "/employer/post-job?tab=overview" : "/dashboard"}
+                          className={`nav-dropdown-item ${(user?.roles?.includes(1) && pathname === '/dashboard') ||
+                            (!user?.roles?.includes(1) && pathname === '/employer/post-job' && (currentTab === 'overview' || currentTab === 'jobs' || currentTab === 'edit'))
+                            ? 'active'
+                            : ''
+                            }`}
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          <i className="bi bi-grid-fill" /> Dashboard
+                        </Link>
+                        {user?.roles?.includes(2) && (
+                          <>
+                            <Link
+                              href="/employer/post-job?tab=post"
+                              className={`nav-dropdown-item nav-dropdown-post-job ${pathname === '/employer/post-job' && currentTab === 'post' ? 'active' : ''}`}
+                              id="nav-dropdown-post-job"
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              <i className="bi bi-plus-circle" /> Post a Job
+                            </Link>
+                          </>
+                        )}
+                        <Link href="/jobs" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                          <i className="bi bi-search" /> Find Jobs
+                        </Link>
+                        <Link href="/subscription-light" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                          <i className="bi bi-star" /> Subscription
+                        </Link>
+                        <Link
+                          href={user?.roles?.includes(2) ? "/employer/post-job?tab=subscription" : user?.roles?.includes(3) ? "/dashboard/subscription?role=3" : "/dashboard/subscription?role=1"}
+                          className="nav-dropdown-item"
+                          id="nav-dropdown-my-orders"
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          <i className="bi bi-receipt" /> My Orders
+                        </Link>
+                        {user?.roles?.includes(4) && (
+                          <>
+                            <div className="nav-dropdown-divider" />
+                            <a
+                              href="http://localhost:5173"
+                              className="nav-dropdown-item"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              <i className="bi bi-shield-lock" /> Admin Panel
+                            </a>
+                          </>
+                        )}
+                        {/* Multi-Role Switcher Section */}
+                        {user?.roles && user.roles.length > 1 && (
+                          <>
+                            <div className="nav-dropdown-divider" />
+                            <div className="px-3 py-2">
+                              <span style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700, display: 'block', marginBottom: '8px' }}>
+                                <i className="bi bi-arrow-repeat me-1"></i> Switch Role
+                              </span>
+                              <div className="d-flex flex-column gap-1">
+                                {user.roles.includes(1) && (
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                    style={{
+                                      fontSize: '0.8rem',
+                                      fontWeight: 600,
+                                      borderRadius: '8px',
+                                      padding: '6px 12px',
+                                      background: activeRole === 1 ? '#2454FF' : '#f8fafc',
+                                      color: activeRole === 1 ? '#ffffff' : '#334155',
+                                      border: activeRole === 1 ? 'none' : '1px solid #e2e8f0',
+                                      transition: 'all 0.15s ease'
+                                    }}
+                                    onClick={() => {
+                                      setDropdownOpen(false);
+                                      switchRole(1);
+                                    }}
+                                  >
+                                    <span><i className="bi bi-search me-2"></i>Job Seeker</span>
+                                    {activeRole === 1 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                                  </button>
+                                )}
+                                {user.roles.includes(2) && (
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                    style={{
+                                      fontSize: '0.8rem',
+                                      fontWeight: 600,
+                                      borderRadius: '8px',
+                                      padding: '6px 12px',
+                                      background: activeRole === 2 ? '#2454FF' : '#f8fafc',
+                                      color: activeRole === 2 ? '#ffffff' : '#334155',
+                                      border: activeRole === 2 ? 'none' : '1px solid #e2e8f0',
+                                      transition: 'all 0.15s ease'
+                                    }}
+                                    onClick={() => {
+                                      setDropdownOpen(false);
+                                      switchRole(2);
+                                    }}
+                                  >
+                                    <span><i className="bi bi-building me-2"></i>Employer</span>
+                                    {activeRole === 2 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                                  </button>
+                                )}
+                                {user.roles.includes(3) && (
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                    style={{
+                                      fontSize: '0.8rem',
+                                      fontWeight: 600,
+                                      borderRadius: '8px',
+                                      padding: '6px 12px',
+                                      background: activeRole === 3 ? '#2454FF' : '#f8fafc',
+                                      color: activeRole === 3 ? '#ffffff' : '#334155',
+                                      border: activeRole === 3 ? 'none' : '1px solid #e2e8f0',
+                                      transition: 'all 0.15s ease'
+                                    }}
+                                    onClick={() => {
+                                      setDropdownOpen(false);
+                                      switchRole(3);
+                                    }}
+                                  >
+                                    <span><i className="bi bi-megaphone me-2"></i>Business Promoter</span>
+                                    {activeRole === 3 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        <div className="nav-dropdown-divider" />
+                        <button
+                          className="nav-dropdown-item nav-dropdown-logout"
+                          onClick={logout}
+                          type="button"
+                        >
+                          <i className="bi bi-box-arrow-right" /> Sign Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
                 /* ── Logged Out: Show Login & Register ── */

@@ -1706,248 +1706,220 @@
 }
 
 /* ============================================
-   ROLE SWITCHER MODAL
+   ROLE RESTRICTED / MISMATCH MODAL
    ============================================ */
-.role-modal-overlay {
+.role-restricted-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 10000;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: fadeInOverlay 0.25s ease;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: roleModalFadeIn 0.25s ease-out forwards;
 }
 
-.role-modal-box {
-  background: #111;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 24px;
-  width: 100%;
-  max-width: 520px;
-  overflow: hidden;
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.75), 0 0 60px rgba(212, 175, 55, 0.08);
-  animation: slideUpModal 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+@keyframes roleModalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.role-restricted-box {
   position: relative;
-}
-
-.role-modal-accent {
-  height: 4px;
-  background: var(--gradient-gold);
   width: 100%;
+  max-width: 480px;
+  background: #111111;
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.8), 0 0 50px rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  text-align: center;
+  animation: roleBoxSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.role-modal-header {
+@keyframes roleBoxSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.role-restricted-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #B0B0B0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-restricted-close:hover {
+  background: rgba(212, 175, 55, 0.2);
+  color: #D4AF37;
+  transform: rotate(90deg);
+}
+
+.role-restricted-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.role-restricted-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+.role-restricted-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+
+.role-restricted-notice {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.role-restricted-main-text {
+  font-size: 0.95rem;
+  color: #E2E8F0;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.role-restricted-sub-text {
+  font-size: 0.92rem;
+  color: #CBD5E1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.role-highlight {
+  font-weight: 700;
+}
+
+.role-highlight.current {
+  color: #EF4444;
+}
+
+.role-highlight.target {
+  color: #D4AF37;
+}
+
+.role-restricted-comparison {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 28px 16px;
-}
-
-.role-modal-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text-white);
-  margin: 0;
-}
-
-.role-modal-subtitle {
-  font-size: 14px;
-  color: var(--text-secondary);
-  padding: 0 28px 20px;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.role-modal-subtitle strong {
-  color: var(--gold);
-}
-
-/* Role transition visual */
-.role-transition-row {
-  display: flex;
-  align-items: center;
   gap: 12px;
-  padding: 0 28px 24px;
+  background: #1A1A1A;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
 }
 
-.role-card-chip {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 12px;
-  padding: 12px 16px;
-  flex: 1;
-  transition: all 0.3s ease;
-}
-
-.role-card-chip--target {
-  background: rgba(212, 175, 55, 0.06);
-}
-
-.role-chip-icon {
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.role-chip-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-  margin-bottom: 2px;
-}
-
-.role-chip-name {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.role-arrow {
+.role-comp-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.role-arrow-line {
-  width: 28px;
-  height: 2px;
-  background: var(--gradient-gold);
-  border-radius: 1px;
-}
-
-.role-arrow-head {
-  color: var(--gold);
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1;
-  margin-top: -8px;
-}
-
-/* Desc box */
-.role-modal-desc-box {
-  display: flex;
   align-items: flex-start;
-  gap: 14px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid;
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin: 0 28px 24px;
+  flex: 1;
 }
 
-.role-modal-desc-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
+.role-comp-card.to {
+  align-items: flex-end;
 }
 
-.role-modal-desc-text {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* All roles quick-switch */
-.role-all-roles {
-  padding: 0 28px 24px;
-}
-
-.role-all-label {
-  font-size: 12px;
-  color: var(--text-muted);
+.role-comp-badge {
+  font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  color: #888888;
+  margin-bottom: 4px;
 }
 
-.role-all-chips {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.role-comp-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
 }
 
-.role-all-chip {
-  background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 18px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.25s ease;
+.role-comp-card.from .role-comp-name {
+  color: #EF4444;
 }
 
-.role-all-chip:hover {
-  background: rgba(212, 175, 55, 0.08);
-  border-color: rgba(212, 175, 55, 0.5);
-  color: var(--gold);
-  transform: translateY(-1px);
+.role-comp-card.to .role-comp-name {
+  color: #D4AF37;
 }
 
-/* Actions */
-.role-modal-actions {
+.role-comp-arrow {
+  font-size: 1.2rem;
+  color: #D4AF37;
+}
+
+.role-restricted-actions {
   display: flex;
   gap: 12px;
-  padding: 20px 28px 28px;
-  border-top: 1px solid rgba(212, 175, 55, 0.1);
 }
 
-.role-btn-cancel {
+.role-btn-cancel-action {
   flex: 1;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
-  font-size: 14px;
+  color: #B0B0B0;
   font-weight: 600;
-  padding: 13px;
-  border-radius: 50px;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.role-btn-cancel:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-white);
+.role-btn-cancel-action:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
 }
 
-.role-btn-confirm {
-  flex: 2;
+.role-btn-switch-action {
+  flex: 1.4;
+  padding: 12px 18px;
+  border-radius: 10px;
   border: none;
-  color: #000;
-  font-size: 14px;
+  background: linear-gradient(135deg, #D4AF37, #B8860B);
+  color: #0A0A0A;
   font-weight: 700;
-  padding: 13px 20px;
-  border-radius: 50px;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+  transition: all 0.2s ease;
 }
 
-.role-btn-confirm:hover {
+.role-btn-switch-action:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-  filter: brightness(1.1);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
 }
 
 /* ============================================

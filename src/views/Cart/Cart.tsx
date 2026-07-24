@@ -1,10 +1,12 @@
 "use client";
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { useCart, BillingPeriod, PlanCategory, CartItem } from "../../hooks/CartContext";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
+import { useAuth } from "../../hooks/useAuth";
+import RoleSwitcherModal, { UserRole } from "../../components/RoleSwitcherModal/RoleSwitcherModal";
 import "../../styles/cart.css";
 
 /* ── Plan registry: maps plan IDs to full details ── */
@@ -142,9 +144,16 @@ const getCategoryIcon = (cat: PlanCategory) => {
 
 const Cart: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { user, isLoggedIn, activeRole } = useAuth();
   const { item, addToCart, removeFromCart, updateBilling, getPrice, getPriceNum, getBillingLabel } = useCart();
   const pageRef = useRef<HTMLDivElement>(null);
   const hasInitialized = useRef(false);
+  const [roleSwitch, setRoleSwitch] = useState<{ open: boolean; from: UserRole; to: UserRole }>({
+    open: false,
+    from: "jobseeker",
+    to: "employer",
+  });
 
   /* ── Populate cart from URL params on first load ── */
   useEffect(() => {
@@ -239,7 +248,7 @@ const Cart: React.FC = () => {
             <span className="cart-empty-icon">🛒</span>
             <h2>Your Cart is Empty</h2>
             <p>Explore our premium subscription plans and unlock unlimited opportunities with JobNest.</p>
-            <Link href="/subscription" className="cart-empty-cta" id="cart-empty-browse">
+            <Link href="/subscription-light" className="cart-empty-cta" id="cart-empty-browse">
               Browse Plans <span>→</span>
             </Link>
           </div>
@@ -248,6 +257,27 @@ const Cart: React.FC = () => {
     );
   }
 
+  const handleProceedToCheckout = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (!isLoggedIn || !user) {
+      router.push(`/login?redirect=${encodeURIComponent("/cart")}`);
+      return;
+    }
+
+    if (!item) return;
+
+    const targetCategory: UserRole = item.category as UserRole;
+    const currentRoleKey: UserRole = activeRole === 2 ? "employer" : activeRole === 3 ? "business" : "jobseeker";
+
+    if (currentRoleKey !== targetCategory) {
+      setRoleSwitch({ open: true, from: currentRoleKey, to: targetCategory });
+      return;
+    }
+
+    router.push("/checkout");
+  };
+
   return (
     <div className="cart-page" ref={pageRef}>
       {/* Decorative Glow */}
@@ -255,7 +285,7 @@ const Cart: React.FC = () => {
       <div className="cart-glow-orb cart-glow-orb-2" />
 
       <Breadcrumb items={[
-        { label: 'Subscription', href: '/subscription' },
+        { label: 'Subscription', href: '/subscription-light' },
         { label: 'Cart' },
       ]} />
       <div className="container" style={{ position: "relative", zIndex: 1, paddingTop: "32px" }}>
@@ -265,7 +295,7 @@ const Cart: React.FC = () => {
             <h1>Your Cart</h1>
             <span className="cart-item-count">1</span>
           </div>
-          <Link href="/subscription" className="cart-continue-shopping" id="cart-continue-shopping">
+          <Link href="/subscription-light" className="cart-continue-shopping" id="cart-continue-shopping">
             ← Continue Shopping
           </Link>
         </div>
@@ -387,9 +417,9 @@ const Cart: React.FC = () => {
             </div>
 
             {/* Checkout Button */}
-            <Link href="/checkout" className="cart-checkout-btn" id="cart-checkout-btn">
+            <button onClick={handleProceedToCheckout} className="cart-checkout-btn" id="cart-checkout-btn">
               Proceed to Checkout <span>→</span>
-            </Link>
+            </button>
 
             {/* Security */}
             <div className="cart-security">
@@ -399,6 +429,15 @@ const Cart: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {roleSwitch.open && (
+        <RoleSwitcherModal
+          currentRole={roleSwitch.from}
+          targetRole={roleSwitch.to}
+          onConfirm={() => setRoleSwitch((p) => ({ ...p, open: false }))}
+          onCancel={() => setRoleSwitch((p) => ({ ...p, open: false }))}
+        />
+      )}
     </div>
   );
 };

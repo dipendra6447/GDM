@@ -77,7 +77,7 @@ const Subscription: React.FC = () => {
 
         {/* 2. Job Seeker Plans — with per-section billing + compare popup + role switch trigger */}
         <JobSeekerPlans
-          onRoleSwitch={(to) => openRoleSwitch("jobseeker", to)}
+          onRoleSwitch={(from, to) => openRoleSwitch(from, to)}
           dbPlans={seekerPlans}
           loading={loading}
         />
@@ -87,7 +87,7 @@ const Subscription: React.FC = () => {
 
         {/* 3. Employer Plans — with per-section billing + compare popup + role switch trigger */}
         <EmployerPlans
-          onRoleSwitch={(to) => openRoleSwitch("employer", to)}
+          onRoleSwitch={(from, to) => openRoleSwitch(from, to)}
           dbPlans={employerPlans}
           loading={loading}
         />
@@ -97,7 +97,7 @@ const Subscription: React.FC = () => {
 
         {/* 4. Business Promotion Plans — with per-section billing + compare popup + role switch trigger */}
         <BusinessPromotionPlans
-          onRoleSwitch={(to) => openRoleSwitch("business", to)}
+          onRoleSwitch={(from, to) => openRoleSwitch(from, to)}
           dbPlans={businessPlans}
           loading={loading}
         />

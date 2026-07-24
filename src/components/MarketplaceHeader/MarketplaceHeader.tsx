@@ -52,65 +52,64 @@ const MarketplaceHeader: React.FC = () => {
             (s: any) => s.status === 'active' && new Date(s.expiresAt) > now
           );
           if (activeSubs.length > 0) {
-            let sub = activeSubs.find(
-              (s: any) =>
-                (activeRole === 1 && s.subscriptionType === 'job_seeker') ||
-                (activeRole === 2 && s.subscriptionType === 'job_poster') ||
-                (activeRole === 3 && s.subscriptionType === 'business_promoter')
-            );
-            if (!sub) sub = activeSubs[0];
+            const targetType =
+              activeRole === 2 ? 'job_poster' :
+              activeRole === 3 ? 'business_promoter' :
+              'job_seeker';
 
-            const type = sub.subscriptionType;
-            const tierStr = sub.tier ? sub.tier.toUpperCase() : '';
+            const sub = activeSubs.find((s: any) => s.subscriptionType === targetType);
 
-            if (type === 'job_seeker') {
+            if (sub) {
+              const type = sub.subscriptionType;
+              const rawTier = (sub.tier || '').toLowerCase();
+              
+              let badgeLabel = '✨ GOLD';
+              let color = '#D4AF37';
+              let bgColor = 'rgba(212, 175, 55, 0.1)';
+              let borderColor = '#D4AF37';
+              let badgeBg = 'linear-gradient(135deg, #D4AF37, #B8860B)';
+              let badgeTextColor = '#000000';
+              let glowColor = 'rgba(212, 175, 55, 0.4)';
+
+              if (rawTier.includes('platinum') || rawTier.includes('monthly') || rawTier === 'platinum') {
+                badgeLabel = '✨ PLATINUM';
+                color = '#38BDF8';
+                bgColor = 'rgba(56, 189, 248, 0.1)';
+                borderColor = '#38BDF8';
+                badgeBg = 'linear-gradient(135deg, #38BDF8, #1E40AF)';
+                badgeTextColor = '#FFFFFF';
+                glowColor = 'rgba(56, 189, 248, 0.4)';
+              } else if (rawTier.includes('silver') || rawTier.includes('daily') || rawTier === 'silver') {
+                badgeLabel = '✨ SILVER';
+                color = '#C0C0C0';
+                bgColor = 'rgba(192, 192, 192, 0.1)';
+                borderColor = '#C0C0C0';
+                badgeBg = 'linear-gradient(135deg, #E0E0E0, #808080)';
+                badgeTextColor = '#000000';
+                glowColor = 'rgba(192, 192, 192, 0.4)';
+              } else {
+                badgeLabel = '✨ GOLD';
+                color = '#D4AF37';
+                bgColor = 'rgba(212, 175, 55, 0.1)';
+                borderColor = '#D4AF37';
+                badgeBg = 'linear-gradient(135deg, #D4AF37, #B8860B)';
+                badgeTextColor = '#000000';
+                glowColor = 'rgba(212, 175, 55, 0.4)';
+              }
+
               setActiveSub({
                 type,
                 tier: sub.tier,
-                badgeLabel: tierStr ? `✨ SEEKER ${tierStr}` : '✨ SEEKER PRO',
-                color: '#D4AF37',
-                bgColor: 'rgba(212, 175, 55, 0.1)',
-                borderColor: '#D4AF37',
-                badgeBg: 'linear-gradient(135deg, #D4AF37, #B8860B)',
-                badgeTextColor: '#000000',
-                glowColor: 'rgba(212, 175, 55, 0.4)',
-              });
-            } else if (type === 'job_poster') {
-              setActiveSub({
-                type,
-                tier: sub.tier,
-                badgeLabel: tierStr ? `✨ EMPLOYER ${tierStr}` : '✨ EMPLOYER PRO',
-                color: '#3B82F6',
-                bgColor: 'rgba(59, 130, 246, 0.1)',
-                borderColor: '#3B82F6',
-                badgeBg: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
-                badgeTextColor: '#FFFFFF',
-                glowColor: 'rgba(59, 130, 246, 0.4)',
-              });
-            } else if (type === 'business_promoter') {
-              setActiveSub({
-                type,
-                tier: sub.tier,
-                badgeLabel: tierStr ? `✨ PROMOTER ${tierStr}` : '✨ BUSINESS PRO',
-                color: '#F59E0B',
-                bgColor: 'rgba(245, 158, 11, 0.1)',
-                borderColor: '#F59E0B',
-                badgeBg: 'linear-gradient(135deg, #F59E0B, #D97706)',
-                badgeTextColor: '#000000',
-                glowColor: 'rgba(245, 158, 11, 0.4)',
+                badgeLabel,
+                color,
+                bgColor,
+                borderColor,
+                badgeBg,
+                badgeTextColor,
+                glowColor,
               });
             } else {
-              setActiveSub({
-                type,
-                tier: sub.tier,
-                badgeLabel: '✨ PREMIUM',
-                color: '#D4AF37',
-                bgColor: 'rgba(212, 175, 55, 0.1)',
-                borderColor: '#D4AF37',
-                badgeBg: 'linear-gradient(135deg, #D4AF37, #B8860B)',
-                badgeTextColor: '#000000',
-                glowColor: 'rgba(212, 175, 55, 0.4)',
-              });
+              setActiveSub(null);
             }
           } else {
             setActiveSub(null);
@@ -276,15 +275,17 @@ const MarketplaceHeader: React.FC = () => {
                 </button>
               )}
 
-              {/* Golden Get Premium Button before user dropdown */}
-              <Link
-                href="/subscription"
-                className="btn-get-premium"
-                id="mp-get-premium-btn"
-              >
-                <i className="bi bi-star-fill" style={{ fontSize: '12px' }} />
-                Get Premium
-              </Link>
+              {/* Golden Get Premium Button before user dropdown (hidden if user has an active subscription) */}
+              {!activeSub && (
+                <Link
+                  href="/subscription-light"
+                  className="btn-get-premium"
+                  id="mp-get-premium-btn"
+                >
+                  <i className="bi bi-star-fill" style={{ fontSize: '12px' }} />
+                  Get Premium
+                </Link>
+              )}
 
               <div className="nav-profile-wrapper" ref={dropdownRef}>
                 {activeSub && (
@@ -398,7 +399,7 @@ const MarketplaceHeader: React.FC = () => {
                     <Link href="/jobs" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                       <i className="bi bi-search" /> Find Jobs
                     </Link>
-                    <Link href="/subscription" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                    <Link href="/subscription-light" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                       <i className="bi bi-star" /> Subscription
                     </Link>
                     {user?.roles?.includes(4) && (
