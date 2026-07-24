@@ -82,7 +82,7 @@ const EmployerHero: React.FC = () => {
                 Post a Job Free (3 Left)
               </Link>
               <Link
-                href="/subscription"
+                href="/subscription-light"
                 className="btn btn-outline-light px-4 py-3 fw-semibold d-inline-flex align-items-center gap-2"
                 style={{
                   borderRadius: "12px",

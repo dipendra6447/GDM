@@ -18,6 +18,26 @@ export default function SubscriptionPage() {
   const isEmployer = user?.roles?.includes(2);
   const isBusinessPromoter = user?.roles?.includes(3);
 
+  const formatSubPrice = (tierStr: string, type: 'seeker' | 'employer' | 'promoter') => {
+    const t = (tierStr || '').toLowerCase();
+    if (type === 'seeker') {
+      if (t.includes('silver') || t.includes('daily')) return '₹29/day';
+      if (t.includes('gold') || t.includes('weekly')) return '₹99/week';
+      if (t.includes('platinum') || t.includes('monthly')) return '₹299/month';
+      return '₹299/month';
+    }
+    if (type === 'employer') {
+      if (t.includes('silver') || t.includes('daily')) return '₹49/day';
+      if (t.includes('gold') || t.includes('weekly')) return '₹199/week';
+      if (t.includes('platinum') || t.includes('monthly')) return '₹599/month';
+      return '₹599/month';
+    }
+    if (t.includes('silver') || t.includes('daily')) return '₹99/day';
+    if (t.includes('gold') || t.includes('weekly')) return '₹499/week';
+    if (t.includes('platinum') || t.includes('monthly')) return '₹1499/month';
+    return '₹1499/month';
+  };
+
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -186,9 +206,9 @@ export default function SubscriptionPage() {
                     <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeSeekerSub.tier} Plan</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p className="mb-0 text-secondary" style={{ fontSize: '0.8rem' }}>Billing Price</p>
-                    <h4 style={{ fontWeight: 700, margin: 0 }}>
-                      {activeSeekerSub.tier === 'daily' ? '₹29/day' : activeSeekerSub.tier === 'weekly' ? '₹99/week' : '₹299/month'}
+                    <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
+                    <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
+                      {formatSubPrice(activeSeekerSub.tier, 'seeker')}
                     </h4>
                   </div>
                 </div>
@@ -210,7 +230,7 @@ export default function SubscriptionPage() {
                   </div>
                 </div>
 
-                <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                <Link href="/subscription-light" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
                   Manage Subscription
                 </Link>
               </div>
@@ -248,7 +268,7 @@ export default function SubscriptionPage() {
                   )}
                 </div>
 
-                <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                <Link href="/subscription-light" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
                   Upgrade to Premium
                 </Link>
               </div>
@@ -317,9 +337,9 @@ export default function SubscriptionPage() {
                     <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeEmployerSub.tier} Plan</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p className="mb-0 text-secondary" style={{ fontSize: '0.8rem' }}>Billing Price</p>
-                    <h4 style={{ fontWeight: 700, margin: 0 }}>
-                      {activeEmployerSub.tier === 'daily' ? '₹49/day' : activeEmployerSub.tier === 'weekly' ? '₹199/week' : '₹599/month'}
+                    <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
+                    <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
+                      {formatSubPrice(activeEmployerSub.tier, 'employer')}
                     </h4>
                   </div>
                 </div>
@@ -341,7 +361,7 @@ export default function SubscriptionPage() {
                   </div>
                 </div>
 
-                <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                <Link href="/subscription-light" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
                   Manage Subscription
                 </Link>
               </div>
@@ -379,7 +399,7 @@ export default function SubscriptionPage() {
                   )}
                 </div>
 
-                <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                <Link href="/subscription-light" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
                   Upgrade to Premium
                 </Link>
               </div>
@@ -448,9 +468,9 @@ export default function SubscriptionPage() {
                     <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activePromoterSub.tier} Plan</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p className="mb-0 text-secondary" style={{ fontSize: '0.8rem' }}>Billing Price</p>
-                    <h4 style={{ fontWeight: 700, margin: 0 }}>
-                      {activePromoterSub.tier === 'daily' ? '₹99/day' : activePromoterSub.tier === 'weekly' ? '₹499/week' : '₹1499/month'}
+                    <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
+                    <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
+                      {formatSubPrice(activePromoterSub.tier, 'promoter')}
                     </h4>
                   </div>
                 </div>
@@ -472,7 +492,7 @@ export default function SubscriptionPage() {
                   </div>
                 </div>
 
-                <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                <Link href="/subscription-light" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
                   Manage Subscription
                 </Link>
               </div>
@@ -491,7 +511,7 @@ export default function SubscriptionPage() {
                   You need an active subscription plan to submit or keep business promotions visible.
                 </div>
 
-                <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                <Link href="/subscription-light" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
                   Buy Promotion Plan
                 </Link>
               </div>

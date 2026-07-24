@@ -140,7 +140,7 @@ const Terms: React.FC = () => {
 
                 <div className="terms-callout terms-callout--info">
                   <span className="terms-callout-icon">ℹ️</span>
-                  <p>Subscription features may vary between plans. Please review the specific plan details on the <Link href="/subscription">Subscription Page</Link> before purchasing.</p>
+                  <p>Subscription features may vary between plans. Please review the specific plan details on the <Link href="/subscription-light">Subscription Page</Link> before purchasing.</p>
                 </div>
               </section>
 
@@ -335,7 +335,7 @@ const Terms: React.FC = () => {
               <div className="terms-footer-cta">
                 <p>By using any JobNest subscription plan, you confirm that you have read, understood, and agree to these Terms &amp; Conditions.</p>
                 <div className="terms-footer-actions">
-                  <Link href="/subscription" className="terms-btn-primary">View Subscription Plans</Link>
+                  <Link href="/subscription-light" className="terms-btn-primary">View Subscription Plans</Link>
                   <Link href="/" className="terms-btn-secondary">Back to Home</Link>
                 </div>
               </div>

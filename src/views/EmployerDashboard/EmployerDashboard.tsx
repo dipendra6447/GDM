@@ -569,9 +569,13 @@ export default function EmployerDashboard() {
                           <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeSub.tier} Plan</p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          <p className="mb-0 text-secondary" style={{ fontSize: '0.8rem' }}>Billing Price</p>
-                          <h4 style={{ fontWeight: 700, margin: 0 }}>
-                            {activeSub.tier === 'daily' ? '₹49/day' : activeSub.tier === 'weekly' ? '₹199/week' : '₹599/month'}
+                          <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
+                          <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
+                            {(activeSub.tier || '').toLowerCase().includes('silver') || (activeSub.tier || '').toLowerCase().includes('daily')
+                              ? '₹49/day'
+                              : (activeSub.tier || '').toLowerCase().includes('gold') || (activeSub.tier || '').toLowerCase().includes('weekly')
+                              ? '₹199/week'
+                              : '₹599/month'}
                           </h4>
                         </div>
                       </div>
@@ -593,7 +597,7 @@ export default function EmployerDashboard() {
                         </div>
                       </div>
 
-                      <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                      <Link href="/subscription-light" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
                         Manage Subscription
                       </Link>
                     </div>
@@ -632,7 +636,7 @@ export default function EmployerDashboard() {
                         )}
                       </div>
 
-                      <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                      <Link href="/subscription-light" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
                         Upgrade to Professional
                       </Link>
                     </div>

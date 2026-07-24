@@ -177,7 +177,7 @@ export default function BusinessPromoterDashboard() {
               <span className="fw-bold">No Active Promotion Subscription:</span> You need an active subscription to make your ad campaigns live. Any new campaigns will be saved as drafts.
             </div>
           </div>
-          <Link href="/subscription" className="btn btn-sm btn-warning text-dark fw-bold px-3 py-1" style={{ borderRadius: '8px' }}>
+          <Link href="/subscription-light" className="btn btn-sm btn-warning text-dark fw-bold px-3 py-1" style={{ borderRadius: '8px' }}>
             Buy Plan
           </Link>
         </div>

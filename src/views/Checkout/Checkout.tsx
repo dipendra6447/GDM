@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { useCart } from "../../hooks/CartContext";
+import { useAuth } from "../../hooks/useAuth";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import "../../styles/checkout.css";
 
@@ -151,6 +152,7 @@ const Confetti: React.FC = () => {
 
 const Checkout: React.FC = () => {
   const router = useRouter();
+  const { user, isLoggedIn, isLoading: isAuthLoading } = useAuth();
   const { item, getPrice, getPriceNum, getBillingLabel, clearCart } = useCart();
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -213,12 +215,16 @@ const Checkout: React.FC = () => {
     }
   }, [selectedMethod, creditForm, debitForm, selectedWallet, selectedBank]);
 
-  /* ── Redirect if no item ── */
+  /* ── Redirect if no item or unauthenticated ── */
   useEffect(() => {
+    if (!isAuthLoading && (!isLoggedIn || !user)) {
+      router.push(`/login?redirect=${encodeURIComponent("/checkout")}`);
+      return;
+    }
     if (!item) {
       router.push("/cart");
     }
-  }, [item, router]);
+  }, [item, isAuthLoading, isLoggedIn, user, router]);
 
   /* ── GSAP animations ── */
   // useEffect(() => {
@@ -266,7 +272,8 @@ const Checkout: React.FC = () => {
         total: total,
         subtotal: subtotal,
         gst: gst,
-        transactionId: "TXN" + Date.now().toString().slice(-8),
+        transactionId: data.invoice?.invoiceNumber || ("TXN" + Date.now().toString().slice(-8)),
+        invoiceId: data.invoice?.id || null,
         date: new Date().toLocaleDateString("en-IN", {
           day: "numeric",
           month: "short",
@@ -449,7 +456,7 @@ const Checkout: React.FC = () => {
       <div className="checkout-glow-orb checkout-glow-orb-2" />
 
       <Breadcrumb items={[
-        { label: 'Subscription', href: '/subscription' },
+        { label: 'Subscription', href: '/subscription-light' },
         { label: 'Cart', href: '/cart' },
         { label: 'Checkout' },
       ]} />

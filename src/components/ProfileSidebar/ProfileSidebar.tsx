@@ -94,7 +94,7 @@ const ProfileSidebar: React.FC = () => {
             </div>
           </div>
         </div>
-        <Link href="/subscription" className="perf-boost-link d-flex align-items-center justify-content-between">
+        <Link href="/subscription-light" className="perf-boost-link d-flex align-items-center justify-content-between">
           <span className="d-flex align-items-center gap-2">
             <i className="bi bi-lightning-charge-fill text-warning" />
             Get 3X boost to your profile

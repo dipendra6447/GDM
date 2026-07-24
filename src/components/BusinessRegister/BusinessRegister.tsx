@@ -58,7 +58,7 @@ const BusinessRegister: React.FC = () => {
 
       if (res.ok) {
         // Draft created successfully, navigate to subscription page
-        router.push('/subscription');
+        router.push('/subscription-light');
       } else {
         setError(data.message || 'Failed to register business');
       }

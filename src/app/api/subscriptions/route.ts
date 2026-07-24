@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
     const invoiceCount = invoiceCountObj?.count || 0;
     const invoiceNumber = `INV-${new Date().getFullYear()}-${(invoiceCount + 1).toString().padStart(5, '0')}`;
 
-    await db.insert(invoices).values({
+    const [inv] = await db.insert(invoices).values({
       userId,
       subscriptionId: sub.id,
       invoiceNumber,
@@ -126,9 +126,9 @@ export async function POST(req: NextRequest) {
       gstNumber,
       paymentMethod: 'card',
       paymentStatus: 'paid'
-    });
+    }).returning();
 
-    return NextResponse.json({ success: true, message: 'Subscription purchased and invoice generated', data: sub }, { status: 201 });
+    return NextResponse.json({ success: true, message: 'Subscription purchased and invoice generated', data: sub, invoice: inv }, { status: 201 });
   } catch (error: any) {
     if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     return NextResponse.json({ success: false, message: 'Failed to create subscription' }, { status: 500 });
