@@ -21,7 +21,7 @@ const MarketplaceHeader: React.FC = () => {
   const [targetRole, setTargetRole] = useState<1 | 2 | 3 | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
-  const { user, isLoading, isLoggedIn, logout } = useAuth();
+  const { user, isLoading, isLoggedIn, activeRole, switchRole, logout } = useAuth();
 
   const handleActionClick = (role: 1 | 2 | 3) => {
     if (!isLoggedIn) {
@@ -276,6 +276,89 @@ const MarketplaceHeader: React.FC = () => {
                         </a>
                       </>
                     )}
+                    {/* Multi-Role Switcher Section */}
+                    {user?.roles && user.roles.length > 1 && (
+                      <>
+                        <div className="nav-dropdown-divider" />
+                        <div className="px-3 py-2">
+                          <span style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700, display: 'block', marginBottom: '8px' }}>
+                            <i className="bi bi-arrow-repeat me-1"></i> Switch Role
+                          </span>
+                          <div className="d-flex flex-column gap-1">
+                            {user.roles.includes(1) && (
+                              <button
+                                type="button"
+                                className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                style={{
+                                  fontSize: '0.8rem',
+                                  fontWeight: 600,
+                                  borderRadius: '8px',
+                                  padding: '6px 12px',
+                                  background: activeRole === 1 ? '#2454FF' : '#f8fafc',
+                                  color: activeRole === 1 ? '#ffffff' : '#334155',
+                                  border: activeRole === 1 ? 'none' : '1px solid #e2e8f0',
+                                  transition: 'all 0.15s ease'
+                                }}
+                                onClick={() => {
+                                  setDropdownOpen(false);
+                                  switchRole(1);
+                                }}
+                              >
+                                <span><i className="bi bi-search me-2"></i>Job Seeker</span>
+                                {activeRole === 1 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                              </button>
+                            )}
+                            {user.roles.includes(2) && (
+                              <button
+                                type="button"
+                                className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                style={{
+                                  fontSize: '0.8rem',
+                                  fontWeight: 600,
+                                  borderRadius: '8px',
+                                  padding: '6px 12px',
+                                  background: activeRole === 2 ? '#2454FF' : '#f8fafc',
+                                  color: activeRole === 2 ? '#ffffff' : '#334155',
+                                  border: activeRole === 2 ? 'none' : '1px solid #e2e8f0',
+                                  transition: 'all 0.15s ease'
+                                }}
+                                onClick={() => {
+                                  setDropdownOpen(false);
+                                  switchRole(2);
+                                }}
+                              >
+                                <span><i className="bi bi-building me-2"></i>Employer</span>
+                                {activeRole === 2 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                              </button>
+                            )}
+                            {user.roles.includes(3) && (
+                              <button
+                                type="button"
+                                className="btn btn-sm d-flex align-items-center justify-content-between w-100"
+                                style={{
+                                  fontSize: '0.8rem',
+                                  fontWeight: 600,
+                                  borderRadius: '8px',
+                                  padding: '6px 12px',
+                                  background: activeRole === 3 ? '#2454FF' : '#f8fafc',
+                                  color: activeRole === 3 ? '#ffffff' : '#334155',
+                                  border: activeRole === 3 ? 'none' : '1px solid #e2e8f0',
+                                  transition: 'all 0.15s ease'
+                                }}
+                                onClick={() => {
+                                  setDropdownOpen(false);
+                                  switchRole(3);
+                                }}
+                              >
+                                <span><i className="bi bi-megaphone me-2"></i>Business Promoter</span>
+                                {activeRole === 3 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
+
                     <div className="nav-dropdown-divider" />
                     <button
                       className="nav-dropdown-item nav-dropdown-logout"
@@ -293,9 +376,9 @@ const MarketplaceHeader: React.FC = () => {
               <Link href="/login" className="btn-login" style={{ textDecoration: 'none' }}>
                 Sign In
               </Link>
-              <Link href="/login" className="btn-register" style={{ textDecoration: 'none' }}>
+              <Link href="/register" className="btn-register" style={{ textDecoration: 'none' }}>
                 <i className="bi bi-person-plus me-2"></i>
-                Post a Job
+                Register
               </Link>
             </>
           )}

@@ -37,7 +37,7 @@ import { useSearchParams, usePathname } from 'next/navigation';
 import EmployerCandidateSearch from '@/components/EmployerHome/EmployerCandidateSearch';
 
 export default function EmployerDashboard() {
-  const { user, isLoading, isLoggedIn } = useAuth();
+  const { user, isLoading, isLoggedIn, activeRole } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -48,6 +48,16 @@ export default function EmployerDashboard() {
   const [loadingJobs, setLoadingJobs] = useState(false);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn && activeRole !== 2) {
+      if (activeRole === 1) {
+        router.replace('/seeker');
+      } else if (activeRole === 3) {
+        router.replace('/dashboard');
+      }
+    }
+  }, [isLoading, isLoggedIn, activeRole, router]);
 
   useEffect(() => {
     const tab = searchParams.get('tab');

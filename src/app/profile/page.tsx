@@ -1,7 +1,9 @@
 "use client";
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
+import Navbar from '../../components/Navbar/Navbar';
 import JobSeekerProfileForm from '../../components/Profile/JobSeekerProfileForm';
 import EmployerProfileForm from '../../components/Profile/EmployerProfileForm';
 import BusinessPromoterProfileForm from '../../components/Profile/BusinessPromoterProfileForm';
@@ -47,7 +49,6 @@ const SETTINGS_SECTION: SectionDef = { id: 'settings', label: 'Settings', icon: 
 function useScrollSpy(ids: readonly string[]): string {
   const [activeId, setActiveId] = useState<string>(ids[0] || '');
 
-  // Reset active ID when the available sections change (e.g. role switch)
   useEffect(() => {
     if (ids.length > 0) setActiveId(ids[0]);
   }, [ids]);
@@ -56,9 +57,6 @@ function useScrollSpy(ids: readonly string[]): string {
     const handleScroll = () => {
       if (ids.length === 0) return;
 
-      // If the user has scrolled to (or very near) the bottom of the page,
-      // activate the last section — covers cases where the final section
-      // is too short to ever cross the normal 180px threshold.
       const scrolledToBottom =
         window.innerHeight + window.scrollY >= document.body.scrollHeight - 4;
       if (scrolledToBottom) {
@@ -72,8 +70,6 @@ function useScrollSpy(ids: readonly string[]): string {
         const element = document.getElementById(id);
         if (element) {
           const rect = element.getBoundingClientRect();
-          // Threshold of 180px accounts for the 80px navbar + padding.
-          // The last element in the DOM order that has passed this threshold becomes active.
           if (rect.top <= 180) {
             currentActiveId = id;
           }
@@ -84,7 +80,6 @@ function useScrollSpy(ids: readonly string[]): string {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // Run once on mount to set initial state
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
@@ -92,7 +87,6 @@ function useScrollSpy(ids: readonly string[]): string {
 
   return activeId;
 }
-
 
 // ── Sidebar Nav ────────────────────────────────────────────────────────────
 interface SidebarNavProps {
@@ -102,7 +96,6 @@ interface SidebarNavProps {
 }
 
 function SidebarNav({ sections, activeId, onNavClick }: SidebarNavProps) {
-  // Combine role sections with settings
   const allSections = [...sections, SETTINGS_SECTION];
   
   return (
@@ -126,20 +119,19 @@ function SidebarNav({ sections, activeId, onNavClick }: SidebarNavProps) {
 
 // ── Page ───────────────────────────────────────────────────────────────────
 export default function ProfilePage() {
-  const { user, isLoading, isLoggedIn, refetch } = useAuth();
+  const { user, isLoading, isLoggedIn, refetch, activeRole: globalActiveRole, switchRole } = useAuth();
+  const router = useRouter();
   
-  // profileDataMap maps roleId -> profileData (allows keeping data for all roles)
   const [profileDataMap, setProfileDataMap] = useState<Record<number, any>>({});
   const [fetching, setFetching] = useState(true);
   
-  // State for active role tab (default to first role)
   const [activeRole, setActiveRole] = useState<number>(0);
   
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAddRoleModal, setShowAddRoleModal] = useState(false);
 
-  // Initialize activeRole once user is loaded
   useEffect(() => {
     if (user && user.roles && user.roles.length > 0 && activeRole === 0) {
       if (typeof window !== 'undefined') {
@@ -153,18 +145,21 @@ export default function ProfilePage() {
           }
         }
       }
-      setActiveRole(user.roles[0]);
+      setActiveRole(globalActiveRole || user.roles[0]);
     }
-  }, [user, activeRole]);
+  }, [user, activeRole, globalActiveRole]);
 
-  // Derivations for current role view
+  const handleRoleSwitch = (role: number) => {
+    setActiveRole(role);
+    localStorage.setItem('activeRole', String(role));
+    router.push(`/profile?tab=${role}`, { scroll: false });
+  };
+
   const currentSections = SECTIONS_BY_ROLE[activeRole] || [];
   const sectionIds = [...currentSections.map(s => s.id), SETTINGS_SECTION.id];
   const activeSectionId = useScrollSpy(sectionIds);
   const currentProfileData = profileDataMap[activeRole];
 
-  // ── Fetch ALL profiles for the user's roles ─────────────────────────────
-  // Memoize roles as a string to prevent double-fetching when user object reference changes
   const userRolesStr = user?.roles?.join(',') || '';
   
   useEffect(() => {
@@ -215,7 +210,6 @@ export default function ProfilePage() {
     fetchAllProfiles();
   }, [userRolesStr, isLoggedIn, isLoading]);
 
-  // ── Avatar upload (tied to active role endpoint) ───────────────────────
   const handleAvatarCrop = async (blob: Blob) => {
     if (!activeRole) return;
     setAvatarPreview(URL.createObjectURL(blob));
@@ -235,11 +229,7 @@ export default function ProfilePage() {
         headers: { Authorization: `Bearer ${token}` },
         body: fd,
       });
-      // Refresh user auth to get updated avatarUrl + completions
       await refetch();
-      
-      // We don't re-fetch the profile data here directly, though we could
-      // refetch is good enough to update the sidebar avatar.
     } catch (e) {
       console.error('Avatar upload failed', e);
     } finally {
@@ -255,134 +245,266 @@ export default function ProfilePage() {
 
   if (isLoading || fetching || !activeRole) {
     return (
-      <div className="profile-page">
-        <div className="container">
-          <div className="profile-loading-screen">
-            <div className="profile-loading-spinner" />
-            <p className="profile-loading-text">Loading your profile…</p>
+      <>
+        <Navbar variant="minimal" />
+        <div className="profile-page">
+          <div className="container">
+            <div className="profile-loading-screen">
+              <div className="profile-loading-spinner" />
+              <p className="profile-loading-text">Loading your profile…</p>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (!user) return null;
 
-  // Use the active role's completion if available, fallback to 0
   const completion = user.profileCompletions?.[activeRole.toString()] ?? currentProfileData?.profileCompletion ?? 0;
-  
-  // Use avatar from auth user first (since it updates via refetch), fallback to role specific
   const avatarSrc = avatarPreview || (user.avatarUrl ? `${API_BASE}${user.avatarUrl}` : undefined) || (currentProfileData?.avatarUrl ? `${API_BASE}${currentProfileData.avatarUrl}` : undefined);
+  const homeHref = activeRole === 2 ? '/employer' : activeRole === 3 ? '/dashboard' : '/seeker';
 
   return (
-    <div className="profile-page">
-      <div className="profile-page-inner">
-        <div className="container">
+    <>
+      <Navbar variant="minimal" />
+      <div className="profile-page">
+        <div className="profile-page-inner">
+          <div className="container">
 
-          {/* ── Page Header ── */}
-          <div className="profile-page-header">
-            <div className="profile-breadcrumb">
-              <Link href="/">Home</Link>
-              <i className="bi bi-chevron-right" />
-              <span>My Profile</span>
-            </div>
-            <h1 className="profile-page-title">My Profile</h1>
-            <p className="profile-page-subtitle mb-0">Manage your personal info and keep everything up to date.</p>
-          </div>
-
-          {/* ── Role Switcher (full-width strip, only for multi-role users) ── */}
-          <ProfileRoleTabs 
-            roles={user.roles} 
-            activeRole={activeRole} 
-            onSwitch={(role) => setActiveRole(role)} 
-          />
-
-          {/* ── Two-Column Layout ── */}
-          <div className="profile-layout">
-
-            {/* ── LEFT: Sidebar ── */}
-            <aside className="profile-sidebar-card">
-
-              {/* Avatar + Identity */}
-              <div className="profile-sidebar-avatar-section">
-                <AvatarUpload currentAvatarUrl={avatarSrc} onCropComplete={handleAvatarCrop} />
-                {avatarUploading && (
-                  <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '8px' }}>
-                    <i className="bi bi-arrow-repeat me-1" style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }} />
-                    Uploading…
-                  </p>
-                )}
-                <p className="profile-sidebar-name">
-                  {currentProfileData?.firstName
-                    ? [currentProfileData.title, currentProfileData.firstName, currentProfileData.middleName, currentProfileData.lastName].filter(Boolean).join(' ')
-                    : currentProfileData?.companyName || currentProfileData?.businessName || user.email.split('@')[0]}
-                </p>
-                <p className="profile-sidebar-email">{user.email}</p>
-                <span className={`profile-sidebar-role-badge ${ROLE_BADGE[activeRole]}`}>
-                  <i className={`bi ${ROLE_ICONS[activeRole]}`} />
-                  {ROLE_LABELS[activeRole]}
-                </span>
+            {/* ── Page Header ── */}
+            <div className="profile-page-header d-flex justify-content-between align-items-end flex-wrap gap-3">
+              <div>
+                <div className="profile-breadcrumb">
+                  <Link href={homeHref}>Home</Link>
+                  <i className="bi bi-chevron-right" />
+                  <span>My Profile</span>
+                </div>
+                <h1 className="profile-page-title">My Profile</h1>
+                <p className="profile-page-subtitle mb-0">Manage your personal info and keep everything up to date.</p>
               </div>
 
-              {/* Profile Completion (specific to active role tab) */}
-              <div className="profile-completion-block">
-                <div className="profile-completion-header d-flex justify-content-between align-items-center mb-2">
-                  <span className="profile-completion-label">
-                    {ROLE_LABELS[activeRole]} Profile Strength
-                  </span>
-                  <span className="profile-completion-pct">{completion}%</span>
-                </div>
-                <div className="profile-completion-track">
-                  <div 
-                    className="profile-completion-fill" 
-                    style={{ 
-                      width: `${completion}%`,
-                      background: completion < 50 ? '#ef4444' : completion < 80 ? '#f59e0b' : '#10b981'
-                    }} 
-                  />
-                </div>
-                {completion < 100 && (
-                  <p className="profile-completion-tip">Fill in the remaining fields to reach 100%</p>
-                )}
-              </div>
-
-              {/* Scroll-spy Sidebar Nav */}
-              <SidebarNav sections={currentSections} activeId={activeSectionId} onNavClick={handleNavClick} />
-
-              {/* Danger Zone Link */}
-              <div className="mt-4 pt-3 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                <button 
-                  className="btn btn-link text-danger text-decoration-none p-0" 
-                  style={{ fontSize: '0.85rem' }}
-                  onClick={() => setShowDeleteModal(true)}
+              {/* Add / Switch Role Option for Single-Role User */}
+              {(!user.roles || user.roles.length <= 1) && (
+                <button
+                  type="button"
+                  className="btn btn-sm d-flex align-items-center gap-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                    color: '#000000',
+                    fontWeight: 700,
+                    padding: '10px 20px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    boxShadow: '0 4px 15px rgba(212,175,55,0.25)',
+                    fontSize: '0.875rem'
+                  }}
+                  onClick={() => setShowAddRoleModal(true)}
                 >
-                  <i className="bi bi-trash3 me-1"></i> Delete Account
+                  <i className="bi bi-person-plus-fill fs-6" />
+                  <span>Add / Register Another Role</span>
                 </button>
-              </div>
-            </aside>
+              )}
+            </div>
 
-            {/* ── RIGHT: Form / Main Area ── */}
-            <main className="profile-main-card">
-              <div className="profile-main-card-header">
-                <h2 className="profile-main-card-title">
-                  <i className={`bi ${ROLE_ICONS[activeRole]}`} />
-                  {ROLE_LABELS[activeRole]} Profile
-                </h2>
-              </div>
-              <div className="profile-main-card-body">
-                {activeRole === 1 && <JobSeekerProfileForm initialData={currentProfileData} roleId={1} />}
-                {activeRole === 2 && <EmployerProfileForm initialData={currentProfileData} roleId={2} />}
-                {activeRole === 3 && <BusinessPromoterProfileForm initialData={currentProfileData} roleId={3} />}
-                
-                {/* Global Settings Panel (always at bottom) */}
-                <ProfileSettings />
-              </div>
-            </main>
+            {/* ── Role Switcher (full-width strip, only for multi-role users) ── */}
+            {user.roles && user.roles.length > 1 && (
+              <ProfileRoleTabs 
+                roles={user.roles} 
+                activeRole={activeRole} 
+                onSwitch={handleRoleSwitch} 
+              />
+            )}
 
+            {/* ── Two-Column Layout ── */}
+            <div className="profile-layout">
+
+              {/* ── LEFT: Sidebar ── */}
+              <aside className="profile-sidebar-card">
+
+                {/* Avatar + Identity */}
+                <div className="profile-sidebar-avatar-section">
+                  <AvatarUpload currentAvatarUrl={avatarSrc} onCropComplete={handleAvatarCrop} />
+                  {avatarUploading && (
+                    <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '8px' }}>
+                      <i className="bi bi-arrow-repeat me-1" style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }} />
+                      Uploading…
+                    </p>
+                  )}
+                  <p className="profile-sidebar-name">
+                    {currentProfileData?.firstName
+                      ? [currentProfileData.title, currentProfileData.firstName, currentProfileData.middleName, currentProfileData.lastName].filter(Boolean).join(' ')
+                      : currentProfileData?.companyName || currentProfileData?.businessName || user.email.split('@')[0]}
+                  </p>
+                  <p className="profile-sidebar-email">{user.email}</p>
+                  <span className={`profile-sidebar-role-badge ${ROLE_BADGE[activeRole]}`}>
+                    <i className={`bi ${ROLE_ICONS[activeRole]}`} />
+                    {ROLE_LABELS[activeRole]}
+                  </span>
+                </div>
+
+                {/* Profile Completion */}
+                <div className="profile-completion-block">
+                  <div className="profile-completion-header d-flex justify-content-between align-items-center mb-2">
+                    <span className="profile-completion-label">
+                      {ROLE_LABELS[activeRole]} Profile Strength
+                    </span>
+                    <span className="profile-completion-pct">{completion}%</span>
+                  </div>
+                  <div className="profile-completion-track">
+                    <div 
+                      className="profile-completion-fill" 
+                      style={{ 
+                        width: `${completion}%`,
+                        background: completion < 50 ? '#ef4444' : completion < 80 ? '#f59e0b' : '#10b981'
+                      }} 
+                    />
+                  </div>
+                  {completion < 100 && (
+                    <p className="profile-completion-tip">Fill in the remaining fields to reach 100%</p>
+                  )}
+                </div>
+
+                {/* Scroll-spy Sidebar Nav */}
+                <SidebarNav sections={currentSections} activeId={activeSectionId} onNavClick={handleNavClick} />
+
+                {/* Danger Zone Link */}
+                <div className="mt-4 pt-3 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                  <button 
+                    className="btn btn-link text-danger text-decoration-none p-0" 
+                    style={{ fontSize: '0.85rem' }}
+                    onClick={() => setShowDeleteModal(true)}
+                  >
+                    <i className="bi bi-trash3 me-1"></i> Delete Account
+                  </button>
+                </div>
+              </aside>
+
+              {/* ── RIGHT: Form / Main Area ── */}
+              <main className="profile-main-card">
+                <div className="profile-main-card-header">
+                  <h2 className="profile-main-card-title">
+                    <i className={`bi ${ROLE_ICONS[activeRole]}`} />
+                    {ROLE_LABELS[activeRole]} Profile
+                  </h2>
+                </div>
+                <div className="profile-main-card-body">
+                  {activeRole === 1 && <JobSeekerProfileForm initialData={currentProfileData} roleId={1} />}
+                  {activeRole === 2 && <EmployerProfileForm initialData={currentProfileData} roleId={2} />}
+                  {activeRole === 3 && <BusinessPromoterProfileForm initialData={currentProfileData} roleId={3} />}
+                  
+                  {/* Global Settings Panel */}
+                  <ProfileSettings />
+                </div>
+              </main>
+
+            </div>
           </div>
         </div>
+        
+        {/* Modals */}
+        <DeleteAccountModal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
+        
+        {/* Single-Role User: Role Selection Upgrade Modal */}
+        {showAddRoleModal && (
+          <div className="role-modal-overlay">
+            <div className="role-modal-content" style={{ maxWidth: '520px', borderRadius: '20px', padding: '28px', background: '#0f172a', border: '1px solid rgba(255,255,255,0.12)' }}>
+              <button className="role-modal-close" onClick={() => setShowAddRoleModal(false)} type="button" style={{ color: '#94a3b8' }}>
+                <i className="bi bi-x-lg" />
+              </button>
+              
+              <div className="text-center mb-4">
+                <div className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style={{ width: '56px', height: '56px', background: 'rgba(212, 175, 55, 0.15)', color: '#D4AF37', fontSize: '1.5rem' }}>
+                  <i className="bi bi-plus-circle-fill" />
+                </div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#f8fafc', margin: '0 0 6px' }}>Add Another Role</h3>
+                <p style={{ fontSize: '0.875rem', color: '#94a3b8', margin: 0 }}>Select a role below to sign up and expand your capabilities on JobNest.</p>
+              </div>
+
+              <div className="d-flex flex-column gap-3 mb-4">
+                {(!user.roles || !user.roles.includes(1)) && (
+                  <button
+                    type="button"
+                    className="btn text-start p-3 border d-flex align-items-center justify-content-between rounded-3"
+                    style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#f8fafc' }}
+                    onClick={() => {
+                      setShowAddRoleModal(false);
+                      router.push('/register?role=job_seeker');
+                    }}
+                  >
+                    <div className="d-flex align-items-center gap-3">
+                      <div className="p-2 rounded-3 text-white" style={{ background: '#2454FF' }}>
+                        <i className="bi bi-person-badge fs-4"></i>
+                      </div>
+                      <div>
+                        <strong className="d-block" style={{ fontSize: '0.95rem', color: '#f8fafc' }}>Job Seeker</strong>
+                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Apply for jobs, track applications, upload resume</span>
+                      </div>
+                    </div>
+                    <i className="bi bi-chevron-right text-muted"></i>
+                  </button>
+                )}
+
+                {(!user.roles || !user.roles.includes(2)) && (
+                  <button
+                    type="button"
+                    className="btn text-start p-3 border d-flex align-items-center justify-content-between rounded-3"
+                    style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#f8fafc' }}
+                    onClick={() => {
+                      setShowAddRoleModal(false);
+                      router.push('/register?role=job_poster');
+                    }}
+                  >
+                    <div className="d-flex align-items-center gap-3">
+                      <div className="p-2 rounded-3 text-dark" style={{ background: '#D4AF37' }}>
+                        <i className="bi bi-building fs-4"></i>
+                      </div>
+                      <div>
+                        <strong className="d-block" style={{ fontSize: '0.95rem', color: '#f8fafc' }}>Employer / Job Poster</strong>
+                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Post job openings, manage candidates, recruit talent</span>
+                      </div>
+                    </div>
+                    <i className="bi bi-chevron-right text-muted"></i>
+                  </button>
+                )}
+
+                {(!user.roles || !user.roles.includes(3)) && (
+                  <button
+                    type="button"
+                    className="btn text-start p-3 border d-flex align-items-center justify-content-between rounded-3"
+                    style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#f8fafc' }}
+                    onClick={() => {
+                      setShowAddRoleModal(false);
+                      router.push('/register?role=business_promoter');
+                    }}
+                  >
+                    <div className="d-flex align-items-center gap-3">
+                      <div className="p-2 rounded-3 text-white" style={{ background: '#10b981' }}>
+                        <i className="bi bi-megaphone fs-4"></i>
+                      </div>
+                      <div>
+                        <strong className="d-block" style={{ fontSize: '0.95rem', color: '#f8fafc' }}>Business Promoter</strong>
+                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Promote services, feature products, run ad campaigns</span>
+                      </div>
+                    </div>
+                    <i className="bi bi-chevron-right text-muted"></i>
+                  </button>
+                )}
+              </div>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  className="btn btn-link text-secondary text-decoration-none"
+                  onClick={() => setShowAddRoleModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <DeleteAccountModal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
-    </div>
+    </>
   );
 }

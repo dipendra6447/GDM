@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
@@ -8,7 +8,6 @@ import ApplicationChart from '@/components/Dashboard/ApplicationChart';
 import RecommendedJobCard from '@/components/Dashboard/RecommendedJobCard';
 import BusinessPromoterDashboard from '@/components/Dashboard/BusinessPromoterDashboard';
 import EmployerDashboard from '@/views/EmployerDashboard/EmployerDashboard';
-import DashboardRoleTabs from '@/components/Dashboard/DashboardRoleTabs';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 // Dummy chart data mimicking the design
@@ -22,15 +21,23 @@ const chartData = [
 ];
 
 export default function DashboardPage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, activeRole, switchRole, logout } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const dashboardRoles = user?.roles?.filter(r => [1, 2, 3].includes(r)) || [];
-  const primaryRole = dashboardRoles[0] || 1;
-  const activeRole = Number(searchParams.get('role')) || primaryRole;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (user && !isLoading && activeRole === 2) {
@@ -92,42 +99,10 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="dashboard-header">
-        <div className="dashboard-search">
-          <i className="bi bi-search"></i>
-          <input type="text" placeholder="Search job & community here" />
-        </div>
-        <div className="d-flex align-items-center gap-3">
-          <button className="btn btn-link text-secondary"><i className="bi bi-bell fs-5"></i></button>
-          <button className="dashboard-profile-btn">
-            {user?.avatarUrl ? (
-               <img src={user.avatarUrl} alt="Avatar" className="dash-avatar" />
-            ) : (
-               <div className="dash-avatar">{getInitial()}</div>
-            )}
-            <i className="bi bi-chevron-down text-secondary ms-1" style={{ fontSize: '0.8rem' }}></i>
-          </button>
-        </div>
-      </div>
-
       {/* Breadcrumb */}
       <Breadcrumb items={[{ label: 'Dashboard' }]} className="mb-3" />
 
-      {/* Unified Switcher Tabs for multiple roles */}
-      {dashboardRoles.length > 1 && (
-        <DashboardRoleTabs 
-          roles={dashboardRoles} 
-          activeRole={activeRole} 
-          onSwitch={(roleId) => {
-            localStorage.setItem('activeHomeRole', roleId.toString());
-            if (roleId === 2) {
-              router.push('/employer/post-job?tab=overview');
-            } else {
-              router.push(`/dashboard?role=${roleId}`);
-            }
-          }} 
-        />
-      )}
+
 
       {/* Conditional Dashboard Views */}
       {activeRole === 1 && (
