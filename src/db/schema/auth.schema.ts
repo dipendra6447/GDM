@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, timestamp, primaryKey, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, timestamp, primaryKey, boolean, index } from 'drizzle-orm/pg-core';
 
 // ─── Users ────────────────────────────────────────────────────────────────────
 export const users = pgTable('users', {
@@ -37,3 +37,17 @@ export const userRoles = pgTable(
     pk: primaryKey({ columns: [t.userId, t.roleId] }),
   })
 );
+
+// ─── Password Reset Tokens ────────────────────────────────────────────────────
+export const passwordResetTokens = pgTable('password_reset_tokens', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  token: varchar('token', { length: 255 }).notNull().unique(),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (t) => ({
+  userIdIdx: index('password_reset_user_id_idx').on(t.userId),
+  tokenIdx: index('password_reset_token_idx').on(t.token),
+}));

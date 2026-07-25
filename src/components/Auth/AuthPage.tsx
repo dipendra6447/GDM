@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import gsap from 'gsap';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -322,7 +323,14 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
             </div>
 
             <div className="auth-input-group">
-              <label className="auth-label" htmlFor="auth-password">Password</label>
+              <div className="d-flex justify-content-between align-items-center mb-1">
+                <label className="auth-label mb-0" htmlFor="auth-password">Password</label>
+                {isLogin && (
+                  <Link href="/forgot-password" className="auth-forgot-link text-decoration-none" style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: 600 }}>
+                    Forgot Password?
+                  </Link>
+                )}
+              </div>
               <div className="auth-password-wrapper">
                 <input
                   id="auth-password"

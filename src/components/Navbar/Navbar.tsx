@@ -206,10 +206,10 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
   const drawerLinks = isLoggedIn ? (
     activeRole === 2 ? [
       { label: "Employer Home", href: "/employer", icon: "bi-building" },
-      { label: "Post a Job", href: "/employer/post-job?tab=post", icon: "bi-plus-circle" },
-      { label: "Manage Jobs", href: "/employer/post-job?tab=jobs", icon: "bi-briefcase" },
-      { label: "Candidate Search", href: "/employer#candidates", icon: "bi-people" },
-      { label: "Employer Dashboard", href: "/employer/post-job?tab=overview", icon: "bi-grid" },
+      { label: "Post a Job", href: "/dashboard?tab=post", icon: "bi-plus-circle" },
+      { label: "Manage Jobs", href: "/dashboard?tab=jobs", icon: "bi-briefcase" },
+      { label: "Candidate Search", href: "/dashboard?tab=candidates", icon: "bi-people" },
+      { label: "Employer Dashboard", href: "/dashboard?tab=overview", icon: "bi-grid" },
       { label: "Pricing", href: "/subscription-light", icon: "bi-tags" },
       { label: "Contact us", href: "/#contact", icon: "bi-envelope" },
     ] : activeRole === 3 && !user?.roles?.includes(1) && !user?.roles?.includes(2) ? [

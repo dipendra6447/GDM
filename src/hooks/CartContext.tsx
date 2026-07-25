@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 
 /* ── Types ── */
 export type BillingPeriod = "daily" | "weekly" | "monthly";
@@ -53,24 +53,56 @@ const defaultContext: CartContextType = {
 /* ── Context ── */
 const CartContext = createContext<CartContextType>(defaultContext);
 
+const CART_STORAGE_KEY = "jobnest_cart_item";
+
 /* ── Provider ── */
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [item, setItem] = useState<CartItem | null>(null);
+  const [item, setItemState] = useState<CartItem | null>(null);
+
+  // Restore cart item from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      if (stored) {
+        setItemState(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error("Failed to load cart from localStorage", e);
+    }
+  }, []);
 
   const addToCart = useCallback((newItem: CartItem) => {
-    setItem(newItem);
+    setItemState(newItem);
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newItem));
+    } catch (e) {
+      console.error("Failed to save cart to localStorage", e);
+    }
   }, []);
 
   const removeFromCart = useCallback(() => {
-    setItem(null);
+    setItemState(null);
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch (e) {}
   }, []);
 
   const clearCart = useCallback(() => {
-    setItem(null);
+    setItemState(null);
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch (e) {}
   }, []);
 
   const updateBilling = useCallback((billing: BillingPeriod) => {
-    setItem((prev) => (prev ? { ...prev, billing } : null));
+    setItemState((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, billing };
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
   }, []);
 
   const getPrice = useCallback((): string => {

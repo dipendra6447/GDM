@@ -1,16 +1,11 @@
-import EmployerDashboard from '@/views/EmployerDashboard/EmployerDashboard';
-import { Metadata } from 'next';
-import { Suspense } from 'react';
+import { redirect } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'Employer Dashboard | JobNest',
-  description: 'Manage your job listings, track applicants, and post new opportunities on JobNest.',
-};
-
-export default function EmployerDashboardPage() {
-  return (
-    <Suspense fallback={<div style={{ padding: '2rem' }}>Loading Dashboard...</div>}>
-      <EmployerDashboard />
-    </Suspense>
-  );
+export default async function LegacyEmployerPostJobRedirect({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const { tab } = await searchParams;
+  const destination = tab ? `/dashboard?tab=${encodeURIComponent(tab)}` : '/dashboard';
+  redirect(destination);
 }

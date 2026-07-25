@@ -14,9 +14,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Access denied' }, { status: 403 });
     }
     const promos = await db.select({
-      id: businessPromotions.id, businessName: businessPromotions.businessName,
-      bannerUrl: businessPromotions.bannerUrl, status: businessPromotions.status,
-      createdAt: businessPromotions.createdAt, userId: businessPromotions.userId, userEmail: users.email,
+      id: businessPromotions.id,
+      businessName: businessPromotions.businessName,
+      category: businessPromotions.category,
+      purpose: businessPromotions.purpose,
+      offerTag: businessPromotions.offerTag,
+      ctaLabel: businessPromotions.ctaLabel,
+      businessDescription: businessPromotions.businessDescription,
+      businessContactDetails: businessPromotions.businessContactDetails,
+      bannerUrl: businessPromotions.bannerUrl,
+      status: businessPromotions.status,
+      createdAt: businessPromotions.createdAt,
+      userId: businessPromotions.userId,
+      userEmail: users.email,
     }).from(businessPromotions).innerJoin(users, eq(businessPromotions.userId, users.id));
 
     // Fetch metrics from ad_analytics
@@ -43,8 +53,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ success: true, data });
   } catch (error: any) {
+    console.error('GET /api/promotions error:', error);
     if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-    return NextResponse.json({ success: false, message: 'Failed to fetch promotions' }, { status: 500 });
+    return NextResponse.json({ success: false, message: error.message || 'Failed to fetch promotions' }, { status: 500 });
   }
 }
 
@@ -52,36 +63,118 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const authPayload = await requireAuth(req);
-    const { fields, files } = await parseFormData(req);
+
+    let fields: Record<string, string> = {};
+    let files: any[] = [];
+
+    const contentType = req.headers.get('content-type') || '';
+
+    if (contentType.includes('multipart/form-data')) {
+      const parsed = await parseFormData(req);
+      fields = parsed.fields;
+      files = parsed.files;
+    } else {
+      // Fallback: if sent as JSON (e.g. from admin or test tools)
+      try {
+        const body = await req.json();
+        fields = body;
+      } catch {
+        return NextResponse.json(
+          { success: false, message: 'Request must be multipart/form-data or JSON' },
+          { status: 400 }
+        );
+      }
+    }
+
     const { 
       subscriptionId, businessName, category, businessDescription, 
-      businessContactDetails, foundationDate, purpose 
+      businessContactDetails, foundationDate, purpose, offerTag, ctaLabel, userEmail 
     } = fields;
-    const userId = authPayload.userId;
+
+    let targetUserId = authPayload.userId;
+
+    // If Admin creates promotion for a specific user email
+    if (userEmail && userEmail.trim() !== '' && hasRole(authPayload, ROLES.SUPER_USER)) {
+      const [foundUser] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.email, userEmail.trim()))
+        .limit(1);
+
+      if (foundUser) {
+        targetUserId = foundUser.id;
+      }
+    }
+
     let finalStatus = 'draft';
 
-    const bannerFile = files.find(f => f.fieldname === 'banner');
-    const bannerUrl = bannerFile ? bannerFile.filepath : (fields.bannerUrl || null);
+    // Parse files or string URL fields
+    const bannerFile1 = files.find(f => f.fieldname === 'banner' || f.fieldname === 'banner1');
+    const bannerFile2 = files.find(f => f.fieldname === 'banner2');
+    const bannerFile3 = files.find(f => f.fieldname === 'banner3');
 
-    if (subscriptionId) {
+    const banner1 = bannerFile1 ? bannerFile1.filepath : (fields.bannerUrl || fields.bannerUrl1 || null);
+    const banner2 = bannerFile2 ? bannerFile2.filepath : (fields.bannerUrl2 || null);
+    const banner3 = bannerFile3 ? bannerFile3.filepath : (fields.bannerUrl3 || null);
+
+    const bannerUrls = [banner1, banner2, banner3].filter(Boolean);
+    const bannerUrl = bannerUrls.length > 0 ? bannerUrls.join(',') : null;
+
+    // Validate & sanitize subscriptionId UUID
+    const cleanSubId = (subscriptionId && subscriptionId !== 'null' && subscriptionId !== 'undefined' && subscriptionId.trim() !== '')
+      ? subscriptionId.trim()
+      : null;
+
+    if (cleanSubId) {
       const [sub] = await db.select().from(subscriptions).where(
-        and(eq(subscriptions.id, subscriptionId), eq(subscriptions.userId, userId), eq(subscriptions.subscriptionType, 'business_promoter'), eq(subscriptions.status, 'active'), gt(subscriptions.expiresAt, new Date()))
+        and(
+          eq(subscriptions.id, cleanSubId),
+          eq(subscriptions.userId, targetUserId),
+          eq(subscriptions.subscriptionType, 'business_promoter'),
+          eq(subscriptions.status, 'active'),
+          gt(subscriptions.expiresAt, new Date())
+        )
       ).limit(1);
-      if (!sub) return NextResponse.json({ success: false, message: 'Valid active business_promoter subscription required' }, { status: 403 });
-      finalStatus = 'pending_approval';
+
+      if (sub) {
+        finalStatus = 'pending_approval';
+      }
+    }
+
+    // Safely parse foundation date
+    let parsedFoundationDate: Date | null = null;
+    if (foundationDate && foundationDate.trim() !== '' && !isNaN(Date.parse(foundationDate))) {
+      parsedFoundationDate = new Date(foundationDate);
     }
 
     const [promotion] = await db.insert(businessPromotions).values({
-      userId, subscriptionId: subscriptionId || null, businessName, category, businessDescription,
-      businessContactDetails, foundationDate: foundationDate ? new Date(foundationDate) : null,
-      purpose, bannerUrl, status: finalStatus,
+      userId: targetUserId,
+      subscriptionId: cleanSubId,
+      businessName: businessName || 'Promotional Campaign',
+      category: category || 'IT SERVICES',
+      businessDescription: businessDescription || null,
+      businessContactDetails: businessContactDetails || null,
+      foundationDate: parsedFoundationDate,
+      purpose: purpose || 'Transform Your Business With Technology',
+      bannerUrl,
+      offerTag: offerTag || '🔥 Free Consultation — Limited Slots',
+      ctaLabel: ctaLabel || 'View Business',
+      status: finalStatus,
     }).returning();
 
     return NextResponse.json({
-      success: true, message: finalStatus === 'draft' ? 'Draft promotion created' : 'Promotion submitted for approval', data: promotion,
+      success: true,
+      message: finalStatus === 'draft' ? 'Draft promotion created' : 'Promotion submitted for approval',
+      data: promotion,
     }, { status: 201 });
   } catch (error: any) {
-    if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-    return NextResponse.json({ success: false, message: 'Failed to create promotion' }, { status: 500 });
+    console.error('POST /api/promotions error:', error);
+    if (error.message === 'Unauthorized') {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+    return NextResponse.json({
+      success: false,
+      message: error.message || 'Failed to create promotion',
+    }, { status: 500 });
   }
 }

@@ -11,7 +11,7 @@ const EmployerHero: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/employer/post-job?tab=candidates&q=${encodeURIComponent(roleQuery)}`);
+    router.push(`/dashboard?tab=candidates&q=${encodeURIComponent(roleQuery)}`);
   };
 
   return (
@@ -68,7 +68,7 @@ const EmployerHero: React.FC = () => {
             {/* Hero Quick Actions & CTAs */}
             <div className="d-flex flex-wrap gap-3 mb-4">
               <Link
-                href="/employer/post-job?tab=post"
+                href="/dashboard?tab=post"
                 className="btn btn-warning px-4 py-3 fw-bold d-inline-flex align-items-center gap-2"
                 style={{
                   borderRadius: "12px",
@@ -191,7 +191,7 @@ const EmployerHero: React.FC = () => {
               </div>
 
               <div className="text-center mt-3 pt-2 border-top border-secondary border-opacity-25">
-                <Link href="/employer/post-job?tab=candidates" className="text-warning text-decoration-none fw-semibold small d-inline-flex align-items-center gap-1">
+                <Link href="/dashboard?tab=candidates" className="text-warning text-decoration-none fw-semibold small d-inline-flex align-items-center gap-1">
                   View All 10,000+ Candidates <i className="bi bi-chevron-right"></i>
                 </Link>
               </div>

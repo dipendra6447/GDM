@@ -245,11 +245,13 @@ const Checkout: React.FC = () => {
     setProcessing(true);
 
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       const mappedRole = item.category === "jobseeker" ? "job_seeker" : item.category === "employer" ? "job_poster" : "business_promoter";
       const res = await fetch("/api/subscriptions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           subscriptionType: mappedRole,
