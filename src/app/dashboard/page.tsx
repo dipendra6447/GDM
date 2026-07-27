@@ -41,11 +41,6 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (user && !isLoading && activeRole === 2) {
-      router.replace('/employer/post-job?tab=overview');
-      return;
-    }
-
     const fetchDashboard = async () => {
       const token = localStorage.getItem('token');
       try {
@@ -64,12 +59,13 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
+
     if (user && !isLoading && activeRole === 1) {
       fetchDashboard();
     } else {
       setLoading(false);
     }
-  }, [user, isLoading, activeRole, router]);
+  }, [user, isLoading, activeRole]);
 
   if (isLoading) {
     return (
@@ -100,14 +96,10 @@ export default function DashboardPage() {
 
   return (
     <>
-      {/* Breadcrumb */}
-      <Breadcrumb items={[{ label: 'Dashboard' }]} className="mb-3" />
-
-
-
-      {/* Conditional Dashboard Views */}
+      {/* Dynamic Conditional Dashboard Views by Active Role */}
       {activeRole === 1 && (
         <>
+          <Breadcrumb items={[{ label: 'Job Seeker Dashboard' }]} className="mb-3" />
           <div className="dash-top-grid">
             <div className="dash-stats-grid">
               <StatCard 
@@ -237,16 +229,14 @@ export default function DashboardPage() {
         </>
       )}
 
-      {activeRole === 2 && (
-        <div className="d-flex flex-column align-items-center justify-content-center py-5">
-          <div className="spinner-border text-primary mb-3" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-secondary">Redirecting to Employer Dashboard...</p>
-        </div>
-      )}
+      {activeRole === 2 && <EmployerDashboard />}
 
-      {activeRole === 3 && <BusinessPromoterDashboard />}
+      {activeRole === 3 && (
+        <>
+          <Breadcrumb items={[{ label: 'Business Promoter Dashboard' }]} className="mb-3" />
+          <BusinessPromoterDashboard />
+        </>
+      )}
     </>
   );
 }

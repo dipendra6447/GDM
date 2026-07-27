@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { jobSeekerProfiles } from '@/db/schema';
+import { jobSeekerProfiles, users } from '@/db/schema';
 import { requireAuth, getAuthFromRequest } from '@/lib/auth';
 import { parseFormData } from '@/lib/upload';
 
@@ -89,6 +89,15 @@ export async function PUT(req: NextRequest) {
 
     const totalWeight = completionFields.length + 3;
     updateData.profileCompletion = Math.round((filledFields / totalWeight) * 100);
+
+    // Sync avatarUrl to users table if present
+    if (updateData.avatarUrl) {
+      try {
+        await db.update(users).set({ avatarUrl: updateData.avatarUrl }).where(eq(users.id, userId));
+      } catch (e) {
+        console.error('Failed to sync avatar to users table:', e);
+      }
+    }
 
     // Upsert
     if (currentProfile) {

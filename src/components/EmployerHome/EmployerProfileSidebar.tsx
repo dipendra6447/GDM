@@ -16,33 +16,42 @@ const EmployerProfileSidebar: React.FC<Props> = ({ onSwitchRole }) => {
   const router = useRouter();
   const [jobCount, setJobCount] = useState<number>(0);
   const [applicantCount, setApplicantCount] = useState<number>(0);
+  const [employerProfile, setEmployerProfile] = useState<any>(null);
 
   useEffect(() => {
-    const fetchEmployerStats = async () => {
+    const fetchEmployerData = async () => {
       if (!isLoggedIn) return;
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch(`${API_BASE}/api/jobs/employer/me`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
+        const headers = { Authorization: `Bearer ${token}` };
+        const [jobsRes, profileRes] = await Promise.all([
+          fetch(`${API_BASE}/api/jobs/employer/me`, { headers }),
+          fetch(`${API_BASE}/api/profiles/employer`, { headers })
+        ]);
+        if (jobsRes.ok) {
+          const data = await jobsRes.json();
           const jobsList = data.data || [];
           setJobCount(jobsList.length);
           const totalApps = jobsList.reduce((sum: number, j: any) => sum + (j.applicantCount || 0), 0);
           setApplicantCount(totalApps);
         }
+        if (profileRes.ok) {
+          const pData = await profileRes.json();
+          if (pData.success) setEmployerProfile(pData.data);
+        }
       } catch (err) {
-        console.error("Error loading employer stats", err);
+        console.error("Error loading employer data", err);
       }
     };
-    fetchEmployerStats();
+    fetchEmployerData();
   }, [isLoggedIn]);
 
   if (!isLoggedIn || !user) return null;
 
-  const companyInitial = user?.email?.charAt(0).toUpperCase() || 'C';
-  const companyName = user?.email?.split('@')[0] || 'My Company';
+  const displayAvatar = user?.avatarUrl || employerProfile?.logoUrl;
+  const formattedAvatar = displayAvatar ? (displayAvatar.startsWith('http') || displayAvatar.startsWith('/') ? displayAvatar : `/${displayAvatar}`) : null;
+  const companyInitial = (employerProfile?.companyName || user?.email)?.charAt(0).toUpperCase() || 'C';
+  const companyName = employerProfile?.companyName || user?.email?.split('@')[0] || 'My Company';
 
   return (
     <div className="emp-sidebar-card">
@@ -50,8 +59,8 @@ const EmployerProfileSidebar: React.FC<Props> = ({ onSwitchRole }) => {
       <div className="emp-sidebar-top text-center">
         <div className="emp-avatar-container mb-2">
           <div className="emp-avatar-wrapper">
-            {user?.avatarUrl ? (
-              <img src={user.avatarUrl} alt="Company Logo" style={{ width: '100%', height: '100%', borderRadius: '20px', objectFit: 'cover' }} />
+            {formattedAvatar ? (
+              <img src={formattedAvatar} alt="Company Logo" style={{ width: '100%', height: '100%', borderRadius: '20px', objectFit: 'cover' }} />
             ) : (
               companyInitial
             )}
@@ -64,7 +73,7 @@ const EmployerProfileSidebar: React.FC<Props> = ({ onSwitchRole }) => {
         </span>
 
         <Link
-          href="/employer/post-job?tab=post"
+          href="/dashboard?tab=post"
           className="btn btn-primary w-100 mt-3 fw-bold d-inline-flex align-items-center justify-content-center gap-2"
           style={{ borderRadius: '10px', background: '#2454ff', border: 'none', padding: '10px' }}
         >
@@ -99,17 +108,25 @@ const EmployerProfileSidebar: React.FC<Props> = ({ onSwitchRole }) => {
           <i className="bi bi-house-door" />
           <span>Employer Home</span>
         </Link>
-        <Link href="/employer/post-job?tab=overview" className="emp-sidebar-link-item">
-          <i className="bi bi-speedometer2" />
-          <span>Candidate Dashboard</span>
-        </Link>
-        <Link href="/employer/post-job?tab=jobs" className="emp-sidebar-link-item">
+        <Link href="/dashboard?tab=jobs" className="emp-sidebar-link-item">
           <i className="bi bi-briefcase" />
           <span>Manage Jobs</span>
         </Link>
-        <Link href="/employer/post-job?tab=candidates" className="emp-sidebar-link-item">
+        <Link href="/dashboard?tab=post" className="emp-sidebar-link-item">
+          <i className="bi bi-plus-square" />
+          <span>Post New Job</span>
+        </Link>
+        <Link href="/dashboard?tab=candidates" className="emp-sidebar-link-item">
           <i className="bi bi-people" />
           <span>Candidate Database</span>
+        </Link>
+        <Link href="/profile?tab=2" className="emp-sidebar-link-item">
+          <i className="bi bi-building" />
+          <span>Company Profile</span>
+        </Link>
+        <Link href="/dashboard?tab=subscription" className="emp-sidebar-link-item">
+          <i className="bi bi-credit-card-fill text-warning" />
+          <span>Employer Subscription</span>
         </Link>
       </div>
 

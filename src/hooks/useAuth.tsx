@@ -62,10 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (redirectUrl) {
       window.location.href = redirectUrl;
     } else {
-      let dest = '/seeker';
-      if (roleId === 2) dest = '/employer';
-      if (roleId === 3) dest = '/dashboard';
-      window.location.href = dest;
+      window.location.href = '/dashboard';
     }
   }, []);
 

@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 
 interface Props {
@@ -10,30 +10,46 @@ interface Props {
 
 const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const searchParams = useSearchParams();
+  const { logout } = useAuth();
 
   const isEmployer = activeRole === 2;
   const isJobSeeker = activeRole === 1;
   const isBusinessPromoter = activeRole === 3;
 
+  const currentTab = searchParams.get('tab') || 'overview';
+
+  const isItemActive = (href: string) => {
+    const [basePath, query] = href.split('?');
+    if (pathname !== basePath) return false;
+    if (!query) return !searchParams.has('tab') || currentTab === 'overview';
+    const urlParams = new URLSearchParams(query);
+    return urlParams.get('tab') === currentTab;
+  };
+
   const navItems = [
     ...(isEmployer ? [
-      { label: 'Employer Home', icon: 'bi-house-door-fill', href: '/employer' },
-      { label: 'Manage Jobs', icon: 'bi-briefcase-fill', href: '/employer/post-job?tab=jobs' },
-      { label: 'Post a Job', icon: 'bi-plus-circle-fill', href: '/employer/post-job?tab=post' },
-      { label: 'Search Candidates', icon: 'bi-people-fill', href: '/employer/post-job?tab=candidates' },
-      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/employer/post-job?tab=subscription' }
+      { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard?tab=overview' },
+      { label: 'Manage Jobs', icon: 'bi-briefcase-fill', href: '/dashboard?tab=jobs' },
+      { label: 'Post a Job', icon: 'bi-plus-circle-fill', href: '/dashboard?tab=post' },
+      { label: 'Search Candidates', icon: 'bi-people-fill', href: '/dashboard?tab=candidates' },
+      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard?tab=subscription' }
     ] : []),
     ...(isJobSeeker ? [
-      { label: 'Applied', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
-      { label: 'Save Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
+      { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard' },
+      { label: 'Applied Jobs', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
+      { label: 'Saved Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
+      { label: 'Saved Searches', icon: 'bi-search', href: '/dashboard/saved-searches' },
       { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=1' }
     ] : []),
     ...(isBusinessPromoter ? [
+      { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard?tab=overview' },
+      { label: 'My Campaigns', icon: 'bi-megaphone-fill', href: '/dashboard?tab=campaigns' },
+      { label: 'Analytics', icon: 'bi-graph-up-arrow', href: '/dashboard?tab=analytics' },
       { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=3' }
     ] : []),
     { label: 'Community', icon: 'bi-people-fill', href: '/dashboard/community' },
-    { label: 'Message', icon: 'bi-chat-dots-fill', href: '/dashboard/messages' },
+    { label: 'Messages', icon: 'bi-chat-dots-fill', href: '/dashboard/messages' },
     { label: 'Profile Settings', icon: 'bi-person-gear', href: `/profile?tab=${activeRole}` },
   ];
 
@@ -48,13 +64,12 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
 
       <nav className="sidebar-nav">
         {navItems.map((item) => {
-          const pathOnly = item.href.split('?')[0];
-          const isActive = pathname === pathOnly;
+          const active = isItemActive(item.href);
           return (
             <Link 
               key={item.href}
               href={item.href} 
-              className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
+              className={`sidebar-nav-item ${active ? 'active' : ''}`}
             >
               <i className={`bi ${item.icon}`}></i>
               <span>{item.label}</span>

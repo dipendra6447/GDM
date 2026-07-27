@@ -35,13 +35,14 @@ const mockChartData = [
 import { useSearchParams, usePathname } from 'next/navigation';
 
 import EmployerCandidateSearch from '@/components/EmployerHome/EmployerCandidateSearch';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 export default function EmployerDashboard() {
   const { user, isLoading, isLoggedIn, activeRole } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const isMainDashboard = false;
+  const isMainDashboard = true;
 
   const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'post' | 'edit' | 'subscription' | 'candidates'>('overview');
   const [jobs, setJobs] = useState<any[]>([]);
@@ -68,7 +69,7 @@ export default function EmployerDashboard() {
 
   const handleTabChange = (tab: 'overview' | 'jobs' | 'post' | 'edit' | 'subscription' | 'candidates') => {
     setActiveTab(tab);
-    router.push(`/employer/post-job?tab=${tab}`, { scroll: false });
+    router.push(`/dashboard?tab=${tab}`, { scroll: false });
   };
 
 
@@ -175,81 +176,34 @@ export default function EmployerDashboard() {
   const totalJobsCount = jobs.length;
   const totalApplicants = jobs.reduce((sum, j) => sum + (j.applicantCount || 0), 0);
 
+  const getBreadcrumbItems = () => {
+    const base = [
+      { label: 'Employer Portal', href: '/employer' },
+    ];
+
+    switch (activeTab) {
+      case 'overview':
+        return [...base, { label: 'Dashboard Overview' }];
+      case 'jobs':
+        return [...base, { label: 'My Jobs' }];
+      case 'post':
+        return [...base, { label: 'Post New Job' }];
+      case 'edit':
+        return [...base, { label: 'My Jobs', href: '/employer/post-job?tab=jobs' }, { label: 'Edit Job' }];
+      case 'subscription':
+        return [...base, { label: 'Employer Subscription' }];
+      case 'candidates':
+        return [...base, { label: 'Candidate Database' }];
+      default:
+        return [...base, { label: 'My Jobs' }];
+    }
+  };
+
   return (
-    <div className={isMainDashboard ? "" : "emp-dash-layout"}>
-      {/* Sidebar Navigation (only show if not on main dashboard) */}
-      {!isMainDashboard && (
-        <aside className="emp-dash-sidebar">
-          <div className="emp-dash-nav">
-            <button 
-              className={`emp-dash-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-              onClick={() => handleTabChange('overview')}
-            >
-              <i className="bi bi-grid" /> Overview
-            </button>
-            <button 
-              className={`emp-dash-nav-item ${(activeTab === 'jobs' || activeTab === 'edit') ? 'active' : ''}`}
-              onClick={() => handleTabChange('jobs')}
-            >
-              <i className="bi bi-briefcase" /> My Jobs
-            </button>
-            <button 
-              className={`emp-dash-nav-item ${activeTab === 'post' ? 'active' : ''}`}
-              onClick={() => handleTabChange('post')}
-            >
-              <i className="bi bi-plus-circle" /> Post New Job
-            </button>
-            <button 
-              className={`emp-dash-nav-item ${activeTab === 'subscription' ? 'active' : ''}`}
-              onClick={() => handleTabChange('subscription')}
-            >
-              <i className="bi bi-credit-card" /> My Subscription
-            </button>
-            {/* Settings links back to standard profile for now */}
-            <Link href="/profile" className="emp-dash-nav-item">
-              <i className="bi bi-gear" /> Settings
-            </Link>
-          </div>
-        </aside>
-      )}
-
+    <div>
       {/* Main Content Area */}
-      <main className={isMainDashboard ? "" : "emp-dash-main"}>
-        {isMainDashboard && (
-          <div className="d-flex gap-2 mb-4 flex-wrap pb-3" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-            {(['overview', 'jobs', 'post', 'candidates', 'subscription'] as const).map(tab => {
-              const isActive = activeTab === tab || (tab === 'jobs' && activeTab === 'edit');
-              const label = 
-                tab === 'overview' ? 'Overview' :
-                tab === 'jobs' ? 'My Jobs' :
-                tab === 'post' ? 'Post New Job' :
-                tab === 'candidates' ? 'Search Candidates' : 'My Subscription';
-              const icon =
-                tab === 'overview' ? 'bi-grid' :
-                tab === 'jobs' ? 'bi-briefcase' :
-                tab === 'post' ? 'bi-plus-circle' :
-                tab === 'candidates' ? 'bi-people' : 'bi-credit-card';
-
-              return (
-                <button
-                  key={tab}
-                  className="btn btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-2"
-                  onClick={() => handleTabChange(tab)}
-                  style={{
-                    borderRadius: '12px',
-                    transition: 'all 0.2s',
-                    background: isActive ? 'rgba(36, 84, 255, 0.1)' : 'transparent',
-                    color: isActive ? '#2454ff' : '#64748b',
-                    border: isActive ? '1px solid rgba(36, 84, 255, 0.2)' : '1px solid transparent',
-                  }}
-                >
-                  <i className={`bi ${icon}`} />
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-        )}
+      <main>
+        <Breadcrumb items={getBreadcrumbItems()} className="mb-4" />
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <div>
