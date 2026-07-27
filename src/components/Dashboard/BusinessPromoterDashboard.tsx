@@ -34,14 +34,17 @@ export default function BusinessPromoterDashboard() {
 
   // Modal / Form state
   const [showModal, setShowModal] = useState(false);
+  const [editingPromo, setEditingPromo] = useState<any | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [bannerFiles, setBannerFiles] = useState<(File | null)[]>([null, null, null]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [formData, setFormData] = useState({
     businessName: '',
     category: '',
     purpose: '',
     offerTag: '🔥 Free Consultation — Limited Slots',
+    ctaLabel: 'Visit Website',
     businessContactDetails: '', // Website CTA Destination Link
     businessDescription: '',
     foundationDate: '',
@@ -50,6 +53,45 @@ export default function BusinessPromoterDashboard() {
   // Delete Confirmation Modal state
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const handleOpenCreateModal = () => {
+    setEditingPromo(null);
+    setFormData({
+      businessName: '',
+      category: '',
+      purpose: '',
+      offerTag: '🔥 Free Consultation — Limited Slots',
+      ctaLabel: 'Visit Website',
+      businessContactDetails: '',
+      businessDescription: '',
+      foundationDate: '',
+    });
+    setBannerFiles([null, null, null]);
+    setExistingImageUrls([]);
+    setErrorMsg('');
+    setShowModal(true);
+  };
+
+  const handleOpenEditModal = (promo: any) => {
+    setEditingPromo(promo);
+    setFormData({
+      businessName: promo.businessName || '',
+      category: promo.category || '',
+      purpose: promo.purpose || '',
+      offerTag: promo.offerTag || '🔥 Free Consultation — Limited Slots',
+      ctaLabel: promo.ctaLabel || 'Visit Website',
+      businessContactDetails: promo.businessContactDetails || '',
+      businessDescription: promo.businessDescription || '',
+      foundationDate: promo.foundationDate ? new Date(promo.foundationDate).toISOString().split('T')[0] : '',
+    });
+    setBannerFiles([null, null, null]);
+    const parsedUrls = promo.bannerUrl 
+      ? promo.bannerUrl.split(',').map((u: string) => u.trim()).filter(Boolean)
+      : [];
+    setExistingImageUrls(parsedUrls);
+    setErrorMsg('');
+    setShowModal(true);
+  };
 
   const fetchDashboardData = async () => {
     const token = localStorage.getItem('token');
@@ -110,7 +152,7 @@ export default function BusinessPromoterDashboard() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCreateCampaign = async (e: React.FormEvent) => {
+  const handleSaveCampaign = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.businessName || !formData.category) {
       setErrorMsg('Business name and category are required.');
@@ -130,18 +172,29 @@ export default function BusinessPromoterDashboard() {
       bodyData.append('businessContactDetails', formData.businessContactDetails);
       bodyData.append('foundationDate', formData.foundationDate);
       bodyData.append('offerTag', formData.offerTag);
+      bodyData.append('ctaLabel', formData.ctaLabel);
 
-      if (activeSub?.id) {
+      if (!editingPromo && activeSub?.id) {
         bodyData.append('subscriptionId', activeSub.id);
       }
 
-      // Attach collage images
+      // Attach collage images or existing URLs
       if (bannerFiles[0]) bodyData.append('banner', bannerFiles[0]);
       if (bannerFiles[1]) bodyData.append('banner2', bannerFiles[1]);
       if (bannerFiles[2]) bodyData.append('banner3', bannerFiles[2]);
 
-      const res = await fetch('/api/promotions', {
-        method: 'POST',
+      if (editingPromo) {
+        const remainingUrls = existingImageUrls.filter(Boolean);
+        if (remainingUrls.length > 0) {
+          bodyData.append('bannerUrl', remainingUrls.join(','));
+        }
+      }
+
+      const url = editingPromo ? `/api/promotions/${editingPromo.id}` : '/api/promotions';
+      const method = editingPromo ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -151,12 +204,14 @@ export default function BusinessPromoterDashboard() {
       const result = await res.json();
       if (res.ok && result.success) {
         setShowModal(false);
+        setEditingPromo(null);
         setBannerFiles([null, null, null]);
         setFormData({
           businessName: '',
           category: '',
           purpose: '',
           offerTag: '🔥 Free Consultation — Limited Slots',
+          ctaLabel: 'Visit Website',
           businessContactDetails: '',
           businessDescription: '',
           foundationDate: '',
@@ -164,7 +219,7 @@ export default function BusinessPromoterDashboard() {
         fetchDashboardData();
         router.push('/dashboard?tab=campaigns');
       } else {
-        setErrorMsg(result.message || 'Failed to submit campaign.');
+        setErrorMsg(result.message || 'Failed to save campaign.');
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'An unexpected error occurred.');
@@ -312,7 +367,7 @@ export default function BusinessPromoterDashboard() {
               <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Manage all your promotional campaigns, status, and details</p>
             </div>
             <button 
-              onClick={() => setShowModal(true)} 
+              onClick={handleOpenCreateModal} 
               className="btn btn-primary px-4 py-2 fw-semibold mt-2 mt-md-0 d-flex align-items-center gap-2" 
               style={{ borderRadius: '12px', background: '#4318ff', border: 'none' }}
             >
@@ -344,7 +399,7 @@ export default function BusinessPromoterDashboard() {
               <p className="text-secondary mb-4">Create your first ad banner to promote your services on JobNest.</p>
               <div>
                 <button 
-                  onClick={() => setShowModal(true)} 
+                  onClick={handleOpenCreateModal} 
                   className="btn btn-primary px-4 py-2 fw-semibold" 
                   style={{ borderRadius: '12px', background: '#4318ff', border: 'none' }}
                 >
@@ -362,9 +417,11 @@ export default function BusinessPromoterDashboard() {
                   purpose={promo.purpose || 'Transform Your Business With Technology'}
                   description={promo.businessDescription}
                   offerTag={promo.offerTag || '🔥 Free Consultation — Limited Slots'}
+                  ctaLabel={promo.ctaLabel || 'Visit Website'}
                   bannerUrl={promo.bannerUrl}
                   ctaHref={promo.businessContactDetails || '#'}
                   status={promo.status}
+                  onEdit={() => handleOpenEditModal(promo)}
                   onDelete={() => setDeleteTarget({ id: promo.id, name: promo.businessName })}
                   statusBadge={
                     <span className={`badge px-2 py-1 ${
@@ -456,18 +513,20 @@ export default function BusinessPromoterDashboard() {
         </>
       )}
 
-      {/* Create Promotion Modal Popup */}
+      {/* Create / Edit Promotion Modal Popup */}
       {showModal && (
         <>
           <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(17, 28, 68, 0.6)', backdropFilter: 'blur(4px)', zIndex: 1050 }}>
             <div className="modal-dialog modal-dialog-centered modal-lg">
               <div className="modal-content border-0 p-3" style={{ borderRadius: '24px', backgroundColor: '#ffffff', boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}>
                 <div className="modal-header border-0 pb-0">
-                  <h4 className="modal-title fw-bold" style={{ color: '#111c44' }}>Create Promotion Campaign</h4>
+                  <h4 className="modal-title fw-bold" style={{ color: '#111c44' }}>
+                    {editingPromo ? 'Edit Promotion Campaign' : 'Create Promotion Campaign'}
+                  </h4>
                   <button type="button" className="btn-close" onClick={() => setShowModal(false)} aria-label="Close"></button>
                 </div>
                 
-                <form onSubmit={handleCreateCampaign}>
+                <form onSubmit={handleSaveCampaign}>
                   <div className="modal-body py-4">
                     
                     {errorMsg && (
@@ -477,7 +536,7 @@ export default function BusinessPromoterDashboard() {
                       </div>
                     )}
 
-                    {!activeSub && (
+                    {!activeSub && !editingPromo && (
                       <div className="alert alert-info border-0 mb-4 p-3 d-flex align-items-start gap-2" style={{ borderRadius: '12px', background: 'rgba(67, 24, 255, 0.05)', color: '#4318ff' }}>
                         <i className="bi bi-info-circle-fill mt-1" />
                         <div style={{ fontSize: '0.85rem' }}>
@@ -536,6 +595,22 @@ export default function BusinessPromoterDashboard() {
 
                       <div className="col-md-6">
                         <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>
+                          <i className="bi bi-cursor-fill me-1 text-primary" /> Dynamic Button Text (CTA Label) *
+                        </label>
+                        <input 
+                          type="text" 
+                          name="ctaLabel" 
+                          className="form-control px-3 py-2" 
+                          style={{ borderRadius: '10px' }}
+                          placeholder="e.g. Visit Website, Book Consultation, Learn More, Claim Offer" 
+                          value={formData.ctaLabel} 
+                          onChange={handleInputChange} 
+                          required
+                        />
+                      </div>
+
+                      <div className="col-md-12">
+                        <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>
                           <i className="bi bi-link-45deg me-1 text-primary" /> CTA Destination Link / Website URL *
                         </label>
                         <input 
@@ -568,6 +643,8 @@ export default function BusinessPromoterDashboard() {
                         <CollageMaker
                           files={bannerFiles}
                           onFilesChange={setBannerFiles}
+                          urls={existingImageUrls}
+                          onUrlsChange={setExistingImageUrls}
                         />
                       </div>
 
@@ -602,7 +679,7 @@ export default function BusinessPromoterDashboard() {
                       style={{ borderRadius: '12px', background: '#4318ff', border: 'none' }}
                       disabled={submitting}
                     >
-                      {submitting ? 'Submitting...' : activeSub ? 'Submit for Approval' : 'Save as Draft'}
+                      {submitting ? 'Saving...' : editingPromo ? 'Update Campaign' : activeSub ? 'Submit for Approval' : 'Save as Draft'}
                     </button>
                   </div>
                 </form>

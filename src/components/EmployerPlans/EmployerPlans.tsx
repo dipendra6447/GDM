@@ -18,8 +18,8 @@ const plans = [
     badge: null,
     tierClass: "tier-silver",
     priceDaily: "₹49",
-    priceWeekly: "₹249",
-    priceMonthly: "₹699",
+    priceWeekly: "₹199",
+    priceMonthly: "₹599",
     desc: "For growing startups",
     features: [
       { text: "Post Up To 3 Jobs Free", included: true },
@@ -39,8 +39,8 @@ const plans = [
     badge: "🏆 Recommended",
     tierClass: "tier-gold",
     priceDaily: "₹99",
-    priceWeekly: "₹499",
-    priceMonthly: "₹1299",
+    priceWeekly: "₹399",
+    priceMonthly: "₹1199",
     desc: "For scaling teams",
     features: [
       { text: "Everything in Silver", included: true },
@@ -60,8 +60,8 @@ const plans = [
     badge: "👑 Enterprise",
     tierClass: "tier-platinum",
     priceDaily: "₹199",
-    priceWeekly: "₹899",
-    priceMonthly: "₹2499",
+    priceWeekly: "₹799",
+    priceMonthly: "₹2299",
     desc: "For enterprise hiring",
     features: [
       { text: "Everything in Gold", included: true },

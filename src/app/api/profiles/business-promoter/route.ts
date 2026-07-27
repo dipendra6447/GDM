@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq, and, ne } from 'drizzle-orm';
 import { db } from '@/db';
-import { businessPromoterProfiles } from '@/db/schema';
+import { businessPromoterProfiles, users } from '@/db/schema';
 import { requireAuth } from '@/lib/auth';
 import { parseFormData } from '@/lib/upload';
 
@@ -64,6 +64,15 @@ export async function PUT(req: NextRequest) {
           mergedProfile[field as keyof typeof mergedProfile] !== '') filledFields++;
     });
     updateData.profileCompletion = Math.round((filledFields / completionFields.length) * 100);
+
+    // Sync logoUrl to users table as avatarUrl
+    if (updateData.logoUrl) {
+      try {
+        await db.update(users).set({ avatarUrl: updateData.logoUrl }).where(eq(users.id, userId));
+      } catch (e) {
+        console.error('Failed to sync logo to users table:', e);
+      }
+    }
 
     if (currentProfile) {
       const [updated] = await db.update(businessPromoterProfiles).set({ ...updateData, updatedAt: new Date() }).where(eq(businessPromoterProfiles.userId, userId)).returning();

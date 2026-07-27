@@ -7,9 +7,12 @@ interface CollageMakerProps {
   onFilesChange: (files: (File | null)[]) => void;
   urls?: string[];
   onUrlsChange?: (urls: string[]) => void;
+  positions?: string[];
+  onPositionsChange?: (positions: string[]) => void;
 }
 
 const EMPTY_URLS: string[] = [];
+const DEFAULT_POSITIONS: string[] = ['50% 50%', '50% 50%', '50% 50%'];
 
 // Client-side image compression helper to optimize high-res uploads
 const compressImage = (file: File): Promise<File> => {
@@ -71,9 +74,18 @@ export default function CollageMaker({
   onFilesChange,
   urls = EMPTY_URLS,
   onUrlsChange,
+  positions = DEFAULT_POSITIONS,
+  onPositionsChange,
 }: CollageMakerProps) {
   const [objectUrls, setObjectUrls] = useState<string[]>(['', '', '']);
   const [compressing, setCompressing] = useState<boolean>(false);
+  const [internalPositions, setInternalPositions] = useState<string[]>(positions.length >= 3 ? positions : DEFAULT_POSITIONS);
+
+  useEffect(() => {
+    if (positions && positions.length >= 3) {
+      setInternalPositions(positions);
+    }
+  }, [positions]);
 
   useEffect(() => {
     const newUrls = files.map((file) => (file ? URL.createObjectURL(file) : ''));
@@ -86,10 +98,23 @@ export default function CollageMaker({
     };
   }, [files]);
 
+  const updatePosition = (index: number, newPos: string) => {
+    const next = [...internalPositions];
+    next[index] = newPos;
+    setInternalPositions(next);
+    if (onPositionsChange) onPositionsChange(next);
+  };
+
+  const formatUrl = (u?: string) => {
+    if (!u) return '';
+    if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('/')) return u;
+    return `/${u}`;
+  };
+
   const previews = [
-    objectUrls[0] || urls[0] || '',
-    objectUrls[1] || urls[1] || '',
-    objectUrls[2] || urls[2] || '',
+    objectUrls[0] || formatUrl(urls[0]),
+    objectUrls[1] || formatUrl(urls[1]),
+    objectUrls[2] || formatUrl(urls[2]),
   ];
 
   const handleFileSelect = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +167,14 @@ export default function CollageMaker({
       nextUrls[toIdx] = tempUrl;
       onUrlsChange(nextUrls);
     }
+
+    // Swap positions array
+    const nextPos = [...internalPositions];
+    const tempPos = nextPos[fromIdx] || '50% 50%';
+    nextPos[fromIdx] = nextPos[toIdx] || '50% 50%';
+    nextPos[toIdx] = tempPos;
+    setInternalPositions(nextPos);
+    if (onPositionsChange) onPositionsChange(nextPos);
   };
 
   const activeCount = previews.filter(Boolean).length;
@@ -190,6 +223,7 @@ export default function CollageMaker({
                     <img 
                       src={previews[slotIdx]} 
                       alt={`Slot ${slotIdx + 1}`} 
+                      style={{ objectFit: 'cover', objectPosition: internalPositions[slotIdx] || '50% 50%' }}
                     />
 
                     {/* Quick Move / Position Adjustment Bar */}
@@ -215,6 +249,50 @@ export default function CollageMaker({
                           <i className="bi bi-arrow-right-short" />
                         </button>
                       )}
+                    </div>
+
+                    {/* In-Frame Focal Point Alignment Toolbar */}
+                    <div className="collage-focal-toolbar">
+                      <button
+                        type="button"
+                        className={`collage-focal-btn ${internalPositions[slotIdx] === '50% 0%' ? 'active' : ''}`}
+                        onClick={() => updatePosition(slotIdx, '50% 0%')}
+                        title="Align Top"
+                      >
+                        <i className="bi bi-arrow-up" />
+                      </button>
+                      <button
+                        type="button"
+                        className={`collage-focal-btn ${internalPositions[slotIdx] === '50% 50%' ? 'active' : ''}`}
+                        onClick={() => updatePosition(slotIdx, '50% 50%')}
+                        title="Align Center"
+                      >
+                        <i className="bi bi-crosshair" />
+                      </button>
+                      <button
+                        type="button"
+                        className={`collage-focal-btn ${internalPositions[slotIdx] === '50% 100%' ? 'active' : ''}`}
+                        onClick={() => updatePosition(slotIdx, '50% 100%')}
+                        title="Align Bottom"
+                      >
+                        <i className="bi bi-arrow-down" />
+                      </button>
+                      <button
+                        type="button"
+                        className={`collage-focal-btn ${internalPositions[slotIdx] === '0% 50%' ? 'active' : ''}`}
+                        onClick={() => updatePosition(slotIdx, '0% 50%')}
+                        title="Align Left"
+                      >
+                        <i className="bi bi-arrow-left" />
+                      </button>
+                      <button
+                        type="button"
+                        className={`collage-focal-btn ${internalPositions[slotIdx] === '100% 50%' ? 'active' : ''}`}
+                        onClick={() => updatePosition(slotIdx, '100% 50%')}
+                        title="Align Right"
+                      >
+                        <i className="bi bi-arrow-right" />
+                      </button>
                     </div>
                     
                     <button
@@ -251,29 +329,29 @@ export default function CollageMaker({
           {activeCount >= 3 ? (
             <div className="collage-mosaic-preview three-grid">
               <div className="mosaic-main">
-                <img src={previews[0]} alt="Main Preview" />
+                <img src={previews[0]} alt="Main Preview" style={{ objectFit: 'cover', objectPosition: internalPositions[0] || '50% 50%' }} />
               </div>
               <div className="mosaic-stack">
                 <div className="mosaic-sub">
-                  <img src={previews[1]} alt="Sub 1 Preview" />
+                  <img src={previews[1]} alt="Sub 1 Preview" style={{ objectFit: 'cover', objectPosition: internalPositions[1] || '50% 50%' }} />
                 </div>
                 <div className="mosaic-sub">
-                  <img src={previews[2]} alt="Sub 2 Preview" />
+                  <img src={previews[2]} alt="Sub 2 Preview" style={{ objectFit: 'cover', objectPosition: internalPositions[2] || '50% 50%' }} />
                 </div>
               </div>
             </div>
           ) : activeCount === 2 ? (
             <div className="collage-mosaic-preview two-grid">
               <div className="mosaic-main">
-                <img src={previews[0] || previews[1]} alt="Main Preview" />
+                <img src={previews[0] || previews[1]} alt="Main Preview" style={{ objectFit: 'cover', objectPosition: internalPositions[0] || '50% 50%' }} />
               </div>
               <div className="mosaic-sub">
-                <img src={previews[1] || previews[0]} alt="Sub Preview" />
+                <img src={previews[1] || previews[0]} alt="Sub Preview" style={{ objectFit: 'cover', objectPosition: internalPositions[1] || '50% 50%' }} />
               </div>
             </div>
           ) : activeCount === 1 ? (
             <div className="collage-mosaic-preview single-grid">
-              <img src={previews.find(Boolean)} alt="Single Preview" />
+              <img src={previews.find(Boolean)} alt="Single Preview" style={{ objectFit: 'cover', objectPosition: internalPositions[0] || '50% 50%' }} />
             </div>
           ) : (
             <div className="collage-empty-placeholder">

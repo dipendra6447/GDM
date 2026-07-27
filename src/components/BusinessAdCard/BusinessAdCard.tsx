@@ -14,6 +14,7 @@ export interface BusinessAdCardProps {
   status?: string;
   statusBadge?: React.ReactNode;
   onCtaClick?: () => void;
+  onEdit?: () => void;
   onDelete?: () => void;
   className?: string;
 }
@@ -38,6 +39,7 @@ export default function BusinessAdCard({
   status,
   statusBadge,
   onCtaClick,
+  onEdit,
   onDelete,
   className = '',
 }: BusinessAdCardProps) {
@@ -65,17 +67,31 @@ export default function BusinessAdCard({
             {statusBadge}
           </div>
 
-          {onDelete && (
-            <button
-              type="button"
-              onClick={onDelete}
-              className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 border-0 px-2 py-1"
-              style={{ borderRadius: '8px', fontSize: '0.8rem' }}
-              title="Delete Campaign"
-            >
-              <i className="bi bi-trash3-fill" /> Delete
-            </button>
-          )}
+          <div className="d-flex align-items-center gap-1">
+            {onEdit && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 border-0 px-2 py-1"
+                style={{ borderRadius: '8px', fontSize: '0.8rem', background: 'rgba(67, 24, 255, 0.08)', color: '#4318ff' }}
+                title="Edit Campaign"
+              >
+                <i className="bi bi-pencil-square" /> Edit
+              </button>
+            )}
+
+            {onDelete && (
+              <button
+                type="button"
+                onClick={onDelete}
+                className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 border-0 px-2 py-1"
+                style={{ borderRadius: '8px', fontSize: '0.8rem' }}
+                title="Delete Campaign"
+              >
+                <i className="bi bi-trash3-fill" /> Delete
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="biz-ad-category">{category}</div>

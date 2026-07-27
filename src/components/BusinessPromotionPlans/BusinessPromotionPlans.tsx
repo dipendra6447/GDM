@@ -19,7 +19,7 @@ const plans = [
     tierClass: "tier-silver",
     priceDaily: "₹99",
     priceWeekly: "₹499",
-    priceMonthly: "₹1299",
+    priceMonthly: "₹1499",
     desc: "Entry-level business visibility",
     features: [
       { text: "Business Listing Promotion", included: true },
@@ -39,7 +39,7 @@ const plans = [
     badge: "✨ Best Choice",
     tierClass: "tier-gold",
     priceDaily: "₹199",
-    priceWeekly: "₹899",
+    priceWeekly: "₹799",
     priceMonthly: "₹2499",
     desc: "Maximum brand exposure",
     features: [
@@ -60,7 +60,7 @@ const plans = [
     badge: "🚀 Maximum Reach",
     tierClass: "tier-platinum",
     priceDaily: "₹349",
-    priceWeekly: "₹1499",
+    priceWeekly: "₹1299",
     priceMonthly: "₹3999",
     desc: "Enterprise-grade promotion",
     features: [
