@@ -156,6 +156,9 @@ const MarketplaceHeader: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const searchParamsPath = useSearchParams();
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -166,6 +169,11 @@ const MarketplaceHeader: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Ensure profile dropdown is strictly closed on navigation or auth state change
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [pathname, isLoggedIn]);
 
   const getUserInitial = () => {
     if (user?.email) return user.email.charAt(0).toUpperCase();
@@ -233,50 +241,28 @@ const MarketplaceHeader: React.FC = () => {
           Search
         </button>
 
-        {/* Save Search */}
-        <button
-          className="mp-save-search"
-          type="button"
-          id="mp-save-search"
-          onClick={() => {
-            if (!isLoggedIn) {
-              router.push('/login');
-            } else {
-              router.push('/dashboard/saved');
-            }
-          }}
-        >
-          <i className="bi bi-bookmark" />
-          <span>Save Search</span>
-        </button>
-
         {/* Right Actions: Auth from Navbar */}
         <div className="mp-header-actions ms-auto d-flex align-items-center gap-3">
           {isLoading ? (
             <div className="nav-auth-skeleton" style={{ width: '100px', height: '40px', background: '#e2e8f0', borderRadius: '8px' }} />
           ) : isLoggedIn ? (
             <>
-              {user?.roles?.includes(2) ? (
+              {/* Golden Button (Get Premium / Active Subscription Badge) before user dropdown */}
+              {activeSub ? (
                 <Link
-                  href="/employer/post-job"
-                  className="btn-register d-none d-lg-flex"
-                  style={{ textDecoration: 'none' }}
+                  href={activeRole === 2 ? "/employer/post-job?tab=subscription" : "/dashboard/subscription"}
+                  className="btn-get-premium nav-sub-badge-btn"
+                  id="mp-sub-badge-btn"
+                  style={{
+                    background: activeSub.badgeBg,
+                    color: '#FFFFFF',
+                    borderColor: activeSub.borderColor,
+                    boxShadow: `0 4px 15px ${activeSub.glowColor}`
+                  }}
                 >
-                  <i className="bi bi-briefcase me-2"></i>
-                  Post a Job
+                  {activeSub.badgeLabel}
                 </Link>
               ) : (
-                <button
-                  onClick={() => handleActionClick(2)}
-                  className="btn-register d-none d-lg-flex"
-                >
-                  <i className="bi bi-briefcase me-2"></i>
-                  Post a Job
-                </button>
-              )}
-
-              {/* Golden Get Premium Button before user dropdown (hidden if user has an active subscription) */}
-              {!activeSub && (
                 <Link
                   href="/subscription-light"
                   className="btn-get-premium"
@@ -288,20 +274,6 @@ const MarketplaceHeader: React.FC = () => {
               )}
 
               <div className="nav-profile-wrapper" ref={dropdownRef}>
-                {activeSub && (
-                  <span
-                    className="nav-sub-badge-top"
-                    style={{
-                      background: activeSub.badgeBg,
-                      color: activeSub.badgeTextColor,
-                      boxShadow: `0 2px 10px ${activeSub.glowColor}`,
-                      border: '1px solid rgba(255, 255, 255, 0.6)'
-                    }}
-                  >
-                    {activeSub.badgeLabel}
-                  </span>
-                )}
-
                 <button
                   className="nav-profile-btn"
                   onClick={() => setDropdownOpen(!dropdownOpen)}

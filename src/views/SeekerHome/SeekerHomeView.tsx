@@ -8,6 +8,7 @@ import PromotedBusinesses from "@/components/PromotedBusinesses/PromotedBusiness
 import DiscoverJobs from "@/components/DiscoverJobs/DiscoverJobs";
 import BlogSection from "@/components/BlogSection/BlogSection";
 import AdPromotion from "@/components/AdPromotion/AdPromotion";
+import AdBanner from "@/components/AdBanner/AdBanner";
 import ProfileSidebar from "@/components/ProfileSidebar/ProfileSidebar";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -40,6 +41,7 @@ const SeekerHomeView: React.FC = () => {
               <div className="col-lg-9 col-12 home-main-content">
                 <CategorySection />
                 <TrendingJobs />
+                <AdBanner />
                 <div className="container p-0">
                   <PromotedBusinesses variant="home" />
                 </div>
@@ -52,6 +54,7 @@ const SeekerHomeView: React.FC = () => {
           <>
             <CategorySection />
             <TrendingJobs />
+            <AdBanner />
             <div className="container">
               <PromotedBusinesses variant="home" />
             </div>

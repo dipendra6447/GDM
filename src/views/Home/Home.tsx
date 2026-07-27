@@ -9,6 +9,7 @@ import PromotedBusinesses from "../../components/PromotedBusinesses/PromotedBusi
 import DiscoverJobs from "../../components/DiscoverJobs/DiscoverJobs";
 import BlogSection from "../../components/BlogSection/BlogSection";
 import AdPromotion from "../../components/AdPromotion/AdPromotion";
+import AdBanner from "../../components/AdBanner/AdBanner";
 import { useAuth } from "../../hooks/useAuth";
 import { useRouter } from "next/navigation";
 
@@ -55,6 +56,7 @@ const Home: React.FC = () => {
         <Hero />
         <CategorySection />
         <TrendingJobs />
+        <AdBanner />
         <div className="container">
           <PromotedBusinesses variant="home" />
         </div>

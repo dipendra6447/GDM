@@ -415,9 +415,10 @@
 
 .jl2-details-description-html p {
   margin-bottom: 10px;
+  word-break: break-word;
 }
 
-.jl2-details-description-html ul, 
+.jl2-details-description-html ul,
 .jl2-details-description-html ol {
   padding-left: 18px;
   margin-bottom: 10px;

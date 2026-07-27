@@ -94,6 +94,11 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Ensure profile dropdown is strictly closed on navigation or auth state change
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [pathname, isLoggedIn]);
+
   useEffect(() => {
     if (dropdownOpen && typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -234,6 +239,10 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
     { label: "About us", href: "/#about", icon: "bi-info-circle" },
   ];
 
+  if (pathname.startsWith('/jobs') || pathname === '/marketplace') {
+    return null;
+  }
+
   return (
     <header
       className={`navbar-wrapper ${scrolled ? "navbar-scrolled" : ""}`}
@@ -329,9 +338,23 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
               {isLoading ? (
                 <div className="nav-auth-skeleton" />
               ) : isLoggedIn ? (
-                /* ── Logged In: Show Golden Get Premium Button + Profile Dropdown ── */
+                /* ── Logged In: Show Golden Button (Get Premium / Active Subscription Badge) + Profile Dropdown ── */
                 <>
-                  {!activeSub && (
+                  {activeSub ? (
+                    <Link
+                      href={activeRole === 2 ? "/employer/post-job?tab=subscription" : "/dashboard/subscription"}
+                      className="btn-get-premium nav-sub-badge-btn"
+                      id="nav-sub-badge-btn"
+                      style={{
+                        background: activeSub.badgeBg,
+                        color: '#FFFFFF',
+                        borderColor: activeSub.borderColor,
+                        boxShadow: `0 4px 15px ${activeSub.glowColor}`
+                      }}
+                    >
+                      {activeSub.badgeLabel}
+                    </Link>
+                  ) : (
                     <Link
                       href="/subscription-light"
                       className="btn-get-premium"
@@ -343,20 +366,6 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
                   )}
 
                   <div className="nav-profile-wrapper" ref={dropdownRef}>
-                    {activeSub && (
-                      <span
-                        className="nav-sub-badge-top"
-                        style={{
-                          background: activeSub.badgeBg,
-                          color: activeSub.badgeTextColor,
-                          boxShadow: `0 2px 10px ${activeSub.glowColor}`,
-                          border: '1px solid rgba(255, 255, 255, 0.6)'
-                        }}
-                      >
-                        {activeSub.badgeLabel}
-                      </span>
-                    )}
-
                     <button
                       className="nav-profile-btn"
                       onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -632,9 +641,9 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
           padding: '24px 20px',
           display: 'flex',
           flexDirection: 'column',
-          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease',
           transform: menuOpen ? 'translateX(0)' : 'translateX(-100%)',
-          boxShadow: '0 0 40px rgba(0,0,0,0.8)'
+          boxShadow: menuOpen ? '0 0 40px rgba(0,0,0,0.8)' : 'none'
         }}
       >
         {/* Drawer Header */}

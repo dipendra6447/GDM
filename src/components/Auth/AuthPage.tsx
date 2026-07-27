@@ -218,6 +218,42 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
   // ── Password strength ─────────────────────────────────────────────────────
   const strength = getPasswordStrength(password);
 
+  // ── Role specific left side content & image ────────────────────────────────
+  const roleInfo = (() => {
+    if (isLogin) {
+      return {
+        bgImage: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1920&q=80",
+        gradient: "linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 58, 138, 0.85))",
+        title: <>Welcome Back To <br /> JobNest.</>,
+        subtitle: "Sign in to access your personalized portal, manage applications, track hiring campaigns, and expand your business."
+      };
+    }
+    switch (selectedRole) {
+      case 'job_poster':
+        return {
+          bgImage: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80",
+          gradient: "linear-gradient(135deg, rgba(184, 134, 11, 0.85), rgba(15, 23, 42, 0.9))",
+          title: <>Hire World-Class <br /> Talent Faster.</>,
+          subtitle: "Post jobs, discover top-tier candidates, and scale your recruitment effortlessly with enterprise hiring tools."
+        };
+      case 'business_promoter':
+        return {
+          bgImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1920&q=80",
+          gradient: "linear-gradient(135deg, rgba(5, 150, 105, 0.85), rgba(15, 23, 42, 0.9))",
+          title: <>Supercharge Your <br /> Business Growth.</>,
+          subtitle: "Promote your business, gain priority search placement, and reach thousands of prospective clients across JobNest."
+        };
+      case 'job_seeker':
+      default:
+        return {
+          bgImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80",
+          gradient: "linear-gradient(135deg, rgba(29, 78, 216, 0.85), rgba(30, 27, 75, 0.85))",
+          title: <>Unlock Your Next <br /> Career Move.</>,
+          subtitle: "Join thousands of professionals finding their dream roles at top companies worldwide. Premium roles, exclusive insights, zero noise."
+        };
+    }
+  })();
+
   return (
     <div className="auth-page-wrapper">
       {/* Background glow effects */}
@@ -225,14 +261,19 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
       <div className="auth-glow-circle circle-2"></div>
 
       {/* Left Branding Side */}
-      <div className="auth-split-left" ref={leftSideRef}>
+      <div
+        className="auth-split-left"
+        ref={leftSideRef}
+        style={{
+          backgroundImage: `${roleInfo.gradient}, url('${roleInfo.bgImage}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transition: 'all 0.5s ease-in-out'
+        }}
+      >
         <div className="auth-brand-text">
-          <h1 className="auth-brand-title">
-            Unlock Your Next <br /> Career Move.
-          </h1>
-          <p className="auth-brand-subtitle">
-            Join thousands of professionals finding their dream roles at top companies worldwide. Premium roles, exclusive insights, zero noise.
-          </p>
+          <h1 className="auth-brand-title">{roleInfo.title}</h1>
+          <p className="auth-brand-subtitle">{roleInfo.subtitle}</p>
         </div>
       </div>
 

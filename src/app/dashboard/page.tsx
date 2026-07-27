@@ -9,6 +9,7 @@ import RecommendedJobCard from '@/components/Dashboard/RecommendedJobCard';
 import BusinessPromoterDashboard from '@/components/Dashboard/BusinessPromoterDashboard';
 import EmployerDashboard from '@/views/EmployerDashboard/EmployerDashboard';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
+import AdBanner from '@/components/AdBanner/AdBanner';
 
 // Dummy chart data mimicking the design
 const chartData = [
@@ -203,6 +204,8 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+
+          <AdBanner />
 
           <div className="dash-recommended-section">
             <h3>

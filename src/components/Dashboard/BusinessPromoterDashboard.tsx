@@ -15,6 +15,7 @@ import {
 import StatCard from './StatCard';
 import BusinessAdCard from '../BusinessAdCard/BusinessAdCard';
 import CollageMaker from '../CollageMaker/CollageMaker';
+import AdBanner from '@/components/AdBanner/AdBanner';
 
 export default function BusinessPromoterDashboard() {
   const searchParams = useSearchParams();
@@ -293,6 +294,11 @@ export default function BusinessPromoterDashboard() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* 750x150 Ad Banner */}
+          <div className="mb-4">
+            <AdBanner />
           </div>
         </>
       )}
