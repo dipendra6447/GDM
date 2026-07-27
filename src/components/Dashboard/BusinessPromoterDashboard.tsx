@@ -12,6 +12,7 @@ import {
   Legend
 } from 'recharts';
 import StatCard from './StatCard';
+import AdBanner from '@/components/AdBanner/AdBanner';
 
 export default function BusinessPromoterDashboard() {
   const [promotions, setPromotions] = useState<any[]>([]);
@@ -222,6 +223,9 @@ export default function BusinessPromoterDashboard() {
           colorScheme="purple" 
         />
       </div>
+
+      {/* 750x150 Ad Banner */}
+      <AdBanner />
 
       {/* Analytics Chart Section */}
       <div className="row g-4 mb-4">

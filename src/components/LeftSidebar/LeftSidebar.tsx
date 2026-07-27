@@ -164,12 +164,12 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
             )}
           </div>
 
-          {/* Saved Searches */}
+          {/* Save Jobs */}
           <nav className="ls-nav-section ls-nav-bottom-section">
-            <a href="#" className="ls-nav-item" id="ls-nav-saved-searches">
-              <i className="bi bi-search" />
-              <span>Saved Searches</span>
-            </a>
+            <Link href="/dashboard/saved" className="ls-nav-item" id="ls-nav-saved-jobs">
+              <i className="bi bi-bookmark" />
+              <span>Save Jobs</span>
+            </Link>
           </nav>
 
           {/* Profile Completion Card */}
