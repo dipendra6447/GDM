@@ -8,6 +8,7 @@ import EmployerBenefitsSection from "@/components/EmployerHome/EmployerBenefitsS
 import PromotedBusinesses from "@/components/PromotedBusinesses/PromotedBusinesses";
 import BlogSection from "@/components/BlogSection/BlogSection";
 import AdPromotion from "@/components/AdPromotion/AdPromotion";
+import AdBanner from "@/components/AdBanner/AdBanner";
 import { useAuth } from "@/hooks/useAuth";
 import "./EmployerHomeView.css";
 
@@ -49,6 +50,9 @@ const EmployerHomeView: React.FC<EmployerHomeViewProps> = ({ onSwitchRole }) => 
                 {/* Candidates Showcase */}
                 <EmployerCandidateSearch />
 
+                {/* 750x150 Ad Banner */}
+                <AdBanner />
+
                 {/* Why Employers Choose JobNest */}
                 <EmployerBenefitsSection />
 
@@ -65,6 +69,7 @@ const EmployerHomeView: React.FC<EmployerHomeViewProps> = ({ onSwitchRole }) => 
         ) : (
           <>
             <EmployerCandidateSearch />
+            <AdBanner />
             <EmployerBenefitsSection />
             <div className="container my-5">
               <PromotedBusinesses variant="home" />

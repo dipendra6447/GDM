@@ -341,11 +341,12 @@
     max-height: 100vh;
     z-index: 1000;
     border-radius: 0 var(--radius-card) var(--radius-card) 0;
-    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-xl);
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease;
+    box-shadow: none;
   }
 
   .job-filters-sidebar.mobile-open {
     left: 0;
+    box-shadow: var(--shadow-xl);
   }
 }

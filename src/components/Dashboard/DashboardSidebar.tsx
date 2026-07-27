@@ -26,8 +26,7 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
     ] : []),
     ...(isJobSeeker ? [
       { label: 'Applied', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
-      { label: 'Saved Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
-      { label: 'Saved Searches', icon: 'bi-search', href: '/dashboard/saved-searches' },
+      { label: 'Save Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
       { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=1' }
     ] : []),
     ...(isBusinessPromoter ? [

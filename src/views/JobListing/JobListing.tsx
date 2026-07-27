@@ -265,10 +265,10 @@ const JobListing: React.FC = () => {
                   className="btn btn-outline-primary d-flex align-items-center gap-2"
                   style={{ borderRadius: '8px', fontWeight: 600, padding: '8px 16px' }}
                   type="button"
-                  id="save-search-btn"
+                  id="save-jobs-btn"
                 >
                   <i className="bi bi-bookmark-plus-fill"></i>
-                  <span>Save Search</span>
+                  <span>Save Jobs</span>
                 </button>
               </div>
 

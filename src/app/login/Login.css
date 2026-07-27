@@ -1,6 +1,8 @@
 .auth-page-wrapper {
-  min-height: 100vh;
+  min-height: calc(100vh - 80px);
+  padding-top: 80px;
   display: flex;
+  align-items: flex-start;
   background-color: var(--color-bg-primary, #0f172a);
   color: var(--color-text-primary, #f8fafc);
   font-family: 'Inter', sans-serif;
@@ -9,8 +11,6 @@
 .auth-split-left {
   flex: 1;
   display: none;
-  background: linear-gradient(135deg, rgba(29, 78, 216, 0.8), rgba(88, 28, 135, 0.8)),
-              url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
   position: relative;
   overflow: hidden;
 }
@@ -20,30 +20,42 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 4rem;
+    padding: 3.5rem;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    align-self: flex-start;
   }
 }
 
 .auth-brand-text {
   position: relative;
   z-index: 2;
-  max-width: 600px;
+  max-width: 580px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 .auth-brand-title {
-  font-size: 3.5rem;
+  font-size: 3.25rem;
   font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(to right, #ffffff, #94a3b8);
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(to right, #ffffff, #e2e8f0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .auth-brand-subtitle {
-  font-size: 1.25rem;
-  color: #e2e8f0;
+  font-size: 1.15rem;
+  color: #cbd5e1;
   line-height: 1.6;
+  margin-bottom: 0;
 }
 
 .auth-split-right {
@@ -78,6 +90,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  color: #fff !important;
 }
 
 .auth-form-subtitle {
@@ -419,7 +432,7 @@
   border-color: #3b82f6;
   background: rgba(59, 130, 246, 0.1);
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15),
-              inset 0 1px 0 rgba(59, 130, 246, 0.2);
+    inset 0 1px 0 rgba(59, 130, 246, 0.2);
 }
 
 .role-card input[type="radio"] {
@@ -592,6 +605,14 @@
   color: #64748b;
 }
 
-.password-strength-text.weak { color: #ef4444; }
-.password-strength-text.medium { color: #f59e0b; }
-.password-strength-text.strong { color: #22c55e; }
+.password-strength-text.weak {
+  color: #ef4444;
+}
+
+.password-strength-text.medium {
+  color: #f59e0b;
+}
+
+.password-strength-text.strong {
+  color: #22c55e;
+}
