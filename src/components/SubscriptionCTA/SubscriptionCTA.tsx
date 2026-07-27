@@ -95,7 +95,7 @@ const SubscriptionCTA: React.FC = () => {
               Get Premium ✨
             </a>
             <a
-              href="mailto:sales@jobnest.com"
+              href="/contact?service=enterprise-sales"
               className="btn-gold-outline"
               id="cta-contact-sales-btn"
               onMouseMove={handleMouseMove}
@@ -103,6 +103,7 @@ const SubscriptionCTA: React.FC = () => {
             >
               Contact Sales
             </a>
+
           </div>
         </div>
       </div>

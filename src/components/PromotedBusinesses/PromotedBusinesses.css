@@ -60,17 +60,17 @@
 
 
 /* ══════════════════════════════════════════════════════
-   1. HOME PAGE VARIANT (Split Card + Image Mosaic)
+   1. HOME PAGE VARIANT (Split Card + Capped Mosaic)
 ══════════════════════════════════════════════════════ */
 .pb-home-root {
-  padding: 64px 0;
+  padding: 48px 0;
 }
 
 .pb-home-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .pb-home-title {
@@ -119,22 +119,24 @@
   box-shadow: 0 4px 16px rgba(36, 84, 255, 0.25);
 }
 
-/* Card layout */
+/* Capped Main Card Container */
 .pb-home-card {
   display: flex;
-  background: #ffffff;
-  border-radius: 32px;
-  border: 1px solid var(--color-border, #EDF0F7);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 28px;
+  border: 1px solid rgba(36, 84, 255, 0.18);
+  box-shadow: 0 12px 36px rgba(11, 23, 57, 0.06);
   overflow: hidden;
   position: relative;
-  min-height: 400px;
+  height: 380px; /* Fixed height on desktop prevents vertical distortion */
+  max-height: 400px;
+  align-items: stretch;
   transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pb-home-card:hover {
-  border-color: color-mix(in srgb, var(--pb-accent, #2454FF) 25%, var(--color-border, #EDF0F7));
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  border-color: rgba(36, 84, 255, 0.35);
+  box-shadow: 0 20px 50px rgba(36, 84, 255, 0.12);
 }
 
 .pb-home-card--fade {
@@ -142,96 +144,121 @@
   transform: translateY(5px);
 }
 
-/* Card Left Section */
+/* Card Left Section: Balanced Text Layout */
 .pb-home-left {
-  flex: 1;
-  padding: 48px;
+  flex: 1 1 50%;
+  padding: 32px 38px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   position: relative;
   z-index: 2;
+  overflow: hidden;
 }
 
 .pb-home-ad-label {
   position: absolute;
-  top: 24px;
-  left: 48px;
-  font-size: 10px;
-  font-weight: 700;
+  top: 18px;
+  left: 38px;
+  font-size: 9.5px;
+  font-weight: 800;
   text-transform: uppercase;
-  color: #a0a8b5;
-  border: 1px solid #e0e5eb;
-  padding: 2px 8px;
+  color: #64748b;
+  background: rgba(241, 245, 249, 0.95);
+  border: 1px solid #cbd5e1;
+  padding: 2px 7px;
   border-radius: 4px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  z-index: 3;
 }
 
 .pb-home-category {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: var(--pb-accent, #2454FF);
-  margin-bottom: 8px;
-  margin-top: 12px;
+  margin-top: 14px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .pb-home-biz-name {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: var(--color-navy, #0B1739);
-  margin-bottom: 8px;
-  line-height: 1.2;
+  margin-bottom: 4px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pb-home-tagline {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--color-navy, #0B1739);
-  margin-bottom: 12px;
-  line-height: 1.3;
+  color: #1e293b;
+  margin-bottom: 6px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .pb-home-desc {
-  font-size: 15px;
-  color: var(--color-text-gray, #6B7280);
-  margin-bottom: 20px;
-  line-height: 1.6;
+  font-size: 13.5px;
+  color: var(--color-text-gray, #64748B);
+  margin-bottom: 12px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pb-home-offer {
   display: inline-flex;
   align-items: center;
-  background: color-mix(in srgb, var(--pb-accent, #2454FF) 10%, #ffffff);
-  color: var(--pb-accent, #2454FF);
-  font-size: 13.5px;
+  gap: 6px;
+  background: rgba(36, 84, 255, 0.08);
+  color: #2454FF;
+  font-size: 12.5px;
   font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 12px;
-  margin-bottom: 24px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
   width: fit-content;
-  border: 1px solid color-mix(in srgb, var(--pb-accent, #2454FF) 20%, transparent);
+  border: 1px solid rgba(36, 84, 255, 0.2);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .pb-home-cta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  background: var(--gradient-primary, #2454FF);
+  background: linear-gradient(135deg, #2454FF 0%, #1A42C8 100%);
   color: #ffffff;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 12px 28px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 24px;
   border-radius: 999px;
   width: fit-content;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(36, 84, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(36, 84, 255, 0.25);
+  text-decoration: none;
 }
 
 .pb-home-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(36, 84, 255, 0.35);
+  box-shadow: 0 8px 24px rgba(36, 84, 255, 0.38);
   color: #ffffff;
 }
 
@@ -245,74 +272,95 @@
   transform: translateX(4px);
 }
 
-/* Card Right Section: Image Mosaic */
+/* Card Right Section: Capped Mosaic Container */
 .pb-home-right {
-  flex: 1.1;
-  padding: 24px;
+  flex: 1 1 50%;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fafbfe;
-  border-left: 1px solid var(--color-border, #EDF0F7);
+  background: #f1f5f9;
+  border-left: 1px solid #e2e8f0;
+  height: 100%;
+  overflow: hidden;
 }
 
 .pb-home-mosaic {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
   height: 100%;
-  min-height: 360px;
+  max-height: 348px;
+  overflow: hidden;
+}
+
+.pb-home-mosaic.three-mosaic {
+  grid-template-columns: 1.3fr 1fr;
+}
+
+.pb-home-mosaic.two-mosaic {
+  grid-template-columns: 1fr 1fr;
+}
+
+.pb-home-mosaic.single-mosaic {
+  grid-template-columns: 1fr;
 }
 
 .pb-mosaic-main {
   position: relative;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   height: 100%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  max-height: 348px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .pb-mosaic-main img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  object-position: center;
+  border-radius: 16px;
+  transition: transform 0.5s ease;
 }
 
 .pb-mosaic-main:hover img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .pb-mosaic-stack {
   display: grid;
   grid-template-rows: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
   height: 100%;
+  max-height: 348px;
+  overflow: hidden;
 }
 
 .pb-mosaic-accent {
   position: relative;
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
   height: 100%;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .pb-mosaic-accent img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  object-position: center;
+  border-radius: 14px;
+  transition: transform 0.5s ease;
 }
 
 .pb-mosaic-accent:hover img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 /* Dots positioning for Home Page */
 .pb-home-dots {
-  margin-top: 28px;
+  margin-top: 24px;
 }
 
 
@@ -475,26 +523,28 @@
 @media (max-width: 991px) {
   .pb-home-card {
     flex-direction: column;
-    min-height: auto;
+    height: auto;
+    max-height: none;
   }
 
   .pb-home-left {
-    padding: 32px;
+    padding: 28px 24px;
   }
 
   .pb-home-ad-label {
-    top: 20px;
-    left: 32px;
+    top: 16px;
+    left: 24px;
   }
 
   .pb-home-right {
     border-left: none;
-    border-top: 1px solid var(--color-border, #EDF0F7);
-    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    padding: 16px;
+    height: 280px;
   }
 
   .pb-home-mosaic {
-    min-height: 280px;
+    max-height: 250px;
   }
 }
 
@@ -508,19 +558,54 @@
   }
 
   .pb-home-tagline {
-    font-size: 16px;
+    font-size: 14.5px;
   }
 
   .pb-home-desc {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .pb-home-right {
+    height: 220px;
   }
 
   .pb-home-mosaic {
-    min-height: 200px;
-    gap: 10px;
+    max-height: 190px;
+    gap: 8px;
   }
 
   .pb-mosaic-stack {
-    gap: 10px;
+    gap: 8px;
   }
 }
+
+/* ══════════════════════════════════════════════════════
+   4. SKELETON SHIMMER LOADER STYLES
+══════════════════════════════════════════════════════ */
+.pb-skeleton-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 28px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  height: 380px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.pb-skeleton-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: pbShimmer 1.5s infinite ease-in-out;
+  border-radius: 8px;
+}
+
+@keyframes pbShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+

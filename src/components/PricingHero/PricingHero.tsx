@@ -94,9 +94,10 @@ const PricingHero: React.FC = () => {
           <a href="#plans" className="btn-gold" id="hero-view-plans-btn">
             View Plans <span>↓</span>
           </a>
-          <a href="#cta" className="btn-gold-outline" id="hero-contact-sales-btn">
+          <a href="/contact?service=enterprise-sales" className="btn-gold-outline" id="hero-contact-sales-btn">
             Contact Sales
           </a>
+
         </div>
       </div>
     </section>

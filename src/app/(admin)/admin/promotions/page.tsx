@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MdListAlt, MdCheck, MdClose, MdAdd, MdRemoveRedEye, MdDelete } from 'react-icons/md';
+import { MdListAlt, MdCheck, MdClose, MdAdd, MdRemoveRedEye, MdDelete, MdEdit } from 'react-icons/md';
 import { api } from '@/lib/adminApi';
 import PageHeader from '@/components/admin/Common/PageHeader';
 import { fadeInUp } from '@/lib/animations';
@@ -16,6 +16,7 @@ export default function PromotionsPage() {
   const [error, setError] = useState('');
   
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingPromo, setEditingPromo] = useState<any | null>(null);
   const [previewPromo, setPreviewPromo] = useState<any | null>(null);
   
   const [newPromo, setNewPromo] = useState({ 
@@ -23,11 +24,13 @@ export default function PromotionsPage() {
     category: 'IT SERVICES',
     purpose: 'Transform Your Business With Technology',
     offerTag: '🔥 Free Consultation — Limited Slots',
+    ctaLabel: 'Visit Website',
     businessContactDetails: '', // CTA Target Website URL
     userEmail: '',
     description: ''
   });
   const [bannerFiles, setBannerFiles] = useState<(File | null)[]>([null, null, null]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
 
   const fetchPromotions = async () => {
     try {
@@ -52,6 +55,43 @@ export default function PromotionsPage() {
       fadeInUp(contentRef.current);
     }
   }, [loading]);
+
+  const handleOpenAddModal = () => {
+    setEditingPromo(null);
+    setNewPromo({ 
+      businessName: '', 
+      category: 'IT SERVICES',
+      purpose: 'Transform Your Business With Technology',
+      offerTag: '🔥 Free Consultation — Limited Slots',
+      ctaLabel: 'Visit Website',
+      businessContactDetails: '', 
+      userEmail: '', 
+      description: '' 
+    });
+    setBannerFiles([null, null, null]);
+    setExistingImageUrls([]);
+    setShowAddModal(true);
+  };
+
+  const handleOpenEditModal = (promo: any) => {
+    setEditingPromo(promo);
+    setNewPromo({ 
+      businessName: promo.businessName || '', 
+      category: promo.category || 'IT SERVICES',
+      purpose: promo.purpose || '',
+      offerTag: promo.offerTag || '🔥 Free Consultation — Limited Slots',
+      ctaLabel: promo.ctaLabel || 'Visit Website',
+      businessContactDetails: promo.businessContactDetails || '', 
+      userEmail: promo.userEmail || '', 
+      description: promo.businessDescription || '' 
+    });
+    setBannerFiles([null, null, null]);
+    const parsedUrls = promo.bannerUrl 
+      ? promo.bannerUrl.split(',').map((u: string) => u.trim()).filter(Boolean)
+      : [];
+    setExistingImageUrls(parsedUrls);
+    setShowAddModal(true);
+  };
 
   const handleUpdateStatus = async (id: string, status: string) => {
     if (!window.confirm(`Are you sure you want to mark this as ${status}?`)) return;
@@ -82,7 +122,7 @@ export default function PromotionsPage() {
     }
   };
 
-  const handleAddPromotion = async (e: React.FormEvent) => {
+  const handleSavePromotion = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -91,6 +131,8 @@ export default function PromotionsPage() {
       formData.append('category', newPromo.category);
       formData.append('purpose', newPromo.purpose);
       formData.append('offerTag', newPromo.offerTag);
+      formData.append('ctaLabel', newPromo.ctaLabel);
+      formData.append('status', (newPromo as any).status || 'active');
       formData.append('businessContactDetails', newPromo.businessContactDetails);
       formData.append('businessDescription', newPromo.description);
 
@@ -98,23 +140,35 @@ export default function PromotionsPage() {
       if (bannerFiles[1]) formData.append('banner2', bannerFiles[1]);
       if (bannerFiles[2]) formData.append('banner3', bannerFiles[2]);
 
+      if (editingPromo) {
+        const remainingUrls = existingImageUrls.filter(Boolean);
+        if (remainingUrls.length > 0) {
+          formData.append('bannerUrl', remainingUrls.join(','));
+        }
+      }
+
+      const url = editingPromo ? `/api/promotions/${editingPromo.id}` : '/api/promotions';
+      const method = editingPromo ? 'PUT' : 'POST';
+
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/promotions', {
-        method: 'POST',
+      const res = await fetch(url, {
+        method,
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData,
       });
       const data = await res.json();
       if (res.ok && data.success) {
         setShowAddModal(false);
+        setEditingPromo(null);
         setBannerFiles([null, null, null]);
-        setNewPromo({ businessName: '', category: 'IT SERVICES', purpose: '', offerTag: '🔥 Free Consultation — Limited Slots', businessContactDetails: '', userEmail: '', description: '' });
+        setExistingImageUrls([]);
+        setNewPromo({ businessName: '', category: 'IT SERVICES', purpose: '', offerTag: '🔥 Free Consultation — Limited Slots', ctaLabel: 'Visit Website', businessContactDetails: '', userEmail: '', description: '' });
         fetchPromotions();
       } else {
-        alert(data.message || 'Failed to add promotion.');
+        alert(data.message || 'Failed to save promotion.');
       }
     } catch (err: any) {
-      alert(err.message || 'Failed to add promotion.');
+      alert(err.message || 'Failed to save promotion.');
     }
   };
 
@@ -131,7 +185,7 @@ export default function PromotionsPage() {
     <div className="promotions-page">
       <PageHeader
         title="Business Promotions"
-        subtitle="Manage, approve, and preview business promotional listings."
+        subtitle="Manage, edit, approve, and preview business promotional listings."
         breadcrumbs={[
           { label: 'Home', path: '/admin' },
           { label: 'Promotions' }
@@ -141,7 +195,7 @@ export default function PromotionsPage() {
       <div className="admin-card" ref={contentRef}>
         <div className="card-header d-flex justify-content-between align-items-center">
           <h3><MdListAlt className="icon-mr" /> Promotion Listings</h3>
-          <button className="btn btn-primary" onClick={() => setShowAddModal(true)}><MdAdd /> Add Promotion</button>
+          <button className="btn btn-primary" onClick={handleOpenAddModal}><MdAdd /> Add Promotion</button>
         </div>
 
         {error && <div className="alert alert-danger">{error}</div>}
@@ -193,9 +247,23 @@ export default function PromotionsPage() {
                     <td>{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</td>
                     <td>{new Date(promo.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <span className={`status-badge ${getStatusBadgeClass(promo.status)}`}>
-                        {promo.status.replace('_', ' ')}
-                      </span>
+                      <select 
+                        className={`form-select form-select-sm fw-semibold border ${
+                          promo.status === 'active' ? 'bg-success-subtle text-success border-success' : 
+                          promo.status === 'pending_approval' ? 'bg-warning-subtle text-warning border-warning' : 
+                          promo.status === 'rejected' ? 'bg-danger-subtle text-danger border-danger' : 
+                          'bg-light text-secondary'
+                        }`} 
+                        style={{ borderRadius: '6px', fontSize: '0.8rem', width: 'auto' }}
+                        value={promo.status || 'draft'}
+                        onChange={(e) => handleUpdateStatus(promo.id, e.target.value)}
+                      >
+                        <option value="active">Active (Approved)</option>
+                        <option value="pending_approval">Pending Approval</option>
+                        <option value="draft">Draft</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="expired">Expired</option>
+                      </select>
                     </td>
                     <td>
                       <div className="action-buttons">
@@ -207,23 +275,32 @@ export default function PromotionsPage() {
                           <MdRemoveRedEye />
                         </button>
 
-                        {promo.status === 'pending_approval' && (
-                          <>
-                            <button 
-                              className="btn-icon text-success"
-                              onClick={() => handleUpdateStatus(promo.id, 'active')}
-                              title="Approve"
-                            >
-                              <MdCheck />
-                            </button>
-                            <button 
-                              className="btn-icon text-danger"
-                              onClick={() => handleUpdateStatus(promo.id, 'rejected')}
-                              title="Reject"
-                            >
-                              <MdClose />
-                            </button>
-                          </>
+                        <button
+                          className="btn-icon text-primary ms-1"
+                          onClick={() => handleOpenEditModal(promo)}
+                          title="Edit Campaign"
+                        >
+                          <MdEdit />
+                        </button>
+
+                        {promo.status !== 'active' && (
+                          <button 
+                            className="btn-icon text-success fw-bold"
+                            onClick={() => handleUpdateStatus(promo.id, 'active')}
+                            title="Approve & Activate Campaign"
+                          >
+                            <MdCheck />
+                          </button>
+                        )}
+
+                        {(promo.status === 'active' || promo.status === 'pending_approval') && (
+                          <button 
+                            className="btn-icon text-warning"
+                            onClick={() => handleUpdateStatus(promo.id, 'rejected')}
+                            title="Reject / Deactivate Campaign"
+                          >
+                            <MdClose />
+                          </button>
                         )}
 
                         <button
@@ -258,6 +335,7 @@ export default function PromotionsPage() {
                 purpose={previewPromo.purpose || 'Transform Your Business With Technology'}
                 description={previewPromo.businessDescription}
                 offerTag={previewPromo.offerTag || '🔥 Free Consultation — Limited Slots'}
+                ctaLabel={previewPromo.ctaLabel || 'Visit Website'}
                 bannerUrl={previewPromo.bannerUrl}
                 ctaHref={previewPromo.businessContactDetails || '#'}
               />
@@ -269,15 +347,15 @@ export default function PromotionsPage() {
         </div>
       )}
 
-      {/* ADMIN ADD PROMOTION MODAL WITH COLLAGE MAKER */}
+      {/* ADMIN ADD / EDIT PROMOTION MODAL WITH COLLAGE MAKER */}
       {showAddModal && (
         <div className="admin-modal-overlay d-flex align-items-center justify-content-center" style={{ zIndex: 1060 }}>
           <div className="admin-modal" style={{ maxWidth: '800px', width: '90%', borderRadius: '24px', padding: '1.75rem' }}>
             <div className="modal-header border-0 pb-2 d-flex justify-content-between align-items-center">
-              <h3 className="fw-bold mb-0">Add New Business Promotion</h3>
+              <h3 className="fw-bold mb-0">{editingPromo ? 'Edit Business Promotion' : 'Add New Business Promotion'}</h3>
               <button className="close-btn btn-close" onClick={() => setShowAddModal(false)}></button>
             </div>
-            <form onSubmit={handleAddPromotion}>
+            <form onSubmit={handleSavePromotion}>
               <div className="modal-body">
                 <div className="row g-3">
                   <div className="col-md-6">
@@ -297,7 +375,12 @@ export default function PromotionsPage() {
                     <input type="text" className="form-control" value={newPromo.purpose} onChange={(e) => setNewPromo({...newPromo, purpose: e.target.value})} />
                   </div>
 
-                  <div className="col-md-12">
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-secondary">Dynamic Button Text (CTA Label) *</label>
+                    <input type="text" className="form-control" value={newPromo.ctaLabel} onChange={(e) => setNewPromo({...newPromo, ctaLabel: e.target.value})} placeholder="e.g. Visit Website, Book Consultation, Learn More" required />
+                  </div>
+
+                  <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary">CTA Destination Link / Website URL *</label>
                     <input type="url" className="form-control" value={newPromo.businessContactDetails} onChange={(e) => setNewPromo({...newPromo, businessContactDetails: e.target.value})} placeholder="https://yourbusiness.com" required />
                   </div>
@@ -312,13 +395,15 @@ export default function PromotionsPage() {
                     <CollageMaker
                       files={bannerFiles}
                       onFilesChange={setBannerFiles}
+                      urls={existingImageUrls}
+                      onUrlsChange={setExistingImageUrls}
                     />
                   </div>
                 </div>
               </div>
               <div className="modal-footer border-0 pt-0">
                 <button type="button" className="btn btn-outline-secondary px-4" onClick={() => setShowAddModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary px-4">Add Promotion</button>
+                <button type="submit" className="btn btn-primary px-4">{editingPromo ? 'Update Promotion' : 'Add Promotion'}</button>
               </div>
             </form>
           </div>
