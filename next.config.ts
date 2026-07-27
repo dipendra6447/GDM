@@ -9,11 +9,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Allow large multipart uploads (campaign banners, resumes, avatars)
-  serverActions: {
-    bodySizeLimit: '20mb',
-  },
   experimental: {
+    serverActions: {
+      bodySizeLimit: '20mb',
+    },
     serverComponentsExternalPackages: ['@neondatabase/serverless'],
   },
 };
