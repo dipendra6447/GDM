@@ -5,9 +5,7 @@ import "./PromotedBusinesses.css";
 /* ─── Data model ─── */
 export interface PromotedBusiness {
   id: number | string;
-  /** Main hero image */
   heroImage: string;
-  /** Accent images for mosaic */
   accentImages?: [string, string];
   bannerUrls?: string[];
   name: string;
@@ -20,6 +18,50 @@ export interface PromotedBusiness {
   accent: string;
 }
 
+const STOCK_FALLBACK_IMAGES = [
+  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&auto=format&fit=crop&q=80",
+];
+
+const DEFAULT_BUSINESSES: PromotedBusiness[] = [
+  {
+    id: 1,
+    heroImage: STOCK_FALLBACK_IMAGES[0],
+    accentImages: [STOCK_FALLBACK_IMAGES[1], STOCK_FALLBACK_IMAGES[2]],
+    bannerUrls: STOCK_FALLBACK_IMAGES,
+    name: "TechNova Solutions",
+    category: "IT Services",
+    tagline: "Transform Your Business With Technology",
+    description: "End-to-end digital transformation, cloud migration & enterprise software. 500+ successful projects across 40+ industries.",
+    offer: "🔥 Free Consultation — Limited Slots",
+    ctaLabel: "View Business",
+    ctaHref: "/contact?service=business-promotion",
+    accent: "#2454FF",
+  },
+  {
+    id: 2,
+    heroImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop&q=80",
+    accentImages: [
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=400&auto=format&fit=crop&q=80",
+    ],
+    bannerUrls: [
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=400&auto=format&fit=crop&q=80",
+    ],
+    name: "FitPulse Wellness",
+    category: "Health & Fitness",
+    tagline: "Your Strongest Self Starts Here",
+    description: "State-of-the-art gym, nutrition coaching & wellness programs designed for working professionals.",
+    offer: "💪 3 Months @ ₹999",
+    ctaLabel: "Get Started",
+    ctaHref: "/contact?service=business-promotion",
+    accent: "#F43F5E",
+  },
+];
+
 export type PromotedBusinessesVariant = "home" | "sidebar";
 
 interface Props {
@@ -30,7 +72,7 @@ const AUTO_PLAY = 5000;
 
 const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
   const isSidebar = variant === "sidebar";
-  const [businesses, setBusinesses] = useState<PromotedBusiness[]>([]);
+  const [businesses, setBusinesses] = useState<PromotedBusiness[]>(DEFAULT_BUSINESSES);
   const [loading, setLoading] = useState<boolean>(true);
 
   const [idx, setIdx] = useState<number>(0);
@@ -40,67 +82,97 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
     const fetchActivePromotions = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/promotions/active');
-        if (res.ok) {
+        const res = await fetch('/api/promotions/active', {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' },
+        });
+        if (res.ok && isMounted) {
           const json = await res.json();
           if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-            const mapped: PromotedBusiness[] = json.data.map((p: any) => {
+            const mapped: PromotedBusiness[] = json.data.map((p: any, index: number) => {
               const rawBanner = p.bannerUrl || '';
               const urls = rawBanner
                 ? rawBanner.split(',').map((u: string) => u.trim()).filter(Boolean)
                 : [];
 
-              const formatUrl = (u?: string) => {
-                if (!u) return '';
+              const formatUrl = (u?: string, fallbackIndex = 0) => {
+                if (!u) return STOCK_FALLBACK_IMAGES[fallbackIndex % STOCK_FALLBACK_IMAGES.length];
                 if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('/')) return u;
                 return `/${u}`;
               };
 
-              const formattedUrls = urls.map((u: string) => formatUrl(u)).filter(Boolean);
+              let formattedUrls = urls.map((u: string, i: number) => formatUrl(u, i)).filter(Boolean);
+              if (formattedUrls.length === 0) {
+                formattedUrls = STOCK_FALLBACK_IMAGES;
+              }
+
+              const category = p.category && p.category.trim() ? p.category : 'PROMOTED BUSINESS';
+              const name = p.businessName && p.businessName.trim() ? p.businessName : 'Featured Business';
+              const tagline = p.purpose && p.purpose.trim()
+                ? p.purpose
+                : (p.businessDescription && p.businessDescription.trim() ? p.businessDescription : 'Accelerate Your Growth & Enterprise Excellence');
+              const description = p.businessDescription && p.businessDescription.trim()
+                ? p.businessDescription
+                : (p.purpose && p.purpose.trim() ? p.purpose : 'Discover leading services, innovative solutions, and customized business offerings designed to elevate your brand.');
+              const offer = p.offerTag && p.offerTag.trim() ? p.offerTag : '🔥 Special Offer — Connect With Us';
+              const ctaLabel = p.ctaLabel && p.ctaLabel.trim() ? p.ctaLabel : 'View Business';
+              const ctaHref = p.businessContactDetails && p.businessContactDetails.trim() ? p.businessContactDetails : '/contact?service=business-promotion';
 
               return {
-                id: p.id,
-                name: p.businessName,
-                category: p.category || 'PROMOTED BUSINESS',
-                tagline: p.purpose || p.businessDescription || 'Transform Your Business With Technology',
-                description: p.businessDescription || p.purpose || '',
-                offer: p.offerTag || '',
-                ctaLabel: p.ctaLabel || 'View Business',
-                ctaHref: p.businessContactDetails || '#',
-                heroImage: formattedUrls[0] || '/images/default_business.jpg',
+                id: p.id || index,
+                name,
+                category,
+                tagline,
+                description,
+                offer,
+                ctaLabel,
+                ctaHref,
+                heroImage: formattedUrls[0],
                 accentImages: [
-                  formattedUrls[1] || formattedUrls[0] || '',
-                  formattedUrls[2] || formattedUrls[0] || '',
+                  formattedUrls[1] || formattedUrls[0],
+                  formattedUrls[2] || formattedUrls[0],
                 ],
                 bannerUrls: formattedUrls,
                 accent: '#2454FF',
               };
             });
-            setBusinesses(mapped);
-          } else {
-            setBusinesses([]);
+            if (isMounted) setBusinesses(mapped);
+          } else if (isMounted) {
+            setBusinesses(DEFAULT_BUSINESSES);
           }
-        } else {
-          setBusinesses([]);
+        } else if (isMounted) {
+          setBusinesses(DEFAULT_BUSINESSES);
         }
-      } catch (err) {
-        console.error('Failed to fetch active promotions', err);
-        setBusinesses([]);
+      } catch (err: any) {
+        if (err.name !== 'AbortError' && isMounted) {
+          console.warn('Failed to fetch active promotions, using defaults:', err?.message || err);
+          setBusinesses(DEFAULT_BUSINESSES);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchActivePromotions();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
+
 
   const count = businesses.length;
   const showControls = count > 1;
 
-  // Reset index if businesses change
   useEffect(() => {
     setIdx(0);
     setActiveImgIdx(0);
@@ -127,6 +199,11 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
       if (timer.current) clearTimeout(timer.current);
     };
   }, [idx, paused, next, showControls]);
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, fallbackIndex = 0) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = STOCK_FALLBACK_IMAGES[fallbackIndex % STOCK_FALLBACK_IMAGES.length];
+  };
 
   /* ── 1. LOADING SKELETON STATE ── */
   if (loading) {
@@ -164,15 +241,10 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
     );
   }
 
-  /* ── 2. EMPTY STATE (NO APPROVED CAMPAIGNS) ── */
-  if (businesses.length === 0) {
-    return null;
-  }
+  const biz = businesses[idx] || DEFAULT_BUSINESSES[0];
+  const allImages = biz.bannerUrls && biz.bannerUrls.length > 0 ? biz.bannerUrls : STOCK_FALLBACK_IMAGES;
 
-  const biz = businesses[idx] || businesses[0];
-  const allImages = biz.bannerUrls && biz.bannerUrls.length > 0 ? biz.bannerUrls : [biz.heroImage];
-
-  /* ── 3. SIDEBAR VARIANT ── */
+  /* ── 2. SIDEBAR VARIANT ── */
   if (isSidebar) {
     return (
       <div
@@ -201,6 +273,7 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
             alt={biz.name}
             className="pb-sb-bg"
             loading="lazy"
+            onError={(e) => handleImageError(e, 0)}
           />
           <div className="pb-sb-overlay" />
 
@@ -243,7 +316,7 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
     );
   }
 
-  /* ── 4. HOME VARIANT (FULL split card) ── */
+  /* ── 3. HOME VARIANT (FULL split card) ── */
   return (
     <section
       className="pb-home-root"
@@ -328,7 +401,12 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
           {allImages.length >= 3 ? (
             <div className="pb-home-mosaic three-mosaic">
               <div className="pb-mosaic-main" style={{ cursor: 'pointer' }} onClick={() => setActiveImgIdx(0)}>
-                <img src={allImages[activeImgIdx % allImages.length]} alt={biz.name} loading="lazy" />
+                <img
+                  src={allImages[activeImgIdx % allImages.length]}
+                  alt={biz.name}
+                  loading="lazy"
+                  onError={(e) => handleImageError(e, activeImgIdx)}
+                />
               </div>
               <div className="pb-mosaic-stack">
                 <div
@@ -337,7 +415,13 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
                   onClick={() => setActiveImgIdx((activeImgIdx + 1) % allImages.length)}
                   title="Click to feature image"
                 >
-                  <img src={allImages[(activeImgIdx + 1) % allImages.length]} alt="" loading="lazy" aria-hidden="true" />
+                  <img
+                    src={allImages[(activeImgIdx + 1) % allImages.length]}
+                    alt=""
+                    loading="lazy"
+                    aria-hidden="true"
+                    onError={(e) => handleImageError(e, 1)}
+                  />
                 </div>
                 <div
                   className="pb-mosaic-accent"
@@ -345,23 +429,44 @@ const PromotedBusinesses: React.FC<Props> = ({ variant = "home" }) => {
                   onClick={() => setActiveImgIdx((activeImgIdx + 2) % allImages.length)}
                   title="Click to feature image"
                 >
-                  <img src={allImages[(activeImgIdx + 2) % allImages.length]} alt="" loading="lazy" aria-hidden="true" />
+                  <img
+                    src={allImages[(activeImgIdx + 2) % allImages.length]}
+                    alt=""
+                    loading="lazy"
+                    aria-hidden="true"
+                    onError={(e) => handleImageError(e, 2)}
+                  />
                 </div>
               </div>
             </div>
           ) : allImages.length === 2 ? (
             <div className="pb-home-mosaic two-mosaic">
               <div className="pb-mosaic-main" style={{ cursor: 'pointer' }} onClick={() => setActiveImgIdx(0)}>
-                <img src={allImages[0]} alt={biz.name} loading="lazy" />
+                <img
+                  src={allImages[0]}
+                  alt={biz.name}
+                  loading="lazy"
+                  onError={(e) => handleImageError(e, 0)}
+                />
               </div>
               <div className="pb-mosaic-main" style={{ cursor: 'pointer' }} onClick={() => setActiveImgIdx(1)}>
-                <img src={allImages[1]} alt={biz.name} loading="lazy" />
+                <img
+                  src={allImages[1]}
+                  alt={biz.name}
+                  loading="lazy"
+                  onError={(e) => handleImageError(e, 1)}
+                />
               </div>
             </div>
           ) : (
             <div className="pb-home-mosaic single-mosaic">
               <div className="pb-mosaic-main">
-                <img src={allImages[0] || biz.heroImage} alt={biz.name} loading="lazy" />
+                <img
+                  src={allImages[0] || biz.heroImage}
+                  alt={biz.name}
+                  loading="lazy"
+                  onError={(e) => handleImageError(e, 0)}
+                />
               </div>
             </div>
           )}
