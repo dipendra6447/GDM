@@ -254,9 +254,8 @@ const Checkout: React.FC = () => {
           ...(token ? { "Authorization": `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
-          subscriptionType: mappedRole,
-          tier: item.billing,
-          amount: subtotal,
+          planId: item.id,
+          billingCycle: item.billing,
         }),
       });
 

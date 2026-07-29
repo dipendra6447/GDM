@@ -35,6 +35,26 @@ const SubscriptionLight: React.FC = () => {
     to: "employer",
   });
 
+  const [plans, setPlans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await fetch("/api/plans");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setPlans(json.data);
+        }
+      } catch (err) {
+        console.error("Error fetching pricing plans:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPlans();
+  }, []);
+
   useEffect(() => {
     const roleParam = searchParams.get("role") || searchParams.get("tab") || searchParams.get("type");
     if (roleParam) {
@@ -60,6 +80,10 @@ const SubscriptionLight: React.FC = () => {
   const openRoleSwitch = (from: UserRole, to: UserRole) => {
     setSelectedRole(to);
   };
+
+  const seekerPlans = plans.filter((p) => p.roleTarget === "job_seeker" && p.isActive);
+  const employerPlans = plans.filter((p) => p.roleTarget === "job_poster" && p.isActive);
+  const businessPlans = plans.filter((p) => p.roleTarget === "business_promoter" && p.isActive);
 
   return (
     <div className="subscription-page subscription-light-page">
@@ -141,22 +165,28 @@ const SubscriptionLight: React.FC = () => {
         {/* Conditionally Render Selected Role Pricing Plans */}
         {selectedRole === "jobseeker" && (
           <JobSeekerPlans
-            onRoleSwitch={(to) => openRoleSwitch("jobseeker", to)}
+            onRoleSwitch={(to) => openRoleSwitch("jobseeker", to as UserRole)}
             isLight
+            dbPlans={seekerPlans}
+            loading={loading}
           />
         )}
 
         {selectedRole === "employer" && (
           <EmployerPlans
-            onRoleSwitch={(to) => openRoleSwitch("employer", to)}
+            onRoleSwitch={(to) => openRoleSwitch("employer", to as UserRole)}
             isLight
+            dbPlans={employerPlans}
+            loading={loading}
           />
         )}
 
         {selectedRole === "business" && (
           <BusinessPromotionPlans
-            onRoleSwitch={(to) => openRoleSwitch("business", to)}
+            onRoleSwitch={(to) => openRoleSwitch("business", to as UserRole)}
             isLight
+            dbPlans={businessPlans}
+            loading={loading}
           />
         )}
 

@@ -96,47 +96,32 @@ interface EmployerPlansProps {
 }
 
 const getDynamicPlans = (dbPlans: any[], billing: BillingPeriod) => {
-  const tiers = ["Silver", "Gold", "Platinum"];
-  return tiers.map(tierName => {
-    const tierPlans = dbPlans.filter(p => p.name.toLowerCase() === tierName.toLowerCase());
-    
-    // Find billing options
-    const dailyPlan = tierPlans.find(p => p.billingCycle === "/day");
-    const weeklyPlan = tierPlans.find(p => p.billingCycle === "/week");
-    const monthlyPlan = tierPlans.find(p => p.billingCycle === "/month");
-    
-    // Default fallback features
-    const samplePlan = monthlyPlan || weeklyPlan || dailyPlan || tierPlans[0];
-    
-    // Determine target ID for checkout based on current billing cycle
-    let selectedId = "";
-    if (billing === "daily") selectedId = dailyPlan?.id || samplePlan?.id;
-    else if (billing === "weekly") selectedId = weeklyPlan?.id || samplePlan?.id;
-    else selectedId = monthlyPlan?.id || samplePlan?.id;
-
-    // Badging
-    let badge = null;
-    if (samplePlan?.isPopular) badge = "🏆 Recommended";
-    else if (samplePlan?.isBestValue) badge = "👑 Enterprise";
-
+  // Sort by monthlyPrice to ensure correct order
+  const sortedPlans = [...dbPlans].sort((a, b) => a.monthlyPrice - b.monthlyPrice);
+  
+  return sortedPlans.map(plan => {
     // Transform DB features list to the UI format (assumed all in list are included)
-    const featuresList = samplePlan?.features ? samplePlan.features.map((f: string) => ({
+    const featuresList = plan.features ? plan.features.map((f: string) => ({
       text: f,
       included: true
     })) : [];
 
+    let badge = null;
+    if (plan.isPopular) badge = "⭐ Most Popular";
+    else if (plan.isBestValue) badge = "👑 Best Value";
+
     return {
-      id: selectedId,
-      tier: tierName,
+      id: plan.id,
+      tier: plan.name,
       badge,
-      tierClass: `tier-${tierName.toLowerCase()}`,
-      priceDaily: dailyPlan ? `₹${dailyPlan.price}` : "N/A",
-      priceWeekly: weeklyPlan ? `₹${weeklyPlan.price}` : "N/A",
-      priceMonthly: monthlyPlan ? `₹${monthlyPlan.price}` : "N/A",
-      desc: tierName === "Silver" ? "For growing startups" : tierName === "Gold" ? "For scaling teams" : "For enterprise hiring",
+      tierClass: `tier-${plan.tier.toLowerCase()}`,
+      priceDaily: `₹${plan.dailyPrice}`,
+      priceWeekly: `₹${plan.weeklyPrice}`,
+      priceMonthly: `₹${plan.monthlyPrice}`,
+      desc: plan.tier === "free" ? "For growing startups" : plan.tier === "plus" ? "For scaling teams" : "For enterprise hiring",
       features: featuresList,
-      cta: `Get ${tierName}`,
-      featured: tierName === "Gold"
+      cta: plan.tier === "free" ? "Current Plan" : `Get ${plan.name}`,
+      featured: plan.isPopular
     };
   });
 };
