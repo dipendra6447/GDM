@@ -5,8 +5,11 @@ import serviceBuildWebsite from '../../assets/images/service_build_website.png';
 import serviceBuildMobileApp from '../../assets/images/service_build_mobile_app.png';
 import serviceSeoOptimization from '../../assets/images/service_seo_optimization.png';
 
+import Link from 'next/link';
+
 interface ServiceItem {
   id: number;
+  slug: string;
   image: any;
   imageAlt: string;
   category: string;
@@ -24,6 +27,7 @@ interface ServiceItem {
 const services: ServiceItem[] = [
   {
     id: 1,
+    slug: 'web-development',
     image: serviceBuildWebsite,
     imageAlt: 'High-tech coding monitor concept',
     category: 'Web Development',
@@ -40,6 +44,7 @@ const services: ServiceItem[] = [
   },
   {
     id: 2,
+    slug: 'app-development',
     image: serviceBuildMobileApp,
     imageAlt: 'Premium smartphone mockup showing interactive UI dashboard',
     category: 'App Development',
@@ -56,6 +61,7 @@ const services: ServiceItem[] = [
   },
   {
     id: 3,
+    slug: 'seo-marketing',
     image: serviceSeoOptimization,
     imageAlt: 'SEO search analytics dashboard on a laptop',
     category: 'SEO & Marketing',
@@ -90,9 +96,9 @@ const BlogSection: React.FC = () => {
               Accelerate your digital presence with our customized design, app development, and search marketing
             </p>
           </div>
-          <a href="/#contact" className="btn-outline-custom" id="view-all-blog-btn" aria-label="Get custom quotation">
+          <Link href="/contact" className="btn-outline-custom" id="view-all-blog-btn" aria-label="Get custom quotation">
             Contact Us <i className="bi bi-arrow-right ms-2"></i>
-          </a>
+          </Link>
         </div>
 
         {/* ── Services Cards Grid ── */}
@@ -164,14 +170,14 @@ const BlogSection: React.FC = () => {
                     <i className="bi bi-currency-dollar me-1"></i>
                     {service.readTime}
                   </span>
-                  <a
-                    href="/#contact"
+                  <Link
+                    href={`/contact?service=${service.slug}`}
                     className="blog-read-link"
                     id={`blog-read-${service.id}`}
                     aria-label={`Get quote for: ${service.title}`}
                   >
                     Get Quote <i className="bi bi-arrow-right ms-1"></i>
-                  </a>
+                  </Link>
                 </div>
 
               </div>
@@ -183,5 +189,6 @@ const BlogSection: React.FC = () => {
     </section>
   );
 };
+
 
 export default BlogSection;

@@ -1,28 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq, and, gt, desc, sql } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import slugify from 'slugify';
 import { db } from '@/db';
-import { jobs, subscriptions, users, globalConfigs, employerProfiles } from '@/db/schema';
+import { jobs, users, employerProfiles } from '@/db/schema';
 import { requireAuth } from '@/lib/auth';
-
-// ─── Free Limit Cache ─────────────────────────────────────────────────────────
-const configCache = new Map<string, { value: number; expires: number }>();
-const CACHE_TTL = 1000 * 60 * 60; // 1 hour
-
-async function getFreeLimit(key: string): Promise<number> {
-  const now = Date.now();
-  if (configCache.has(key) && configCache.get(key)!.expires > now) {
-    return configCache.get(key)!.value;
-  }
-  const [config] = await db
-    .select()
-    .from(globalConfigs)
-    .where(eq(globalConfigs.key, key))
-    .limit(1);
-  const value = config ? parseInt(config.value, 10) : 3;
-  configCache.set(key, { value, expires: now + CACHE_TTL });
-  return value;
-}
+import { canPostJob } from '@/lib/entitlements';
 
 // GET /api/jobs — List all active jobs (public)
 export async function GET(req: NextRequest) {
@@ -122,36 +104,24 @@ export async function POST(req: NextRequest) {
     } = await req.json();
     const userId = authPayload.userId;
 
-    // Check for active job_poster subscription
-    const activeSub = await db
-      .select()
-      .from(subscriptions)
-      .where(
-        and(
-          eq(subscriptions.userId, userId),
-          eq(subscriptions.subscriptionType, 'job_poster'),
-          eq(subscriptions.status, 'active'),
-          gt(subscriptions.expiresAt, new Date())
-        )
-      )
-      .limit(1);
-
-    if (activeSub.length === 0) {
-      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-      const freeLimit = await getFreeLimit('FREE_JOB_POST_LIMIT');
-
-      if (user.jobPostCount >= freeLimit) {
-        return NextResponse.json({
-          success: false,
-          message: `Free job post limit (${freeLimit}) reached. Subscribe to post more jobs.`,
-        }, { status: 403 });
-      }
-
-      await db
-        .update(users)
-        .set({ jobPostCount: user.jobPostCount + 1 })
-        .where(eq(users.id, userId));
+    // Check entitlements — uses subscription plan limits
+    const check = await canPostJob(userId);
+    if (!check.allowed) {
+      return NextResponse.json({
+        success: false,
+        message: check.reason,
+        upgradeRequired: check.upgradeRequired,
+        currentUsage: check.currentUsage,
+        limit: check.limit,
+      }, { status: 403 });
     }
+
+    // Increment usage counter if on free tier (not unlimited)
+    if (check.limit !== 'unlimited') {
+      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      await db.update(users).set({ jobPostCount: (user?.jobPostCount || 0) + 1 }).where(eq(users.id, userId));
+    }
+
 
     // Fetch companyName if not provided
     let finalCompanyName = companyName;

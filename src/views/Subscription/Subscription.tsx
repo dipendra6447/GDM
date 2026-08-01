@@ -39,7 +39,7 @@ const Subscription: React.FC = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await fetch("/api/admin/subscription-plans");
+        const res = await fetch("/api/plans");
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           setPlans(json.data);

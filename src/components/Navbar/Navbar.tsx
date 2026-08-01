@@ -43,25 +43,26 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
       { label: "Manage Jobs", href: "/employer/post-job?tab=jobs" },
       { label: "Find Candidates", href: "/employer#candidates" },
       { label: "Pricing", href: "/subscription-light" },
-      { label: "Contact", href: "/#contact" },
+      { label: "Contact", href: "/contact" },
     ] : activeRole === 3 && !user?.roles?.includes(1) && !user?.roles?.includes(2) ? [
       { label: "Dashboard", href: "/dashboard" },
       { label: "Pricing", href: "/subscription-light" },
-      { label: "Contact", href: "/#contact" },
+      { label: "Contact", href: "/contact" },
     ] : [
       { label: "Home", href: "/seeker" },
       { label: "About Us", href: "/#about" },
       { label: "Find Job", href: "/jobs" },
       { label: "Save jobs", href: "/dashboard/saved" },
       { label: "Pricing", href: "/subscription-light" },
-      { label: "Contact", href: "/#contact" },
+      { label: "Contact", href: "/contact" },
     ]
   ) : [
     { label: "Home", href: "/" },
     { label: "Pricing", href: "/subscription-light" },
     { label: "About Us", href: "/#about" },
-    { label: "Contact", href: "/#contact" },
+    { label: "Contact", href: "/contact" },
   ];
+
 
   const handleActionClick = (role: 1 | 2 | 3) => {
     if (!isLoggedIn) {

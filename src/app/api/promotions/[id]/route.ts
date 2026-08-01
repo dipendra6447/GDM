@@ -90,6 +90,7 @@ export async function PUT(
     if (bannerUrl !== undefined) updatePayload.bannerUrl = bannerUrl;
     if (offerTag !== undefined) updatePayload.offerTag = offerTag;
     if (ctaLabel !== undefined) updatePayload.ctaLabel = ctaLabel;
+    if (fields.status !== undefined && isAdmin) updatePayload.status = fields.status;
 
     const [updatedPromo] = await db
       .update(businessPromotions)
