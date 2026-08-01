@@ -34,6 +34,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
     const userId = authPayload.userId;
 
+    let body: any = {};
+    try {
+      body = await req.json();
+    } catch {}
+
+    const resumeUrl = body.resumeUrl || null;
+    const resumeTitle = body.resumeTitle || null;
+
     // Check entitlements — uses subscription plan limits
     const check = await canApplyToJob(userId);
     if (!check.allowed) {
@@ -52,7 +60,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       await db.update(users).set({ jobApplyCount: (user?.jobApplyCount || 0) + 1 }).where(eq(users.id, userId));
     }
 
-    await db.insert(jobApplications).values({ jobId, applicantId: userId, status: 'pending' });
+    await db.insert(jobApplications).values({
+      jobId,
+      applicantId: userId,
+      status: 'pending',
+      resumeUrl,
+      resumeTitle,
+    });
 
     return NextResponse.json({ success: true, message: 'Application submitted successfully' });
   } catch (error: any) {

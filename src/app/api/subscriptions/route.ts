@@ -4,6 +4,7 @@ import { db } from '@/db';
 import { subscriptions, subscriptionPlans, users, invoices, jobSeekerProfiles, employerProfiles, businessPromoterProfiles } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
 import { ROLES } from '@/lib/constants';
+import { sendSubscriptionReceiptEmail } from '@/lib/resend';
 
 // GET /api/subscriptions (admin — all subscriptions)
 export async function GET(req: NextRequest) {
@@ -200,6 +201,19 @@ export async function POST(req: NextRequest) {
       paymentMethod: 'card',
       paymentStatus: 'paid'
     }).returning();
+
+    // Trigger subscription receipt email asynchronously (non-blocking)
+    const planTitle = resolvedPlan?.name || `${subscriptionType.replace('_', ' ')} Plan`;
+    sendSubscriptionReceiptEmail({
+      toEmail: userEmail,
+      billingName,
+      planName: planTitle,
+      tier,
+      amount: totalAmount,
+      billingCycle: billingCycle || 'monthly',
+      invoiceNumber,
+      expiresAt: sub.expiresAt,
+    }).catch(err => console.error('Background subscription receipt email error:', err));
 
     return NextResponse.json({
       success: true,

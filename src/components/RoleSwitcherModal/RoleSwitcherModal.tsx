@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import RoleUpgradeModal from "../RoleUpgradeModal/RoleUpgradeModal";
 
 export type UserRole = "jobseeker" | "employer" | "business";
 
@@ -12,7 +13,7 @@ interface RoleSwitcherModalProps {
   isLight?: boolean;
 }
 
-const roleDetails: Record<UserRole, { icon: string; label: string; color: string; roleNum: number }> = {
+const roleDetails: Record<UserRole, { icon: string; label: string; color: string; roleNum: 1 | 2 | 3 }> = {
   jobseeker: {
     icon: "👤",
     label: "Job Seeker",
@@ -40,9 +41,13 @@ const RoleSwitcherModal: React.FC<RoleSwitcherModalProps> = ({
   onCancel,
   isLight = false,
 }) => {
-  const { switchRole } = useAuth();
+  const { user, switchRole } = useAuth();
   const from = roleDetails[currentRole] || roleDetails.jobseeker;
   const to = roleDetails[targetRole] || roleDetails.employer;
+
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const hasTargetRole = user?.roles?.includes(to.roleNum) ?? false;
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -57,9 +62,26 @@ const RoleSwitcherModal: React.FC<RoleSwitcherModalProps> = ({
   }, [onCancel]);
 
   const handleConfirm = () => {
-    onConfirm();
-    switchRole(to.roleNum);
+    if (hasTargetRole) {
+      onConfirm();
+      switchRole(to.roleNum);
+    } else {
+      setShowUpgradeModal(true);
+    }
   };
+
+  if (showUpgradeModal) {
+    return (
+      <RoleUpgradeModal
+        isOpen={true}
+        onClose={() => {
+          setShowUpgradeModal(false);
+          onCancel();
+        }}
+        targetRole={to.roleNum}
+      />
+    );
+  }
 
   return (
     <div
@@ -85,22 +107,36 @@ const RoleSwitcherModal: React.FC<RoleSwitcherModalProps> = ({
 
         <div className="role-restricted-icon-wrap">
           <div className="role-restricted-icon-circle">
-            <span className="role-restricted-icon">⚠️</span>
+            <span className="role-restricted-icon">{hasTargetRole ? "🔄" : "✨"}</span>
           </div>
         </div>
 
         <h3 className="role-restricted-title" id="role-modal-title">
-          Role Switch Required
+          {hasTargetRole ? "Switch Active Role" : `Register as ${to.label}`}
         </h3>
 
         <div className="role-restricted-notice">
           <p className="role-restricted-main-text">
-            You are not allowed to buy this subscription because you are currently in the{" "}
-            <span className="role-highlight current">{from.label}</span> role.
+            {hasTargetRole ? (
+              <>
+                You are currently in the <span className="role-highlight current">{from.label}</span> mode.
+              </>
+            ) : (
+              <>
+                You are currently registered as a <span className="role-highlight current">{from.label}</span>.
+              </>
+            )}
           </p>
           <p className="role-restricted-sub-text">
-            To buy this subscription, you have to switch your role to{" "}
-            <span className="role-highlight target">{to.label}</span>.
+            {hasTargetRole ? (
+              <>
+                Click below to switch your active role to <span className="role-highlight target">{to.label}</span> and view your dashboard/subscriptions for this role.
+              </>
+            ) : (
+              <>
+                To post jobs, access employer tools, or manage subscriptions for <span className="role-highlight target">{to.label}</span>, register yourself as a <span className="role-highlight target">{to.label}</span>.
+              </>
+            )}
           </p>
         </div>
 
@@ -117,7 +153,7 @@ const RoleSwitcherModal: React.FC<RoleSwitcherModalProps> = ({
           </div>
 
           <div className="role-comp-card to">
-            <span className="role-comp-badge">Required Role</span>
+            <span className="role-comp-badge">{hasTargetRole ? "Target Role" : "New Role"}</span>
             <span className="role-comp-name">
               {to.icon} {to.label}
             </span>
@@ -137,7 +173,7 @@ const RoleSwitcherModal: React.FC<RoleSwitcherModalProps> = ({
             onClick={handleConfirm}
             id="role-modal-confirm"
           >
-            Switch to {to.label}
+            {hasTargetRole ? `Switch to ${to.label}` : `Register as ${to.label}`}
           </button>
         </div>
       </div>

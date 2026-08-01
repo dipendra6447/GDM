@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { eq, and, gt } from 'drizzle-orm';
 import { db } from '@/db';
@@ -17,11 +18,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Password must be at least 8 characters long' }, { status: 400 });
     }
 
-    // Look up active token
+    // Hash the incoming raw token with SHA-256 to compare with DB
+    const hashedToken = crypto.createHash('sha256').update(token.trim()).digest('hex');
+
+    // Look up active token by hashedToken
     const [tokenRecord] = await db
       .select()
       .from(passwordResetTokens)
-      .where(and(eq(passwordResetTokens.token, token.trim()), gt(passwordResetTokens.expiresAt, new Date())))
+      .where(and(eq(passwordResetTokens.token, hashedToken), gt(passwordResetTokens.expiresAt, new Date())))
       .limit(1);
 
     if (!tokenRecord) {

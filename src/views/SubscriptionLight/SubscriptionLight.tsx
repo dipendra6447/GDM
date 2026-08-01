@@ -25,7 +25,7 @@ interface RoleSwitchState {
 }
 
 const SubscriptionLight: React.FC = () => {
-  const { user, activeRole } = useAuth();
+  const { user, isLoggedIn, activeRole } = useAuth();
   const searchParams = useSearchParams();
 
   const [selectedRole, setSelectedRole] = useState<UserRole>("jobseeker");
@@ -37,6 +37,13 @@ const SubscriptionLight: React.FC = () => {
 
   const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Compute available role access for current user (or guest)
+  const hasJobSeekerRole = !isLoggedIn || (user?.roles?.includes(1) ?? true);
+  const hasEmployerRole = !isLoggedIn || (user?.roles?.includes(2) ?? false);
+  const hasBusinessRole = !isLoggedIn || (user?.roles?.includes(3) ?? false);
+
+  const availableRoleCount = [hasJobSeekerRole, hasEmployerRole, hasBusinessRole].filter(Boolean).length;
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -55,30 +62,48 @@ const SubscriptionLight: React.FC = () => {
     fetchPlans();
   }, []);
 
+  const userRolesKey = user?.roles?.join(",") || "";
+
   useEffect(() => {
-    const roleParam = searchParams.get("role") || searchParams.get("tab") || searchParams.get("type");
-    if (roleParam) {
-      const lower = roleParam.toLowerCase();
-      if (lower === "2" || lower === "employer") {
-        setSelectedRole("employer");
-      } else if (lower === "3" || lower === "business" || lower === "promoter") {
-        setSelectedRole("business");
-      } else if (lower === "1" || lower === "seeker" || lower === "jobseeker") {
-        setSelectedRole("jobseeker");
+    if (isLoggedIn && user?.roles?.length) {
+      if (activeRole && user.roles.includes(activeRole)) {
+        if (activeRole === 2) setSelectedRole("employer");
+        else if (activeRole === 3) setSelectedRole("business");
+        else setSelectedRole("jobseeker");
+      } else {
+        const firstRole = user.roles[0];
+        if (firstRole === 2) setSelectedRole("employer");
+        else if (firstRole === 3) setSelectedRole("business");
+        else setSelectedRole("jobseeker");
       }
-    } else if (activeRole) {
-      if (activeRole === 2) setSelectedRole("employer");
-      else if (activeRole === 3) setSelectedRole("business");
-      else setSelectedRole("jobseeker");
+    } else {
+      const roleParam = searchParams.get("role") || searchParams.get("tab") || searchParams.get("type");
+      if (roleParam) {
+        const lower = roleParam.toLowerCase();
+        if (lower === "2" || lower === "employer") {
+          setSelectedRole("employer");
+        } else if (lower === "3" || lower === "business" || lower === "promoter") {
+          setSelectedRole("business");
+        } else if (lower === "1" || lower === "seeker" || lower === "jobseeker") {
+          setSelectedRole("jobseeker");
+        }
+      }
     }
-  }, [searchParams, activeRole]);
+  }, [searchParams, activeRole, isLoggedIn, userRolesKey]);
 
   const handleRoleTabChange = (role: UserRole) => {
-    setSelectedRole(role);
+    if (!isLoggedIn) {
+      setSelectedRole(role);
+      return;
+    }
+
+    if (role === "jobseeker" && hasJobSeekerRole) setSelectedRole("jobseeker");
+    if (role === "employer" && hasEmployerRole) setSelectedRole("employer");
+    if (role === "business" && hasBusinessRole) setSelectedRole("business");
   };
 
   const openRoleSwitch = (from: UserRole, to: UserRole) => {
-    setSelectedRole(to);
+    setRoleSwitch({ open: true, from, to });
   };
 
   const seekerPlans = plans.filter((p) => p.roleTarget === "job_seeker" && p.isActive);
@@ -98,74 +123,94 @@ const SubscriptionLight: React.FC = () => {
         {/* Section Divider */}
         <div className="sub-section-divider" />
 
-        {/* Role Selector Tabs — Light Theme */}
+        {/* Role Selector Tabs — Dynamically rendered based on assigned user roles */}
         <div className="container mt-4 mb-4 text-center" id="plans">
           <div className="sub-badge mb-3">
-            ✨ Select Pricing Category
+            {isLoggedIn
+              ? `✨ Plans for Your Account (${user?.roles?.length || 1} Role${(user?.roles?.length || 1) > 1 ? 's' : ''})`
+              : '✨ Select Pricing Category'}
           </div>
-          <div
-            className="d-inline-flex p-1.5 rounded-4 shadow-sm"
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid rgba(36, 84, 255, 0.15)",
-              boxShadow: "0 10px 30px rgba(36, 84, 255, 0.08)"
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => handleRoleTabChange("jobseeker")}
-              className="btn px-4 py-2.5 fw-bold transition-all"
+
+          {availableRoleCount > 1 ? (
+            <div
+              className="d-inline-flex p-1.5 rounded-4 shadow-sm"
               style={{
-                borderRadius: "12px",
-                fontSize: "0.95rem",
-                background: selectedRole === "jobseeker" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
-                color: selectedRole === "jobseeker" ? "#FFFFFF" : "#4B5680",
-                border: "none",
-                boxShadow: selectedRole === "jobseeker" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
-                fontWeight: 700
+                background: "#FFFFFF",
+                border: "1px solid rgba(36, 84, 255, 0.15)",
+                boxShadow: "0 10px 30px rgba(36, 84, 255, 0.08)"
               }}
             >
-              👨‍💻 Job Seekers
-            </button>
-            <button
-              type="button"
-              onClick={() => handleRoleTabChange("employer")}
-              className="btn px-4 py-2.5 fw-bold transition-all"
-              style={{
-                borderRadius: "12px",
-                fontSize: "0.95rem",
-                background: selectedRole === "employer" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
-                color: selectedRole === "employer" ? "#FFFFFF" : "#4B5680",
-                border: "none",
-                boxShadow: selectedRole === "employer" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
-                fontWeight: 700
-              }}
-            >
-              🏢 Employers
-            </button>
-            <button
-              type="button"
-              onClick={() => handleRoleTabChange("business")}
-              className="btn px-4 py-2.5 fw-bold transition-all"
-              style={{
-                borderRadius: "12px",
-                fontSize: "0.95rem",
-                background: selectedRole === "business" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
-                color: selectedRole === "business" ? "#FFFFFF" : "#4B5680",
-                border: "none",
-                boxShadow: selectedRole === "business" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
-                fontWeight: 700
-              }}
-            >
-              🚀 Business Promoters
-            </button>
-          </div>
+              {hasJobSeekerRole && (
+                <button
+                  type="button"
+                  onClick={() => handleRoleTabChange("jobseeker")}
+                  className="btn px-4 py-2.5 fw-bold transition-all"
+                  style={{
+                    borderRadius: "12px",
+                    fontSize: "0.95rem",
+                    background: selectedRole === "jobseeker" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
+                    color: selectedRole === "jobseeker" ? "#FFFFFF" : "#4B5680",
+                    border: "none",
+                    boxShadow: selectedRole === "jobseeker" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
+                    fontWeight: 700
+                  }}
+                >
+                  👨‍💻 Job Seekers
+                </button>
+              )}
+
+              {hasEmployerRole && (
+                <button
+                  type="button"
+                  onClick={() => handleRoleTabChange("employer")}
+                  className="btn px-4 py-2.5 fw-bold transition-all"
+                  style={{
+                    borderRadius: "12px",
+                    fontSize: "0.95rem",
+                    background: selectedRole === "employer" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
+                    color: selectedRole === "employer" ? "#FFFFFF" : "#4B5680",
+                    border: "none",
+                    boxShadow: selectedRole === "employer" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
+                    fontWeight: 700
+                  }}
+                >
+                  🏢 Employers
+                </button>
+              )}
+
+              {hasBusinessRole && (
+                <button
+                  type="button"
+                  onClick={() => handleRoleTabChange("business")}
+                  className="btn px-4 py-2.5 fw-bold transition-all"
+                  style={{
+                    borderRadius: "12px",
+                    fontSize: "0.95rem",
+                    background: selectedRole === "business" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
+                    color: selectedRole === "business" ? "#FFFFFF" : "#4B5680",
+                    border: "none",
+                    boxShadow: selectedRole === "business" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
+                    fontWeight: 700
+                  }}
+                >
+                  🚀 Business Promoters
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="sub-badge" style={{ fontSize: '1.05rem', padding: '10px 24px', borderRadius: '30px' }}>
+              {selectedRole === "employer"
+                ? '🏢 Membership Plans for Employers'
+                : selectedRole === "business"
+                ? '🚀 Membership Plans for Business Promoters'
+                : '👨‍💻 Membership Plans for Job Seekers'}
+            </div>
+          )}
         </div>
 
-        {/* Conditionally Render Selected Role Pricing Plans */}
         {selectedRole === "jobseeker" && (
           <JobSeekerPlans
-            onRoleSwitch={(to) => openRoleSwitch("jobseeker", to as UserRole)}
+            onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
             isLight
             dbPlans={seekerPlans}
             loading={loading}
@@ -174,7 +219,7 @@ const SubscriptionLight: React.FC = () => {
 
         {selectedRole === "employer" && (
           <EmployerPlans
-            onRoleSwitch={(to) => openRoleSwitch("employer", to as UserRole)}
+            onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
             isLight
             dbPlans={employerPlans}
             loading={loading}
@@ -183,7 +228,7 @@ const SubscriptionLight: React.FC = () => {
 
         {selectedRole === "business" && (
           <BusinessPromotionPlans
-            onRoleSwitch={(to) => openRoleSwitch("business", to as UserRole)}
+            onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
             isLight
             dbPlans={businessPlans}
             loading={loading}
@@ -204,6 +249,20 @@ const SubscriptionLight: React.FC = () => {
         <FAQ />
         <div className="sub-section-divider" />
         <SubscriptionCTA />
+
+        {/* Role Switcher Modal Popup */}
+        {roleSwitch.open && (
+          <RoleSwitcherModal
+            currentRole={roleSwitch.from}
+            targetRole={roleSwitch.to}
+            onConfirm={() => {
+              setSelectedRole(roleSwitch.to);
+              setRoleSwitch((prev) => ({ ...prev, open: false }));
+            }}
+            onCancel={() => setRoleSwitch((prev) => ({ ...prev, open: false }))}
+            isLight
+          />
+        )}
       </main>
     </div>
   );

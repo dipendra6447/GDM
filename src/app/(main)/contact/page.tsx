@@ -147,7 +147,7 @@ function ContactContent() {
     const ctx = gsap.context(() => {
       gsap.from('.contact-animate-hero', {
         opacity: 0,
-        y: 40,
+        y: 30,
         duration: 0.8,
         stagger: 0.15,
         ease: 'power3.out',
@@ -155,7 +155,7 @@ function ContactContent() {
 
       gsap.from('.contact-info-card', {
         opacity: 0,
-        y: 30,
+        y: 25,
         duration: 0.6,
         stagger: 0.1,
         ease: 'power2.out',
@@ -164,8 +164,8 @@ function ContactContent() {
 
       gsap.from(formRef.current, {
         opacity: 0,
-        y: 40,
-        duration: 0.9,
+        y: 30,
+        duration: 0.8,
         ease: 'power3.out',
         delay: 0.4,
       });
@@ -235,7 +235,7 @@ function ContactContent() {
 
   return (
     <div className="contact-page" ref={heroRef}>
-      {/* Glow Effects */}
+      {/* Background Glows */}
       <div className="contact-glow-top-left" aria-hidden="true" />
       <div className="contact-glow-bottom-right" aria-hidden="true" />
 
@@ -243,20 +243,11 @@ function ContactContent() {
         {/* ── Hero Section ── */}
         <section className="contact-hero">
           <div className="contact-badge contact-animate-hero">
-            <i className="bi bi-stars"></i> Request a Custom Quote & Inquiries
+            <i className="bi bi-stars me-1.5"></i> Request a Custom Quote & Inquiries
           </div>
           <h1 className="contact-title contact-animate-hero">
             Let's Build Something <br />
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E27C 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Extraordinary Together
-            </span>
+            <span className="blue-gradient-text">Extraordinary Together</span>
           </h1>
           <p className="contact-subtitle contact-animate-hero">
             Have a custom digital project, mobile app, SEO requirement, or enterprise hiring inquiry? Reach out directly to our expert team for a tailored solution and fast turnaround.
@@ -318,16 +309,16 @@ function ContactContent() {
                 <div className="success-icon-badge">
                   <i className="bi bi-check-lg"></i>
                 </div>
-                <h3 className="h2 mb-3" style={{ color: '#ffffff', fontWeight: 800 }}>
+                <h3 className="h2 mb-3" style={{ color: '#0F172A', fontWeight: 800 }}>
                   Quote Request Received!
                 </h3>
-                <p style={{ color: '#B0B0B0', maxWidth: 600, margin: '0 auto 1.5rem', fontSize: '1.05rem' }}>
-                  Thank you, <strong style={{ color: '#D4AF37' }}>{submittedData.fullName}</strong>. Our senior solution architect will review your project details for <strong style={{ color: '#ffffff' }}>{currentServiceObj.title}</strong> and send a comprehensive proposal to <strong style={{ color: '#D4AF37' }}>{submittedData.email}</strong> within 2 hours.
+                <p style={{ color: '#475569', maxWidth: 600, margin: '0 auto 1.5rem', fontSize: '1.05rem' }}>
+                  Thank you, <strong style={{ color: '#2454FF' }}>{submittedData.fullName}</strong>. Our senior solution architect will review your project details for <strong style={{ color: '#0F172A' }}>{currentServiceObj.title}</strong> and send a comprehensive proposal to <strong style={{ color: '#2454FF' }}>{submittedData.email}</strong> within 2 hours.
                 </p>
 
-                <div className="p-3 mb-4 rounded-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.2)', display: 'inline-block', textAlign: 'left', minWidth: 300 }}>
-                  <div style={{ fontSize: '0.85rem', color: '#888888', marginBottom: '0.25rem' }}>Reference Ticket ID</div>
-                  <div style={{ fontSize: '1rem', fontWeight: 700, color: '#D4AF37', fontFamily: 'monospace' }}>
+                <div className="p-3 mb-4 rounded-3" style={{ background: '#F8FAFC', border: '1px solid rgba(36, 84, 255, 0.2)', display: 'inline-block', textAlign: 'left', minWidth: 300 }}>
+                  <div style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '0.25rem' }}>Reference Ticket ID</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 700, color: '#2454FF', fontFamily: 'monospace' }}>
                     {submittedData.id || `JN-QUOTE-${Math.floor(100000 + Math.random() * 900000)}`}
                   </div>
                 </div>
@@ -335,7 +326,7 @@ function ContactContent() {
                 <div>
                   <button
                     onClick={() => setSubmittedData(null)}
-                    className="btn-gold-submit"
+                    className="btn-blue-submit"
                     style={{ width: 'auto', display: 'inline-flex' }}
                   >
                     Submit Another Quote Request <i className="bi bi-arrow-clockwise ms-2"></i>
@@ -363,16 +354,16 @@ function ContactContent() {
                         >
                           <div className="service-pill-title">
                             <span>
-                              <i className={`bi ${serv.icon} me-2`} style={{ color: isSelected ? '#D4AF37' : '#888' }}></i>
+                              <i className={`bi ${serv.icon} me-2`} style={{ color: isSelected ? '#2454FF' : '#64748B' }}></i>
                               {serv.title}
                             </span>
                           </div>
                           <div className="service-pill-desc">{serv.description}</div>
                           <div className="mt-2 d-flex align-items-center justify-content-between" style={{ fontSize: '0.75rem' }}>
-                            <span className="badge" style={{ background: isSelected ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.08)', color: isSelected ? '#fff' : '#aaa' }}>
+                            <span className="badge" style={{ background: isSelected ? 'rgba(36, 84, 255, 0.15)' : 'rgba(15, 23, 42, 0.05)', color: isSelected ? '#2454FF' : '#64748B' }}>
                               {serv.categoryBadge}
                             </span>
-                            <span style={{ color: '#D4AF37', fontWeight: 600 }}>{serv.estDuration}</span>
+                            <span style={{ color: '#2454FF', fontWeight: 600 }}>{serv.estDuration}</span>
                           </div>
                         </div>
                       );
@@ -487,7 +478,7 @@ function ContactContent() {
                 </div>
 
                 {errorMsg && (
-                  <div className="alert alert-danger d-flex align-items-center gap-2 mb-4" style={{ background: 'rgba(220,53,69,0.15)', borderColor: '#dc3545', color: '#ff808d', borderRadius: 12 }}>
+                  <div className="alert alert-danger d-flex align-items-center gap-2 mb-4" style={{ background: 'rgba(220,53,69,0.1)', borderColor: '#dc3545', color: '#dc3545', borderRadius: 12 }}>
                     <i className="bi bi-exclamation-triangle-fill fs-5"></i>
                     <div>{errorMsg}</div>
                   </div>
@@ -495,7 +486,7 @@ function ContactContent() {
 
                 {/* Submit CTA */}
                 <div>
-                  <button type="submit" className="btn-gold-submit" disabled={submitting}>
+                  <button type="submit" className="btn-blue-submit" disabled={submitting}>
                     {submitting ? (
                       <>
                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
@@ -507,8 +498,8 @@ function ContactContent() {
                       </>
                     )}
                   </button>
-                  <p className="text-center mt-3 mb-0" style={{ fontSize: '0.8rem', color: '#777777' }}>
-                    <i className="bi bi-shield-lock me-1" style={{ color: '#D4AF37' }}></i>
+                  <p className="text-center mt-3 mb-0" style={{ fontSize: '0.82rem', color: '#64748B' }}>
+                    <i className="bi bi-shield-lock me-1" style={{ color: '#2454FF' }}></i>
                     Your information is protected under JobNest strict Non-Disclosure Agreement & Privacy Policy.
                   </p>
                 </div>
@@ -519,9 +510,9 @@ function ContactContent() {
 
         {/* ── Agency Capabilities ── */}
         <section className="capabilities-section">
-          <div className="text-center mb-5">
+          <div className="text-center mb-4">
             <span className="contact-badge">Why Partner With Us</span>
-            <h2 className="h1 font-weight-bold mt-2" style={{ color: '#ffffff' }}>
+            <h2 className="h2 font-weight-bold mt-2" style={{ color: '#0F172A', fontWeight: 800 }}>
               Enterprise Digital Engineering Standards
             </h2>
           </div>
@@ -571,9 +562,9 @@ function ContactContent() {
 
         {/* ── FAQ Section ── */}
         <section className="contact-faq-section">
-          <div className="text-center mb-5">
+          <div className="text-center mb-4">
             <span className="contact-badge">Got Questions?</span>
-            <h2 className="h1 font-weight-bold mt-2" style={{ color: '#ffffff' }}>
+            <h2 className="h2 font-weight-bold mt-2" style={{ color: '#0F172A', fontWeight: 800 }}>
               Frequently Asked Questions
             </h2>
           </div>
@@ -589,7 +580,7 @@ function ContactContent() {
                       onClick={() => setActiveFaq(isOpen ? null : index)}
                     >
                       <span>{faq.q}</span>
-                      <i className={`bi ${isOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`} style={{ color: '#D4AF37' }}></i>
+                      <i className={`bi ${isOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`} style={{ color: '#2454FF' }}></i>
                     </button>
                     {isOpen && <div className="faq-answer-body">{faq.a}</div>}
                   </div>
@@ -608,7 +599,7 @@ export default function ContactPage() {
     <Suspense
       fallback={
         <div className="contact-page d-flex align-items-center justify-content-center min-vh-100">
-          <div className="text-center" style={{ color: '#D4AF37' }}>
+          <div className="text-center" style={{ color: '#2454FF' }}>
             <div className="spinner-border mb-3" role="status" style={{ width: '3rem', height: '3rem' }} />
             <div>Loading Quote & Contact System...</div>
           </div>

@@ -5,6 +5,7 @@ import { db } from '@/db';
 import { users, userRoles, jobSeekerProfiles, employerProfiles, businessPromoterProfiles } from '@/db/schema';
 import { signToken, JwtPayload } from '@/lib/auth';
 import { COOKIE_OPTIONS } from '@/lib/constants';
+import { sendWelcomeEmail } from '@/lib/resend';
 
 // POST /api/auth/register
 export async function POST(req: NextRequest) {
@@ -85,6 +86,14 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await signToken({ userId: user.id, email: user.email, roles: [roleId] });
+
+    // Trigger welcome email asynchronously (non-blocking)
+    const displayName = (profileData as any)?.firstName || (profileData as any)?.companyName || (profileData as any)?.businessName || user.email.split('@')[0];
+    sendWelcomeEmail({
+      toEmail: user.email,
+      name: displayName,
+      role: selectedRole,
+    }).catch(err => console.error('Background welcome email error:', err));
 
     const response = NextResponse.json({
       success: true,
