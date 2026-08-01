@@ -13,6 +13,7 @@ import SimilarJobs from '../../components/SimilarJobs/SimilarJobs';
 import JobDetailsReadyBanner from '../../components/JobDetailsReadyBanner/JobDetailsReadyBanner';
 import MobileBottomNav from '../../components/MobileBottomNav/MobileBottomNav';
 import MarketplaceHeader from '../../components/MarketplaceHeader/MarketplaceHeader';
+import ApplyJobModal from '../../components/ApplyJobModal/ApplyJobModal';
 
 type TabKey = 'details' | 'company' | 'reviews' | 'applicants';
 
@@ -63,6 +64,8 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
     fetchJob();
   }, [slug]);
 
+  const [applyModalOpen, setApplyModalOpen] = useState(false);
+
   const handleSave = () => {
     if (!isLoggedIn) {
       router.push('/login');
@@ -71,35 +74,14 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
     }
   };
 
-  const handleApply = async () => {
-    const token = localStorage.getItem('token');
+  const handleApplyClick = () => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (!token) {
       router.push('/login');
       return;
     }
     if (applied) return;
-    try {
-      const res = await fetch(`/api/jobs/${job.id}/apply`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const json = await res.json();
-      
-      if (res.ok && json.success) {
-        setApplied(true);
-        alert('Application submitted successfully!');
-      } else if (res.status === 403) {
-        alert(json.message || 'Limit reached. Please buy a plan.');
-        router.push('/subscription-light');
-      } else {
-        alert(json.message || 'Failed to submit application');
-      }
-    } catch (err) {
-      console.error("Error applying to job:", err);
-    }
+    setApplyModalOpen(true);
   };
 
   if (loading) {
@@ -219,7 +201,7 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
             saved={saved}
             onSave={handleSave}
             applied={applied}
-            onApply={handleApply}
+            onApply={handleApplyClick}
             job={job}
             isEmployer={isEmployer}
           />
@@ -394,7 +376,7 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
               saved={saved}
               onSave={handleSave}
               applied={applied}
-              onApply={handleApply}
+              onApply={handleApplyClick}
               jobActive={job?.isActive}
               applicantCount={job?.applicantCount}
             />
@@ -405,6 +387,28 @@ const JobDetails: React.FC<{ slug?: string }> = ({ slug }) => {
         <Newsletter />
       </main>
       <MobileBottomNav />
+
+      {/* Apply Job Modal Popup Dialogue */}
+      {applyModalOpen && job && (
+        <ApplyJobModal
+          isOpen={applyModalOpen}
+          onClose={() => setApplyModalOpen(false)}
+          job={{
+            id: job.id,
+            title: job.title,
+            companyName: job.companyName,
+            location: job.location,
+          }}
+          onSuccess={() => {
+            setApplied(true);
+            alert('Application submitted successfully with your chosen resume!');
+          }}
+          onUpgradeRequired={(reason) => {
+            alert(reason || 'Limit reached. Please buy a subscription plan.');
+            router.push('/subscription-light');
+          }}
+        />
+      )}
     </>
   );
 };

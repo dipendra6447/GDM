@@ -82,3 +82,334 @@ export async function sendPasswordResetEmail({ toEmail, resetUrl }: SendPassword
     return { success: false, error, resetUrl };
   }
 }
+
+export interface SendWelcomeEmailParams {
+  toEmail: string;
+  name?: string;
+  role?: string;
+}
+
+/**
+ * Sends a Welcome Email to new users on registration
+ */
+export async function sendWelcomeEmail({ toEmail, name, role }: SendWelcomeEmailParams) {
+  const userName = name || 'JobNest Member';
+  const roleTitle = role === 'job_seeker' ? 'Job Seeker' : role === 'job_poster' ? 'Employer' : role === 'business_promoter' ? 'Business Promoter' : 'Member';
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0a0a0a; color: #ffffff; margin: 0; padding: 40px 20px; }
+          .container { max-width: 560px; margin: 0 auto; background: #111111; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+          .logo { font-size: 24px; font-weight: 800; color: #D4AF37; letter-spacing: -0.5px; text-decoration: none; margin-bottom: 24px; display: inline-block; }
+          .badge { display: inline-block; background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.4); color: #D4AF37; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; }
+          .title { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }
+          .text { font-size: 15px; line-height: 1.6; color: #b0b0b0; margin-bottom: 24px; }
+          .btn-wrap { text-align: center; margin: 32px 0; }
+          .btn { background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%); color: #000000; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 50px; text-decoration: none; display: inline-block; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4); }
+          .note { font-size: 13px; color: #71717a; border-top: 1px solid #27272a; padding-top: 20px; margin-top: 32px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="logo">✨ JobNest</div>
+          <br />
+          <div class="badge">${roleTitle} Account</div>
+          <h1 class="title">Welcome to JobNest, ${userName}! 🎉</h1>
+          <p class="text">
+            Thank you for joining JobNest — your premier destination for career opportunities, talent acquisition, and business growth.
+          </p>
+          <p class="text">
+            Your account has been created successfully. Explore your dashboard to start getting the most out of your membership.
+          </p>
+          <div class="btn-wrap">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login" class="btn" target="_blank">Access Your Dashboard</a>
+          </div>
+          <div class="note">
+            <p>If you have any questions, reply directly to this email or reach out to our 24/7 support team.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  if (!resend) {
+    console.warn('\n⚠️ [Resend Warning]: RESEND_API_KEY is not configured in .env.local.');
+    console.warn(`📩 Welcome Email simulated for ${toEmail} (${userName})\n`);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'JobNest Welcome <onboarding@resend.dev>';
+    const response = await resend.emails.send({
+      from: fromEmail,
+      to: toEmail,
+      subject: `Welcome to JobNest, ${userName}! ✨`,
+      html: htmlContent,
+    });
+
+    if (response.error) {
+      console.error('❌ [Resend Error]: Welcome email failed:', response.error);
+      return { success: false, error: response.error };
+    }
+
+    console.log(`✅ Welcome Email sent to ${toEmail} (ID: ${response.data?.id})`);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    console.error('❌ Error sending Welcome Email:', error);
+    return { success: false, error };
+  }
+}
+
+export interface SendSubscriptionReceiptEmailParams {
+  toEmail: string;
+  billingName: string;
+  planName: string;
+  tier: string;
+  amount: number;
+  billingCycle: string;
+  invoiceNumber: string;
+  expiresAt: string | Date;
+}
+
+/**
+ * Sends a Subscription Confirmation & Invoice Receipt Email
+ */
+export async function sendSubscriptionReceiptEmail({
+  toEmail,
+  billingName,
+  planName,
+  tier,
+  amount,
+  billingCycle,
+  invoiceNumber,
+  expiresAt,
+}: SendSubscriptionReceiptEmailParams) {
+  const formattedExpiry = new Date(expiresAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0a0a0a; color: #ffffff; margin: 0; padding: 40px 20px; }
+          .container { max-width: 560px; margin: 0 auto; background: #111111; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+          .logo { font-size: 24px; font-weight: 800; color: #D4AF37; letter-spacing: -0.5px; text-decoration: none; margin-bottom: 24px; display: inline-block; }
+          .title { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }
+          .text { font-size: 15px; line-height: 1.6; color: #b0b0b0; margin-bottom: 24px; }
+          .receipt-box { background: #18181b; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; padding: 20px; margin: 24px 0; }
+          .receipt-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #27272a; font-size: 14px; }
+          .receipt-row:last-child { border-bottom: none; }
+          .label { color: #a1a1aa; }
+          .value { color: #ffffff; font-weight: 600; text-align: right; }
+          .gold-value { color: #D4AF37; font-weight: 700; }
+          .btn-wrap { text-align: center; margin: 32px 0; }
+          .btn { background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%); color: #000000; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 50px; text-decoration: none; display: inline-block; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4); }
+          .note { font-size: 13px; color: #71717a; border-top: 1px solid #27272a; padding-top: 20px; margin-top: 32px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="logo">✨ JobNest Premium</div>
+          <h1 class="title">Subscription Activated! 👑</h1>
+          <p class="text">
+            Hi <strong>${billingName}</strong>, thank you for upgrading! Your <strong>JobNest Premium</strong> subscription is now active.
+          </p>
+          <div class="receipt-box">
+            <div class="receipt-row">
+              <span class="label">Invoice Number</span>
+              <span class="value">${invoiceNumber}</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Plan Purchased</span>
+              <span class="value gold-value">${planName} (${tier.toUpperCase()})</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Billing Cycle</span>
+              <span class="value" style="text-transform: capitalize;">${billingCycle}</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Total Paid (incl. Tax)</span>
+              <span class="value gold-value">₹${amount}</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Access Valid Until</span>
+              <span class="value">${formattedExpiry}</span>
+            </div>
+          </div>
+          <div class="btn-wrap">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/subscription" class="btn" target="_blank">Manage Subscription</a>
+          </div>
+          <div class="note">
+            <p>You can view and download all your tax invoices anytime in your JobNest Billing Dashboard.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  if (!resend) {
+    console.warn('\n⚠️ [Resend Warning]: RESEND_API_KEY is not configured in .env.local.');
+    console.warn(`📩 Subscription Receipt Email simulated for ${toEmail} (${invoiceNumber})\n`);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'JobNest Billing <billing@resend.dev>';
+    const response = await resend.emails.send({
+      from: fromEmail,
+      to: toEmail,
+      subject: `Receipt for Your JobNest Premium Subscription (${invoiceNumber}) 💳`,
+      html: htmlContent,
+    });
+
+    if (response.error) {
+      console.error('❌ [Resend Error]: Subscription receipt email failed:', response.error);
+      return { success: false, error: response.error };
+    }
+
+    console.log(`✅ Subscription Receipt Email sent to ${toEmail} (ID: ${response.data?.id})`);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    console.error('❌ Error sending Subscription Receipt Email:', error);
+    return { success: false, error };
+  }
+}
+
+export interface SendContactInquiryEmailParams {
+  toEmail: string;
+  fullName: string;
+  serviceType: string;
+  budget?: string;
+  timeline?: string;
+  message: string;
+  company?: string;
+  phone?: string;
+  inquiryId?: string;
+}
+
+/**
+ * Sends a Contact Inquiry / Quote Request Confirmation Email
+ */
+export async function sendContactInquiryEmail({
+  toEmail,
+  fullName,
+  serviceType,
+  budget,
+  timeline,
+  message,
+  company,
+  phone,
+  inquiryId,
+}: SendContactInquiryEmailParams) {
+  const formattedService = serviceType
+    ? serviceType.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+    : 'Custom Service';
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0a0a0a; color: #ffffff; margin: 0; padding: 40px 20px; }
+          .container { max-width: 560px; margin: 0 auto; background: #111111; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+          .logo { font-size: 24px; font-weight: 800; color: #D4AF37; letter-spacing: -0.5px; text-decoration: none; margin-bottom: 24px; display: inline-block; }
+          .title { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }
+          .text { font-size: 15px; line-height: 1.6; color: #b0b0b0; margin-bottom: 24px; }
+          .summary-box { background: #18181b; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; padding: 20px; margin: 24px 0; }
+          .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #27272a; font-size: 14px; }
+          .summary-row:last-child { border-bottom: none; }
+          .label { color: #a1a1aa; }
+          .value { color: #ffffff; font-weight: 600; text-align: right; }
+          .gold-value { color: #D4AF37; font-weight: 700; }
+          .btn-wrap { text-align: center; margin: 32px 0; }
+          .btn { background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%); color: #000000; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 50px; text-decoration: none; display: inline-block; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4); }
+          .note { font-size: 13px; color: #71717a; border-top: 1px solid #27272a; padding-top: 20px; margin-top: 32px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="logo">✨ JobNest Enterprise</div>
+          <h1 class="title">Inquiry Received! ✉️</h1>
+          <p class="text">
+            Hi <strong>${fullName}</strong>, thank you for reaching out to JobNest! We have received your project inquiry and assigned it to our senior technical team.
+          </p>
+          <div class="summary-box">
+            ${inquiryId ? `
+            <div class="summary-row">
+              <span class="label">Reference ID</span>
+              <span class="value gold-value">${inquiryId}</span>
+            </div>` : ''}
+            <div class="summary-row">
+              <span class="label">Requested Service</span>
+              <span class="value gold-value">${formattedService}</span>
+            </div>
+            ${budget ? `
+            <div class="summary-row">
+              <span class="label">Estimated Budget</span>
+              <span class="value">${budget}</span>
+            </div>` : ''}
+            ${timeline ? `
+            <div class="summary-row">
+              <span class="label">Desired Timeline</span>
+              <span class="value">${timeline}</span>
+            </div>` : ''}
+            ${company ? `
+            <div class="summary-row">
+              <span class="label">Company</span>
+              <span class="value">${company}</span>
+            </div>` : ''}
+          </div>
+          <p class="text" style="font-size: 14px;">
+            <strong>Your Message:</strong><br />
+            <em style="color: #d4d4d8;">"${message}"</em>
+          </p>
+          <div class="btn-wrap">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/contact" class="btn" target="_blank">Contact Support</a>
+          </div>
+          <div class="note">
+            <p>Our solutions team will analyze your requirements and get back to you within <strong>2 business hours</strong>.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  if (!resend) {
+    console.warn('\n⚠️ [Resend Warning]: RESEND_API_KEY is not configured in .env.local.');
+    console.warn(`📩 Contact Inquiry Confirmation Email simulated for ${toEmail} (${formattedService})\n`);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'JobNest Support <support@resend.dev>';
+    const response = await resend.emails.send({
+      from: fromEmail,
+      to: toEmail,
+      subject: `We've Received Your ${formattedService} Inquiry — JobNest ✨`,
+      html: htmlContent,
+    });
+
+    if (response.error) {
+      console.error('❌ [Resend Error]: Contact inquiry email failed:', response.error);
+      return { success: false, error: response.error };
+    }
+
+    console.log(`✅ Contact Inquiry Email sent to ${toEmail} (ID: ${response.data?.id})`);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    console.error('❌ Error sending Contact Inquiry Email:', error);
+    return { success: false, error };
+  }
+}
+
+

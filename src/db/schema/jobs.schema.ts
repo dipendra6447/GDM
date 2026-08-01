@@ -43,6 +43,8 @@ export const jobApplications = pgTable('job_applications', {
     .references(() => users.id)
     .notNull(),
   status: varchar('status', { length: 50 }).default('pending').notNull(),
+  resumeUrl: varchar('resume_url', { length: 1000 }),
+  resumeTitle: varchar('resume_title', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (t) => ({
   jobIdIdx: index('job_applications_job_id_idx').on(t.jobId),

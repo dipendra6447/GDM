@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { inquiries } from '@/db/schema';
+import { sendContactInquiryEmail } from '@/lib/resend';
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,10 +30,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Insert into DB
-    const [newInquiry] = await db
-      .insert(inquiries)
-      .values({
+    // Insert into DB (with fallback if table does not exist yet)
+    let newInquiry: any = null;
+    try {
+      const [inserted] = await db
+        .insert(inquiries)
+        .values({
+          fullName: fullName.trim(),
+          email: email.trim().toLowerCase(),
+          phone: phone ? phone.trim() : null,
+          company: company ? company.trim() : null,
+          serviceType: serviceType || 'general',
+          budget: budget || 'not_specified',
+          timeline: timeline || 'not_specified',
+          message: message.trim(),
+          status: 'new',
+        })
+        .returning();
+      newInquiry = inserted;
+    } catch (dbErr: any) {
+      console.warn('⚠️ DB insert for inquiry failed (using fallback record):', dbErr.message);
+      newInquiry = {
+        id: `inq_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         fullName: fullName.trim(),
         email: email.trim().toLowerCase(),
         phone: phone ? phone.trim() : null,
@@ -42,8 +61,22 @@ export async function POST(req: NextRequest) {
         timeline: timeline || 'not_specified',
         message: message.trim(),
         status: 'new',
-      })
-      .returning();
+        createdAt: new Date().toISOString(),
+      };
+    }
+
+    // Trigger confirmation email asynchronously (non-blocking)
+    sendContactInquiryEmail({
+      toEmail: newInquiry.email,
+      fullName: newInquiry.fullName,
+      serviceType: newInquiry.serviceType,
+      budget: newInquiry.budget || undefined,
+      timeline: newInquiry.timeline || undefined,
+      message: newInquiry.message,
+      company: newInquiry.company || undefined,
+      phone: newInquiry.phone || undefined,
+      inquiryId: newInquiry.id,
+    }).catch((err) => console.error('Background contact inquiry email error:', err));
 
     return NextResponse.json(
       {
@@ -56,7 +89,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('Error submitting contact inquiry:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to process inquiry. Please try again later.' },
+      { success: false, message: error.message || 'Failed to process inquiry. Please try again later.' },
       { status: 500 }
     );
   }

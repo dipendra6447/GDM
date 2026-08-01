@@ -30,20 +30,23 @@ export async function POST(req: NextRequest) {
     // Delete existing reset tokens for this user
     await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, user.id));
 
-    // Generate secure 32-byte crypto token
-    const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiration
+    // Generate secure 32-byte crypto raw token for the email link
+    const rawToken = crypto.randomBytes(32).toString('hex');
 
-    // Insert token
+    // Store ONLY the SHA-256 hash of the token in the database to prevent database leak vulnerabilities
+    const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes expiration window
+
+    // Insert hashed token into DB
     await db.insert(passwordResetTokens).values({
       userId: user.id,
-      token,
+      token: hashedToken,
       expiresAt,
     });
 
-    // Build reset URL
+    // Build reset URL with the raw token for the recipient's email
     const origin = req.nextUrl.origin || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const resetUrl = `${origin}/reset-password?token=${token}`;
+    const resetUrl = `${origin}/reset-password?token=${rawToken}`;
 
     // Send email via Resend
     const sendResult = await sendPasswordResetEmail({
@@ -51,20 +54,11 @@ export async function POST(req: NextRequest) {
       resetUrl,
     });
 
-    const responsePayload: Record<string, any> = {
+    // Secure response payload — NEVER leak resetUrl/token in the HTTP JSON response
+    return NextResponse.json({
       success: true,
       message: 'If an account exists with that email address, a password reset link has been sent.',
-    };
-
-    // Attach devResetUrl when running locally or if Resend sandbox restricts unverified recipients
-    if (process.env.NODE_ENV !== 'production' || !sendResult.success || sendResult.simulated) {
-      responsePayload.devResetUrl = resetUrl;
-      if (sendResult.error?.message) {
-        responsePayload.resendNote = sendResult.error.message;
-      }
-    }
-
-    return NextResponse.json(responsePayload);
+    });
   } catch (error: any) {
     console.error('POST /api/auth/forgot-password error:', error);
     return NextResponse.json({ success: false, message: error.message || 'Failed to process request' }, { status: 500 });

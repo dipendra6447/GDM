@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { COUNTRIES_DATA } from '../../data/locationData';
 
 interface Props {
   initialData: any;
@@ -13,6 +14,18 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
   const [message, setMessage] = useState({ text: '', type: '' });
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   
+  const parseAddress = (addrRaw: any) => {
+    if (typeof addrRaw === 'object' && addrRaw !== null) return addrRaw;
+    if (typeof addrRaw === 'string') {
+      try {
+        return JSON.parse(addrRaw);
+      } catch {
+        return { country: 'United States', state: 'CA', city: 'San Francisco', zipCode: '94105', addressLine1: addrRaw };
+      }
+    }
+    return { country: 'United States', state: 'CA', city: 'San Francisco', zipCode: '94105', addressLine1: '' };
+  };
+
   const [formData, setFormData] = useState({
     businessName: initialData?.businessName || '',
     businessCategory: initialData?.businessCategory || '',
@@ -21,13 +34,86 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
     purpose: initialData?.purpose || '',
     contactPhone: initialData?.contactPhone || '',
     contactEmail: initialData?.contactEmail || '',
-    address: initialData?.address || '',
+    addressObj: parseAddress(initialData?.address),
     websiteUrl: initialData?.websiteUrl || '',
     linkedinUrl: initialData?.linkedinUrl || '',
     instagramUrl: initialData?.instagramUrl || '',
     facebookUrl: initialData?.facebookUrl || '',
     gstNumber: initialData?.gstNumber || '',
   });
+
+  // Cascading Location selector state derivation
+  const currentCountryName = formData.addressObj.country || 'United States';
+  const currentCountryObj =
+    COUNTRIES_DATA.find(
+      (c) =>
+        c.name.toLowerCase() === currentCountryName.toLowerCase() ||
+        c.code.toLowerCase() === currentCountryName.toLowerCase()
+    ) || COUNTRIES_DATA[0];
+
+  const availableStates = currentCountryObj ? currentCountryObj.states : [];
+
+  const currentStateCode = formData.addressObj.state || '';
+  const currentStateObj = availableStates.find(
+    (s) =>
+      s.code.toLowerCase() === currentStateCode.toLowerCase() ||
+      s.name.toLowerCase() === currentStateCode.toLowerCase()
+  );
+
+  const availableCities = currentStateObj ? currentStateObj.cities : [];
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, addressObj: { ...prev.addressObj, [name]: value } }));
+  };
+
+  const handleCountrySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCountry = e.target.value;
+    const countryObj = COUNTRIES_DATA.find((c) => c.name === selectedCountry) || COUNTRIES_DATA[0];
+    const defaultState = countryObj.states[0]?.code || '';
+    const defaultCityObj = countryObj.states[0]?.cities[0];
+
+    setFormData((prev) => ({
+      ...prev,
+      addressObj: {
+        ...prev.addressObj,
+        country: selectedCountry,
+        state: defaultState,
+        city: defaultCityObj?.name || '',
+        zipCode: defaultCityObj?.defaultZip || '',
+      },
+    }));
+  };
+
+  const handleStateSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedStateCode = e.target.value;
+    const stateObj = availableStates.find((s) => s.code === selectedStateCode);
+    const defaultCityObj = stateObj?.cities[0];
+
+    setFormData((prev) => ({
+      ...prev,
+      addressObj: {
+        ...prev.addressObj,
+        state: selectedStateCode,
+        city: defaultCityObj?.name || '',
+        zipCode: defaultCityObj?.defaultZip || '',
+      },
+    }));
+  };
+
+  const handleCitySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCityName = e.target.value;
+    const cityObj = availableCities.find((c) => c.name === selectedCityName);
+
+    setFormData((prev) => ({
+      ...prev,
+      addressObj: {
+        ...prev.addressObj,
+        city: selectedCityName,
+        zipCode: cityObj?.defaultZip || prev.addressObj.zipCode || '',
+      },
+    }));
+  };
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
 
@@ -65,7 +151,11 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
 
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) data.append(key, value.toString());
+      if (key === 'addressObj') {
+        data.append('address', JSON.stringify(value));
+      } else if (value !== undefined && value !== null) {
+        data.append(key, value.toString());
+      }
     });
     if (logoFile) data.append('logo', logoFile);
 
@@ -129,8 +219,75 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
             <input type="email" name="contactEmail" className="profile-input" placeholder="contact@business.com" value={formData.contactEmail} onChange={handleInputChange} />
           </div>
           <div className="col-md-12 profile-form-group">
-            <label className="profile-label">Address / Location</label>
-            <input type="text" name="address" className="profile-input" placeholder="Your Business Address" value={formData.address} onChange={handleInputChange} />
+            <label className="profile-label">Street Address (Address Line 1)</label>
+            <input
+              type="text"
+              name="addressLine1"
+              className="profile-input"
+              placeholder="e.g. 123 Market St, Suite 400"
+              value={formData.addressObj?.addressLine1 || ''}
+              onChange={handleAddressChange}
+            />
+          </div>
+          <div className="col-md-3 profile-form-group">
+            <label className="profile-label">Country</label>
+            <select
+              name="country"
+              className="profile-select"
+              value={formData.addressObj?.country || 'United States'}
+              onChange={handleCountrySelect}
+            >
+              {COUNTRIES_DATA.map((c) => (
+                <option key={c.code} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="col-md-3 profile-form-group">
+            <label className="profile-label">State / Province</label>
+            <select
+              name="state"
+              className="profile-select"
+              value={formData.addressObj?.state || ''}
+              onChange={handleStateSelect}
+            >
+              <option value="">Select State</option>
+              {availableStates.map((s) => (
+                <option key={s.code} value={s.code}>
+                  {s.name} ({s.code})
+                </option>
+              ))}
+              <option value="Other">Other / Custom</option>
+            </select>
+          </div>
+          <div className="col-md-3 profile-form-group">
+            <label className="profile-label">City</label>
+            <select
+              name="city"
+              className="profile-select"
+              value={formData.addressObj?.city || ''}
+              onChange={handleCitySelect}
+            >
+              <option value="">Select City</option>
+              {availableCities.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+              <option value="Other">Other City</option>
+            </select>
+          </div>
+          <div className="col-md-3 profile-form-group">
+            <label className="profile-label">ZIP / Postal Code</label>
+            <input
+              type="text"
+              name="zipCode"
+              className="profile-input"
+              placeholder="e.g. 94105"
+              value={formData.addressObj?.zipCode || ''}
+              onChange={handleAddressChange}
+            />
           </div>
           <div className="col-md-12 profile-form-group">
             <label className="profile-label">GST Number (Optional)</label>

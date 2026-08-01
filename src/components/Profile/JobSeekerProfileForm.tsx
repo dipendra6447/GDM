@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { COUNTRIES_DATA } from '../../data/locationData';
 
 interface Props {
   initialData: any;
@@ -21,7 +22,8 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
     phone: initialData?.phone || '',
     alternatePhone: initialData?.alternatePhone || '',
     alternateEmail: initialData?.alternateEmail || '',
-    address: initialData?.address || { country: '', state: '', city: '', zipCode: '', addressLine1: '' },
+    address: initialData?.address || { country: 'United States', state: 'CA', city: 'San Francisco', zipCode: '94105', addressLine1: '' },
+    resumeTitle: initialData?.resumeTitle || '',
     totalExperienceYears: initialData?.totalExperienceYears || '',
     expectedSalary: initialData?.expectedSalary || '',
     availability: initialData?.availability || '',
@@ -31,6 +33,74 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
     githubUrl: initialData?.githubUrl || '',
     portfolioUrl: initialData?.portfolioUrl || '',
   });
+
+  // Cascading Location selector state derivation
+  const currentCountryName = formData.address.country || 'United States';
+  const currentCountryObj =
+    COUNTRIES_DATA.find(
+      (c) =>
+        c.name.toLowerCase() === currentCountryName.toLowerCase() ||
+        c.code.toLowerCase() === currentCountryName.toLowerCase()
+    ) || COUNTRIES_DATA[0];
+
+  const availableStates = currentCountryObj ? currentCountryObj.states : [];
+
+  const currentStateCode = formData.address.state || '';
+  const currentStateObj = availableStates.find(
+    (s) =>
+      s.code.toLowerCase() === currentStateCode.toLowerCase() ||
+      s.name.toLowerCase() === currentStateCode.toLowerCase()
+  );
+
+  const availableCities = currentStateObj ? currentStateObj.cities : [];
+
+  const handleCountrySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCountry = e.target.value;
+    const countryObj = COUNTRIES_DATA.find((c) => c.name === selectedCountry) || COUNTRIES_DATA[0];
+    const defaultState = countryObj.states[0]?.code || '';
+    const defaultCityObj = countryObj.states[0]?.cities[0];
+
+    setFormData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        country: selectedCountry,
+        state: defaultState,
+        city: defaultCityObj?.name || '',
+        zipCode: defaultCityObj?.defaultZip || '',
+      },
+    }));
+  };
+
+  const handleStateSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedStateCode = e.target.value;
+    const stateObj = availableStates.find((s) => s.code === selectedStateCode);
+    const defaultCityObj = stateObj?.cities[0];
+
+    setFormData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        state: selectedStateCode,
+        city: defaultCityObj?.name || '',
+        zipCode: defaultCityObj?.defaultZip || '',
+      },
+    }));
+  };
+
+  const handleCitySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCityName = e.target.value;
+    const cityObj = availableCities.find((c) => c.name === selectedCityName);
+
+    setFormData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        city: selectedCityName,
+        zipCode: cityObj?.defaultZip || prev.address.zipCode || '',
+      },
+    }));
+  };
 
   const [experience, setExperience] = useState<any[]>(
     initialData?.experience?.length > 0 ? initialData.experience : [{ jobTitle: '', company: '', startDate: '', endDate: '', isCurrent: false, description: '' }]
@@ -46,7 +116,99 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
     initialData?.certifications?.length > 0 ? new Array(initialData.certifications.length).fill(null) : []
   );
 
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  // Multiple Resumes (Max 3)
+  const initialResumesList = () => {
+    if (Array.isArray(initialData?.resumes) && initialData.resumes.length > 0) {
+      const list = [...initialData.resumes];
+      while (list.length < 3) {
+        list.push({ title: '', fileUrl: '', isPrimary: list.length === 0 });
+      }
+      return list.slice(0, 3);
+    }
+    if (initialData?.resumeUrl) {
+      return [
+        { title: initialData.resumeTitle || 'Primary Resume', fileUrl: initialData.resumeUrl, isPrimary: true },
+        { title: '', fileUrl: '', isPrimary: false },
+        { title: '', fileUrl: '', isPrimary: false },
+      ];
+    }
+    return [
+      { title: '', fileUrl: '', isPrimary: true },
+      { title: '', fileUrl: '', isPrimary: false },
+      { title: '', fileUrl: '', isPrimary: false },
+    ];
+  };
+
+  const [resumesList, setResumesList] = useState<Array<{ id?: string; title: string; fileUrl?: string; isPrimary?: boolean }>>(initialResumesList());
+  const [resumeFiles, setResumeFiles] = useState<(File | null)[]>([null, null, null]);
+
+  useEffect(() => {
+    if (initialData) {
+      if (Array.isArray(initialData.resumes) && initialData.resumes.length > 0) {
+        const list = [...initialData.resumes];
+        while (list.length < 3) {
+          list.push({ title: '', fileUrl: '', isPrimary: false });
+        }
+        if (!list.some(r => r.isPrimary && r.fileUrl)) {
+          const firstWithFile = list.find(r => r.fileUrl);
+          if (firstWithFile) firstWithFile.isPrimary = true;
+          else list[0].isPrimary = true;
+        }
+        setResumesList(list.slice(0, 3));
+      } else if (initialData.resumeUrl) {
+        setResumesList([
+          { title: initialData.resumeTitle || 'Primary Resume', fileUrl: initialData.resumeUrl, isPrimary: true },
+          { title: '', fileUrl: '', isPrimary: false },
+          { title: '', fileUrl: '', isPrimary: false },
+        ]);
+      }
+    }
+  }, [initialData?.resumeUrl, initialData?.resumeTitle, JSON.stringify(initialData?.resumes)]);
+
+  const handleResumeFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = [...resumeFiles];
+      newFiles[index] = e.target.files[0];
+      setResumeFiles(newFiles);
+
+      const fileName = e.target.files[0].name.replace(/\.[^/.]+$/, '');
+      const updated = [...resumesList];
+      if (!updated[index].title) {
+        updated[index].title = fileName;
+      }
+      setResumesList(updated);
+    }
+  };
+
+  const handleResumeTitleChange = (index: number, title: string) => {
+    const updated = [...resumesList];
+    updated[index].title = title;
+    setResumesList(updated);
+  };
+
+  const handleSetPrimaryResume = (index: number) => {
+    const updated = resumesList.map((r, idx) => ({
+      ...r,
+      isPrimary: idx === index,
+    }));
+    setResumesList(updated);
+  };
+
+  const handleRemoveResume = (index: number) => {
+    const updatedResumes = [...resumesList];
+    const wasPrimary = updatedResumes[index].isPrimary;
+    updatedResumes[index] = { title: '', fileUrl: '', isPrimary: false };
+    if (wasPrimary) {
+      const firstAvailable = updatedResumes.findIndex((r) => r.fileUrl || r.title);
+      if (firstAvailable !== -1) updatedResumes[firstAvailable].isPrimary = true;
+      else updatedResumes[0].isPrimary = true;
+    }
+    setResumesList(updatedResumes);
+
+    const updatedFiles = [...resumeFiles];
+    updatedFiles[index] = null;
+    setResumeFiles(updatedFiles);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -56,12 +218,6 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, address: { ...prev.address, [name]: value } }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setResumeFile(e.target.files[0]);
-    }
   };
 
   const handleAddExperience = () => {
@@ -145,6 +301,7 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
     data.append('experience', JSON.stringify(experience));
     data.append('education', JSON.stringify(education));
     data.append('certifications', JSON.stringify(certifications));
+    data.append('resumes', JSON.stringify(resumesList));
 
     certFiles.forEach((file, index) => {
       if (file) {
@@ -152,8 +309,16 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
       }
     });
 
-    if (resumeFile) {
-      data.append('resume', resumeFile);
+    resumeFiles.forEach((file, index) => {
+      if (file) {
+        data.append(`resume_file_${index}`, file);
+        data.append(`resume_title_${index}`, resumesList[index]?.title || `Resume ${index + 1}`);
+      }
+    });
+
+    const primaryResume = resumesList.find((r) => r.isPrimary) || resumesList[0];
+    if (primaryResume?.title) {
+      data.append('resumeTitle', primaryResume.title);
     }
 
     try {
@@ -210,24 +375,75 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
             <input type="email" name="alternateEmail" className="profile-input" placeholder="(Optional)" value={formData.alternateEmail} onChange={handleInputChange} />
           </div>
           <div className="col-md-12 profile-form-group">
-            <label className="profile-label">Address Line 1</label>
-            <input type="text" name="addressLine1" className="profile-input" placeholder="123 Main St" value={formData.address.addressLine1 || ''} onChange={handleAddressChange} />
+            <label className="profile-label">Street Address (Address Line 1)</label>
+            <input
+              type="text"
+              name="addressLine1"
+              className="profile-input"
+              placeholder="e.g. 123 Market St, Suite 400"
+              value={formData.address.addressLine1 || ''}
+              onChange={handleAddressChange}
+            />
           </div>
           <div className="col-md-3 profile-form-group">
             <label className="profile-label">Country</label>
-            <input type="text" name="country" className="profile-input" placeholder="USA" value={formData.address.country || ''} onChange={handleAddressChange} />
+            <select
+              name="country"
+              className="profile-select"
+              value={formData.address.country || 'United States'}
+              onChange={handleCountrySelect}
+            >
+              {COUNTRIES_DATA.map((c) => (
+                <option key={c.code} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="col-md-3 profile-form-group">
-            <label className="profile-label">State/Province</label>
-            <input type="text" name="state" className="profile-input" placeholder="CA" value={formData.address.state || ''} onChange={handleAddressChange} />
+            <label className="profile-label">State / Province</label>
+            <select
+              name="state"
+              className="profile-select"
+              value={formData.address.state || ''}
+              onChange={handleStateSelect}
+            >
+              <option value="">Select State</option>
+              {availableStates.map((s) => (
+                <option key={s.code} value={s.code}>
+                  {s.name} ({s.code})
+                </option>
+              ))}
+              <option value="Other">Other / Custom</option>
+            </select>
           </div>
           <div className="col-md-3 profile-form-group">
             <label className="profile-label">City</label>
-            <input type="text" name="city" className="profile-input" placeholder="San Francisco" value={formData.address.city || ''} onChange={handleAddressChange} />
+            <select
+              name="city"
+              className="profile-select"
+              value={formData.address.city || ''}
+              onChange={handleCitySelect}
+            >
+              <option value="">Select City</option>
+              {availableCities.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+              <option value="Other">Other City</option>
+            </select>
           </div>
           <div className="col-md-3 profile-form-group">
-            <label className="profile-label">Zip Code</label>
-            <input type="text" name="zipCode" className="profile-input" placeholder="94105" value={formData.address.zipCode || ''} onChange={handleAddressChange} />
+            <label className="profile-label">ZIP / Postal Code</label>
+            <input
+              type="text"
+              name="zipCode"
+              className="profile-input"
+              placeholder="e.g. 94105"
+              value={formData.address.zipCode || ''}
+              onChange={handleAddressChange}
+            />
           </div>
         </div>
       </div>
@@ -458,51 +674,108 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
         ))}
       </div>
 
-      {/* Resume & Links */}
+      {/* Resumes Section (Max 3 Resumes) */}
       <div id="resume">
         <div className="profile-section-divider">
-          <span className="profile-section-divider-label">Resume &amp; Links</span>
+          <span className="profile-section-divider-label">
+            📑 Multiple Resumes (Max 3)
+          </span>
           <div className="profile-section-divider-line" />
         </div>
 
-        <div className="profile-form-group">
-          <label className="profile-label">Resume (PDF)</label>
-          <div className="profile-file-upload">
-            <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} />
-            <i className="bi bi-cloud-arrow-up" style={{ fontSize: '1.8rem', color: '#334155' }}></i>
-            {resumeFile ? (
-              <div className="mt-2" style={{ color: '#60a5fa', fontSize: '0.85rem', fontWeight: 600 }}>{resumeFile.name}</div>
-            ) : (
-              <div className="mt-2" style={{ color: '#475569', fontSize: '0.85rem' }}>
-                {initialData?.resumeUrl ? 'Drop a new file to replace your current resume' : 'Click or drag your resume here'}
-              </div>
-            )}
-          </div>
-          {initialData?.resumeUrl && !resumeFile && (
-            <div className="resume-download-bar">
-              <div className="resume-download-info">
-                <i className="bi bi-file-earmark-pdf-fill resume-download-icon"></i>
-                <div>
-                  <div className="resume-download-label">Current Resume</div>
-                  <div className="resume-download-filename">
-                    {initialData.resumeUrl.split('/').pop()}
+        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '16px' }}>
+          Upload up to 3 different resumes tailored for specific roles (e.g. Full Stack Developer, Tech Lead, Frontend Engineer) and select your primary resume.
+        </p>
+
+        <div className="row mb-4">
+          {[0, 1, 2].map((idx) => {
+            const currentResume = resumesList[idx];
+            const newFile = resumeFiles[idx];
+            const hasFile = Boolean(newFile || currentResume?.fileUrl);
+
+            return (
+              <div key={idx} className="col-md-4 profile-form-group">
+                <div
+                  className="profile-item-card p-3"
+                  style={{
+                    border: '1px dashed rgba(255,255,255,0.15)',
+                    borderRadius: '12px',
+                    background: 'rgba(15, 23, 42, 0.4)',
+                    position: 'relative'
+                  }}
+                >
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="badge bg-secondary" style={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                      Resume {idx + 1} of 3
+                    </span>
+                    {hasFile && (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-link text-danger p-0"
+                        style={{ fontSize: '0.8rem' }}
+                        onClick={() => handleRemoveResume(idx)}
+                      >
+                        <i className="bi bi-trash me-1" /> Remove
+                      </button>
+                    )}
                   </div>
+
+                  <div className="mb-2">
+                    <label className="profile-label" style={{ fontSize: '0.75rem' }}>Resume Title</label>
+                    <input
+                      type="text"
+                      className="profile-input"
+                      style={{ fontSize: '0.85rem', padding: '8px 10px' }}
+                      placeholder="e.g. Full Stack Developer Resume"
+                      value={currentResume?.title || ''}
+                      onChange={(e) => handleResumeTitleChange(idx, e.target.value)}
+                    />
+                  </div>
+
+                  <div className="profile-file-upload text-center p-3 mb-2" style={{ border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={(e) => handleResumeFileChange(idx, e)}
+                    />
+                    <i className="bi bi-file-earmark-pdf-fill" style={{ fontSize: '1.6rem', color: hasFile ? '#2454FF' : '#64748b' }} />
+                    <div className="mt-1" style={{ fontSize: '0.8rem', color: hasFile ? '#60a5fa' : '#94a3b8', fontWeight: hasFile ? 600 : 400 }}>
+                      {newFile ? newFile.name : currentResume?.fileUrl ? currentResume.fileUrl.split('/').pop() : `Upload Resume ${idx + 1}`}
+                    </div>
+                  </div>
+
+                  {hasFile && (
+                    <a
+                      href={
+                        newFile
+                          ? URL.createObjectURL(newFile)
+                          : `${process.env.NEXT_PUBLIC_API_URL || ''}${currentResume?.fileUrl}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download={newFile ? newFile.name : undefined}
+                      className="btn btn-sm btn-primary w-100 mt-2"
+                      style={{
+                        fontSize: '0.8rem',
+                        borderRadius: '8px',
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 2px 8px rgba(36, 84, 255, 0.25)'
+                      }}
+                    >
+                      <i className="bi bi-download me-2" /> Download Resume {idx + 1}
+                    </a>
+                  )}
                 </div>
               </div>
-              <a
-                href={`${process.env.NEXT_PUBLIC_API_URL || ''}${initialData.resumeUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-                className="resume-download-btn"
-                aria-label="Download your current resume"
-              >
-                <i className="bi bi-download me-2"></i> Download
-              </a>
-            </div>
-          )}
+            );
+          })}
         </div>
 
+        {/* Social / Portfolio Links */}
         <div className="row">
           <div className="col-md-4 profile-form-group">
             <label className="profile-label"><i className="bi bi-linkedin me-1" style={{ color: '#0077b5' }} />LinkedIn (Optional)</label>
@@ -513,7 +786,7 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
             <input type="url" name="githubUrl" className="profile-input" placeholder="https://github.com/..." value={formData.githubUrl} onChange={handleInputChange} />
           </div>
           <div className="col-md-4 profile-form-group">
-            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Portfolio (Optional)</label>
+            <label className="profile-label"><i className="bi bi-globe2 me-1" style={{ color: '#60a5fa' }} />Portfolio Website (Optional)</label>
             <input type="url" name="portfolioUrl" className="profile-input" placeholder="https://yoursite.com" value={formData.portfolioUrl} onChange={handleInputChange} />
           </div>
         </div>

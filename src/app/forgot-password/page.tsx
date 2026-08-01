@@ -95,19 +95,6 @@ export default function ForgotPasswordPage() {
                       <i className="bi bi-info-circle me-1" /> <strong>Resend Note:</strong> {resendNote}
                     </div>
                   )}
-
-                  {devResetUrl && (
-                    <div className="mt-3 pt-3 border-top border-success-subtle">
-                      <span className="d-block small text-secondary fw-semibold mb-2">Development Reset Shortcut:</span>
-                      <a 
-                        href={devResetUrl} 
-                        className="btn btn-sm btn-success fw-bold text-white px-3 py-2"
-                        style={{ borderRadius: '8px', fontSize: '0.82rem' }}
-                      >
-                        <i className="bi bi-box-arrow-up-right me-1" /> Click to Reset Password Now
-                      </a>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
