@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
+import Logo from '../Logo/Logo';
 import './Footer.css';
 
 const footerColumns = [
@@ -39,11 +40,8 @@ const Footer: React.FC = () => {
             {/* Brand Column */}
             <div className="col-lg-3 col-md-6">
               <div className="footer-brand">
-                <div className="footer-logo">
-                  <span className="footer-logo-icon">
-                    <i className="bi bi-briefcase-fill"></i>
-                  </span>
-                  <span className="footer-logo-text">Job<span>Nest</span></span>
+                <div className="mb-3">
+                  <Logo size={36} textColor="white" />
                 </div>
                 <p className="footer-brand-text">
                   The world's leading premium job marketplace. Connecting top talent with exceptional opportunities since 2020.

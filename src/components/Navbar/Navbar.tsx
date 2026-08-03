@@ -4,6 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from "../../hooks/useAuth";
 import Link from 'next/link';
 import RoleUpgradeModal from '../RoleUpgradeModal/RoleUpgradeModal';
+import Logo from '../Logo/Logo';
 import "./Navbar.css";
 
 interface NavbarProps {
@@ -268,15 +269,8 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
                 <span></span>
                 <span></span>
               </button>
-              <Link className="navbar-brand m-0" href={logoHref} aria-label="JobNest Home">
-                <div className="logo-mark">
-                  <span className="logo-icon">
-                    <i className="bi bi-briefcase-fill"></i>
-                  </span>
-                  <span className="logo-text">
-                    Job<span className="logo-accent">Nest</span>
-                  </span>
-                </div>
+              <Link className="navbar-brand m-0" href={logoHref} aria-label="GoDiscoverMe Home">
+                <Logo size={32} />
               </Link>
             </div>
 
@@ -306,15 +300,8 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
           {/* ── DESKTOP NAV HEADER (Visible on lg and up screens) ── */}
           <div className="d-none d-lg-flex align-items-center justify-content-between w-100">
             {/* Logo */}
-            <Link className="navbar-brand" href={logoHref} aria-label="JobNest Home">
-              <div className="logo-mark">
-                <span className="logo-icon">
-                  <i className="bi bi-briefcase-fill"></i>
-                </span>
-                <span className="logo-text">
-                  Job<span className="logo-accent">Nest</span>
-                </span>
-              </div>
+            <Link className="navbar-brand" href={logoHref} aria-label="GoDiscoverMe Home">
+              <Logo size={36} />
             </Link>
 
             {/* Nav links (hidden in minimal mode) */}
@@ -649,14 +636,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default' }) => {
       >
         {/* Drawer Header */}
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <div className="logo-mark">
-            <span className="logo-icon" style={{ background: '#D4AF37', color: '#0A0A0A' }}>
-              <i className="bi bi-briefcase-fill"></i>
-            </span>
-            <span className="logo-text" style={{ color: '#FFFFFF' }}>
-              Job<span className="logo-accent" style={{ color: '#D4AF37' }}>Nest</span>
-            </span>
-          </div>
+          <Logo size={32} textColor="white" />
           <button
             onClick={() => setMenuOpen(false)}
             style={{ background: 'none', border: 'none', color: '#FFFFFF', fontSize: '24px', cursor: 'pointer' }}

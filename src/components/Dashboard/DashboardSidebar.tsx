@@ -3,6 +3,8 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import Logo from '../Logo/Logo';
+import './Dashboard.css';
 
 interface Props {
   activeRole?: number;
@@ -55,9 +57,8 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
   return (
     <aside className="dashboard-sidebar">
       <div className="sidebar-logo">
-        <Link href="/">
-          <span className="logo-icon"><i className="bi bi-briefcase-fill"></i></span>
-          <span className="logo-text">JobNest</span>
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <Logo size={30} />
         </Link>
       </div>
 
