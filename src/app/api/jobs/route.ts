@@ -8,90 +8,95 @@ import { canPostJob } from '@/lib/entitlements';
 
 // GET /api/jobs — List all active jobs (public)
 export async function GET(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
-  const offset = (page - 1) * limit;
+  try {
+    const searchParams = req.nextUrl.searchParams;
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
+    const offset = (page - 1) * limit;
 
-  // Extract filters
-  const locationFilter = searchParams.get('location');
-  const jobTypeFilter = searchParams.get('jobType');
-  const categoryFilter = searchParams.get('category');
-  const searchKeyword = searchParams.get('keyword');
+    // Extract filters
+    const locationFilter = searchParams.get('location');
+    const jobTypeFilter = searchParams.get('jobType');
+    const categoryFilter = searchParams.get('category');
+    const searchKeyword = searchParams.get('keyword');
 
-  const conditions = [eq(jobs.isDeleted, false), eq(jobs.isActive, true)];
+    const conditions = [eq(jobs.isDeleted, false), eq(jobs.isActive, true)];
 
-  if (locationFilter && locationFilter !== 'all') {
-    conditions.push(sql`LOWER(${jobs.location}) LIKE ${'%' + locationFilter.toLowerCase() + '%'}`);
-  }
-  if (jobTypeFilter && jobTypeFilter !== 'all') {
-    conditions.push(sql`LOWER(${jobs.jobType}) = ${jobTypeFilter.toLowerCase()}`);
-  }
-  if (categoryFilter && categoryFilter !== 'all') {
-    conditions.push(eq(jobs.category, categoryFilter));
-  }
-  if (searchKeyword) {
-    const cleanKeyword = searchKeyword.trim().toLowerCase();
-    const terms = cleanKeyword.split(/\s+/).filter(Boolean);
-    const normalizedPhrase = cleanKeyword.replace(/[\s\.]/g, '');
-    
-    if (terms.length > 0) {
-      let sqlFragment = sql`(`;
-      
-      // 1. Full phrase match (in title, description, or skills)
-      sqlFragment = sql`${sqlFragment} (LOWER(${jobs.title}) LIKE ${'%' + cleanKeyword + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + cleanKeyword + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + cleanKeyword + '%'})`;
-      
-      // 2. Normalized phrase match (e.g., "react js" -> "reactjs")
-      if (normalizedPhrase !== cleanKeyword) {
-        sqlFragment = sql`${sqlFragment} OR (LOWER(${jobs.title}) LIKE ${'%' + normalizedPhrase + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + normalizedPhrase + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + normalizedPhrase + '%'})`;
-      }
-      
-      // 3. Individual terms matching
-      terms.forEach(term => {
-        if (term.length > 1) { // ignore single letters
-          sqlFragment = sql`${sqlFragment} OR (LOWER(${jobs.title}) LIKE ${'%' + term + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + term + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + term + '%'})`;
-        }
-      });
-      
-      sqlFragment = sql`${sqlFragment})`;
-      conditions.push(sqlFragment);
+    if (locationFilter && locationFilter !== 'all') {
+      conditions.push(sql`LOWER(${jobs.location}) LIKE ${'%' + locationFilter.toLowerCase() + '%'}`);
     }
+    if (jobTypeFilter && jobTypeFilter !== 'all') {
+      conditions.push(sql`LOWER(${jobs.jobType}) = ${jobTypeFilter.toLowerCase()}`);
+    }
+    if (categoryFilter && categoryFilter !== 'all') {
+      conditions.push(eq(jobs.category, categoryFilter));
+    }
+    if (searchKeyword) {
+      const cleanKeyword = searchKeyword.trim().toLowerCase();
+      const terms = cleanKeyword.split(/\s+/).filter(Boolean);
+      const normalizedPhrase = cleanKeyword.replace(/[\s\.]/g, '');
+      
+      if (terms.length > 0) {
+        let sqlFragment = sql`(`;
+        
+        // 1. Full phrase match (in title, description, or skills)
+        sqlFragment = sql`${sqlFragment} (LOWER(${jobs.title}) LIKE ${'%' + cleanKeyword + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + cleanKeyword + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + cleanKeyword + '%'})`;
+        
+        // 2. Normalized phrase match (e.g., "react js" -> "reactjs")
+        if (normalizedPhrase !== cleanKeyword) {
+          sqlFragment = sql`${sqlFragment} OR (LOWER(${jobs.title}) LIKE ${'%' + normalizedPhrase + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + normalizedPhrase + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + normalizedPhrase + '%'})`;
+        }
+        
+        // 3. Individual terms matching
+        terms.forEach(term => {
+          if (term.length > 1) { // ignore single letters
+            sqlFragment = sql`${sqlFragment} OR (LOWER(${jobs.title}) LIKE ${'%' + term + '%'} OR LOWER(${jobs.description}) LIKE ${'%' + term + '%'} OR LOWER(${jobs.skills}) LIKE ${'%' + term + '%'})`;
+          }
+        });
+        
+        sqlFragment = sql`${sqlFragment})`;
+        conditions.push(sqlFragment);
+      }
+    }
+
+    const [{ count }] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(jobs)
+      .where(and(...conditions));
+
+    const allJobs = await db
+      .select({
+        id: jobs.id,
+        slug: jobs.slug,
+        title: jobs.title,
+        description: jobs.description,
+        companyName: jobs.companyName,
+        location: jobs.location,
+        salaryRange: jobs.salaryRange,
+        jobType: jobs.jobType,
+        workMode: jobs.workMode,
+        experience: jobs.experience,
+        skills: jobs.skills,
+        category: jobs.category,
+        education: jobs.education,
+        benefits: jobs.benefits,
+        isActive: jobs.isActive,
+        createdAt: jobs.createdAt,
+        employerId: jobs.employerId,
+        employerEmail: users.email,
+      })
+      .from(jobs)
+      .innerJoin(users, eq(jobs.employerId, users.id))
+      .where(and(...conditions))
+      .orderBy(desc(jobs.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    return NextResponse.json({ success: true, data: allJobs, meta: { page, limit, total: Number(count) } });
+  } catch (error: any) {
+    console.error('❌ GET /api/jobs Error:', error);
+    return NextResponse.json({ success: false, message: 'Failed to fetch jobs', data: [] }, { status: 500 });
   }
-
-  const [{ count }] = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(jobs)
-    .where(and(...conditions));
-
-  const allJobs = await db
-    .select({
-      id: jobs.id,
-      slug: jobs.slug,
-      title: jobs.title,
-      description: jobs.description,
-      companyName: jobs.companyName,
-      location: jobs.location,
-      salaryRange: jobs.salaryRange,
-      jobType: jobs.jobType,
-      workMode: jobs.workMode,
-      experience: jobs.experience,
-      skills: jobs.skills,
-      category: jobs.category,
-      education: jobs.education,
-      benefits: jobs.benefits,
-      isActive: jobs.isActive,
-      createdAt: jobs.createdAt,
-      employerId: jobs.employerId,
-      employerEmail: users.email,
-    })
-    .from(jobs)
-    .innerJoin(users, eq(jobs.employerId, users.id))
-    .where(and(...conditions))
-    .orderBy(desc(jobs.createdAt))
-    .limit(limit)
-    .offset(offset);
-
-  return NextResponse.json({ success: true, data: allJobs, meta: { page, limit, total: Number(count) } });
 }
 
 // POST /api/jobs — Create a new job (authenticated employer)
