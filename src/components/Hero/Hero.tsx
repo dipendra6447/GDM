@@ -6,25 +6,36 @@ import heroBg from "../../assets/images/hero_city_bg.png";
 
 const popularSearches = [
   "Web Developer",
-  "Marketing Agency",
-  "Graphics",
-  "Saloon",
+  "Marketing Manager",
   "UI/UX Designer",
+  "Data Analyst",
+  "Sales Executive",
+  "Graphic Designer",
 ];
 
 const Hero: React.FC = () => {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<"jobs" | "companies" | "candidates">("jobs");
+  const [keyword, setKeyword] = useState("");
   const [designation, setDesignation] = useState("");
-  const [experience, setExperience] = useState("");
   const [location, setLocation] = useState("");
+  const [experience, setExperience] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (designation) params.set("keyword", designation);
+    if (keyword) params.set("keyword", keyword);
+    if (designation) params.set("designation", designation);
     if (location) params.set("location", location);
     if (experience) params.set("experience", experience);
-    router.push(`/jobs?${params.toString()}`);
+
+    if (activeTab === "companies") {
+      router.push(`/companies?${params.toString()}`);
+    } else if (activeTab === "candidates") {
+      router.push(`/seeker?${params.toString()}`);
+    } else {
+      router.push(`/jobs?${params.toString()}`);
+    }
   };
 
   return (
@@ -34,73 +45,99 @@ const Hero: React.FC = () => {
       aria-label="Hero banner section"
       style={{ backgroundImage: `url(${heroBg.src})` }}
     >
-      {/* Dynamic ambient backdrop overlay */}
-      <div className="hero-gradient-overlay" aria-hidden="true" />
-      <div className="hero-glow-sphere" aria-hidden="true" />
+      {/* Dark overlay for maximum text contrast */}
+      <div className="hero-dark-overlay" aria-hidden="true" />
 
-      <div className="container h-100 position-relative">
-        <div className="row align-items-center h-100 gy-5">
-          {/* ── LEFT COLUMN: Text Content & Search Form ── */}
-          <div className="col-lg-7 hero-content-left">
-            {/* Top Badge */}
-            <div className="hero-guarantee-badge">
-              <span className="hero-badge-sparkle" aria-hidden="true">
-                ✨
-              </span>
-              #1 Job Portal in 2026 — 50,000+ Active Jobs
-            </div>
+      <div className="container position-relative hero-content-container">
+        {/* ── CENTERED HERO HEADING ── */}
+        <div className="text-center hero-header-group">
+          <h1 className="hero-main-heading">
+            Find the Right Job.
+            <br />
+            Build Your <span className="hero-heading-blue">Future.</span>
+          </h1>
 
-            {/* Main Heading */}
-            <h1 className="hero-main-heading">
-              Join Millions. Find Your
-              <br />
-              Better <span className="hero-heading-blue">Dream Job.</span>
-            </h1>
+          <p className="hero-sub-heading">
+            Smart tools. Real opportunities. Trusted by millions.
+          </p>
+        </div>
 
-            {/* Sub-heading */}
-            <p className="hero-sub-heading">
-              Smart AI matching. Direct company applications. Verified recruiters.
-            </p>
+        {/* ── SEARCH CARD CONTAINER ── */}
+        <div className="hero-search-card-wrapper">
+          {/* Top Pill Tab Switcher */}
+          <div className="hero-tabs-nav" role="tablist" aria-label="Search category tabs">
+            <button
+              className={`hero-tab-btn ${activeTab === "jobs" ? "active" : ""}`}
+              onClick={() => setActiveTab("jobs")}
+              role="tab"
+              aria-selected={activeTab === "jobs"}
+            >
+              <i className="bi bi-search hero-tab-icon" aria-hidden="true" />
+              <span>Find Jobs</span>
+            </button>
+            <button
+              className={`hero-tab-btn ${activeTab === "companies" ? "active" : ""}`}
+              onClick={() => setActiveTab("companies")}
+              role="tab"
+              aria-selected={activeTab === "companies"}
+            >
+              <i className="bi bi-building hero-tab-icon" aria-hidden="true" />
+              <span>Find Companies</span>
+            </button>
+            <button
+              className={`hero-tab-btn ${activeTab === "candidates" ? "active" : ""}`}
+              onClick={() => setActiveTab("candidates")}
+              role="tab"
+              aria-selected={activeTab === "candidates"}
+            >
+              <i className="bi bi-people hero-tab-icon" aria-hidden="true" />
+              <span>Find Candidates</span>
+            </button>
+          </div>
 
-            {/* Trust pills */}
-            <div className="hero-trust-pills" role="list">
-              <div className="trust-pill" role="listitem">
-                <i className="bi bi-shield-check pill-icon" aria-hidden="true" />
-                100% Verified Listings
-              </div>
-              <div className="trust-pill" role="listitem">
-                <i className="bi bi-building pill-icon" aria-hidden="true" />
-                10k+ Top Companies
-              </div>
-              <div className="trust-pill" role="listitem">
-                <i className="bi bi-rocket-takeoff pill-icon" aria-hidden="true" />
-                Instant Match & Apply
-              </div>
-            </div>
+          {/* White Main Search Card */}
+          <div className="hero-main-search-card">
+            <form onSubmit={handleSearch} role="search" aria-label="Job search form">
+              <div className="hero-search-fields-grid">
+                {/* Field 1: Keyword */}
+                <div className="hero-field-cell">
+                  <div className="hero-field-icon-badge icon-badge-blue">
+                    <i className="bi bi-briefcase" aria-hidden="true" />
+                  </div>
+                  <div className="hero-field-content">
+                    <label className="hero-field-label" htmlFor="hero-keyword">
+                      Job Title or Keyword
+                    </label>
+                    <input
+                      id="hero-keyword"
+                      type="text"
+                      className="hero-field-input"
+                      placeholder="e.g. UI/UX Designer"
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-            {/* ── Job Search Box ── */}
-            <div className="hero-search-box">
-              <form
-                onSubmit={handleSearch}
-                role="search"
-                aria-label="Job search form"
-              >
-                <div className="hero-search-fields">
-                  {/* Designation */}
-                  <div className="hero-search-field">
-                    <label className="hero-search-label" htmlFor="hero-designation">
+                <div className="hero-cell-divider" aria-hidden="true" />
+
+                {/* Field 2: Designation */}
+                <div className="hero-field-cell">
+                  <div className="hero-field-icon-badge icon-badge-green">
+                    <i className="bi bi-building" aria-hidden="true" />
+                  </div>
+                  <div className="hero-field-content">
+                    <label className="hero-field-label" htmlFor="hero-designation">
                       Designation
                     </label>
-                    <div className="hero-input-wrap">
-                      <i className="bi bi-briefcase hero-field-icon" aria-hidden="true" />
+                    <div className="hero-select-wrap">
                       <select
                         id="hero-designation"
-                        className="hero-search-input hero-select-field"
+                        className="hero-field-select"
                         value={designation}
                         onChange={(e) => setDesignation(e.target.value)}
-                        aria-label="Designation"
                       >
-                        <option value="">Select Designation</option>
+                        <option value="">Select designation</option>
                         <option value="Software Engineer">Software Engineer</option>
                         <option value="Frontend Developer">Frontend Developer</option>
                         <option value="Backend Developer">Backend Developer</option>
@@ -109,66 +146,30 @@ const Hero: React.FC = () => {
                         <option value="Marketing Manager">Marketing Manager</option>
                         <option value="Data Analyst">Data Analyst</option>
                       </select>
-                      <i
-                        className="bi bi-chevron-down hero-field-arrow"
-                        aria-hidden="true"
-                      />
+                      <i className="bi bi-chevron-down hero-select-chevron" aria-hidden="true" />
                     </div>
                   </div>
+                </div>
 
-                  <div className="hero-field-sep" aria-hidden="true" />
+                <div className="hero-cell-divider" aria-hidden="true" />
 
-                  {/* Experience */}
-                  <div className="hero-search-field">
-                    <label
-                      className="hero-search-label"
-                      htmlFor="hero-experience"
-                    >
-                      Experience
-                    </label>
-                    <div className="hero-input-wrap">
-                      <i className="bi bi-clock-history hero-field-icon" aria-hidden="true" />
-                      <select
-                        id="hero-experience"
-                        className="hero-search-input hero-select-field"
-                        value={experience}
-                        onChange={(e) => setExperience(e.target.value)}
-                        aria-label="Experience"
-                      >
-                        <option value="">Select Experience</option>
-                        <option value="Freshers">Freshers</option>
-                        <option value="1-2 Years">1-2 Years</option>
-                        <option value="3-5 Years">3-5 Years</option>
-                        <option value="5-10 Years">5-10 Years</option>
-                        <option value="10+ Years">10+ Years</option>
-                      </select>
-                      <i
-                        className="bi bi-chevron-down hero-field-arrow"
-                        aria-hidden="true"
-                      />
-                    </div>
+                {/* Field 3: Location */}
+                <div className="hero-field-cell">
+                  <div className="hero-field-icon-badge icon-badge-purple">
+                    <i className="bi bi-geo-alt" aria-hidden="true" />
                   </div>
-
-                  <div className="hero-field-sep" aria-hidden="true" />
-
-                  {/* Location */}
-                  <div className="hero-search-field">
-                    <label
-                      className="hero-search-label"
-                      htmlFor="hero-location"
-                    >
+                  <div className="hero-field-content">
+                    <label className="hero-field-label" htmlFor="hero-location">
                       Location
                     </label>
-                    <div className="hero-input-wrap">
-                      <i className="bi bi-geo-alt hero-field-icon" aria-hidden="true" />
+                    <div className="hero-select-wrap">
                       <select
                         id="hero-location"
-                        className="hero-search-input hero-select-field"
+                        className="hero-field-select"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        aria-label="Location"
                       >
-                        <option value="">Select Location</option>
+                        <option value="">City, State or Remote</option>
                         <option value="Kolkata">Kolkata</option>
                         <option value="Bengaluru">Bengaluru</option>
                         <option value="Mumbai">Mumbai</option>
@@ -178,119 +179,110 @@ const Hero: React.FC = () => {
                         <option value="Chennai">Chennai</option>
                         <option value="Remote">Remote</option>
                       </select>
-                      <i
-                        className="bi bi-chevron-down hero-field-arrow"
-                        aria-hidden="true"
-                      />
+                      <i className="bi bi-chevron-down hero-select-chevron" aria-hidden="true" />
                     </div>
                   </div>
-
-                  {/* Search Button */}
-                  <button
-                    type="submit"
-                    className="hero-search-btn"
-                    id="hero-search-submit"
-                    aria-label="Search jobs"
-                  >
-                    <i className="bi bi-search" aria-hidden="true" />
-                    <span>Search Jobs</span>
-                  </button>
                 </div>
-              </form>
 
-              {/* Popular searches */}
-              <div className="hero-popular-row">
-                <span className="hero-popular-label">Popular Searches:</span>
-                {popularSearches.map((term) => (
-                  <button
-                    key={term}
-                    className="hero-popular-tag"
-                    id={`popular-hero-${term
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`}
-                    type="button"
-                    onClick={() => {
-                      setDesignation(term);
-                      router.push(`/jobs?keyword=${encodeURIComponent(term)}`);
-                    }}
-                  >
-                    {term}
-                  </button>
-                ))}
+                <div className="hero-cell-divider" aria-hidden="true" />
+
+                {/* Field 4: Experience */}
+                <div className="hero-field-cell">
+                  <div className="hero-field-icon-badge icon-badge-amber">
+                    <i className="bi bi-clock-history" aria-hidden="true" />
+                  </div>
+                  <div className="hero-field-content">
+                    <label className="hero-field-label" htmlFor="hero-experience">
+                      Experience
+                    </label>
+                    <div className="hero-select-wrap">
+                      <select
+                        id="hero-experience"
+                        className="hero-field-select"
+                        value={experience}
+                        onChange={(e) => setExperience(e.target.value)}
+                      >
+                        <option value="">Select experience</option>
+                        <option value="Freshers">Freshers</option>
+                        <option value="1-2 Years">1-2 Years</option>
+                        <option value="3-5 Years">3-5 Years</option>
+                        <option value="5-10 Years">5-10 Years</option>
+                        <option value="10+ Years">10+ Years</option>
+                      </select>
+                      <i className="bi bi-chevron-down hero-select-chevron" aria-hidden="true" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Search Button */}
+                <button type="submit" className="hero-submit-btn" id="hero-search-submit">
+                  <i className="bi bi-search" aria-hidden="true" />
+                  <span>Search Jobs</span>
+                </button>
               </div>
+            </form>
+
+            {/* Popular Searches Row */}
+            <div className="hero-popular-searches-bar">
+              <div className="popular-tags-group">
+                <span className="popular-label">Popular Searches:</span>
+                <div className="popular-pills-list">
+                  {popularSearches.map((term) => (
+                    <button
+                      key={term}
+                      type="button"
+                      className="popular-pill-btn"
+                      onClick={() => {
+                        setKeyword(term);
+                        router.push(`/jobs?keyword=${encodeURIComponent(term)}`);
+                      }}
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="browse-all-link"
+                onClick={() => router.push("/jobs")}
+              >
+                Browse All <i className="bi bi-arrow-right" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── STATS METRICS ROW AT BOTTOM ── */}
+        <div className="hero-stats-row" role="list">
+          <div className="hero-stat-card" role="listitem">
+            <div className="stat-badge badge-blue">
+              <i className="bi bi-people-fill" aria-hidden="true" />
+            </div>
+            <div className="stat-text">
+              <h4 className="stat-number">10M+</h4>
+              <p className="stat-desc">Active Job Seekers</p>
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN: Glassmorphic Visual Showcase Stack ── */}
-          <div className="col-lg-5 hero-showcase-col">
-            <div className="hero-showcase-wrapper">
+          <div className="hero-stat-card" role="listitem">
+            <div className="stat-badge badge-green">
+              <i className="bi bi-briefcase-fill" aria-hidden="true" />
+            </div>
+            <div className="stat-text">
+              <h4 className="stat-number">250K+</h4>
+              <p className="stat-desc">Companies Hiring</p>
+            </div>
+          </div>
 
-              {/* Top Floating Badge */}
-              <div className="hero-float-badge float-badge-top">
-                <div className="avatar-stack" aria-hidden="true">
-                  <span className="avatar-pill bg-primary text-white">JD</span>
-                  <span className="avatar-pill bg-success text-white">SK</span>
-                  <span className="avatar-pill bg-purple text-white">+99</span>
-                </div>
-                <div className="badge-text-group">
-                  <span className="badge-title">1,500+ Hired Today</span>
-                  <span className="badge-subtitle">Top Startups & MNCs</span>
-                </div>
-              </div>
-
-              {/* Main Feature Card */}
-              <div className="hero-main-card">
-                <div className="card-header-badge">
-                  <span className="live-dot" /> Live Match Highlight
-                </div>
-
-                <div className="card-job-info">
-                  <div className="company-logo-circle">
-                    <span>JN</span>
-                  </div>
-                  <div className="company-details">
-                    <h3 className="job-title">Senior Lead Product Designer</h3>
-                    <p className="company-name">
-                      JobNest Tech • <span className="text-primary">Verified Enterprise</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="card-tags-row">
-                  <span className="card-tag">Full-Time</span>
-                  <span className="card-tag">Remote</span>
-                  <span className="card-tag salary-tag">₹18L - ₹26L / yr</span>
-                </div>
-
-                <div className="match-score-box">
-                  <div className="match-score-header">
-                    <span className="match-label"><i className="bi bi-cpu" /> Profile Compatibility</span>
-                    <span className="match-percent">98% Match</span>
-                  </div>
-                  <div className="match-progress-bar">
-                    <div className="match-progress-fill" style={{ width: "98%" }} />
-                  </div>
-                </div>
-
-                <button
-                  className="card-quick-apply-btn"
-                  onClick={() => router.push("/jobs")}
-                >
-                  <i className="bi bi-lightning-charge-fill" /> Quick Apply
-                </button>
-              </div>
-
-              {/* Bottom Floating Badge */}
-              <div className="hero-float-badge float-badge-bottom">
-                <div className="icon-circle bg-success-soft">
-                  <i className="bi bi-check-circle-fill text-success" />
-                </div>
-                <div className="badge-text-group">
-                  <span className="badge-title">Direct Recruiter Access</span>
-                  <span className="badge-subtitle">Zero Spam • 100% Free</span>
-                </div>
-              </div>
-
+          <div className="hero-stat-card" role="listitem">
+            <div className="stat-badge badge-purple">
+              <i className="bi bi-shield-check" aria-hidden="true" />
+            </div>
+            <div className="stat-text">
+              <h4 className="stat-number">100%</h4>
+              <p className="stat-desc">Verified Jobs</p>
             </div>
           </div>
         </div>
