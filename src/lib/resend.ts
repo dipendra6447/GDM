@@ -412,4 +412,77 @@ export async function sendContactInquiryEmail({
   }
 }
 
+export interface SendEmailOtpParams {
+  toEmail: string;
+  otpCode: string;
+}
+
+/**
+ * Sends a 6-digit Email Verification OTP using Resend
+ */
+export async function sendEmailOtp({ toEmail, otpCode }: SendEmailOtpParams) {
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0b1739; color: #ffffff; margin: 0; padding: 40px 20px; }
+          .container { max-width: 520px; margin: 0 auto; background: #ffffff; color: #1f2937; border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); text-align: center; }
+          .logo { font-size: 26px; font-weight: 800; color: #00B0FF; margin-bottom: 24px; display: inline-block; }
+          .logo span { color: #0038FF; }
+          .title { font-size: 22px; font-weight: 800; color: #0b1739; margin-bottom: 12px; }
+          .text { font-size: 15px; line-height: 1.6; color: #4b5563; margin-bottom: 24px; }
+          .otp-box { background: #f0f7ff; border: 2px dashed #0072FF; border-radius: 16px; padding: 20px; font-size: 36px; font-weight: 900; letter-spacing: 12px; color: #0038FF; margin: 24px 0; }
+          .note { font-size: 13px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 28px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="logo">Go<span>Discover</span>Me</div>
+          <h1 class="title">Verify Your Email Address</h1>
+          <p class="text">
+            Use the 6-digit verification code below to complete your signup on GoDiscoverMe:
+          </p>
+          <div class="otp-box">${otpCode}</div>
+          <p class="text" style="font-size: 13px;">
+            This verification code is valid for <strong>10 minutes</strong>. Do not share this code with anyone.
+          </p>
+          <div class="note">
+            <p>If you did not request this email verification, please ignore this email.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  if (!resend) {
+    console.warn('\n⚠️ [Resend Dev Simulation Mode]: RESEND_API_KEY is not set in .env.local.');
+    console.warn(`📩 [Simulated Email OTP for ${toEmail}]: CODE: ${otpCode}\n`);
+    return { success: true, simulated: true, otpCode };
+  }
+
+  try {
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'GoDiscoverMe Verification <onboarding@resend.dev>';
+    const response = await resend.emails.send({
+      from: fromEmail,
+      to: toEmail,
+      subject: `${otpCode} is your GoDiscoverMe verification code 🔐`,
+      html: htmlContent,
+    });
+
+    if (response.error) {
+      console.error('❌ [Resend Error]: Email OTP failed:', response.error);
+      return { success: false, error: response.error };
+    }
+
+    console.log(`✅ Email OTP sent to ${toEmail} (ID: ${response.data?.id})`);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    console.error('❌ Error sending Email OTP:', error);
+    return { success: false, error };
+  }
+}
+
+
 

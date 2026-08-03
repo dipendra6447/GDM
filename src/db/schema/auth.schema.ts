@@ -8,6 +8,9 @@ export const users = pgTable('users', {
   googleId: varchar('google_id', { length: 255 }).unique(), // Added for Google Login
   linkedinId: varchar('linkedin_id', { length: 255 }).unique(), // Added for LinkedIn Login
   avatarUrl: varchar('avatar_url', { length: 1000 }), // Useful for storing provider profile pics
+  phone: varchar('phone', { length: 20 }),
+  isEmailVerified: boolean('is_email_verified').default(false).notNull(),
+  isPhoneVerified: boolean('is_phone_verified').default(false).notNull(),
   jobApplyCount: integer('job_apply_count').default(0).notNull(),
   jobPostCount: integer('job_post_count').default(0).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
