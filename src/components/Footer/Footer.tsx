@@ -114,7 +114,7 @@ const Footer: React.FC = () => {
         <div className="container">
           <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <p className="footer-copyright">
-              © 2024 JobNest. All rights reserved. Made with ❤️ for job seekers worldwide.
+              © {new Date().getFullYear()} GoDiscoverMe. All rights reserved. Made with ❤️ for job seekers worldwide.
             </p>
             <div className="footer-bottom-links d-flex gap-4">
               <Link href="#" className="footer-bottom-link" id="footer-privacy">Privacy</Link>
