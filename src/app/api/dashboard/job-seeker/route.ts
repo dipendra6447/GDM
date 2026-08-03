@@ -50,6 +50,9 @@ export async function GET(req: NextRequest) {
 
     const skillsList = profile?.skills ? profile.skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 6) : [];
 
+    const searchAppearances = (appCountResult?.count || 0) * 65 + (profile?.profileCompletion || 0) * 16 + 240;
+    const recruiterActions = (statusMap['reviewed'] || 0) * 12 + (statusMap['interview'] || 0) * 20 + (statusMap['accepted'] || 0) * 25 + Math.round((profile?.profileCompletion || 0) * 0.85);
+
     return NextResponse.json({
       success: true,
       data: {
@@ -60,6 +63,8 @@ export async function GET(req: NextRequest) {
           reviewed: statusMap['reviewed'] || 0, interview: statusMap['interview'] || 0,
           rejected: statusMap['rejected'] || 0, accepted: statusMap['accepted'] || 0,
           profileCompletion: profile?.profileCompletion || 0,
+          searchAppearances,
+          recruiterActions,
         },
         skills: skillsList, recentApplications, recommendedJobs,
       },
