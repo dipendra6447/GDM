@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from "../../hooks/useAuth";
+import Logo from '../Logo/Logo';
 import RoleUpgradeModal from '../RoleUpgradeModal/RoleUpgradeModal';
 import './MarketplaceHeader.css';
 
@@ -194,15 +195,8 @@ const MarketplaceHeader: React.FC = () => {
     >
       <div className="mp-header-inner">
         {/* Logo */}
-        <Link className="navbar-brand" href="/" aria-label="JobNest Home" style={{ textDecoration: 'none', marginRight: '16px' }}>
-          <div className="logo-mark" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="logo-icon" style={{ background: 'var(--color-primary)', color: '#fff', width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>
-              <i className="bi bi-briefcase-fill"></i>
-            </span>
-            <span className="logo-text" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-navy)', letterSpacing: '-0.5px' }}>
-              Job<span className="logo-accent" style={{ color: 'var(--color-primary)' }}>Nest</span>
-            </span>
-          </div>
+        <Link className="navbar-brand" href="/" aria-label="GoDiscoverMe Home" style={{ textDecoration: 'none', marginRight: '16px' }}>
+          <Logo size={32} />
         </Link>
 
         {/* Search Bar */}
