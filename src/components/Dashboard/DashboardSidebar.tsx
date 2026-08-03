@@ -39,7 +39,6 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
       { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard' },
       { label: 'Applied Jobs', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
       { label: 'Saved Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
-      { label: 'Saved Searches', icon: 'bi-search', href: '/dashboard/saved-searches' },
       { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=1' }
     ] : []),
     ...(isBusinessPromoter ? [
