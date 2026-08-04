@@ -1,16 +1,42 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "../../hooks/useAuth";
 import "./ProfileSidebar.css";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+
 const ProfileSidebar: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
+  const [seekerProfile, setSeekerProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSeekerData = async () => {
+      if (!isLoggedIn) return;
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_BASE}/api/profiles/job-seeker`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const pData = await res.json();
+          if (pData.success) setSeekerProfile(pData.data);
+        }
+      } catch (err) {
+        console.error("Error loading seeker profile data", err);
+      }
+    };
+    fetchSeekerData();
+  }, [isLoggedIn]);
   
   if (!isLoggedIn || !user) return null;
 
+  const displayAvatar = user?.avatarUrl || seekerProfile?.avatarUrl;
+  const formattedAvatar = displayAvatar ? (displayAvatar.startsWith('http') || displayAvatar.startsWith('/') ? displayAvatar : `/${displayAvatar}`) : null;
+
   const getUserInitial = () => {
-    if (user?.email) return user.email.charAt(0).toUpperCase();
+    const nameStr = seekerProfile?.firstName || user?.email;
+    if (nameStr) return nameStr.charAt(0).toUpperCase();
     return "U";
   };
 
@@ -20,7 +46,7 @@ const ProfileSidebar: React.FC = () => {
     return "Job Seeker";
   };
 
-  const username = user?.email?.split('@')[0];
+  const displayName = seekerProfile?.firstName ? `${seekerProfile.firstName} ${seekerProfile.lastName || ''}`.trim() : user?.email?.split('@')[0];
 
   return (
     <div className="profile-sidebar-card">
@@ -32,7 +58,7 @@ const ProfileSidebar: React.FC = () => {
               <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="4" />
               <circle cx="38" cy="38" r="32" fill="none" stroke="#14B87A" strokeWidth="4"
                 strokeDasharray={201}
-                strokeDashoffset={201 * (1 - (user?.profileCompletion || 0) / 100)}
+                strokeDashoffset={201 * (1 - ((seekerProfile?.profileCompletion ?? user?.profileCompletion) || 0) / 100)}
                 strokeLinecap="round"
                 transform="rotate(-90 38 38)"
                 style={{ transition: 'stroke-dashoffset 0.5s ease' }}
@@ -51,8 +77,8 @@ const ProfileSidebar: React.FC = () => {
               justifyContent: 'center',
               background: '#F1F5F9'
             }}>
-              {user?.avatarUrl ? (
-                <img src={user.avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              {formattedAvatar ? (
+                <img src={formattedAvatar} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <div style={{ color: 'var(--color-text-dark)', fontWeight: 'bold', fontSize: '24px' }}>
                   {getUserInitial()}
@@ -61,11 +87,11 @@ const ProfileSidebar: React.FC = () => {
             </div>
           </div>
           <div className="profile-percent-label">
-            {user?.profileCompletion || 0}%
+            {(seekerProfile?.profileCompletion ?? user?.profileCompletion) || 0}%
           </div>
         </div>
 
-        <h3 className="profile-name">{username}</h3>
+        <h3 className="profile-name">{displayName}</h3>
         <p className="profile-role">{getRoleLabel()}</p>
         <span className="profile-updated">Last updated 1d ago</span>
 

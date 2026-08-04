@@ -10,3 +10,5 @@ export * from './config.schema';
 export * from './category.schema';
 export * from './invoice.schema';
 export * from './ad-analytics.schema';
+export * from './inquiry.schema';
+

@@ -56,6 +56,37 @@ export async function GET(req: NextRequest) {
       ? Math.max(...completionValues)
       : 0;
 
+    // Resolve avatar / logo URL from user or specific role profile tables
+    let resolvedAvatarUrl = user.avatarUrl || null;
+
+    if (!resolvedAvatarUrl) {
+      try {
+        const [jsProfile] = await db.select({ avatarUrl: jobSeekerProfiles.avatarUrl })
+          .from(jobSeekerProfiles).where(eq(jobSeekerProfiles.userId, user.id)).limit(1);
+        if (jsProfile?.avatarUrl) {
+          resolvedAvatarUrl = jsProfile.avatarUrl;
+        } else {
+          const [empProfile] = await db.select({ logoUrl: employerProfiles.logoUrl })
+            .from(employerProfiles).where(eq(employerProfiles.userId, user.id)).limit(1);
+          if (empProfile?.logoUrl) {
+            resolvedAvatarUrl = empProfile.logoUrl;
+          } else {
+            const [bpProfile] = await db.select({ logoUrl: businessPromoterProfiles.logoUrl })
+              .from(businessPromoterProfiles).where(eq(businessPromoterProfiles.userId, user.id)).limit(1);
+            if (bpProfile?.logoUrl) {
+              resolvedAvatarUrl = bpProfile.logoUrl;
+            }
+          }
+        }
+
+        if (resolvedAvatarUrl) {
+          await db.update(users).set({ avatarUrl: resolvedAvatarUrl }).where(eq(users.id, user.id));
+        }
+      } catch (err) {
+        console.error('Failed to resolve profile avatar fallback:', err);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       authenticated: true,
@@ -63,7 +94,7 @@ export async function GET(req: NextRequest) {
         id: user.id,
         email: user.email,
         googleId: user.googleId,
-        avatarUrl: user.avatarUrl,
+        avatarUrl: resolvedAvatarUrl,
         jobApplyCount: user.jobApplyCount,
         jobPostCount: user.jobPostCount,
         roles: userRoleIds,

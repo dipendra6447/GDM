@@ -354,13 +354,13 @@ const MarketplaceHeader: React.FC = () => {
                     </div>
 
                     <div className="nav-dropdown-divider" />
-                    <Link href={user?.roles?.includes(2) ? "/employer/post-job?tab=overview" : "/dashboard"} className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                    <Link href="/dashboard" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
                       <i className="bi bi-grid-fill" /> Dashboard
                     </Link>
                     {user?.roles?.includes(2) && (
                       <>
                         <Link
-                          href="/employer/post-job"
+                          href="/dashboard?tab=post"
                           className="nav-dropdown-item nav-dropdown-post-job"
                           onClick={() => setDropdownOpen(false)}
                         >

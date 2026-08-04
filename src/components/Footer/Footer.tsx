@@ -90,13 +90,19 @@ const Footer: React.FC = () => {
                 <div className="footer-column">
                   <h4 className="footer-column-title">{col.title}</h4>
                   <ul className="footer-links">
-                    {col.links.map(link => (
-                      <li key={link}>
-                        <Link href="#" className="footer-link" id={`footer-link-${link.toLowerCase().replace(/\s+/g, '-')}`}>
-                          {link}
-                        </Link>
-                      </li>
-                    ))}
+                    {col.links.map(link => {
+                      let href = '#';
+                      if (link === 'Contact Us') href = '/contact';
+                      if (link === 'Terms of Service') href = '/terms';
+                      return (
+                        <li key={link}>
+                          <Link href={href} className="footer-link" id={`footer-link-${link.toLowerCase().replace(/\s+/g, '-')}`}>
+                            {link}
+                          </Link>
+                        </li>
+                      );
+                    })}
+
                   </ul>
                 </div>
               </div>

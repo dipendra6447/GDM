@@ -56,18 +56,37 @@ export async function POST(req: NextRequest) {
     const { subscriptionType, tier, amount } = body;
     const userId = authPayload.userId;
 
+    // Check for existing active subscription
     const existing = await db.select().from(subscriptions).where(
       and(eq(subscriptions.userId, userId), eq(subscriptions.subscriptionType, subscriptionType), eq(subscriptions.status, 'active'), gt(subscriptions.expiresAt, new Date()))
     ).limit(1);
 
-    if (existing.length > 0) {
-      return NextResponse.json({ success: false, message: `An active ${subscriptionType} subscription already exists`, data: existing[0] }, { status: 409 });
-    }
+    let sub: any = null;
 
-    const expiresAt = new Date();
-    if (tier === 'daily') expiresAt.setDate(expiresAt.getDate() + 1);
-    else if (tier === 'weekly') expiresAt.setDate(expiresAt.getDate() + 7);
-    else expiresAt.setMonth(expiresAt.getMonth() + 1);
+    if (existing.length > 0) {
+      // Extend existing subscription
+      const currentSub = existing[0];
+      const newExpiresAt = new Date(Math.max(new Date(currentSub.expiresAt).getTime(), Date.now()));
+      if (tier === 'daily') newExpiresAt.setDate(newExpiresAt.getDate() + 1);
+      else if (tier === 'weekly') newExpiresAt.setDate(newExpiresAt.getDate() + 7);
+      else newExpiresAt.setMonth(newExpiresAt.getMonth() + 1);
+
+      const [updatedSub] = await db.update(subscriptions)
+        .set({ tier, expiresAt: newExpiresAt, status: 'active' })
+        .where(eq(subscriptions.id, currentSub.id))
+        .returning();
+
+      sub = updatedSub;
+    } else {
+      // Create new subscription
+      const expiresAt = new Date();
+      if (tier === 'daily') expiresAt.setDate(expiresAt.getDate() + 1);
+      else if (tier === 'weekly') expiresAt.setDate(expiresAt.getDate() + 7);
+      else expiresAt.setMonth(expiresAt.getMonth() + 1);
+
+      const [newSub] = await db.insert(subscriptions).values({ userId, subscriptionType, tier, status: 'active', expiresAt }).returning();
+      sub = newSub;
+    }
 
     // Fetch user and profile details for invoice
     const [userRecord] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -101,9 +120,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Insert Subscription
-    const [sub] = await db.insert(subscriptions).values({ userId, subscriptionType, tier, status: 'active', expiresAt }).returning();
-
     // Create corresponding Invoice
     const basePrice = amount !== undefined ? amount : (PRICING[subscriptionType]?.[tier] || 0);
     const taxAmount = Math.round(basePrice * 0.18); // 18% GST
@@ -128,8 +144,14 @@ export async function POST(req: NextRequest) {
       paymentStatus: 'paid'
     }).returning();
 
-    return NextResponse.json({ success: true, message: 'Subscription purchased and invoice generated', data: sub, invoice: inv }, { status: 201 });
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Subscription purchased and invoice generated', 
+      data: sub, 
+      invoice: inv 
+    }, { status: 201 });
   } catch (error: any) {
+    console.error('POST /api/subscriptions error:', error);
     if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     return NextResponse.json({ success: false, message: 'Failed to create subscription' }, { status: 500 });
   }

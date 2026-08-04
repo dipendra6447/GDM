@@ -29,6 +29,7 @@
     "react-quill-new": "^3.8.3",
     "react-select": "^5.10.2",
     "recharts": "^3.9.2",
+    "resend": "^6.18.0",
     "slugify": "^1.6.9",
     "zod": "^4.4.3"
   },

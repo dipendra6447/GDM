@@ -13,13 +13,17 @@ export interface UploadedFile {
 
 // ─── Upload Config ────────────────────────────────────────────────────────────
 const UPLOAD_DIR = path.join(process.cwd(), 'public/uploads');
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
 
 const ALLOWED_MIMETYPES: Record<string, string[]> = {
   resume: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
   avatar: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   logo: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   image: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  banner: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  banner1: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  banner2: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  banner3: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
 };
 
 // ─── Ensure Directories ──────────────────────────────────────────────────────
@@ -35,6 +39,7 @@ async function ensureDir(dir: string) {
 function getSubdir(fieldname: string): string {
   if (fieldname === 'resume' || fieldname.startsWith('cert_file_')) return 'resumes';
   if (fieldname === 'avatar' || fieldname === 'logo') return 'avatars';
+  if (fieldname.startsWith('banner')) return 'promotions';
   if (fieldname === 'image') return 'categories';
   return 'misc';
 }
@@ -56,14 +61,19 @@ export async function parseFormData(req: NextRequest): Promise<{
     if (typeof value === 'string') {
       fields[key] = value;
     } else if (value instanceof File) {
+      // Ignore empty file inputs submitted by browser forms
+      if (!value.size || value.size === 0 || !value.name || value.name === 'undefined') {
+        continue;
+      }
+
       // Validate file size
       if (value.size > MAX_FILE_SIZE) {
-        throw new Error(`File ${key} exceeds the 5MB limit`);
+        throw new Error(`File ${key} exceeds the 10MB limit`);
       }
 
       // Validate mimetype
       const allowedTypes = ALLOWED_MIMETYPES[key] || Object.values(ALLOWED_MIMETYPES).flat();
-      if (!allowedTypes.includes(value.type)) {
+      if (value.type && !allowedTypes.includes(value.type)) {
         throw new Error(`Invalid file type for ${key}: ${value.type}`);
       }
 
@@ -72,7 +82,7 @@ export async function parseFormData(req: NextRequest): Promise<{
       await ensureDir(uploadPath);
 
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      const ext = path.extname(value.name);
+      const ext = path.extname(value.name) || '.png';
       const filename = `${key}-${uniqueSuffix}${ext}`;
       const filepath = path.join(uploadPath, filename);
 
@@ -84,7 +94,7 @@ export async function parseFormData(req: NextRequest): Promise<{
         fieldname: key,
         filename,
         filepath: `/uploads/${subdir}/${filename}`,
-        mimetype: value.type,
+        mimetype: value.type || 'image/png',
         size: value.size,
       });
     }
