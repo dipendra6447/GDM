@@ -10,9 +10,10 @@ import { sendWelcomeEmail } from '@/lib/resend';
 // POST /api/auth/register
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, role, profile } = await req.json() as {
+    const { email, password, phone, role, profile } = await req.json() as {
       email: string;
       password: string;
+      phone?: string;
       role?: 'job_seeker' | 'job_poster' | 'business_promoter';
       profile?: Record<string, unknown>;
     };
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
     const roleId = ROLE_MAP[selectedRole];
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const [user] = await db.insert(users).values({ email, passwordHash }).returning();
+    const [user] = await db.insert(users).values({ email, passwordHash, phone: phone || undefined }).returning();
 
     // Assign the selected role
     await db.insert(userRoles).values({ userId: user.id, roleId });

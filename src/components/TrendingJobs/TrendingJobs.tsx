@@ -89,8 +89,9 @@ const TrendingJobs: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const res = await fetch("/api/categories/job");
-        const json = await res.json();
-        if (json.success && json.data.length > 0) {
+        if (!res.ok) return;
+        const json = await res.json().catch(() => null);
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
           const categoryNames = json.data.map((c: any) => c.name);
           setFilterTabs(["All Jobs", ...categoryNames]);
         }
@@ -103,8 +104,12 @@ const TrendingJobs: React.FC = () => {
     const fetchJobs = async () => {
       try {
         const res = await fetch("/api/jobs?limit=12");
-        const json = await res.json();
-        if (json.success && json.data.length > 0) {
+        if (!res.ok) {
+          console.warn("API /api/jobs returned status:", res.status);
+          return;
+        }
+        const json = await res.json().catch(() => null);
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
           // Map to interface, handling missing fields
           const mapped = json.data.map((j: any, i: number) => ({
             id: j.id,
