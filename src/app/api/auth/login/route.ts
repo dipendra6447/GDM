@@ -16,6 +16,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
     }
 
+    if (!user.isActive || user.isDeleted) {
+      return NextResponse.json(
+        { success: false, message: 'Your account has been suspended by an administrator.' },
+        { status: 403 }
+      );
+    }
+
     if (!user.passwordHash) {
       return NextResponse.json({ success: false, message: 'Please sign in using your Google or LinkedIn account.' }, { status: 401 });
     }

@@ -1,0 +1,103 @@
+/* ============================================
+   PERSONA CARDS SECTION — Client Mockup Match
+   ============================================ */
+
+.persona-cards-section {
+  padding: 40px 0 60px;
+  background: #f8fafc;
+}
+
+.persona-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.persona-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.persona-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.persona-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.icon-circle-purple {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.25);
+}
+
+.icon-circle-green {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.25);
+}
+
+.icon-circle-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+.persona-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.persona-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.persona-card-desc {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.persona-card-link {
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: gap 0.2s ease;
+}
+
+.link-purple { color: #4f46e5; }
+.link-green { color: #059669; }
+.link-blue { color: #2563eb; }
+
+.persona-card:hover .persona-card-link {
+  gap: 10px;
+}
+
+@media (max-width: 992px) {
+  .persona-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
