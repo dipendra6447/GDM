@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  MdDashboard, MdSettings, MdPeople, MdListAlt, MdKeyboardArrowDown
+  MdDashboard, MdSettings, MdPeople, MdListAlt, MdKeyboardArrowDown, MdImage
 } from 'react-icons/md';
 import { HiSparkles } from 'react-icons/hi2';
 import { dropdownToggle } from '@/lib/animations';
@@ -28,8 +28,10 @@ const menuItems = [
   ]},
   { label: 'Moderation', items: [
       { name: 'Promotions', icon: MdListAlt, path: '/admin/promotions' },
+      { name: 'Profile Images', icon: MdImage, path: '/admin/profile-images' },
   ]},
   { label: 'System', items: [
+      { name: 'Banner Image', icon: MdImage, path: '/admin/settings/banner' },
       { name: 'Global Config', icon: MdSettings, path: '/admin/settings/config' },
   ]},
 ];

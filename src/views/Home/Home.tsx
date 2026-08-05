@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import Hero from "../../components/Hero/Hero";
+import PersonaCards from "../../components/PersonaCards/PersonaCards";
 import CategorySection from "../../components/CategorySection/CategorySection";
 import TrendingJobs from "../../components/TrendingJobs/TrendingJobs";
 import StatsBanner from "../../components/StatsBanner/StatsBanner";
@@ -54,8 +55,9 @@ const Home: React.FC = () => {
       {/* ── ANONYMOUS USER DEFAULT HOME VIEW ── */}
       <main style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
         <Hero />
-        <CategorySection />
+        <PersonaCards />
         <TrendingJobs />
+        <CategorySection />
         <AdBanner />
         <div className="container">
           <PromotedBusinesses variant="home" />
