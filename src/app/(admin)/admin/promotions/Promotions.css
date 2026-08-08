@@ -124,3 +124,96 @@
   color: #0a0a0a;
 }
 
+/* ── Mobile Horizontal Scroll & Pill Bar ── */
+.filter-pills-scroll {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.filter-pills-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* ── Mobile Card View Layout ── */
+.promo-mobile-card {
+  background: rgba(18, 24, 36, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease;
+}
+
+.promo-mobile-card:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.promo-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  margin: 0.85rem 0;
+}
+
+.metric-item-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.metric-item-lbl {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Mobile Screen Media Queries ── */
+@media (max-width: 768px) {
+  .promotions-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+
+  .promotions-header h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .promo-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .admin-modal {
+    width: 95% !important;
+    max-width: 95% !important;
+    padding: 1.25rem !important;
+    margin: 10px auto !important;
+  }
+
+  .action-buttons {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+}
+
+

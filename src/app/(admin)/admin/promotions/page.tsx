@@ -270,30 +270,32 @@ export default function PromotionsPage() {
         {error && <div className="alert alert-danger m-3">{error}</div>}
 
         {/* Filter and Search Bar */}
-        <div className="p-3 bg-dark border-bottom border-secondary d-flex flex-wrap align-items-center justify-content-between gap-3">
-          <div className="d-flex align-items-center gap-2 flex-wrap">
-            <span className="text-secondary fw-bold small d-flex align-items-center gap-1">
+        <div className="p-3 border-bottom border-secondary d-flex flex-wrap align-items-center justify-content-between gap-3" style={{ background: '#0f172a', color: '#ffffff' }}>
+          <div className="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden" style={{ minWidth: 0 }}>
+            <span className="text-gold fw-bold small d-flex align-items-center gap-1 flex-shrink-0">
               <MdFilterList /> Status:
             </span>
-            {['all', 'active', 'pending_approval', 'draft', 'rejected', 'expired'].map((st) => (
-              <button
-                key={st}
-                type="button"
-                className={`btn btn-sm ${statusFilter === st ? 'btn-gold font-weight-bold' : 'btn-outline-secondary'}`}
-                onClick={() => setStatusFilter(st)}
-              >
-                {st === 'all'
-                  ? 'All Listings'
-                  : st === 'active'
-                  ? 'Active'
-                  : st === 'pending_approval'
-                  ? 'Pending'
-                  : st.charAt(0).toUpperCase() + st.slice(1)}
-              </button>
-            ))}
+            <div className="filter-pills-scroll flex-grow-1">
+              {['all', 'active', 'pending_approval', 'draft', 'rejected', 'expired'].map((st) => (
+                <button
+                  key={st}
+                  type="button"
+                  className={`btn btn-sm ${statusFilter === st ? 'btn-gold font-weight-bold' : 'btn-outline-light'}`}
+                  onClick={() => setStatusFilter(st)}
+                >
+                  {st === 'all'
+                    ? 'All Listings'
+                    : st === 'active'
+                    ? 'Active'
+                    : st === 'pending_approval'
+                    ? 'Pending'
+                    : st.charAt(0).toUpperCase() + st.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div style={{ maxWidth: '300px', width: '100%' }}>
+          <div style={{ maxWidth: '320px', width: '100%' }}>
             <input
               type="text"
               className="form-control form-control-sm bg-dark text-white border-secondary"
@@ -304,7 +306,118 @@ export default function PromotionsPage() {
           </div>
         </div>
 
-        <div className="table-responsive">
+        {/* MOBILE CARD VIEW (VISIBLE ON SMALL SCREENS < 768px) */}
+        <div className="p-3 d-block d-md-none">
+          {loading ? (
+            <div className="text-center py-4 text-warning">Loading registered businesses &amp; campaigns...</div>
+          ) : filteredPromotions.length === 0 ? (
+            <div className="text-center py-4 text-muted">No matching business promotions found.</div>
+          ) : (
+            filteredPromotions.map((promo) => (
+              <div className="promo-mobile-card" key={promo.id}>
+                <div className="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <div>
+                    <h5 className="fw-bold text-white mb-1" style={{ fontSize: '1.05rem' }}>{promo.businessName}</h5>
+                    <span className="badge bg-secondary text-capitalize">{promo.category || 'N/A'}</span>
+                  </div>
+                  <select
+                    className={`form-select form-select-sm fw-semibold border ${
+                      promo.status === 'active'
+                        ? 'bg-success-subtle text-success border-success'
+                        : promo.status === 'pending_approval'
+                        ? 'bg-warning-subtle text-warning border-warning'
+                        : promo.status === 'rejected'
+                        ? 'bg-danger-subtle text-danger border-danger'
+                        : 'bg-dark text-secondary border-secondary'
+                    }`}
+                    style={{ borderRadius: '6px', fontSize: '0.75rem', width: 'auto' }}
+                    value={promo.status || 'draft'}
+                    onChange={(e) => handleUpdateStatus(promo.id, e.target.value)}
+                  >
+                    <option value="active">Active</option>
+                    <option value="pending_approval">Pending</option>
+                    <option value="draft">Draft</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="expired">Expired</option>
+                  </select>
+                </div>
+
+                <div className="text-light small mb-2">{promo.userEmail}</div>
+
+                <button
+                  type="button"
+                  onClick={() => setPreviewPromo(promo)}
+                  className="btn btn-sm btn-outline-warning text-decoration-none fw-semibold mb-2 w-100"
+                  style={{ fontSize: '0.8rem', borderRadius: '8px' }}
+                >
+                  <MdRemoveRedEye className="me-1" /> Preview Collage Card
+                </button>
+
+                {/* 4-Metric Grid */}
+                <div className="promo-metrics-grid">
+                  <div>
+                    <div className="metric-item-val">{promo.impressions !== undefined ? promo.impressions : '0'}</div>
+                    <div className="metric-item-lbl">Views</div>
+                  </div>
+                  <div>
+                    <div className="metric-item-val">{promo.clicks !== undefined ? promo.clicks : '0'}</div>
+                    <div className="metric-item-lbl">Clicks</div>
+                  </div>
+                  <div>
+                    <div className="metric-item-val">{promo.ctr !== undefined ? `${promo.ctr}%` : '0.00%'}</div>
+                    <div className="metric-item-lbl">CTR</div>
+                  </div>
+                  <div>
+                    <div className="metric-item-val">{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</div>
+                    <div className="metric-item-lbl">Spent</div>
+                  </div>
+                </div>
+
+                {/* Action Toolbar */}
+                <div className="action-buttons justify-content-between pt-2 border-top border-secondary">
+                  <button
+                    className="btn btn-sm btn-outline-info flex-grow-1 d-flex align-items-center justify-content-center gap-1"
+                    onClick={() => router.push(`/admin/businesses/${promo.userId}`)}
+                    title="Full Business 360° Audit"
+                  >
+                    <MdStorefront /> Audit 360°
+                  </button>
+
+                  <button
+                    className="btn btn-sm btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-1"
+                    onClick={() => handleOpenEditModal(promo)}
+                    title="Edit Campaign"
+                  >
+                    <MdEdit /> Edit
+                  </button>
+
+                  {promo.status !== 'active' && (
+                    <button
+                      className="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-1"
+                      onClick={() => handleUpdateStatus(promo.id, 'active')}
+                      title="Approve Campaign"
+                    >
+                      <MdCheck />
+                    </button>
+                  )}
+
+                  {!promo.isDraftPlaceholder && (
+                    <button
+                      className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center gap-1"
+                      onClick={() => handleDeletePromotion(promo.id, promo.businessName)}
+                      title="Delete Campaign"
+                    >
+                      <MdDelete />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* DESKTOP TABLE VIEW (VISIBLE ON SCREENS >= 768px) */}
+        <div className="table-responsive d-none d-md-block">
           <table className="admin-table">
             <thead>
               <tr>
@@ -336,26 +449,26 @@ export default function PromotionsPage() {
                 filteredPromotions.map((promo) => (
                   <tr key={promo.id}>
                     <td>
-                      <div className="promo-name fw-bold text-white">{promo.businessName}</div>
+                      <div className="promo-name fw-bold text-dark">{promo.businessName}</div>
                       <button
                         type="button"
                         onClick={() => setPreviewPromo(promo)}
-                        className="btn btn-sm btn-link p-0 text-warning text-decoration-none fw-semibold"
+                        className="btn btn-sm btn-link p-0 text-primary text-decoration-none fw-semibold"
                         style={{ fontSize: '0.8rem' }}
                       >
                         <MdRemoveRedEye className="me-1" /> Preview Collage Ad
                       </button>
                     </td>
                     <td>
-                      <span className="text-light">{promo.userEmail}</span>
+                      <span className="text-secondary fw-medium">{promo.userEmail}</span>
                     </td>
                     <td>
                       <span className="badge bg-secondary text-capitalize">{promo.category || 'N/A'}</span>
                     </td>
-                    <td>{promo.impressions !== undefined ? promo.impressions : '0'}</td>
-                    <td>{promo.clicks !== undefined ? promo.clicks : '0'}</td>
-                    <td>{promo.ctr !== undefined ? `${promo.ctr}%` : '0.00%'}</td>
-                    <td>{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</td>
+                    <td className="fw-semibold text-dark">{promo.impressions !== undefined ? promo.impressions : '0'}</td>
+                    <td className="fw-semibold text-dark">{promo.clicks !== undefined ? promo.clicks : '0'}</td>
+                    <td className="fw-semibold text-dark">{promo.ctr !== undefined ? `${promo.ctr}%` : '0.00%'}</td>
+                    <td className="fw-semibold text-dark">{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</td>
                     <td>
                       <select
                         className={`form-select form-select-sm fw-semibold border ${
@@ -365,9 +478,9 @@ export default function PromotionsPage() {
                             ? 'bg-warning-subtle text-warning border-warning'
                             : promo.status === 'rejected'
                             ? 'bg-danger-subtle text-danger border-danger'
-                            : 'bg-dark text-secondary border-secondary'
+                            : 'bg-light text-secondary border-secondary'
                         }`}
-                        style={{ borderRadius: '6px', fontSize: '0.8rem', width: 'auto' }}
+                        style={{ borderRadius: '6px', fontSize: '0.8rem', minWidth: '150px' }}
                         value={promo.status || 'draft'}
                         onChange={(e) => handleUpdateStatus(promo.id, e.target.value)}
                       >
