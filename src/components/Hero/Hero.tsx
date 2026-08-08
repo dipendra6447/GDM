@@ -11,18 +11,37 @@ const Hero: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'jobs' | 'companies' | 'candidates'>('jobs');
   const [keyword, setKeyword] = useState('');
   const [location, setLocation] = useState('');
-  const [bannerBg, setBannerBg] = useState<string>(DEFAULT_HERO_BG);
+
+  const [activeBanners, setActiveBanners] = useState<string[]>([DEFAULT_HERO_BG]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
     fetch('/api/config/banner')
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.bannerUrl) {
-          setBannerBg(data.bannerUrl);
+        if (data.success) {
+          if (Array.isArray(data.banners) && data.banners.length > 0) {
+            setActiveBanners(data.banners);
+          } else if (data.bannerUrl) {
+            setActiveBanners([data.bannerUrl]);
+          }
         }
       })
       .catch(() => {});
   }, []);
+
+  // Auto-cycle through active banners if there are multiple
+  useEffect(() => {
+    if (activeBanners.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % activeBanners.length);
+    }, 7000);
+
+    return () => clearInterval(timer);
+  }, [activeBanners]);
+
+  const currentBannerBg = activeBanners[currentIndex % activeBanners.length] || DEFAULT_HERO_BG;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,10 +63,25 @@ const Hero: React.FC = () => {
       className="hero-banner-section"
       id="hero"
       aria-label="Hero banner section"
-      style={{ backgroundImage: `url(${bannerBg})` }}
+      style={{ backgroundImage: `url(${currentBannerBg})` }}
     >
       {/* Light gradient overlay for maximum readability */}
       <div className="hero-light-overlay" aria-hidden="true" />
+
+      {/* Multi-banner indicator dots if multiple active banners */}
+      {activeBanners.length > 1 && (
+        <div className="hero-banner-dots" aria-label="Banner slider navigation">
+          {activeBanners.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              className={`hero-banner-dot ${idx === currentIndex ? 'active' : ''}`}
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Switch to banner ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       <div className="container position-relative hero-content-container">
         {/* ── TOP BADGE ── */}
