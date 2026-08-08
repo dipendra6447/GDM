@@ -8,7 +8,8 @@ export interface BusinessAdCardProps {
   purpose?: string; // Tagline
   description?: string;
   offerTag?: string;
-  bannerUrl?: string; // Comma separated or single URL
+  bannerUrl?: string; // Comma separated or single URL with optional #pos=X% Y%
+  positions?: string[] | string;
   ctaLabel?: string;
   ctaHref?: string;
   status?: string;
@@ -19,12 +20,31 @@ export interface BusinessAdCardProps {
   className?: string;
 }
 
-export const parseBannerUrls = (bannerUrl?: string): string[] => {
+export interface ParsedBanner {
+  url: string;
+  position: string;
+}
+
+export const parseBannerUrls = (bannerUrl?: string, positions?: string[] | string): ParsedBanner[] => {
   if (!bannerUrl) return [];
-  if (bannerUrl.includes(',')) {
-    return bannerUrl.split(',').map(s => s.trim()).filter(Boolean);
+  const rawList = bannerUrl.includes(',') ? bannerUrl.split(',').map((s) => s.trim()).filter(Boolean) : [bannerUrl.trim()];
+
+  let explicitPositions: string[] = [];
+  if (Array.isArray(positions)) {
+    explicitPositions = positions;
+  } else if (typeof positions === 'string' && positions.includes(',')) {
+    explicitPositions = positions.split(',').map((s) => s.trim()).filter(Boolean);
   }
-  return [bannerUrl.trim()];
+
+  return rawList.map((item, idx) => {
+    const [cleanUrl, hash] = item.split('#pos=');
+    const posFromHash = hash ? decodeURIComponent(hash) : null;
+    const posFromProp = explicitPositions[idx];
+    return {
+      url: cleanUrl || item,
+      position: posFromHash || posFromProp || '50% 50%',
+    };
+  });
 };
 
 export default function BusinessAdCard({
@@ -34,6 +54,7 @@ export default function BusinessAdCard({
   description,
   offerTag = '🔥 Free Consultation — Limited Slots',
   bannerUrl,
+  positions,
   ctaLabel = 'View Business',
   ctaHref = '#',
   status,
@@ -43,19 +64,22 @@ export default function BusinessAdCard({
   onDelete,
   className = '',
 }: BusinessAdCardProps) {
-  const images = parseBannerUrls(bannerUrl);
+  const parsedItems = parseBannerUrls(bannerUrl, positions);
 
-  const fallbackImages = [
-    'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&auto=format&fit=crop&q=80',
+  const fallbackItems: ParsedBanner[] = [
+    { url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80', position: '50% 50%' },
+    { url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop&q=80', position: '50% 50%' },
+    { url: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&auto=format&fit=crop&q=80', position: '50% 50%' },
   ];
 
-  const displayImages = images.length > 0 ? images : fallbackImages;
+  const displayItems = parsedItems.length > 0 ? parsedItems : fallbackItems;
 
-  const validHref = ctaHref && ctaHref !== '#' 
-    ? (ctaHref.startsWith('http://') || ctaHref.startsWith('https://') ? ctaHref : `https://${ctaHref}`)
-    : '#';
+  const validHref =
+    ctaHref && ctaHref !== '#'
+      ? ctaHref.startsWith('http://') || ctaHref.startsWith('https://')
+        ? ctaHref
+        : `https://${ctaHref}`
+      : '#';
 
   return (
     <div className={`biz-ad-card-root ${className}`}>
@@ -97,9 +121,10 @@ export default function BusinessAdCard({
         <div className="biz-ad-category">{category}</div>
         <h3 className="biz-ad-title">{businessName}</h3>
         {purpose && <h4 className="biz-ad-tagline">{purpose}</h4>}
-        
+
         <p className="biz-ad-desc">
-          {description || 'End-to-end digital transformation, cloud migration & enterprise software. 500+ successful projects across 40+ industries.'}
+          {description ||
+            'End-to-end digital transformation, cloud migration & enterprise software. 500+ successful projects across 40+ industries.'}
         </p>
 
         {offerTag && (
@@ -114,10 +139,10 @@ export default function BusinessAdCard({
               {ctaLabel} <i className="bi bi-arrow-right ms-1" />
             </button>
           ) : (
-            <a 
-              href={validHref} 
-              target={validHref !== '#' ? "_blank" : "_self"} 
-              rel="noopener noreferrer" 
+            <a
+              href={validHref}
+              target={validHref !== '#' ? '_blank' : '_self'}
+              rel="noopener noreferrer"
               className="biz-ad-btn"
             >
               {ctaLabel} <i className="bi bi-arrow-right ms-1" />
@@ -129,33 +154,63 @@ export default function BusinessAdCard({
       {/* RIGHT SECTION: COLLAGE GRID */}
       <div className="biz-ad-card-right">
         <div className="biz-ad-collage">
-          {displayImages.length >= 3 ? (
+          {displayItems.length >= 3 ? (
             <div className="biz-ad-mosaic three-grid">
               <div className="biz-ad-main-img">
-                <img src={displayImages[0]} alt={businessName} loading="lazy" />
+                <img
+                  src={displayItems[0].url}
+                  alt={businessName}
+                  style={{ objectPosition: displayItems[0].position }}
+                  loading="lazy"
+                />
               </div>
               <div className="biz-ad-sub-stack">
                 <div className="biz-ad-sub-img">
-                  <img src={displayImages[1]} alt={businessName} loading="lazy" />
+                  <img
+                    src={displayItems[1].url}
+                    alt={businessName}
+                    style={{ objectPosition: displayItems[1].position }}
+                    loading="lazy"
+                  />
                 </div>
                 <div className="biz-ad-sub-img">
-                  <img src={displayImages[2]} alt={businessName} loading="lazy" />
+                  <img
+                    src={displayItems[2].url}
+                    alt={businessName}
+                    style={{ objectPosition: displayItems[2].position }}
+                    loading="lazy"
+                  />
                 </div>
               </div>
             </div>
-          ) : displayImages.length === 2 ? (
+          ) : displayItems.length === 2 ? (
             <div className="biz-ad-mosaic two-grid">
               <div className="biz-ad-main-img">
-                <img src={displayImages[0]} alt={businessName} loading="lazy" />
+                <img
+                  src={displayItems[0].url}
+                  alt={businessName}
+                  style={{ objectPosition: displayItems[0].position }}
+                  loading="lazy"
+                />
               </div>
               <div className="biz-ad-sub-img">
-                <img src={displayImages[1]} alt={businessName} loading="lazy" />
+                <img
+                  src={displayItems[1].url}
+                  alt={businessName}
+                  style={{ objectPosition: displayItems[1].position }}
+                  loading="lazy"
+                />
               </div>
             </div>
           ) : (
             <div className="biz-ad-mosaic single-grid">
               <div className="biz-ad-main-img full-width">
-                <img src={displayImages[0]} alt={businessName} loading="lazy" />
+                <img
+                  src={displayItems[0].url}
+                  alt={businessName}
+                  style={{ objectPosition: displayItems[0].position }}
+                  loading="lazy"
+                />
               </div>
             </div>
           )}

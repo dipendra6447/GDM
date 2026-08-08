@@ -1,7 +1,18 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MdListAlt, MdCheck, MdClose, MdAdd, MdRemoveRedEye, MdDelete, MdEdit } from 'react-icons/md';
+import { useRouter } from 'next/navigation';
+import {
+  MdListAlt,
+  MdCheck,
+  MdClose,
+  MdAdd,
+  MdRemoveRedEye,
+  MdDelete,
+  MdEdit,
+  MdStorefront,
+  MdFilterList,
+} from 'react-icons/md';
 import { api } from '@/lib/adminApi';
 import PageHeader from '@/components/admin/Common/PageHeader';
 import { fadeInUp } from '@/lib/animations';
@@ -11,33 +22,55 @@ import './Promotions.css';
 
 export default function PromotionsPage() {
   const contentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
   const [promotions, setPromotions] = useState<any[]>([]);
+  const [registeredBusinesses, setRegisteredBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingPromo, setEditingPromo] = useState<any | null>(null);
   const [previewPromo, setPreviewPromo] = useState<any | null>(null);
-  
-  const [newPromo, setNewPromo] = useState({ 
-    businessName: '', 
+
+  const [newPromo, setNewPromo] = useState({
+    businessName: '',
     category: 'IT SERVICES',
     purpose: 'Transform Your Business With Technology',
     offerTag: '🔥 Free Consultation — Limited Slots',
     ctaLabel: 'Visit Website',
-    businessContactDetails: '', // CTA Target Website URL
+    businessContactDetails: '',
     userEmail: '',
-    description: ''
+    description: '',
+    status: 'active',
   });
   const [bannerFiles, setBannerFiles] = useState<(File | null)[]>([null, null, null]);
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
+  const [bannerPositions, setBannerPositions] = useState<string[]>(['50% 50%', '50% 50%', '50% 50%']);
 
   const fetchPromotions = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/admin/promotions');
-      if (res.success) {
-        setPromotions(res.data);
+      setError('');
+      const [promoRes, usersRes] = await Promise.all([
+        api.get('/admin/promotions'),
+        api.get('/admin/users').catch(() => ({ success: false, data: [] })),
+      ]);
+
+      if (promoRes.success) {
+        setPromotions(promoRes.data);
+      } else {
+        setError(promoRes.message || 'Failed to fetch promotions');
+      }
+
+      if (usersRes.success) {
+        const promoters = usersRes.data.filter(
+          (u: any) => u.roles?.some((r: any) => r.roleId === 3) && !u.isDeleted
+        );
+        setRegisteredBusinesses(promoters);
       }
     } catch (err: any) {
       setError(err.message || 'Failed to fetch promotions');
@@ -58,43 +91,65 @@ export default function PromotionsPage() {
 
   const handleOpenAddModal = () => {
     setEditingPromo(null);
-    setNewPromo({ 
-      businessName: '', 
+    setNewPromo({
+      businessName: '',
       category: 'IT SERVICES',
       purpose: 'Transform Your Business With Technology',
       offerTag: '🔥 Free Consultation — Limited Slots',
       ctaLabel: 'Visit Website',
-      businessContactDetails: '', 
-      userEmail: '', 
-      description: '' 
+      businessContactDetails: '',
+      userEmail: registeredBusinesses[0]?.email || '',
+      description: '',
+      status: 'active',
     });
     setBannerFiles([null, null, null]);
     setExistingImageUrls([]);
+    setBannerPositions(['50% 50%', '50% 50%', '50% 50%']);
     setShowAddModal(true);
   };
 
   const handleOpenEditModal = (promo: any) => {
     setEditingPromo(promo);
-    setNewPromo({ 
-      businessName: promo.businessName || '', 
+    setNewPromo({
+      businessName: promo.businessName || '',
       category: promo.category || 'IT SERVICES',
       purpose: promo.purpose || '',
       offerTag: promo.offerTag || '🔥 Free Consultation — Limited Slots',
       ctaLabel: promo.ctaLabel || 'Visit Website',
-      businessContactDetails: promo.businessContactDetails || '', 
-      userEmail: promo.userEmail || '', 
-      description: promo.businessDescription || '' 
+      businessContactDetails: promo.businessContactDetails || '',
+      userEmail: promo.userEmail || '',
+      description: promo.businessDescription || '',
+      status: promo.status || 'active',
     });
     setBannerFiles([null, null, null]);
-    const parsedUrls = promo.bannerUrl 
+    const parsedUrls = promo.bannerUrl
       ? promo.bannerUrl.split(',').map((u: string) => u.trim()).filter(Boolean)
       : [];
     setExistingImageUrls(parsedUrls);
+
+    const posArray = parsedUrls.map((item: string) => {
+      const parts = item.split('#pos=');
+      return parts[1] ? decodeURIComponent(parts[1]) : '50% 50%';
+    });
+    while (posArray.length < 3) posArray.push('50% 50%');
+    setBannerPositions(posArray);
+
     setShowAddModal(true);
   };
 
+  const handleSelectBusinessUser = (email: string) => {
+    const selected = registeredBusinesses.find((b) => b.email === email);
+    setNewPromo((prev) => ({
+      ...prev,
+      userEmail: email,
+      businessName: selected?.promoterProfile?.businessName || prev.businessName,
+      category: selected?.promoterProfile?.businessCategory || prev.category,
+      description: selected?.promoterProfile?.about || prev.description,
+    }));
+  };
+
   const handleUpdateStatus = async (id: string, status: string) => {
-    if (!window.confirm(`Are you sure you want to mark this as ${status}?`)) return;
+    if (!window.confirm(`Are you sure you want to mark this status as ${status}?`)) return;
     try {
       await api.patch(`/admin/promotions/${id}/status`, { status });
       fetchPromotions();
@@ -104,12 +159,16 @@ export default function PromotionsPage() {
   };
 
   const handleDeletePromotion = async (id: string, name: string) => {
+    if (id.startsWith('draft_')) {
+      alert('This is a registered business profile placeholder without an active campaign record.');
+      return;
+    }
     if (!window.confirm(`Are you sure you want to delete campaign "${name}"? This action cannot be undone.`)) return;
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       const res = await fetch(`/api/promotions/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
       if (res.ok && data.success) {
@@ -132,7 +191,7 @@ export default function PromotionsPage() {
       formData.append('purpose', newPromo.purpose);
       formData.append('offerTag', newPromo.offerTag);
       formData.append('ctaLabel', newPromo.ctaLabel);
-      formData.append('status', (newPromo as any).status || 'active');
+      formData.append('status', newPromo.status || 'active');
       formData.append('businessContactDetails', newPromo.businessContactDetails);
       formData.append('businessDescription', newPromo.description);
 
@@ -140,20 +199,23 @@ export default function PromotionsPage() {
       if (bannerFiles[1]) formData.append('banner2', bannerFiles[1]);
       if (bannerFiles[2]) formData.append('banner3', bannerFiles[2]);
 
-      if (editingPromo) {
+      formData.append('bannerPositions', bannerPositions.join(','));
+
+      if (editingPromo && !editingPromo.isDraftPlaceholder) {
         const remainingUrls = existingImageUrls.filter(Boolean);
         if (remainingUrls.length > 0) {
           formData.append('bannerUrl', remainingUrls.join(','));
         }
       }
 
-      const url = editingPromo ? `/api/promotions/${editingPromo.id}` : '/api/promotions';
-      const method = editingPromo ? 'PUT' : 'POST';
+      const isEditExisting = editingPromo && !editingPromo.isDraftPlaceholder;
+      const url = isEditExisting ? `/api/promotions/${editingPromo.id}` : '/api/admin/promotions';
+      const method = isEditExisting ? 'PUT' : 'POST';
 
       const token = localStorage.getItem('token');
       const res = await fetch(url, {
         method,
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
       const data = await res.json();
@@ -162,7 +224,7 @@ export default function PromotionsPage() {
         setEditingPromo(null);
         setBannerFiles([null, null, null]);
         setExistingImageUrls([]);
-        setNewPromo({ businessName: '', category: 'IT SERVICES', purpose: '', offerTag: '🔥 Free Consultation — Limited Slots', ctaLabel: 'Visit Website', businessContactDetails: '', userEmail: '', description: '' });
+        setBannerPositions(['50% 50%', '50% 50%', '50% 50%']);
         fetchPromotions();
       } else {
         alert(data.message || 'Failed to save promotion.');
@@ -172,33 +234,75 @@ export default function PromotionsPage() {
     }
   };
 
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'active': return 'badge-success';
-      case 'rejected': return 'badge-danger';
-      case 'pending_approval': return 'badge-warning';
-      default: return 'badge-secondary';
-    }
-  };
+  const filteredPromotions = promotions.filter((promo) => {
+    const matchesStatus = statusFilter === 'all' || promo.status === statusFilter;
+    const matchesSearch =
+      searchTerm.trim() === '' ||
+      promo.businessName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      promo.userEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      promo.category?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
   return (
     <div className="promotions-page">
       <PageHeader
-        title="Business Promotions"
-        subtitle="Manage, edit, approve, and preview business promotional listings."
+        title="Business Promotions & Registered Organizations"
+        subtitle="Manage, edit, approve, preview, and audit all registered businesses and campaign listings."
         breadcrumbs={[
           { label: 'Home', path: '/admin' },
-          { label: 'Promotions' }
+          { label: 'Business Promotions' },
         ]}
       />
 
       <div className="admin-card" ref={contentRef}>
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h3><MdListAlt className="icon-mr" /> Promotion Listings</h3>
-          <button className="btn btn-primary" onClick={handleOpenAddModal}><MdAdd /> Add Promotion</button>
+        <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <h3 className="m-0 d-flex align-items-center gap-2">
+            <MdListAlt className="icon-mr text-warning" /> Registered Businesses & Campaigns ({promotions.length})
+          </h3>
+          <div className="d-flex align-items-center gap-2">
+            <button className="btn btn-primary" onClick={handleOpenAddModal}>
+              <MdAdd /> Add Promotion
+            </button>
+          </div>
         </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
+        {error && <div className="alert alert-danger m-3">{error}</div>}
+
+        {/* Filter and Search Bar */}
+        <div className="p-3 bg-dark border-bottom border-secondary d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div className="d-flex align-items-center gap-2 flex-wrap">
+            <span className="text-secondary fw-bold small d-flex align-items-center gap-1">
+              <MdFilterList /> Status:
+            </span>
+            {['all', 'active', 'pending_approval', 'draft', 'rejected', 'expired'].map((st) => (
+              <button
+                key={st}
+                type="button"
+                className={`btn btn-sm ${statusFilter === st ? 'btn-gold font-weight-bold' : 'btn-outline-secondary'}`}
+                onClick={() => setStatusFilter(st)}
+              >
+                {st === 'all'
+                  ? 'All Listings'
+                  : st === 'active'
+                  ? 'Active'
+                  : st === 'pending_approval'
+                  ? 'Pending'
+                  : st.charAt(0).toUpperCase() + st.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ maxWidth: '300px', width: '100%' }}>
+            <input
+              type="text"
+              className="form-control form-control-sm bg-dark text-white border-secondary"
+              placeholder="Search business name, email, category..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
 
         <div className="table-responsive">
           <table className="admin-table">
@@ -206,69 +310,86 @@ export default function PromotionsPage() {
               <tr>
                 <th>Business Name</th>
                 <th>Owner Email</th>
+                <th>Category</th>
                 <th>Impressions</th>
                 <th>Clicks</th>
                 <th>CTR</th>
-                <th>Avg CPC</th>
-                <th>Total Spent</th>
-                <th>Submitted</th>
+                <th>Spent</th>
                 <th>Status</th>
-                <th>Actions</th>
+                <th className="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="text-center py-4">Loading promotions...</td>
+                  <td colSpan={9} className="text-center py-4 text-warning">
+                    Loading registered businesses &amp; campaigns...
+                  </td>
                 </tr>
-              ) : promotions.length === 0 ? (
+              ) : filteredPromotions.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="text-center py-4">No promotions found.</td>
+                  <td colSpan={9} className="text-center py-4 text-muted">
+                    No matching business promotions found.
+                  </td>
                 </tr>
               ) : (
-                promotions.map(promo => (
+                filteredPromotions.map((promo) => (
                   <tr key={promo.id}>
                     <td>
-                      <div className="promo-name fw-bold">{promo.businessName}</div>
-                      <button 
+                      <div className="promo-name fw-bold text-white">{promo.businessName}</div>
+                      <button
                         type="button"
-                        onClick={() => setPreviewPromo(promo)} 
-                        className="btn btn-sm btn-link p-0 text-primary text-decoration-none fw-semibold"
+                        onClick={() => setPreviewPromo(promo)}
+                        className="btn btn-sm btn-link p-0 text-warning text-decoration-none fw-semibold"
                         style={{ fontSize: '0.8rem' }}
                       >
                         <MdRemoveRedEye className="me-1" /> Preview Collage Ad
                       </button>
                     </td>
-                    <td>{promo.userEmail}</td>
+                    <td>
+                      <span className="text-light">{promo.userEmail}</span>
+                    </td>
+                    <td>
+                      <span className="badge bg-secondary text-capitalize">{promo.category || 'N/A'}</span>
+                    </td>
                     <td>{promo.impressions !== undefined ? promo.impressions : '0'}</td>
                     <td>{promo.clicks !== undefined ? promo.clicks : '0'}</td>
                     <td>{promo.ctr !== undefined ? `${promo.ctr}%` : '0.00%'}</td>
-                    <td>{promo.cpc !== undefined ? `₹${promo.cpc}` : '₹0.00'}</td>
                     <td>{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</td>
-                    <td>{new Date(promo.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <select 
+                      <select
                         className={`form-select form-select-sm fw-semibold border ${
-                          promo.status === 'active' ? 'bg-success-subtle text-success border-success' : 
-                          promo.status === 'pending_approval' ? 'bg-warning-subtle text-warning border-warning' : 
-                          promo.status === 'rejected' ? 'bg-danger-subtle text-danger border-danger' : 
-                          'bg-light text-secondary'
-                        }`} 
+                          promo.status === 'active'
+                            ? 'bg-success-subtle text-success border-success'
+                            : promo.status === 'pending_approval'
+                            ? 'bg-warning-subtle text-warning border-warning'
+                            : promo.status === 'rejected'
+                            ? 'bg-danger-subtle text-danger border-danger'
+                            : 'bg-dark text-secondary border-secondary'
+                        }`}
                         style={{ borderRadius: '6px', fontSize: '0.8rem', width: 'auto' }}
                         value={promo.status || 'draft'}
                         onChange={(e) => handleUpdateStatus(promo.id, e.target.value)}
                       >
                         <option value="active">Active (Approved)</option>
                         <option value="pending_approval">Pending Approval</option>
-                        <option value="draft">Draft</option>
+                        <option value="draft">Draft / Registered</option>
                         <option value="rejected">Rejected</option>
                         <option value="expired">Expired</option>
                       </select>
                     </td>
-                    <td>
-                      <div className="action-buttons">
+                    <td className="text-center">
+                      <div className="action-buttons justify-content-center">
                         <button
-                          className="btn-icon text-primary"
+                          className="btn-icon text-info"
+                          onClick={() => router.push(`/admin/businesses/${promo.userId}`)}
+                          title="Full Business 360° Audit"
+                        >
+                          <MdStorefront />
+                        </button>
+
+                        <button
+                          className="btn-icon text-warning me-1"
                           onClick={() => setPreviewPromo(promo)}
                           title="Preview Collage Card"
                         >
@@ -276,16 +397,16 @@ export default function PromotionsPage() {
                         </button>
 
                         <button
-                          className="btn-icon text-primary ms-1"
+                          className="btn-icon text-primary me-1"
                           onClick={() => handleOpenEditModal(promo)}
-                          title="Edit Campaign"
+                          title="Edit Campaign & Business Info"
                         >
                           <MdEdit />
                         </button>
 
                         {promo.status !== 'active' && (
-                          <button 
-                            className="btn-icon text-success fw-bold"
+                          <button
+                            className="btn-icon text-success fw-bold me-1"
                             onClick={() => handleUpdateStatus(promo.id, 'active')}
                             title="Approve & Activate Campaign"
                           >
@@ -294,8 +415,8 @@ export default function PromotionsPage() {
                         )}
 
                         {(promo.status === 'active' || promo.status === 'pending_approval') && (
-                          <button 
-                            className="btn-icon text-warning"
+                          <button
+                            className="btn-icon text-warning me-1"
                             onClick={() => handleUpdateStatus(promo.id, 'rejected')}
                             title="Reject / Deactivate Campaign"
                           >
@@ -303,13 +424,15 @@ export default function PromotionsPage() {
                           </button>
                         )}
 
-                        <button
-                          className="btn-icon text-danger"
-                          onClick={() => handleDeletePromotion(promo.id, promo.businessName)}
-                          title="Delete Campaign"
-                        >
-                          <MdDelete />
-                        </button>
+                        {!promo.isDraftPlaceholder && (
+                          <button
+                            className="btn-icon text-danger"
+                            onClick={() => handleDeletePromotion(promo.id, promo.businessName)}
+                            title="Delete Campaign"
+                          >
+                            <MdDelete />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -323,10 +446,10 @@ export default function PromotionsPage() {
       {/* ADMIN COLLAGE AD CARD PREVIEW MODAL */}
       {previewPromo && (
         <div className="admin-modal-overlay d-flex align-items-center justify-content-center" style={{ zIndex: 1060 }}>
-          <div className="admin-modal" style={{ maxWidth: '900px', width: '90%', borderRadius: '24px', padding: '1.5rem' }}>
-            <div className="modal-header border-0 pb-3 d-flex justify-content-between align-items-center">
+          <div className="admin-modal bg-dark border border-secondary" style={{ maxWidth: '900px', width: '90%', borderRadius: '24px', padding: '1.5rem' }}>
+            <div className="modal-header border-0 pb-3 d-flex justify-content-between align-items-center text-white">
               <h4 className="fw-bold mb-0">Collage Ad Card Live Preview</h4>
-              <button className="close-btn btn-close" onClick={() => setPreviewPromo(null)}></button>
+              <button className="close-btn btn-close btn-close-white" onClick={() => setPreviewPromo(null)}></button>
             </div>
             <div className="modal-body p-0">
               <BusinessAdCard
@@ -341,69 +464,165 @@ export default function PromotionsPage() {
               />
             </div>
             <div className="modal-footer border-0 pt-3">
-              <button className="btn btn-secondary px-4" style={{ borderRadius: '10px' }} onClick={() => setPreviewPromo(null)}>Close</button>
+              <button className="btn btn-secondary px-4" style={{ borderRadius: '10px' }} onClick={() => setPreviewPromo(null)}>
+                Close Preview
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ADMIN ADD / EDIT PROMOTION MODAL WITH COLLAGE MAKER */}
+      {/* ADMIN ADD / EDIT PROMOTION MODAL WITH REGISTERED BUSINESS SELECTION */}
       {showAddModal && (
         <div className="admin-modal-overlay d-flex align-items-center justify-content-center" style={{ zIndex: 1060 }}>
-          <div className="admin-modal" style={{ maxWidth: '800px', width: '90%', borderRadius: '24px', padding: '1.75rem' }}>
+          <div className="admin-modal bg-dark text-white border border-secondary" style={{ maxWidth: '800px', width: '90%', borderRadius: '24px', padding: '1.75rem', maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-header border-0 pb-2 d-flex justify-content-between align-items-center">
-              <h3 className="fw-bold mb-0">{editingPromo ? 'Edit Business Promotion' : 'Add New Business Promotion'}</h3>
-              <button className="close-btn btn-close" onClick={() => setShowAddModal(false)}></button>
+              <h3 className="fw-bold mb-0">
+                {editingPromo ? 'Edit Business Promotion' : 'Add New Business Promotion'}
+              </h3>
+              <button className="close-btn btn-close btn-close-white" onClick={() => setShowAddModal(false)}></button>
             </div>
             <form onSubmit={handleSavePromotion}>
               <div className="modal-body">
                 <div className="row g-3">
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold text-secondary">Owner Email *</label>
-                    <input type="email" className="form-control" value={newPromo.userEmail} onChange={(e) => setNewPromo({...newPromo, userEmail: e.target.value})} required />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-semibold text-secondary">Business Name *</label>
-                    <input type="text" className="form-control" value={newPromo.businessName} onChange={(e) => setNewPromo({...newPromo, businessName: e.target.value})} required />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-semibold text-secondary">Category</label>
-                    <input type="text" className="form-control" value={newPromo.category} onChange={(e) => setNewPromo({...newPromo, category: e.target.value})} />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-semibold text-secondary">Tagline / Purpose</label>
-                    <input type="text" className="form-control" value={newPromo.purpose} onChange={(e) => setNewPromo({...newPromo, purpose: e.target.value})} />
+                    <label className="form-label fw-semibold text-gold">Select Registered Business Owner *</label>
+                    {registeredBusinesses.length > 0 ? (
+                      <select
+                        className="form-select bg-dark text-white border-secondary"
+                        value={newPromo.userEmail}
+                        onChange={(e) => handleSelectBusinessUser(e.target.value)}
+                        required
+                      >
+                        {registeredBusinesses.map((bus) => (
+                          <option key={bus.id} value={bus.email}>
+                            {bus.promoterProfile?.businessName || bus.email} ({bus.email})
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="email"
+                        className="form-control bg-dark text-white border-secondary"
+                        value={newPromo.userEmail}
+                        onChange={(e) => setNewPromo({ ...newPromo, userEmail: e.target.value })}
+                        placeholder="Owner Email Address"
+                        required
+                      />
+                    )}
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold text-secondary">Dynamic Button Text (CTA Label) *</label>
-                    <input type="text" className="form-control" value={newPromo.ctaLabel} onChange={(e) => setNewPromo({...newPromo, ctaLabel: e.target.value})} placeholder="e.g. Visit Website, Book Consultation, Learn More" required />
+                    <label className="form-label fw-semibold text-gold">Business Name *</label>
+                    <input
+                      type="text"
+                      className="form-control bg-dark text-white border-secondary"
+                      value={newPromo.businessName}
+                      onChange={(e) => setNewPromo({ ...newPromo, businessName: e.target.value })}
+                      required
+                    />
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold text-secondary">CTA Destination Link / Website URL *</label>
-                    <input type="url" className="form-control" value={newPromo.businessContactDetails} onChange={(e) => setNewPromo({...newPromo, businessContactDetails: e.target.value})} placeholder="https://yourbusiness.com" required />
+                    <label className="form-label fw-semibold text-gold">Category *</label>
+                    <input
+                      type="text"
+                      className="form-control bg-dark text-white border-secondary"
+                      value={newPromo.category}
+                      onChange={(e) => setNewPromo({ ...newPromo, category: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-gold">Campaign Status</label>
+                    <select
+                      className="form-select bg-dark text-white border-secondary"
+                      value={newPromo.status}
+                      onChange={(e) => setNewPromo({ ...newPromo, status: e.target.value })}
+                    >
+                      <option value="active">Active (Approved)</option>
+                      <option value="pending_approval">Pending Approval</option>
+                      <option value="draft">Draft</option>
+                      <option value="rejected">Rejected</option>
+                      <option value="expired">Expired</option>
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-gold">Dynamic Button Text (CTA Label) *</label>
+                    <input
+                      type="text"
+                      className="form-control bg-dark text-white border-secondary"
+                      value={newPromo.ctaLabel}
+                      onChange={(e) => setNewPromo({ ...newPromo, ctaLabel: e.target.value })}
+                      placeholder="e.g. Visit Website, Book Consultation"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-gold">CTA Website URL / Link *</label>
+                    <input
+                      type="url"
+                      className="form-control bg-dark text-white border-secondary"
+                      value={newPromo.businessContactDetails}
+                      onChange={(e) => setNewPromo({ ...newPromo, businessContactDetails: e.target.value })}
+                      placeholder="https://yourbusiness.com"
+                      required
+                    />
                   </div>
 
                   <div className="col-md-12">
-                    <label className="form-label fw-semibold text-secondary">Offer Pill / Badge Text</label>
-                    <input type="text" className="form-control" value={newPromo.offerTag} onChange={(e) => setNewPromo({...newPromo, offerTag: e.target.value})} />
+                    <label className="form-label fw-semibold text-gold">Tagline / Purpose</label>
+                    <input
+                      type="text"
+                      className="form-control bg-dark text-white border-secondary"
+                      value={newPromo.purpose}
+                      onChange={(e) => setNewPromo({ ...newPromo, purpose: e.target.value })}
+                    />
                   </div>
 
-                  {/* COLLAGE MAKER COMPONENT IN ADMIN SECTION */}
+                  <div className="col-md-12">
+                    <label className="form-label fw-semibold text-gold">Offer Pill / Badge Text</label>
+                    <input
+                      type="text"
+                      className="form-control bg-dark text-white border-secondary"
+                      value={newPromo.offerTag}
+                      onChange={(e) => setNewPromo({ ...newPromo, offerTag: e.target.value })}
+                    />
+                  </div>
+
+                  {/* COLLAGE MAKER COMPONENT */}
                   <div className="col-md-12">
                     <CollageMaker
                       files={bannerFiles}
                       onFilesChange={setBannerFiles}
                       urls={existingImageUrls}
                       onUrlsChange={setExistingImageUrls}
+                      positions={bannerPositions}
+                      onPositionsChange={setBannerPositions}
+                    />
+                  </div>
+
+                  <div className="col-md-12">
+                    <label className="form-label fw-semibold text-gold">Business Description</label>
+                    <textarea
+                      className="form-control bg-dark text-white border-secondary"
+                      rows={3}
+                      value={newPromo.description}
+                      onChange={(e) => setNewPromo({ ...newPromo, description: e.target.value })}
                     />
                   </div>
                 </div>
               </div>
               <div className="modal-footer border-0 pt-0">
-                <button type="button" className="btn btn-outline-secondary px-4" onClick={() => setShowAddModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary px-4">{editingPromo ? 'Update Promotion' : 'Add Promotion'}</button>
+                <button type="button" className="btn btn-outline-secondary px-4" onClick={() => setShowAddModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary px-4">
+                  {editingPromo ? 'Update Promotion' : 'Add Promotion'}
+                </button>
               </div>
             </form>
           </div>

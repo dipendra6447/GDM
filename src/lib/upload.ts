@@ -21,6 +21,7 @@ const ALLOWED_MIMETYPES: Record<string, string[]> = {
   logo: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   image: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   banner: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  banners: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   banner1: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   banner2: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   banner3: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
@@ -46,8 +47,8 @@ function getSubdir(fieldname: string): string {
 
 // ─── Parse FormData and Save Files ───────────────────────────────────────────
 /**
- * Parses a Next.js request's FormData, saves any files to disk,
- * and returns both the text fields and uploaded file metadata.
+ * Parses a Next.js request's FormData, saves any files to disk (or falls back to Base64 Data URLs
+ * on read-only serverless filesystems like Vercel/AWS Lambda), and returns uploaded file metadata.
  */
 export async function parseFormData(req: NextRequest): Promise<{
   fields: Record<string, string>;
@@ -79,22 +80,39 @@ export async function parseFormData(req: NextRequest): Promise<{
 
       const subdir = getSubdir(key);
       const uploadPath = path.join(UPLOAD_DIR, subdir);
-      await ensureDir(uploadPath);
-
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const ext = path.extname(value.name) || '.png';
       const filename = `${key}-${uniqueSuffix}${ext}`;
       const filepath = path.join(uploadPath, filename);
 
-      // Write the file to disk
       const buffer = Buffer.from(await value.arrayBuffer());
-      await fs.writeFile(filepath, buffer);
+      const mimetype = value.type || 'image/png';
+      let publicFilepath = `/uploads/${subdir}/${filename}`;
+
+      try {
+        await ensureDir(uploadPath);
+        await fs.writeFile(filepath, buffer);
+      } catch (err: any) {
+        // Handle read-only filesystem (EROFS) in serverless production environments (Vercel, AWS Lambda, Netlify)
+        if (
+          err.code === 'EROFS' ||
+          err.code === 'EACCES' ||
+          err.code === 'EPERM' ||
+          err.message?.includes('read-only') ||
+          err.message?.includes('read-only file system')
+        ) {
+          console.warn(`[upload] Read-only filesystem detected (${err.code || err.message}). Falling back to Base64 Data URL for file: ${value.name}`);
+          publicFilepath = `data:${mimetype};base64,${buffer.toString('base64')}`;
+        } else {
+          throw err;
+        }
+      }
 
       files.push({
         fieldname: key,
         filename,
-        filepath: `/uploads/${subdir}/${filename}`,
-        mimetype: value.type || 'image/png',
+        filepath: publicFilepath,
+        mimetype,
         size: value.size,
       });
     }
