@@ -16,7 +16,7 @@ export async function sendSmsOtp({ phone, otpCode }: SendSmsOtpParams) {
   const msg91AuthKey = process.env.MSG91_AUTH_KEY;
   const msg91TemplateId = process.env.MSG91_TEMPLATE_ID;
 
-  const messageText = `Your GoDiscoverMe verification code is: ${otpCode}. Valid for 10 minutes.`;
+  const messageText = `Your JobNest verification code is: ${otpCode}. Valid for 10 minutes.`;
 
   // 1. Twilio Integration
   if (twilioSid && twilioToken && twilioPhone) {

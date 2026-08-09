@@ -20,9 +20,9 @@ export default function SubscriptionPage() {
 
   const getBillingPrice = (sub: any) => {
     if (!sub) return 'N/A';
-    if (sub.billingCycle === 'daily') return `₹${sub.planDailyPrice}/day`;
-    if (sub.billingCycle === 'weekly') return `₹${sub.planWeeklyPrice}/week`;
-    return `₹${sub.planMonthlyPrice}/month`;
+    if (sub.billingCycle === 'daily') return `$${sub.planDailyPrice}/day`;
+    if (sub.billingCycle === 'weekly') return `$${sub.planWeeklyPrice}/week`;
+    return `$${sub.planMonthlyPrice}/month`;
   };
 
   const fetchData = async () => {
@@ -226,7 +226,7 @@ export default function SubscriptionPage() {
                 <div className="mb-3">
                   <span className="badge bg-secondary mb-2" style={{ fontWeight: 500 }}>CURRENT PLAN</span>
                   <h3 className="mb-1" style={{ fontWeight: 700 }}>Basic Seeker Plan</h3>
-                  <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: ₹0 (Free Tier)</p>
+                  <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: $0 (Free Tier)</p>
                 </div>
 
                 <hr />
@@ -357,7 +357,7 @@ export default function SubscriptionPage() {
                 <div className="mb-3">
                   <span className="badge bg-secondary mb-2" style={{ fontWeight: 500 }}>CURRENT PLAN</span>
                   <h3 className="mb-1" style={{ fontWeight: 700 }}>Free Employer Plan</h3>
-                  <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: ₹0 (Free Tier)</p>
+                  <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: $0 (Free Tier)</p>
                 </div>
 
                 <hr />
@@ -570,7 +570,7 @@ export default function SubscriptionPage() {
                         {invoice.gstNumber ? 'Business Promo' : 'Premium Subscription'}
                       </span>
                     </td>
-                    <td className="fw-bold text-dark">₹{invoice.totalAmount}</td>
+                    <td className="fw-bold text-dark">${invoice.totalAmount}</td>
                     <td>
                       <span className={`badge px-2 py-1 ${
                         invoice.paymentStatus === 'paid' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger'

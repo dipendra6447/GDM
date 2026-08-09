@@ -296,8 +296,8 @@ export default function BusinessPromoterDashboard() {
             />
             <StatCard 
               title="Total Spent" 
-              value={`₹${totals.spent}`} 
-              icon="bi-currency-rupee" 
+              value={`$${totals.spent}`} 
+              icon="bi-currency-dollar" 
               colorScheme="orange" 
             />
             <StatCard 
@@ -308,7 +308,7 @@ export default function BusinessPromoterDashboard() {
             />
             <StatCard 
               title="Avg CPC" 
-              value={`₹${totals.cpc}`} 
+              value={`$${totals.cpc}`} 
               icon="bi-graph-up-arrow" 
               colorScheme="purple" 
             />
@@ -449,7 +449,7 @@ export default function BusinessPromoterDashboard() {
             <StatCard title="Impressions" value={totals.impressions} icon="bi-eye-fill" colorScheme="cyan" />
             <StatCard title="Total Clicks" value={totals.clicks} icon="bi-cursor-fill" colorScheme="blue" />
             <StatCard title="Avg CTR" value={`${totals.ctr}%`} icon="bi-percent" colorScheme="green" />
-            <StatCard title="Avg CPC" value={`₹${totals.cpc}`} icon="bi-graph-up-arrow" colorScheme="purple" />
+            <StatCard title="Avg CPC" value={`$${totals.cpc}`} icon="bi-graph-up-arrow" colorScheme="purple" />
           </div>
 
           <div className="card border-0 shadow-sm p-4" style={{ borderRadius: '20px', backgroundColor: '#ffffff' }}>

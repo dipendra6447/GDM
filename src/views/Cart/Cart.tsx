@@ -15,7 +15,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "js-silver": {
     id: "js-silver", tier: "Silver", tierClass: "tier-silver", category: "jobseeker",
     categoryLabel: "Job Seeker", badge: null, featured: false,
-    priceDaily: "₹29", priceWeekly: "₹149", priceMonthly: "₹399",
+    priceDaily: "$29", priceWeekly: "$149", priceMonthly: "$399",
     desc: "Perfect for active job seekers",
     features: [
       { text: "Search Unlimited Jobs", included: true },
@@ -27,7 +27,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "js-gold": {
     id: "js-gold", tier: "Gold", tierClass: "tier-gold", category: "jobseeker",
     categoryLabel: "Job Seeker", badge: "⭐ Most Popular", featured: true,
-    priceDaily: "₹59", priceWeekly: "₹299", priceMonthly: "₹799",
+    priceDaily: "$59", priceWeekly: "$299", priceMonthly: "$799",
     desc: "Unlimited applications & more",
     features: [
       { text: "Everything in Silver", included: true },
@@ -40,7 +40,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "js-platinum": {
     id: "js-platinum", tier: "Platinum", tierClass: "tier-platinum", category: "jobseeker",
     categoryLabel: "Job Seeker", badge: "👑 Best Value", featured: false,
-    priceDaily: "₹99", priceWeekly: "₹499", priceMonthly: "₹1299",
+    priceDaily: "$99", priceWeekly: "$499", priceMonthly: "$1299",
     desc: "Maximum career acceleration",
     features: [
       { text: "Everything in Gold", included: true },
@@ -56,7 +56,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "emp-silver": {
     id: "emp-silver", tier: "Silver", tierClass: "tier-silver", category: "employer",
     categoryLabel: "Employer", badge: null, featured: false,
-    priceDaily: "₹49", priceWeekly: "₹249", priceMonthly: "₹699",
+    priceDaily: "$49", priceWeekly: "$249", priceMonthly: "$699",
     desc: "For growing startups",
     features: [
       { text: "Post Up To 3 Jobs Free", included: true },
@@ -67,7 +67,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "emp-gold": {
     id: "emp-gold", tier: "Gold", tierClass: "tier-gold", category: "employer",
     categoryLabel: "Employer", badge: "🏆 Recommended", featured: true,
-    priceDaily: "₹99", priceWeekly: "₹499", priceMonthly: "₹1299",
+    priceDaily: "$99", priceWeekly: "$499", priceMonthly: "$1299",
     desc: "For scaling teams",
     features: [
       { text: "Everything in Silver", included: true },
@@ -80,7 +80,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "emp-platinum": {
     id: "emp-platinum", tier: "Platinum", tierClass: "tier-platinum", category: "employer",
     categoryLabel: "Employer", badge: "👑 Enterprise", featured: false,
-    priceDaily: "₹199", priceWeekly: "₹899", priceMonthly: "₹2499",
+    priceDaily: "$199", priceWeekly: "$899", priceMonthly: "$2499",
     desc: "For enterprise hiring",
     features: [
       { text: "Everything in Gold", included: true },
@@ -96,7 +96,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "biz-silver": {
     id: "biz-silver", tier: "Silver", tierClass: "tier-silver", category: "business",
     categoryLabel: "Business Promotion", badge: null, featured: false,
-    priceDaily: "₹99", priceWeekly: "₹499", priceMonthly: "₹1299",
+    priceDaily: "$99", priceWeekly: "$499", priceMonthly: "$1299",
     desc: "Entry-level business visibility",
     features: [
       { text: "Business Listing Promotion", included: true },
@@ -107,7 +107,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "biz-gold": {
     id: "biz-gold", tier: "Gold", tierClass: "tier-gold", category: "business",
     categoryLabel: "Business Promotion", badge: "✨ Best Choice", featured: true,
-    priceDaily: "₹199", priceWeekly: "₹899", priceMonthly: "₹2499",
+    priceDaily: "$199", priceWeekly: "$899", priceMonthly: "$2499",
     desc: "Maximum brand exposure",
     features: [
       { text: "Everything in Silver", included: true },
@@ -120,7 +120,7 @@ const PLANS_REGISTRY: Record<string, Omit<CartItem, "billing">> = {
   "biz-platinum": {
     id: "biz-platinum", tier: "Platinum", tierClass: "tier-platinum", category: "business",
     categoryLabel: "Business Promotion", badge: "🚀 Maximum Reach", featured: false,
-    priceDaily: "₹349", priceWeekly: "₹1499", priceMonthly: "₹3999",
+    priceDaily: "$349", priceWeekly: "$1499", priceMonthly: "$3999",
     desc: "Enterprise-grade promotion",
     features: [
       { text: "Everything in Gold", included: true },
@@ -190,9 +190,9 @@ const Cart: React.FC = () => {
                   categoryLabel,
                   badge: p.isPopular ? "⭐ Most Popular" : p.isBestValue ? "👑 Best Value" : null,
                   billing,
-                  priceDaily: `₹${p.dailyPrice}`,
-                  priceWeekly: `₹${p.weeklyPrice}`,
-                  priceMonthly: `₹${p.monthlyPrice}`,
+                  priceDaily: `$${p.dailyPrice}`,
+                  priceWeekly: `$${p.weeklyPrice}`,
+                  priceMonthly: `$${p.monthlyPrice}`,
                   desc: p.tier === "free" ? "Perfect for active entry" : p.tier === "plus" ? "Most popular choice" : "Maximum acceleration benefits",
                   features: featuresList,
                   featured: !!p.isPopular,

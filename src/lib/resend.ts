@@ -238,7 +238,7 @@ export async function sendSubscriptionReceiptEmail({
             </div>
             <div class="receipt-row">
               <span class="label">Total Paid (incl. Tax)</span>
-              <span class="value gold-value">₹${amount}</span>
+              <span class="value gold-value">$${amount}</span>
             </div>
             <div class="receipt-row">
               <span class="label">Access Valid Until</span>
@@ -439,10 +439,10 @@ export async function sendEmailOtp({ toEmail, otpCode }: SendEmailOtpParams) {
       </head>
       <body>
         <div class="container">
-          <div class="logo">Go<span>Discover</span>Me</div>
+          <div class="logo">JobNest</div>
           <h1 class="title">Verify Your Email Address</h1>
           <p class="text">
-            Use the 6-digit verification code below to complete your signup on GoDiscoverMe:
+            Use the 6-digit verification code below to complete your signup on JobNest:
           </p>
           <div class="otp-box">${otpCode}</div>
           <p class="text" style="font-size: 13px;">
@@ -463,11 +463,11 @@ export async function sendEmailOtp({ toEmail, otpCode }: SendEmailOtpParams) {
   }
 
   try {
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'GoDiscoverMe Verification <onboarding@resend.dev>';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'JobNest Verification <onboarding@resend.dev>';
     const response = await resend.emails.send({
       from: fromEmail,
       to: toEmail,
-      subject: `${otpCode} is your GoDiscoverMe verification code 🔐`,
+      subject: `${otpCode} is your JobNest verification code 🔐`,
       html: htmlContent,
     });
 

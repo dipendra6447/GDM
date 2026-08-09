@@ -368,7 +368,7 @@ export default function PromotionsPage() {
                     <div className="metric-item-lbl">CTR</div>
                   </div>
                   <div>
-                    <div className="metric-item-val">{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</div>
+                    <div className="metric-item-val">{promo.spent !== undefined ? `$${promo.spent}` : '$0'}</div>
                     <div className="metric-item-lbl">Spent</div>
                   </div>
                 </div>
@@ -468,7 +468,7 @@ export default function PromotionsPage() {
                     <td className="fw-semibold text-dark">{promo.impressions !== undefined ? promo.impressions : '0'}</td>
                     <td className="fw-semibold text-dark">{promo.clicks !== undefined ? promo.clicks : '0'}</td>
                     <td className="fw-semibold text-dark">{promo.ctr !== undefined ? `${promo.ctr}%` : '0.00%'}</td>
-                    <td className="fw-semibold text-dark">{promo.spent !== undefined ? `₹${promo.spent}` : '₹0'}</td>
+                    <td className="fw-semibold text-dark">{promo.spent !== undefined ? `$${promo.spent}` : '$0'}</td>
                     <td>
                       <select
                         className={`form-select form-select-sm fw-semibold border ${

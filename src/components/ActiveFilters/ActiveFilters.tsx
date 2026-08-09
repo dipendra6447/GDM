@@ -20,8 +20,8 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({ filters, onRemove, onClea
   filters.skills.forEach((v) => tags.push({ label: v, field: 'skills', value: v }));
   if (filters.salaryRange) {
     const labels: Record<string, string> = {
-      '0-3': '₹0–3 LPA', '3-6': '₹3–6 LPA', '6-10': '₹6–10 LPA',
-      '10-20': '₹10–20 LPA', '20-40': '₹20–40 LPA', '40+': '₹40 LPA+',
+      '0-50': 'Under $50k', '50-80': '$50k–$80k', '80-120': '$80k–$120k',
+      '120-160': '$120k–$160k', '160-200': '$160k–$200k', '200+': '$200k+',
     };
     tags.push({ label: labels[filters.salaryRange] || filters.salaryRange, field: 'salaryRange', value: filters.salaryRange });
   }

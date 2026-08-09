@@ -349,7 +349,7 @@ const PostJob: React.FC<PostJobProps> = ({ overrideTab, editJobId, onJobPosted }
                     </div>
                     <div className="pj-field">
                       <label className="pj-label" htmlFor="pj-location">Location</label>
-                      <input id="pj-location" type="text" className="pj-input" placeholder="e.g. Bangalore, India" value={location} onChange={(e) => setLocation(e.target.value)} />
+                      <input id="pj-location" type="text" className="pj-input" placeholder="e.g. San Francisco, CA" value={location} onChange={(e) => setLocation(e.target.value)} />
                     </div>
                   </div>
 
@@ -369,7 +369,7 @@ const PostJob: React.FC<PostJobProps> = ({ overrideTab, editJobId, onJobPosted }
                   <div className="pj-form-row">
                     <div className="pj-field">
                       <label className="pj-label" htmlFor="pj-salary">Salary Range</label>
-                      <input id="pj-salary" type="text" className="pj-input" placeholder="e.g. ₹12-20 LPA" value={salaryRange} onChange={(e) => setSalaryRange(e.target.value)} />
+                      <input id="pj-salary" type="text" className="pj-input" placeholder="e.g. $120,000 - $160,000 / yr" value={salaryRange} onChange={(e) => setSalaryRange(e.target.value)} />
                     </div>
                     <div className="pj-field">
                       <label className="pj-label" htmlFor="pj-benefits">Benefits <span className="pj-label-hint">(Comma separated)</span></label>

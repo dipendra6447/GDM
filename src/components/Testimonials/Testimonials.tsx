@@ -6,23 +6,23 @@ const testimonials = [
   {
     quote:
       "JobNest Premium completely transformed my job search. I applied to 40+ positions in a week and landed my dream role within 30 days. The priority visibility feature is a game-changer!",
-    name: "Priya Sharma",
-    role: "Software Engineer — Job Seeker",
-    initial: "P",
+    name: "Emily Watson",
+    role: "Senior Software Engineer — Job Seeker (Austin, TX)",
+    initial: "E",
   },
   {
     quote:
       "As an employer, JobNest Professional plan saved us weeks in recruitment. The recruitment dashboard and candidate shortlisting tools helped us hire 5 engineers in under 2 weeks.",
-    name: "Rajesh Kumar",
-    role: "CTO, TechStart India — Employer",
-    initial: "R",
+    name: "David Miller",
+    role: "CTO, CloudTech Labs — Employer (San Francisco, CA)",
+    initial: "D",
   },
   {
     quote:
       "The business promotion plan gave us incredible exposure. Our homepage banner drove 300% more leads in the first month. The analytics dashboard showed us exactly what was working.",
-    name: "Neha Verma",
-    role: "Marketing Director, GrowthCo — Business Promoter",
-    initial: "N",
+    name: "Amanda Chen",
+    role: "VP of Marketing, Apex Growth — Business Promoter (New York, NY)",
+    initial: "A",
   },
 ];
 
