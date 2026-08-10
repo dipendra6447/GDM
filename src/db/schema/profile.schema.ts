@@ -42,6 +42,14 @@ export const jobSeekerProfiles = pgTable('job_seeker_profiles', {
 
   // Social / Portfolio Links
   resumeUrl: varchar('resume_url', { length: 1000 }),
+  resumeTitle: varchar('resume_title', { length: 255 }),
+  resumes: jsonb('resumes').$type<Array<{
+    id: string;
+    title: string;
+    fileUrl: string;
+    isPrimary?: boolean;
+    uploadedAt?: string;
+  }>>().default([]),
   linkedinUrl: varchar('linkedin_url', { length: 1000 }),
   githubUrl: varchar('github_url', { length: 1000 }),
   portfolioUrl: varchar('portfolio_url', { length: 1000 }),

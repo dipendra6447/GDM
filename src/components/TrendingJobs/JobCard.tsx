@@ -1,93 +1,109 @@
-"use client";
+'use client';
+
 import React from 'react';
-import { Job } from './TrendingJobs';
+import Link from 'next/link';
 import { useAuth } from '../../hooks/useAuth';
 
+export interface JobCardData {
+  id: string;
+  slug: string;
+  title: string;
+  companyName: string;
+  location: string;
+  jobType: string;
+  workMode?: string;
+  salaryRange: string;
+  category?: string;
+  tags?: string[];
+  iconBg?: string;
+  iconColor?: string;
+  iconClass?: string;
+  postedTime?: string;
+  applicantCount?: number;
+  isVerified?: boolean;
+  isHot?: boolean;
+  buttonColor?: string;
+}
+
 interface JobCardProps {
-  job: Job;
+  job: JobCardData;
 }
 
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const { user, isLoggedIn } = useAuth();
-  const isEmployer = isLoggedIn && !user?.roles?.includes(1);
 
-  const handleApply = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!isLoggedIn) {
-      window.location.href = '/login';
-      return;
-    }
-    const completion = user?.profileCompletion || 0;
-    if (completion < 50) {
-      alert("Please complete your profile to apply for this job.");
-      window.location.href = '/profile';
-      return;
-    }
-    // Proceed with application logic (future implementation)
-    alert(`Successfully applied for ${job.title}!`);
-  };
+  const iconBg = job.iconBg || '#ede9fe';
+  const iconColor = job.iconColor || '#6d28d9';
+  const iconClass = job.iconClass || 'bi-briefcase-fill';
+  const buttonColor = job.buttonColor || job.iconBg || '#3b82f6';
+
+  // Combine jobType, workMode, and skills into a clean tag array
+  const displayTags = [
+    job.jobType,
+    job.workMode,
+    ...(job.tags || []),
+  ].filter(Boolean) as string[];
 
   return (
-    <article
-      className="job-card"
-      id={`job-card-${job.id}`}
-      aria-label={`${job.title} at ${job.companyName}`}
-      style={{ '--apply-color': job.applyBtnColor } as React.CSSProperties}
-    >
-      {/* Top section with icon badge */}
-      <div className="job-card-top">
-        <div className="job-card-icon-badge" style={{ backgroundColor: `${job.applyBtnColor}1a`, color: job.applyBtnColor }}>
-          <i className="bi bi-briefcase"></i>
+    <article className="client-job-card" id={`job-card-${job.id}`}>
+      {/* Hot Tag Top Right */}
+      {job.isHot !== false && (
+        <div className="job-hot-badge">
+          <span className="hot-flame">🔥</span> Hot
         </div>
-        {!isEmployer && (
-          <button className="job-bookmark" aria-label={`Save ${job.title}`} id={`bookmark-${job.id}`}>
-            <i className="bi bi-bookmark"></i>
-          </button>
-        )}
+      )}
+
+      {/* Card Header: Icon Square */}
+      <div className="job-card-header-icon">
+        <div
+          className="job-icon-square"
+          style={{ backgroundColor: iconBg, color: iconColor }}
+        >
+          <i className={`bi ${iconClass}`}></i>
+        </div>
       </div>
 
-      {/* Card body */}
-      <div className="job-card-body">
-        {/* Title */}
-        <h3 className="job-title">{job.title}</h3>
+      {/* Main Card Content */}
+      <div className="job-card-content">
+        <h3 className="job-card-title" title={job.title}>
+          {job.title}
+        </h3>
 
-        {/* Company row */}
-        <div className="job-company-row">
-          <i className={`bi bi-building job-company-icon`}></i>
-          <span className="job-company">{job.companyName}</span>
+        <div className="job-card-company-row">
+          <i className="bi bi-building me-1 text-muted" style={{ fontSize: '13px' }}></i>
+          <span className="company-name">{job.companyName}</span>
+          {job.isVerified !== false && (
+            <i className="bi bi-patch-check-fill company-verified-tick" title="Verified Company"></i>
+          )}
         </div>
 
-        {/* Meta: location + type */}
-        <div className="job-meta">
-          <span className="job-meta-item">
-            <i className="bi bi-geo-alt"></i>
-            {job.location}
-          </span>
-          <span className="job-meta-item">
-            <i className="bi bi-briefcase"></i>
-            {job.jobType}
-          </span>
+        <div className="job-card-location">
+          <i className="bi bi-geo-alt me-1"></i>
+          {job.location}
         </div>
 
-        {/* Salary */}
-        <div className="job-salary">{job.salaryRange}</div>
+        <div className="job-card-salary">{job.salaryRange}</div>
 
-        {/* Tags */}
-        <div className="job-tags">
-          {job.tags?.map((tag) => (
-            <span key={tag} className="job-tag">{tag}</span>
+        {/* Skill Tags (Fixed height container) */}
+        <div className="job-card-tags">
+          {displayTags.slice(0, 5).map((t, idx) => (
+            <span key={idx} className="job-pill-tag">
+              {t}
+            </span>
           ))}
         </div>
+      </div>
 
-        {/* Apply button */}
-        <a
-          href={`/jobs/${job.slug}`}
-          className="job-apply-btn"
-          id={`apply-${job.id}`}
-          aria-label={`View ${job.title}`}
+      {/* Pinned Bottom Action Button */}
+      <div className="job-card-action">
+        <Link
+          href={`/jobs/${job.slug || job.id}`}
+          className="btn-view-job"
+          style={{ backgroundColor: buttonColor }}
+          id={`view-job-btn-${job.id}`}
         >
           View Job
-        </a>
+        </Link>
       </div>
     </article>
   );

@@ -6,6 +6,7 @@ import '@/styles/responsive.css';
 import '../App.css';
 
 import { Inter } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import Providers from './Providers';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </Providers>
         </div>
+        <Analytics />
       </body>
     </html>
   );

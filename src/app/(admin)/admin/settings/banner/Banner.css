@@ -1,0 +1,446 @@
+.banner-management-page {
+  padding-bottom: 2.5rem;
+}
+
+.banner-card-body {
+  padding: 1.75rem;
+}
+
+/* ── Banner Preview Box ── */
+.banner-preview-box {
+  width: 100%;
+  height: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: background-image 0.5s ease-in-out;
+}
+
+.banner-preview-overlay {
+  width: 100%;
+  padding: 1.75rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(10, 10, 10, 0.9) 100%);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.banner-preview-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: #ffffff;
+}
+
+.banner-preview-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.banner-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.banner-preview-counter {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #d4af37;
+}
+
+/* ── Upload Dropzone ── */
+.upload-dropzone {
+  border: 2px dashed rgba(212, 175, 55, 0.3);
+  border-radius: 14px;
+  padding: 2.75rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(212, 175, 55, 0.02);
+  display: block;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.drag-active {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.08);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+  transform: translateY(-2px);
+}
+
+.dropzone-icon {
+  font-size: 3rem;
+  color: #d4af37;
+  margin-bottom: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+.upload-dropzone:hover .dropzone-icon {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.dropzone-text {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.35rem;
+}
+
+.dropzone-hint {
+  font-size: 0.825rem;
+  color: #999999;
+}
+
+/* ── Staged Files Previews ── */
+.staged-files-container {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.staged-files-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.staged-files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 1rem;
+}
+
+.staged-file-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: #111;
+  aspect-ratio: 16/9;
+}
+
+.staged-file-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.staged-file-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ff4d4f;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.staged-file-remove:hover {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+.staged-file-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.75);
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  color: #eee;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.banner-or-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: #777;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+.banner-or-divider::before,
+.banner-or-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.banner-or-divider::before {
+  margin-right: 1.25rem;
+}
+
+.banner-or-divider::after {
+  margin-left: 1.25rem;
+}
+
+/* ── Filter Bar & Bulk Actions ── */
+.banner-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.banner-filter-pills {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-pill-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #bbb;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.filter-pill-btn:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #fff;
+}
+
+.filter-pill-btn.active {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #d4af37;
+  color: #d4af37;
+  font-weight: 600;
+}
+
+.filter-count-badge {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+}
+
+.filter-pill-btn.active .filter-count-badge {
+  background: #d4af37;
+  color: #0a0a0a;
+}
+
+/* ── Banner Grid & Cards ── */
+.banner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.banner-item-card {
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-item-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.banner-item-card.is-active-banner {
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.12);
+}
+
+.banner-card-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 170px;
+  overflow: hidden;
+  background: #000;
+}
+
+.banner-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.banner-item-card:hover .banner-card-img {
+  transform: scale(1.04);
+}
+
+/* 🏷️ Active Tag Badge */
+.active-tag-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}
+
+.active-tag-badge.active {
+  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.active-tag-badge.inactive {
+  background: rgba(30, 30, 30, 0.85);
+  color: #aaa;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.banner-card-info {
+  padding: 1.15rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.banner-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.banner-card-url {
+  font-size: 0.78rem;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 1rem;
+}
+
+.banner-card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  pt-2: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.75rem;
+}
+
+/* Toggle Active Switch Button */
+.btn-toggle-active {
+  flex: 1;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-toggle-active.make-inactive {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+}
+
+.btn-toggle-active.make-inactive:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: #d4af37;
+}
+
+.btn-toggle-active.make-active {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ccc;
+}
+
+.btn-toggle-active.make-active:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #d4af37;
+  color: #d4af37;
+}
+
+.btn-delete-banner {
+  background: rgba(255, 77, 79, 0.1);
+  border: 1px solid rgba(255, 77, 79, 0.25);
+  color: #ff4d4f;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete-banner:hover {
+  background: #ff4d4f;
+  color: #fff;
+  border-color: #ff4d4f;
+}
+
+.empty-banners-box {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #888;
+}

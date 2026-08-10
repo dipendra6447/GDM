@@ -168,42 +168,32 @@ const Cart: React.FC = () => {
       } else {
         const fetchPlan = async () => {
           try {
-            const res = await fetch(`/api/admin/subscription-plans/${planId}`);
+            // Fetch all plans to find the match since /api/plans is public
+            const res = await fetch(`/api/plans`);
             const json = await res.json();
-            if (json.success && json.data) {
-              const p = json.data;
-              
-              const featuresList = p.features ? p.features.map((f: string) => ({
-                text: f,
-                included: true
-              })) : [];
+            if (json.success && Array.isArray(json.data)) {
+              const p = json.data.find((plan: any) => plan.id === planId);
+              if (p) {
+                const featuresList = p.features ? p.features.map((f: string) => ({
+                  text: f,
+                  included: true
+                })) : [];
 
-              const category = p.roleTarget === "job_seeker" ? "jobseeker" : p.roleTarget === "job_poster" ? "employer" : "business";
-              const categoryLabel = p.roleTarget === "job_seeker" ? "Job Seeker" : p.roleTarget === "job_poster" ? "Employer" : "Business Promotion";
-              
-              const allPlansRes = await fetch("/api/admin/subscription-plans");
-              const allPlansJson = await allPlansRes.json();
-              if (allPlansJson.success && Array.isArray(allPlansJson.data)) {
-                const tierPlans = allPlansJson.data.filter(
-                  (tp: any) => tp.name.toLowerCase() === p.name.toLowerCase() && tp.roleTarget === p.roleTarget
-                );
+                const category = p.roleTarget === "job_seeker" ? "jobseeker" : p.roleTarget === "job_poster" ? "employer" : "business";
+                const categoryLabel = p.roleTarget === "job_seeker" ? "Job Seeker" : p.roleTarget === "job_poster" ? "Employer" : "Business Promotion";
                 
-                const dailyPlan = tierPlans.find((tp: any) => tp.billingCycle === "/day");
-                const weeklyPlan = tierPlans.find((tp: any) => tp.billingCycle === "/week");
-                const monthlyPlan = tierPlans.find((tp: any) => tp.billingCycle === "/month");
-
                 const cartItem: CartItem = {
                   id: p.id,
                   tier: p.name,
-                  tierClass: `tier-${p.name.toLowerCase()}`,
+                  tierClass: `tier-${p.tier.toLowerCase()}`,
                   category: category as any,
                   categoryLabel,
                   badge: p.isPopular ? "⭐ Most Popular" : p.isBestValue ? "👑 Best Value" : null,
                   billing,
-                  priceDaily: dailyPlan ? `₹${dailyPlan.price}` : "N/A",
-                  priceWeekly: weeklyPlan ? `₹${weeklyPlan.price}` : "N/A",
-                  priceMonthly: monthlyPlan ? `₹${monthlyPlan.price}` : "N/A",
-                  desc: p.name === "Silver" ? "Perfect for active entry" : p.name === "Gold" ? "Most popular choice" : "Maximum acceleration benefits",
+                  priceDaily: `₹${p.dailyPrice}`,
+                  priceWeekly: `₹${p.weeklyPrice}`,
+                  priceMonthly: `₹${p.monthlyPrice}`,
+                  desc: p.tier === "free" ? "Perfect for active entry" : p.tier === "plus" ? "Most popular choice" : "Maximum acceleration benefits",
                   features: featuresList,
                   featured: !!p.isPopular,
                 };

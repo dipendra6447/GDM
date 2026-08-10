@@ -1,22 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq, and, gt } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { db } from '@/db';
-import { jobApplications, subscriptions, users, globalConfigs } from '@/db/schema';
+import { jobApplications, users } from '@/db/schema';
 import { requireAuth, getAuthFromRequest } from '@/lib/auth';
-
-const configCache = new Map<string, { value: number; expires: number }>();
-const CACHE_TTL = 1000 * 60 * 60;
-
-async function getFreeLimit(key: string): Promise<number> {
-  const now = Date.now();
-  if (configCache.has(key) && configCache.get(key)!.expires > now) {
-    return configCache.get(key)!.value;
-  }
-  const [config] = await db.select().from(globalConfigs).where(eq(globalConfigs.key, key)).limit(1);
-  const value = config ? parseInt(config.value, 10) : 3;
-  configCache.set(key, { value, expires: now + CACHE_TTL });
-  return value;
-}
+import { canApplyToJob } from '@/lib/entitlements';
 
 // GET /api/jobs/[id]/apply — Check if the user has already applied to this job
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -47,35 +34,39 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
     const userId = authPayload.userId;
 
-    // Check active subscription or free limit
-    const activeSub = await db
-      .select()
-      .from(subscriptions)
-      .where(
-        and(
-          eq(subscriptions.userId, userId),
-          eq(subscriptions.subscriptionType, 'job_seeker'),
-          eq(subscriptions.status, 'active'),
-          gt(subscriptions.expiresAt, new Date())
-        )
-      )
-      .limit(1);
+    let body: any = {};
+    try {
+      body = await req.json();
+    } catch {}
 
-    if (activeSub.length === 0) {
-      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-      const freeLimit = await getFreeLimit('FREE_JOB_APPLY_LIMIT');
+    const resumeUrl = body.resumeUrl || null;
+    const resumeTitle = body.resumeTitle || null;
 
-      if (user.jobApplyCount >= freeLimit) {
-        return NextResponse.json({
-          success: false,
-          message: `Free job apply limit (${freeLimit}) reached. Subscribe to apply to more jobs.`,
-        }, { status: 403 });
-      }
-
-      await db.update(users).set({ jobApplyCount: user.jobApplyCount + 1 }).where(eq(users.id, userId));
+    // Check entitlements — uses subscription plan limits
+    const check = await canApplyToJob(userId);
+    if (!check.allowed) {
+      return NextResponse.json({
+        success: false,
+        message: check.reason,
+        upgradeRequired: check.upgradeRequired,
+        currentUsage: check.currentUsage,
+        limit: check.limit,
+      }, { status: 403 });
     }
 
-    await db.insert(jobApplications).values({ jobId, applicantId: userId, status: 'pending' });
+    // Increment usage counter if on free tier (not unlimited)
+    if (check.limit !== 'unlimited') {
+      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      await db.update(users).set({ jobApplyCount: (user?.jobApplyCount || 0) + 1 }).where(eq(users.id, userId));
+    }
+
+    await db.insert(jobApplications).values({
+      jobId,
+      applicantId: userId,
+      status: 'pending',
+      resumeUrl,
+      resumeTitle,
+    });
 
     return NextResponse.json({ success: true, message: 'Application submitted successfully' });
   } catch (error: any) {

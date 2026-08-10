@@ -1,37 +1,61 @@
-"use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import "./Hero.css";
-import heroBg from "../../assets/images/hero_city_bg.png";
+'use client';
 
-const popularSearches = [
-  "Web Developer",
-  "Marketing Agency",
-  "Graphics",
-  "Saloon",
-  "UI/UX Designer",
-];
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import './Hero.css';
+
+const DEFAULT_HERO_BG = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1920&auto=format&fit=crop';
 
 const Hero: React.FC = () => {
   const router = useRouter();
-  const [designation, setDesignation] = useState("");
-  const [experience, setExperience] = useState("");
-  const [location, setLocation] = useState("");
-  const [email, setEmail] = useState("");
-  const [email2, setEmail2] = useState("");
+  const [activeTab, setActiveTab] = useState<'jobs' | 'companies' | 'candidates'>('jobs');
+  const [keyword, setKeyword] = useState('');
+  const [location, setLocation] = useState('');
+
+  const [activeBanners, setActiveBanners] = useState<string[]>([DEFAULT_HERO_BG]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  useEffect(() => {
+    fetch('/api/config/banner')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          if (Array.isArray(data.banners) && data.banners.length > 0) {
+            setActiveBanners(data.banners);
+          } else if (data.bannerUrl) {
+            setActiveBanners([data.bannerUrl]);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Auto-cycle through active banners if there are multiple
+  useEffect(() => {
+    if (activeBanners.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % activeBanners.length);
+    }, 7000);
+
+    return () => clearInterval(timer);
+  }, [activeBanners]);
+
+  const currentBannerBg = activeBanners[currentIndex % activeBanners.length] || DEFAULT_HERO_BG;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (designation) params.set("keyword", designation);
-    if (location) params.set("location", location);
-    if (experience) params.set("experience", experience);
-    router.push(`/jobs?${params.toString()}`);
-  };
+    if (keyword) params.set('keyword', keyword);
+    if (location) params.set('location', location);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ email, email2 });
+    if (activeTab === 'companies') {
+      router.push(`/companies?${params.toString()}`);
+    } else if (activeTab === 'candidates') {
+      router.push(`/seeker?${params.toString()}`);
+    } else {
+      router.push(`/jobs?${params.toString()}`);
+    }
   };
 
   return (
@@ -39,257 +63,123 @@ const Hero: React.FC = () => {
       className="hero-banner-section"
       id="hero"
       aria-label="Hero banner section"
-      style={{ backgroundImage: `url(${heroBg.src})` }}
+      style={{ backgroundImage: `url(${currentBannerBg})` }}
     >
-      {/* Left-to-right gradient overlay */}
-      <div className="hero-gradient-overlay" aria-hidden="true" />
+      {/* Light gradient overlay for maximum readability */}
+      <div className="hero-light-overlay" aria-hidden="true" />
 
-      <div className="container h-100 position-relative">
-        <div className="row align-items-center h-100 gy-4">
-          {/* ── LEFT COLUMN ── */}
-          <div className="col-lg-10 hero-content-left">
-            {/* Badge */}
-            <div className="hero-guarantee-badge">
-              <span className="hero-badge-dot" aria-hidden="true" />
-              Guaranteed Results.
-            </div>
+      {/* Multi-banner indicator dots if multiple active banners */}
+      {activeBanners.length > 1 && (
+        <div className="hero-banner-dots" aria-label="Banner slider navigation">
+          {activeBanners.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              className={`hero-banner-dot ${idx === currentIndex ? 'active' : ''}`}
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Switch to banner ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
-            {/* Heading */}
-            <h1 className="hero-main-heading">
-              Join Millions. Find Your
-              <br />
-              Better <span className="hero-heading-blue">Job.</span>
-            </h1>
+      <div className="container position-relative hero-content-container">
+        {/* ── TOP BADGE ── */}
+        <div className="hero-top-badge">
+          <i className="bi bi-star-fill text-warning"></i>
+          <span>The All-in-One Discovery Network</span>
+        </div>
 
-            {/* Sub-heading */}
-            <p className="hero-sub-heading">
-              Smart Tools. Targeted Search. Guaranteed Results.
-            </p>
+        {/* ── HERO HEADING ── */}
+        <h1 className="hero-main-heading">
+          Discover Opportunities.
+          <br />
+          <span className="hero-heading-blue">Build Careers. Grow Businesses.</span>
+        </h1>
 
-            {/* Trust pills */}
-            <div className="hero-trust-pills" role="list">
-              <div className="trust-pill" role="listitem">
-                <span className="pill-dot green" aria-hidden="true" />
-                100% Free To Explore
-              </div>
-              <div className="trust-pill" role="listitem">
-                <span className="pill-dot green" aria-hidden="true" />
-                Trusted By Thousands
-              </div>
-              <div className="trust-pill" role="listitem">
-                <span className="pill-dot green" aria-hidden="true" />
-                Secure The Job
-              </div>
-            </div>
+        <p className="hero-sub-heading">
+          The only platform built to help people and businesses connect, grow, and succeed together.
+        </p>
 
-            {/* ── Job Search Box ── */}
-            <div className="hero-search-box">
-              <form
-                onSubmit={handleSearch}
-                role="search"
-                aria-label="Job search form"
+        {/* ── FLOATING SEARCH CARD ── */}
+        <div className="hero-main-search-card">
+          {/* Top Row: Label + Pill Switcher */}
+          <div className="hero-search-card-top-row">
+            <span className="hero-card-section-label">What are you looking for?</span>
+            <div className="hero-tabs-nav" role="tablist" aria-label="Search type tabs">
+              <button
+                className={`hero-tab-btn ${activeTab === 'jobs' ? 'active' : ''}`}
+                onClick={() => setActiveTab('jobs')}
+                type="button"
               >
-                <div className="hero-search-fields">
-                  {/* Designation */}
-                  <div className="hero-search-field">
-                    <label className="hero-search-label" htmlFor="hero-designation">
-                      Designation
-                    </label>
-                    <select
-                      id="hero-designation"
-                      className="hero-search-input hero-select-field"
-                      value={designation}
-                      onChange={(e) => setDesignation(e.target.value)}
-                      aria-label="Designation"
-                    >
-                      <option value="">Select Designation</option>
-                      <option value="Software Engineer">Software Engineer</option>
-                      <option value="Frontend Developer">Frontend Developer</option>
-                      <option value="Backend Developer">Backend Developer</option>
-                      <option value="UI/UX Designer">UI/UX Designer</option>
-                      <option value="Product Manager">Product Manager</option>
-                      <option value="Marketing Manager">Marketing Manager</option>
-                      <option value="Data Analyst">Data Analyst</option>
-                    </select>
-                    <i
-                      className="bi bi-chevron-down hero-field-arrow"
-                      aria-hidden="true"
-                    />
-                  </div>
-
-                  <div className="hero-field-sep" aria-hidden="true" />
-
-                  {/* Experience */}
-                  <div className="hero-search-field">
-                    <label
-                      className="hero-search-label"
-                      htmlFor="hero-experience"
-                    >
-                      Experience
-                    </label>
-                    <select
-                      id="hero-experience"
-                      className="hero-search-input hero-select-field"
-                      value={experience}
-                      onChange={(e) => setExperience(e.target.value)}
-                      aria-label="Experience"
-                    >
-                      <option value="">Select Experience</option>
-                      <option value="Freshers">Freshers</option>
-                      <option value="1-2 Years">1-2 Years</option>
-                      <option value="3-5 Years">3-5 Years</option>
-                      <option value="5-10 Years">5-10 Years</option>
-                      <option value="10+ Years">10+ Years</option>
-                    </select>
-                    <i
-                      className="bi bi-chevron-down hero-field-arrow"
-                      aria-hidden="true"
-                    />
-                  </div>
-
-                  <div className="hero-field-sep" aria-hidden="true" />
-
-                  {/* Location */}
-                  <div className="hero-search-field">
-                    <label
-                      className="hero-search-label"
-                      htmlFor="hero-location"
-                    >
-                      Location
-                    </label>
-                    <select
-                      id="hero-location"
-                      className="hero-search-input hero-select-field"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      aria-label="Location"
-                    >
-                      <option value="">Select Location</option>
-                      <option value="Kolkata">Kolkata</option>
-                      <option value="Bengaluru">Bengaluru</option>
-                      <option value="Mumbai">Mumbai</option>
-                      <option value="Delhi">Delhi</option>
-                      <option value="Pune">Pune</option>
-                      <option value="Hyderabad">Hyderabad</option>
-                      <option value="Chennai">Chennai</option>
-                      <option value="Remote">Remote</option>
-                    </select>
-                    <i
-                      className="bi bi-chevron-down hero-field-arrow"
-                      aria-hidden="true"
-                    />
-                  </div>
-
-                  {/* Search Button */}
-                  <button
-                    type="submit"
-                    className="hero-search-btn"
-                    id="hero-search-submit"
-                    aria-label="Search jobs"
-                  >
-                    <i className="bi bi-search" aria-hidden="true" />
-                    Search Jobs
-                  </button>
-                </div>
-              </form>
-
-              {/* Popular searches */}
-              <div className="hero-popular-row">
-                <span className="hero-popular-label">Popular Searches:</span>
-                {popularSearches.map((term) => (
-                  <button
-                    key={term}
-                    className="hero-popular-tag"
-                    id={`popular-hero-${term
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`}
-                    type="button"
-                    onClick={() => {
-                      setDesignation(term);
-                      router.push(`/jobs?keyword=${encodeURIComponent(term)}`);
-                    }}
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
+                <i className="bi bi-briefcase"></i>
+                <span>Jobs</span>
+              </button>
+              <button
+                className={`hero-tab-btn ${activeTab === 'companies' ? 'active' : ''}`}
+                onClick={() => setActiveTab('companies')}
+                type="button"
+              >
+                <i className="bi bi-building"></i>
+                <span>Companies</span>
+              </button>
+              <button
+                className={`hero-tab-btn ${activeTab === 'candidates' ? 'active' : ''}`}
+                onClick={() => setActiveTab('candidates')}
+                type="button"
+              >
+                <i className="bi bi-people"></i>
+                <span>Candidates</span>
+              </button>
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN — Login / Invite Form ── */}
-          {/* <div className="col-lg-5 d-flex justify-content-end align-items-center">
-            <div className="hero-login-card" aria-label="Invite your team">
-
-              <div className="login-avatar-stack" aria-hidden="true">
-                <span className="login-avatar">👩‍💼</span>
-                <span className="login-avatar">👨‍💻</span>
-                <span className="login-avatar">👩‍🔬</span>
+          {/* Search Form Fields Grid */}
+          <form onSubmit={handleSearch} role="search">
+            <div className="hero-search-fields-grid">
+              {/* Field 1: Keyword */}
+              <div className="hero-field-group">
+                <label className="hero-field-label" htmlFor="hero-keyword">
+                  Keyword
+                </label>
+                <div className="hero-input-wrapper">
+                  <i className="bi bi-search hero-input-icon"></i>
+                  <input
+                    id="hero-keyword"
+                    type="text"
+                    className="hero-field-input"
+                    placeholder="Job title, skills, or company"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                  />
+                </div>
               </div>
 
-              <h2 className="login-card-title">Invite your team</h2>
-              <p className="login-card-desc">
-                You've created a new project. Invite colleagues to collaborate on this project.
-              </p>
-
-              <form onSubmit={handleLoginSubmit} noValidate>
-                <div className="login-field-group">
-                  <label className="login-field-label" htmlFor="invite-email-1">Email address</label>
-                  <div className="login-input-wrap">
-                    <i className="bi bi-envelope login-input-icon" aria-hidden="true" />
-                    <input
-                      id="invite-email-1"
-                      type="email"
-                      className="login-input"
-                      placeholder="you@untitled.com"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      aria-label="First team member email"
-                    />
-                  </div>
+              {/* Field 2: Location */}
+              <div className="hero-field-group">
+                <label className="hero-field-label" htmlFor="hero-location">
+                  Location
+                </label>
+                <div className="hero-input-wrapper">
+                  <i className="bi bi-geo-alt hero-input-icon"></i>
+                  <input
+                    id="hero-location"
+                    type="text"
+                    className="hero-field-input"
+                    placeholder="City, state, or remote"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
                 </div>
+              </div>
 
-                <div className="login-field-group">
-                  <div className="login-input-wrap">
-                    <i className="bi bi-envelope login-input-icon" aria-hidden="true" />
-                    <input
-                      id="invite-email-2"
-                      type="email"
-                      className="login-input"
-                      placeholder="you@untitled.com"
-                      value={email2}
-                      onChange={e => setEmail2(e.target.value)}
-                      aria-label="Second team member email"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="login-add-another"
-                  id="add-another-email-btn"
-                >
-                  <i className="bi bi-plus-lg" aria-hidden="true" /> Add another
-                </button>
-
-                <div className="login-actions">
-                  <button
-                    type="button"
-                    className="login-btn-cancel"
-                    id="invite-cancel-btn"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="login-btn-submit"
-                    id="invite-submit-btn"
-                  >
-                    Get started
-                  </button>
-                </div>
-              </form>
+              {/* CTA Submit Button */}
+              <button type="submit" className="hero-submit-btn" id="hero-search-submit">
+                <span>Search Now</span>
+                <i className="bi bi-arrow-right"></i>
+              </button>
             </div>
-          </div> */}
+          </form>
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MdPeople, MdAdd, MdSearch, MdVisibility } from 'react-icons/md';
+import { MdPeople, MdAdd, MdSearch, MdVisibility, MdBlock, MdCheckCircle } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/adminApi';
 import PageHeader from '@/components/admin/Common/PageHeader';
@@ -58,6 +58,20 @@ export default function UsersPage() {
     if (!loading && contentRef.current) fadeInUp(contentRef.current);
   }, [loading]);
 
+  const handleToggleSuspend = async (user: any) => {
+    const action = user.isActive ? 'suspend' : 'unsuspend';
+    if (!window.confirm(`Are you sure you want to ${action} account for ${user.email}?`)) return;
+    
+    try {
+      const res = await api.patch(`/admin/users/${user.id}/suspend`, { isActive: !user.isActive });
+      if (res.success) {
+        fetchUsers();
+      }
+    } catch (err: any) {
+      alert(err.message || `Failed to ${action} user`);
+    }
+  };
+
   const handleAssignRole = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedUser || !selectedRole) return;
@@ -81,8 +95,6 @@ export default function UsersPage() {
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // POST to some register or add user endpoint
-      // Assuming /admin/users exists for POST, otherwise we'll just mock it or handle error
       const res = await api.post('/admin/users', newUser);
       if (newUser.roleId && res.data?.id) {
         await api.post('/admin/users/assign-role', { userId: res.data.id, roleId: parseInt(newUser.roleId, 10) });
@@ -91,7 +103,7 @@ export default function UsersPage() {
       setNewUser({ email: '', password: '', roleId: '' });
       fetchUsers();
     } catch (err: any) {
-      alert(err.message || 'Failed to add user. Ensure the endpoint supports POST.');
+      alert(err.message || 'Failed to add user.');
     }
   };
 
@@ -161,15 +173,16 @@ export default function UsersPage() {
               <tr>
                 <th>Email</th>
                 <th>Joined</th>
+                <th>Status</th>
                 <th>Roles</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={4} className="text-center py-4">Loading users...</td></tr>
+                <tr><td colSpan={5} className="text-center py-4">Loading users...</td></tr>
               ) : filteredUsers.length === 0 ? (
-                <tr><td colSpan={4} className="text-center py-4">No users found.</td></tr>
+                <tr><td colSpan={5} className="text-center py-4">No users found.</td></tr>
               ) : (
                 filteredUsers.map((user) => (
                   <tr key={user.id}>
@@ -178,6 +191,19 @@ export default function UsersPage() {
                       <div className="user-id">ID: {user.id.substring(0, 8)}...</div>
                     </td>
                     <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <span className={`status-badge ${user.isActive !== false ? 'active' : 'suspended'}`}>
+                        {user.isActive !== false ? (
+                          <>
+                            <MdCheckCircle /> Active
+                          </>
+                        ) : (
+                          <>
+                            <MdBlock /> Suspended
+                          </>
+                        )}
+                      </span>
+                    </td>
                     <td>
                       <div className="role-tags">
                         {user.roles.map((r: any) => (
@@ -196,7 +222,19 @@ export default function UsersPage() {
                       </div>
                     </td>
                     <td>
-                      <div className="action-buttons">
+                      <div className="action-buttons d-flex gap-1">
+                        <button
+                          className={`btn btn-sm action-btn ${
+                            user.isActive !== false
+                              ? 'btn-outline-danger'
+                              : 'btn-outline-success'
+                          }`}
+                          onClick={() => handleToggleSuspend(user)}
+                          title={user.isActive !== false ? 'Suspend Account' : 'Unsuspend Account'}
+                        >
+                          {user.isActive !== false ? <MdBlock /> : <MdCheckCircle />}
+                          {user.isActive !== false ? ' Suspend' : ' Unsuspend'}
+                        </button>
                         <button
                           className="btn btn-sm btn-outline-primary action-btn"
                           onClick={() => { setSelectedUser(user); setShowModal(true); }}

@@ -18,24 +18,11 @@ export default function SubscriptionPage() {
   const isEmployer = user?.roles?.includes(2);
   const isBusinessPromoter = user?.roles?.includes(3);
 
-  const formatSubPrice = (tierStr: string, type: 'seeker' | 'employer' | 'promoter') => {
-    const t = (tierStr || '').toLowerCase();
-    if (type === 'seeker') {
-      if (t.includes('silver') || t.includes('daily')) return '₹29/day';
-      if (t.includes('gold') || t.includes('weekly')) return '₹99/week';
-      if (t.includes('platinum') || t.includes('monthly')) return '₹299/month';
-      return '₹299/month';
-    }
-    if (type === 'employer') {
-      if (t.includes('silver') || t.includes('daily')) return '₹49/day';
-      if (t.includes('gold') || t.includes('weekly')) return '₹199/week';
-      if (t.includes('platinum') || t.includes('monthly')) return '₹599/month';
-      return '₹599/month';
-    }
-    if (t.includes('silver') || t.includes('daily')) return '₹99/day';
-    if (t.includes('gold') || t.includes('weekly')) return '₹499/week';
-    if (t.includes('platinum') || t.includes('monthly')) return '₹1499/month';
-    return '₹1499/month';
+  const getBillingPrice = (sub: any) => {
+    if (!sub) return 'N/A';
+    if (sub.billingCycle === 'daily') return `₹${sub.planDailyPrice}/day`;
+    if (sub.billingCycle === 'weekly') return `₹${sub.planWeeklyPrice}/week`;
+    return `₹${sub.planMonthlyPrice}/month`;
   };
 
   const fetchData = async () => {
@@ -200,15 +187,15 @@ export default function SubscriptionPage() {
                         boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)' 
                       }}
                     >
-                      ✨ PREMIUM MEMBER
+                      ✨ {activeSeekerSub.planName ? activeSeekerSub.planName.toUpperCase() : 'PREMIUM'} MEMBER
                     </span>
-                    <h3 className="mb-1" style={{ color: '#D4AF37', fontWeight: 700 }}>Job Seeker Premium</h3>
-                    <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeSeekerSub.tier} Plan</p>
+                    <h3 className="mb-1" style={{ color: '#D4AF37', fontWeight: 700 }}>Job Seeker {activeSeekerSub.planName || 'Premium'}</h3>
+                    <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeSeekerSub.planTier || activeSeekerSub.tier} Plan</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
                     <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
-                      {formatSubPrice(activeSeekerSub.tier, 'seeker')}
+                      {getBillingPrice(activeSeekerSub)}
                     </h4>
                   </div>
                 </div>
@@ -331,15 +318,15 @@ export default function SubscriptionPage() {
                         boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)' 
                       }}
                     >
-                      ✨ PROFESSIONAL EMPLOYER
+                      ✨ {activeEmployerSub.planName ? activeEmployerSub.planName.toUpperCase() : 'PROFESSIONAL'} EMPLOYER
                     </span>
-                    <h3 className="mb-1" style={{ color: '#D4AF37', fontWeight: 700 }}>Employer Premium</h3>
-                    <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeEmployerSub.tier} Plan</p>
+                    <h3 className="mb-1" style={{ color: '#D4AF37', fontWeight: 700 }}>Employer {activeEmployerSub.planName || 'Premium'}</h3>
+                    <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activeEmployerSub.planTier || activeEmployerSub.tier} Plan</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
                     <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
-                      {formatSubPrice(activeEmployerSub.tier, 'employer')}
+                      {getBillingPrice(activeEmployerSub)}
                     </h4>
                   </div>
                 </div>
@@ -462,15 +449,15 @@ export default function SubscriptionPage() {
                         boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)' 
                       }}
                     >
-                      ✨ PROFESSIONAL PROMOTER
+                      ✨ {activePromoterSub.planName ? activePromoterSub.planName.toUpperCase() : 'PREMIUM'} BUSINESS
                     </span>
-                    <h3 className="mb-1" style={{ color: '#D4AF37', fontWeight: 700 }}>Business Promoter Plan</h3>
-                    <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activePromoterSub.tier} Plan</p>
+                    <h3 className="mb-1" style={{ color: '#D4AF37', fontWeight: 700 }}>Business {activePromoterSub.planName || 'Premium'}</h3>
+                    <p className="text-secondary text-capitalize mb-0" style={{ fontSize: '0.9rem' }}>Tier: {activePromoterSub.planTier || activePromoterSub.tier} Plan</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
                     <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
-                      {formatSubPrice(activePromoterSub.tier, 'promoter')}
+                      {getBillingPrice(activePromoterSub)}
                     </h4>
                   </div>
                 </div>

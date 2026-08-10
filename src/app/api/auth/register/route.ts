@@ -5,13 +5,15 @@ import { db } from '@/db';
 import { users, userRoles, jobSeekerProfiles, employerProfiles, businessPromoterProfiles } from '@/db/schema';
 import { signToken, JwtPayload } from '@/lib/auth';
 import { COOKIE_OPTIONS } from '@/lib/constants';
+import { sendWelcomeEmail } from '@/lib/resend';
 
 // POST /api/auth/register
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, role, profile } = await req.json() as {
+    const { email, password, phone, role, profile } = await req.json() as {
       email: string;
       password: string;
+      phone?: string;
       role?: 'job_seeker' | 'job_poster' | 'business_promoter';
       profile?: Record<string, unknown>;
     };
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
     const roleId = ROLE_MAP[selectedRole];
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const [user] = await db.insert(users).values({ email, passwordHash }).returning();
+    const [user] = await db.insert(users).values({ email, passwordHash, phone: phone || undefined }).returning();
 
     // Assign the selected role
     await db.insert(userRoles).values({ userId: user.id, roleId });
@@ -85,6 +87,14 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await signToken({ userId: user.id, email: user.email, roles: [roleId] });
+
+    // Trigger welcome email asynchronously (non-blocking)
+    const displayName = (profileData as any)?.firstName || (profileData as any)?.companyName || (profileData as any)?.businessName || user.email.split('@')[0];
+    sendWelcomeEmail({
+      toEmail: user.email,
+      name: displayName,
+      role: selectedRole,
+    }).catch(err => console.error('Background welcome email error:', err));
 
     const response = NextResponse.json({
       success: true,

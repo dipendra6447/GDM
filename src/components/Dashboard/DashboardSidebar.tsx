@@ -3,6 +3,8 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import Logo from '../Logo/Logo';
+import './Dashboard.css';
 
 interface Props {
   activeRole?: number;
@@ -39,7 +41,6 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
       { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard' },
       { label: 'Applied Jobs', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
       { label: 'Saved Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
-      { label: 'Saved Searches', icon: 'bi-search', href: '/dashboard/saved-searches' },
       { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=1' }
     ] : []),
     ...(isBusinessPromoter ? [
@@ -56,9 +57,8 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
   return (
     <aside className="dashboard-sidebar">
       <div className="sidebar-logo">
-        <Link href="/">
-          <span className="logo-icon"><i className="bi bi-briefcase-fill"></i></span>
-          <span className="logo-text">JobNest</span>
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <Logo size={30} />
         </Link>
       </div>
 

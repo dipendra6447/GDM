@@ -113,9 +113,21 @@ export async function POST(req: NextRequest) {
     const bannerFile2 = files.find(f => f.fieldname === 'banner2');
     const bannerFile3 = files.find(f => f.fieldname === 'banner3');
 
-    const banner1 = bannerFile1 ? bannerFile1.filepath : (fields.bannerUrl || fields.bannerUrl1 || null);
-    const banner2 = bannerFile2 ? bannerFile2.filepath : (fields.bannerUrl2 || null);
-    const banner3 = bannerFile3 ? bannerFile3.filepath : (fields.bannerUrl3 || null);
+    const rawBanner1 = bannerFile1 ? bannerFile1.filepath : (fields.bannerUrl || fields.bannerUrl1 || null);
+    const rawBanner2 = bannerFile2 ? bannerFile2.filepath : (fields.bannerUrl2 || null);
+    const rawBanner3 = bannerFile3 ? bannerFile3.filepath : (fields.bannerUrl3 || null);
+
+    const posArray = fields.bannerPositions ? fields.bannerPositions.split(',').map(s => s.trim()) : [];
+    const attachPos = (url: string | null, idx: number) => {
+      if (!url) return null;
+      const cleanUrl = url.split('#pos=')[0];
+      const pos = posArray[idx] || '50% 50%';
+      return `${cleanUrl}#pos=${encodeURIComponent(pos)}`;
+    };
+
+    const banner1 = attachPos(rawBanner1, 0);
+    const banner2 = attachPos(rawBanner2, 1);
+    const banner3 = attachPos(rawBanner3, 2);
 
     const bannerUrls = [banner1, banner2, banner3].filter(Boolean);
     const bannerUrl = bannerUrls.length > 0 ? bannerUrls.join(',') : null;

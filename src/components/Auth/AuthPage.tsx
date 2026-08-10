@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { useAuth } from '@/hooks/useAuth';
+import OtpVerificationModal from '@/components/Auth/OtpVerificationModal';
 import '@/app/login/Login.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -70,6 +71,13 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
   const [successMsg, setSuccessMsg] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // OTP Verification states
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [otpType, setOtpType] = useState<'email' | 'phone'>('email');
+  const [otpIdentifier, setOtpIdentifier] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -140,39 +148,35 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
     setProfile(prev => ({ ...prev, [field]: value }));
   }, []);
 
-  // ── Form submission ───────────────────────────────────────────────────────
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Helper to extract phone number entered in role-specific profile fields
+  const getEnteredPhone = useCallback(() => {
+    if (selectedRole === 'job_seeker') return profile.phone?.trim() || '';
+    if (selectedRole === 'job_poster') return profile.hrPhone?.trim() || '';
+    if (selectedRole === 'business_promoter') return profile.contactPhone?.trim() || '';
+    return '';
+  }, [selectedRole, profile]);
+
+  // Execute actual backend registration once OTP verification step is complete
+  const executeRegistration = async (userPhone?: string) => {
     setIsLoading(true);
     setError('');
     setErrorList([]);
-    setSuccessMsg('');
 
-    // Confirm password check for signup
-    if (!isLogin && password !== confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
-
-    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
     const body: Record<string, unknown> = { email, password };
+    body.role = selectedRole;
+    if (userPhone) body.phone = userPhone;
 
-    if (!isLogin) {
-      body.role = selectedRole;
-      // Only include non-empty profile fields
-      const cleanProfile: Record<string, unknown> = {};
-      Object.entries(profile).forEach(([k, v]) => {
-        if (v !== undefined && v !== '') cleanProfile[k] = v;
-      });
-      if (Object.keys(cleanProfile).length > 0) {
-        body.profile = cleanProfile;
-      }
+    const cleanProfile: Record<string, unknown> = {};
+    Object.entries(profile).forEach(([k, v]) => {
+      if (v !== undefined && v !== '') cleanProfile[k] = v;
+    });
+    if (Object.keys(cleanProfile).length > 0) {
+      body.profile = cleanProfile;
     }
 
     try {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
-      const res = await fetch(`${API_BASE}${endpoint}`, {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -180,9 +184,8 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
       });
 
       const data = await res.json();
-
       if (!res.ok) {
-        const err = new Error(data.message || 'Authentication failed') as any;
+        const err = new Error(data.message || 'Registration failed') as any;
         err.errors = data.errors;
         throw err;
       }
@@ -191,28 +194,169 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
         localStorage.setItem('token', data.token);
       }
 
-      // Update global auth state without a hard page reload
       await refetch();
-
-      setSuccessMsg(isLogin ? 'Welcome back! Redirecting...' : 'Account created! Redirecting...');
+      setSuccessMsg('Account created! Redirecting...');
       setTimeout(() => {
-        if (!isLogin) {
-          const roleId = selectedRole === 'job_poster' ? 2 : selectedRole === 'business_promoter' ? 3 : 1;
-          localStorage.setItem('activeRole', String(roleId));
-          router.push(roleId === 2 ? '/employer' : roleId === 3 ? '/dashboard' : '/seeker');
-        } else {
-          router.push('/');
-        }
+        const roleId = selectedRole === 'job_poster' ? 2 : selectedRole === 'business_promoter' ? 3 : 1;
+        localStorage.setItem('activeRole', String(roleId));
+        router.push(roleId === 2 ? '/employer' : roleId === 3 ? '/dashboard' : '/seeker');
       }, 800);
     } catch (err: any) {
-      const message = err.message || 'Something went wrong';
-      setError(message);
+      setError(err.message || 'Something went wrong');
       if (err.errors && Array.isArray(err.errors)) {
         setErrorList(err.errors);
       }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // OTP Verification Callback
+  const handleOtpSuccess = async () => {
+    setOtpModalOpen(false);
+
+    if (otpType === 'email') {
+      setEmailVerified(true);
+      const userPhone = getEnteredPhone();
+      
+      // If user entered a phone number and it's not verified yet, send Phone OTP
+      if (userPhone && !phoneVerified) {
+        try {
+          setIsLoading(true);
+          const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+          const res = await fetch(`${API_BASE}/api/auth/send-otp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'phone', identifier: userPhone }),
+          });
+          const data = await res.json();
+          setIsLoading(false);
+
+          if (res.ok && data.success) {
+            setOtpType('phone');
+            setOtpIdentifier(userPhone);
+            setOtpModalOpen(true);
+            return;
+          }
+        } catch (err) {
+          console.error('Failed to send phone OTP:', err);
+          setIsLoading(false);
+        }
+      }
+      
+      // If no phone or phone already verified, complete registration
+      await executeRegistration(userPhone);
+    } else if (otpType === 'phone') {
+      setPhoneVerified(true);
+      await executeRegistration(otpIdentifier);
+    }
+  };
+
+  // ── Form submission ───────────────────────────────────────────────────────
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    setErrorList([]);
+    setSuccessMsg('');
+
+    if (isLogin) {
+      // Standard Login Flow
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          const err = new Error(data.message || 'Authentication failed') as any;
+          err.errors = data.errors;
+          throw err;
+        }
+
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+
+        await refetch();
+        setSuccessMsg('Welcome back! Redirecting...');
+        setTimeout(() => {
+          router.push('/');
+        }, 800);
+      } catch (err: any) {
+        setError(err.message || 'Something went wrong');
+        if (err.errors && Array.isArray(err.errors)) {
+          setErrorList(err.errors);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    // ── Signup Verification Gate ──
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
+
+    // Trigger Email Verification OTP if not verified yet
+    if (!emailVerified) {
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+        const res = await fetch(`${API_BASE}/api/auth/send-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'email', identifier: email }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          setError(data.message || 'Failed to send email verification code');
+          setIsLoading(false);
+          return;
+        }
+
+        setOtpType('email');
+        setOtpIdentifier(email);
+        setOtpModalOpen(true);
+      } catch (err: any) {
+        setError('Failed to send verification code. Please check your internet connection.');
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    // Email already verified -> check phone or complete registration
+    const userPhone = getEnteredPhone();
+    if (userPhone && !phoneVerified) {
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+        const res = await fetch(`${API_BASE}/api/auth/send-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'phone', identifier: userPhone }),
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setOtpType('phone');
+          setOtpIdentifier(userPhone);
+          setOtpModalOpen(true);
+          setIsLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error('Failed to send phone OTP:', err);
+      }
+    }
+
+    await executeRegistration(userPhone);
   };
 
   // ── Password strength ─────────────────────────────────────────────────────
@@ -463,6 +607,15 @@ export function AuthPage({ initialIsLogin = true }: { initialIsLogin?: boolean }
           </div>
         </div>
       </div>
+
+      {/* OTP Verification Modal */}
+      <OtpVerificationModal
+        isOpen={otpModalOpen}
+        type={otpType}
+        identifier={otpIdentifier}
+        onClose={() => setOtpModalOpen(false)}
+        onSuccess={handleOtpSuccess}
+      />
     </div>
   );
 }

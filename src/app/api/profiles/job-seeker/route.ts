@@ -52,6 +52,43 @@ export async function PUT(req: NextRequest) {
     if (typeof updateData.certifications === 'string') {
       try { updateData.certifications = JSON.parse(updateData.certifications); } catch {}
     }
+    if (typeof updateData.resumes === 'string') {
+      try { updateData.resumes = JSON.parse(updateData.resumes); } catch {}
+    }
+
+    if (!Array.isArray(updateData.resumes)) {
+      updateData.resumes = [];
+    }
+
+    // Handle up to 3 resume files upload
+    [0, 1, 2].forEach((index) => {
+      const resFile = files.find(f => f.fieldname === `resume_file_${index}` || (index === 0 && f.fieldname === 'resume'));
+      if (resFile) {
+        if (!updateData.resumes[index]) {
+          updateData.resumes[index] = {
+            id: String(Date.now() + index),
+            title: (fields as any)[`resume_title_${index}`] || updateData.resumeTitle || `Resume ${index + 1}`,
+            fileUrl: resFile.filepath,
+            isPrimary: index === 0,
+            uploadedAt: new Date().toISOString(),
+          };
+        } else {
+          updateData.resumes[index].fileUrl = resFile.filepath;
+          if ((fields as any)[`resume_title_${index}`]) {
+            updateData.resumes[index].title = (fields as any)[`resume_title_${index}`];
+          }
+        }
+      }
+    });
+
+    // Sync primary resumeUrl and resumeTitle from primary resume if present
+    if (updateData.resumes.length > 0) {
+      const primaryRes = updateData.resumes.find((r: any) => r.isPrimary) || updateData.resumes[0];
+      if (primaryRes && primaryRes.fileUrl) {
+        updateData.resumeUrl = primaryRes.fileUrl;
+        updateData.resumeTitle = primaryRes.title || 'Primary Resume';
+      }
+    }
 
     // Assign uploaded certificate files
     if (Array.isArray(updateData.certifications)) {
@@ -60,6 +97,13 @@ export async function PUT(req: NextRequest) {
         if (certFile) cert.fileUrl = certFile.filepath;
       });
     }
+
+    // Clean up temporary form field keys that are not DB columns
+    Object.keys(updateData).forEach((key) => {
+      if (key.startsWith('resume_title_') || key.startsWith('cert_file_') || key.startsWith('portfolio_image_')) {
+        delete updateData[key];
+      }
+    });
 
     if (updateData.totalExperienceYears) updateData.totalExperienceYears = parseInt(updateData.totalExperienceYears, 10);
 

@@ -1,0 +1,50 @@
+.godiscover-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  user-select: none;
+}
+
+.logo-globe-svg {
+  filter: drop-shadow(0 2px 8px rgba(0, 114, 255, 0.25));
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.godiscover-logo-mark:hover .logo-globe-svg {
+  transform: rotate(12deg) scale(1.05);
+}
+
+.godiscover-logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.logo-go {
+  color: #00B0FF;
+}
+
+.logo-discover {
+  color: #0038FF;
+}
+
+.logo-me {
+  color: #00B0FF;
+}
+
+.godiscover-logo-text.text-white .logo-go {
+  color: #38BDF8;
+}
+
+.godiscover-logo-text.text-white .logo-discover {
+  color: #FFFFFF;
+}
+
+.godiscover-logo-text.text-white .logo-me {
+  color: #38BDF8;
+}

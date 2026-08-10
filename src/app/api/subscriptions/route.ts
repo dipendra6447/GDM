@@ -1,27 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq, and, gt, sql } from 'drizzle-orm';
 import { db } from '@/db';
-import { subscriptions, users, invoices, jobSeekerProfiles, employerProfiles, businessPromoterProfiles } from '@/db/schema';
+import { subscriptions, subscriptionPlans, users, invoices, jobSeekerProfiles, employerProfiles, businessPromoterProfiles } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
 import { ROLES } from '@/lib/constants';
-
-const PRICING: Record<string, Record<string, number>> = {
-  job_seeker: {
-    daily: 29,
-    weekly: 99,
-    monthly: 299,
-  },
-  job_poster: {
-    daily: 49,
-    weekly: 199,
-    monthly: 599,
-  },
-  business_promoter: {
-    daily: 99,
-    weekly: 499,
-    monthly: 1499,
-  }
-};
+import { sendSubscriptionReceiptEmail } from '@/lib/resend';
 
 // GET /api/subscriptions (admin — all subscriptions)
 export async function GET(req: NextRequest) {
@@ -34,10 +17,14 @@ export async function GET(req: NextRequest) {
       .select({
         id: subscriptions.id, userId: subscriptions.userId, userEmail: users.email,
         subscriptionType: subscriptions.subscriptionType, tier: subscriptions.tier,
+        billingCycle: subscriptions.billingCycle,
         status: subscriptions.status, expiresAt: subscriptions.expiresAt, createdAt: subscriptions.createdAt,
+        planId: subscriptions.planId,
+        planName: subscriptionPlans.name,
       })
       .from(subscriptions)
-      .innerJoin(users, eq(subscriptions.userId, users.id));
+      .innerJoin(users, eq(subscriptions.userId, users.id))
+      .leftJoin(subscriptionPlans, eq(subscriptions.planId, subscriptionPlans.id));
     return NextResponse.json({ success: true, data: subs });
   } catch (error: any) {
     if (error.message === 'Unauthorized') return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
@@ -48,15 +35,72 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const authPayload = await requireAuth(req);
-    const body = await req.json() as { 
-      subscriptionType: string; 
-      tier: 'daily' | 'weekly' | 'monthly'; 
+    const body = await req.json() as {
+      planId?: string;
+      subscriptionType?: string;
+      billingCycle?: 'daily' | 'weekly' | 'monthly';
+      tier?: string;
       amount?: number;
     };
-    const { subscriptionType, tier, amount } = body;
     const userId = authPayload.userId;
+    let { planId, subscriptionType, billingCycle, tier, amount } = body;
 
-    // Check for existing active subscription
+    // ─── Resolve plan details ─────────────────────────────────────────
+    let resolvedPlan: any = null;
+
+    if (planId) {
+      // New flow: look up plan from DB
+      const [plan] = await db.select().from(subscriptionPlans)
+        .where(and(eq(subscriptionPlans.id, planId), eq(subscriptionPlans.isActive, true), eq(subscriptionPlans.isDeleted, false)))
+        .limit(1);
+
+      if (!plan) {
+        return NextResponse.json({ success: false, message: 'Subscription plan not found or inactive' }, { status: 404 });
+      }
+
+      resolvedPlan = plan;
+      subscriptionType = plan.roleTarget;
+      tier = plan.tier;
+
+      // Determine price based on billing cycle
+      billingCycle = billingCycle || 'monthly';
+      if (amount === undefined) {
+        if (billingCycle === 'daily') amount = plan.dailyPrice;
+        else if (billingCycle === 'weekly') amount = plan.weeklyPrice;
+        else amount = plan.monthlyPrice;
+      }
+    } else if (subscriptionType && tier) {
+      // Legacy flow: find plan by roleTarget + tier
+      const [plan] = await db.select().from(subscriptionPlans)
+        .where(and(
+          eq(subscriptionPlans.roleTarget, subscriptionType),
+          eq(subscriptionPlans.tier, tier),
+          eq(subscriptionPlans.isActive, true),
+          eq(subscriptionPlans.isDeleted, false)
+        ))
+        .limit(1);
+
+      if (plan) {
+        resolvedPlan = plan;
+        planId = plan.id;
+        billingCycle = billingCycle || 'monthly';
+        if (amount === undefined) {
+          if (billingCycle === 'daily') amount = plan.dailyPrice;
+          else if (billingCycle === 'weekly') amount = plan.weeklyPrice;
+          else amount = plan.monthlyPrice;
+        }
+      } else {
+        billingCycle = billingCycle || 'monthly';
+      }
+    } else {
+      return NextResponse.json({ success: false, message: 'planId or subscriptionType + tier required' }, { status: 400 });
+    }
+
+    if (!subscriptionType || !tier) {
+      return NextResponse.json({ success: false, message: 'Could not resolve subscription type and tier' }, { status: 400 });
+    }
+
+    // ─── Check for existing active subscription ───────────────────────
     const existing = await db.select().from(subscriptions).where(
       and(eq(subscriptions.userId, userId), eq(subscriptions.subscriptionType, subscriptionType), eq(subscriptions.status, 'active'), gt(subscriptions.expiresAt, new Date()))
     ).limit(1);
@@ -67,12 +111,18 @@ export async function POST(req: NextRequest) {
       // Extend existing subscription
       const currentSub = existing[0];
       const newExpiresAt = new Date(Math.max(new Date(currentSub.expiresAt).getTime(), Date.now()));
-      if (tier === 'daily') newExpiresAt.setDate(newExpiresAt.getDate() + 1);
-      else if (tier === 'weekly') newExpiresAt.setDate(newExpiresAt.getDate() + 7);
+      if (billingCycle === 'daily') newExpiresAt.setDate(newExpiresAt.getDate() + 1);
+      else if (billingCycle === 'weekly') newExpiresAt.setDate(newExpiresAt.getDate() + 7);
       else newExpiresAt.setMonth(newExpiresAt.getMonth() + 1);
 
       const [updatedSub] = await db.update(subscriptions)
-        .set({ tier, expiresAt: newExpiresAt, status: 'active' })
+        .set({
+          tier,
+          billingCycle: billingCycle || 'monthly',
+          planId: planId || currentSub.planId,
+          expiresAt: newExpiresAt,
+          status: 'active',
+        })
         .where(eq(subscriptions.id, currentSub.id))
         .returning();
 
@@ -80,15 +130,23 @@ export async function POST(req: NextRequest) {
     } else {
       // Create new subscription
       const expiresAt = new Date();
-      if (tier === 'daily') expiresAt.setDate(expiresAt.getDate() + 1);
-      else if (tier === 'weekly') expiresAt.setDate(expiresAt.getDate() + 7);
+      if (billingCycle === 'daily') expiresAt.setDate(expiresAt.getDate() + 1);
+      else if (billingCycle === 'weekly') expiresAt.setDate(expiresAt.getDate() + 7);
       else expiresAt.setMonth(expiresAt.getMonth() + 1);
 
-      const [newSub] = await db.insert(subscriptions).values({ userId, subscriptionType, tier, status: 'active', expiresAt }).returning();
+      const [newSub] = await db.insert(subscriptions).values({
+        userId,
+        planId: planId || undefined,
+        subscriptionType,
+        tier,
+        billingCycle: billingCycle || 'monthly',
+        status: 'active',
+        expiresAt,
+      }).returning();
       sub = newSub;
     }
 
-    // Fetch user and profile details for invoice
+    // ─── Fetch user and profile details for invoice ───────────────────
     const [userRecord] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     const userEmail = userRecord?.email || '';
 
@@ -120,8 +178,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Create corresponding Invoice
-    const basePrice = amount !== undefined ? amount : (PRICING[subscriptionType]?.[tier] || 0);
+    // ─── Create corresponding Invoice ─────────────────────────────────
+    const basePrice = amount !== undefined ? amount : 0;
     const taxAmount = Math.round(basePrice * 0.18); // 18% GST
     const totalAmount = basePrice + taxAmount;
 
@@ -144,11 +202,24 @@ export async function POST(req: NextRequest) {
       paymentStatus: 'paid'
     }).returning();
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Subscription purchased and invoice generated', 
-      data: sub, 
-      invoice: inv 
+    // Trigger subscription receipt email asynchronously (non-blocking)
+    const planTitle = resolvedPlan?.name || `${subscriptionType.replace('_', ' ')} Plan`;
+    sendSubscriptionReceiptEmail({
+      toEmail: userEmail,
+      billingName,
+      planName: planTitle,
+      tier,
+      amount: totalAmount,
+      billingCycle: billingCycle || 'monthly',
+      invoiceNumber,
+      expiresAt: sub.expiresAt,
+    }).catch(err => console.error('Background subscription receipt email error:', err));
+
+    return NextResponse.json({
+      success: true,
+      message: 'Subscription purchased and invoice generated',
+      data: sub,
+      invoice: inv
     }, { status: 201 });
   } catch (error: any) {
     console.error('POST /api/subscriptions error:', error);

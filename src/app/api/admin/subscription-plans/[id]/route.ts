@@ -20,16 +20,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const { id } = await params;
     const data = await req.json();
-    if (!data.name || !data.price || !data.roleTarget) {
-      return NextResponse.json({ success: false, message: 'Name, price, and role target are required' }, { status: 400 });
+    if (!data.name || !data.roleTarget || !data.tier) {
+      return NextResponse.json({ success: false, message: 'Name, tier, and role target are required' }, { status: 400 });
     }
 
     const [updated] = await db.update(subscriptionPlans).set({
       name: data.name,
-      price: parseInt(data.price, 10),
-      billingCycle: data.billingCycle || '/month',
+      tier: data.tier,
       roleTarget: data.roleTarget,
+      dailyPrice: parseInt(data.dailyPrice || '0', 10),
+      weeklyPrice: parseInt(data.weeklyPrice || '0', 10),
+      monthlyPrice: parseInt(data.monthlyPrice || '0', 10),
       features: data.features || [],
+      limits: data.limits || {},
       imageUrl: data.imageUrl || null,
       isPopular: !!data.isPopular,
       isBestValue: !!data.isBestValue,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { businessPromotions } from '@/db/schema';
+import { businessPromotions, businessPromoterProfiles } from '@/db/schema';
 import { requireAuth, hasRole } from '@/lib/auth';
 import { ROLES } from '@/lib/constants';
 
@@ -23,6 +23,35 @@ export async function PATCH(
       return NextResponse.json({ success: false, message: 'Invalid status value' }, { status: 400 });
     }
 
+    if (promoId.startsWith('draft_')) {
+      const targetUserId = promoId.replace('draft_', '');
+      const [profile] = await db
+        .select()
+        .from(businessPromoterProfiles)
+        .where(eq(businessPromoterProfiles.userId, targetUserId))
+        .limit(1);
+
+      const [newPromo] = await db
+        .insert(businessPromotions)
+        .values({
+          userId: targetUserId,
+          businessName: profile?.businessName || 'Registered Business',
+          category: profile?.businessCategory || 'GENERAL',
+          purpose: profile?.about || 'Registered Business Promoter',
+          offerTag: '🔥 Special Offer',
+          ctaLabel: 'Visit Business',
+          bannerUrl: profile?.logoUrl || null,
+          status,
+        })
+        .returning();
+
+      return NextResponse.json({
+        success: true,
+        message: `Campaign created and marked as ${status.replace('_', ' ')}`,
+        data: newPromo,
+      });
+    }
+
     const [updated] = await db
       .update(businessPromotions)
       .set({ status })
@@ -42,6 +71,6 @@ export async function PATCH(
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
-    return NextResponse.json({ success: false, message: 'Failed to update promotion status' }, { status: 500 });
+    return NextResponse.json({ success: false, message: error.message || 'Failed to update promotion status' }, { status: 500 });
   }
 }
