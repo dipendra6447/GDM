@@ -695,7 +695,7 @@ function JobSeekerFields({ profile, updateProfile }: FieldProps) {
         <div className="auth-input-group">
           <label className="auth-label" htmlFor="js-phone">Phone</label>
           <PhoneInput
-            country={'in'}
+            country={'us'}
             value={profile.phone || ''}
             onChange={phone => updateProfile('phone', phone)}
             inputClass="auth-input phone-input"
@@ -705,7 +705,7 @@ function JobSeekerFields({ profile, updateProfile }: FieldProps) {
         </div>
         <div className="auth-input-group">
           <label className="auth-label" htmlFor="js-location">Location</label>
-          <input id="js-location" type="text" className="auth-input" placeholder="Mumbai, India"
+          <input id="js-location" type="text" className="auth-input" placeholder="San Francisco, CA"
             value={profile.location || ''} onChange={e => updateProfile('location', e.target.value)} />
         </div>
         <div className="auth-input-group">
@@ -763,7 +763,7 @@ function EmployerFields({ profile, updateProfile }: FieldProps) {
         </div>
         <div className="auth-input-group">
           <label className="auth-label" htmlFor="emp-headquarters">Headquarters</label>
-          <input id="emp-headquarters" type="text" className="auth-input" placeholder="Bangalore, India"
+          <input id="emp-headquarters" type="text" className="auth-input" placeholder="New York, NY"
             value={profile.headquarters || ''} onChange={e => updateProfile('headquarters', e.target.value)} />
         </div>
         <div className="auth-input-group">
@@ -779,7 +779,7 @@ function EmployerFields({ profile, updateProfile }: FieldProps) {
         <div className="auth-input-group full-width">
           <label className="auth-label" htmlFor="emp-hrPhone">HR Phone</label>
           <PhoneInput
-            country={'in'}
+            country={'us'}
             value={profile.hrPhone || ''}
             onChange={phone => updateProfile('hrPhone', phone)}
             inputClass="auth-input phone-input"
@@ -816,7 +816,7 @@ function BusinessPromoterFields({ profile, updateProfile }: FieldProps) {
         <div className="auth-input-group">
           <label className="auth-label" htmlFor="bp-contactPhone">Contact Phone</label>
           <PhoneInput
-            country={'in'}
+            country={'us'}
             value={profile.contactPhone || ''}
             onChange={phone => updateProfile('contactPhone', phone)}
             inputClass="auth-input phone-input"
@@ -831,12 +831,12 @@ function BusinessPromoterFields({ profile, updateProfile }: FieldProps) {
         </div>
         <div className="auth-input-group full-width">
           <label className="auth-label" htmlFor="bp-address">Business Address</label>
-          <input id="bp-address" type="text" className="auth-input" placeholder="123 Main St, City"
+          <input id="bp-address" type="text" className="auth-input" placeholder="100 Market St, San Francisco, CA"
             value={profile.address || ''} onChange={e => updateProfile('address', e.target.value)} />
         </div>
         <div className="auth-input-group full-width">
-          <label className="auth-label" htmlFor="bp-gst">GST Number (optional)</label>
-          <input id="bp-gst" type="text" className="auth-input" placeholder="22AAAAA0000A1Z5"
+          <label className="auth-label" htmlFor="bp-gst">EIN / Tax ID (optional)</label>
+          <input id="bp-gst" type="text" className="auth-input" placeholder="94-3829104"
             value={profile.gstNumber || ''} onChange={e => updateProfile('gstNumber', e.target.value)} />
         </div>
       </div>

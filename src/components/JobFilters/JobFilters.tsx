@@ -26,12 +26,12 @@ const filterData = {
   experience: ['Entry Level (0-2 yrs)', 'Mid Level (2-5 yrs)', 'Senior (5-10 yrs)', 'Executive (10+ yrs)'],
   salaryRanges: [
     { label: 'Any Salary', value: '' },
-    { label: '₹0 – ₹3 LPA', value: '0-3' },
-    { label: '₹3 – ₹6 LPA', value: '3-6' },
-    { label: '₹6 – ₹10 LPA', value: '6-10' },
-    { label: '₹10 – ₹20 LPA', value: '10-20' },
-    { label: '₹20 – ₹40 LPA', value: '20-40' },
-    { label: '₹40 LPA+', value: '40+' },
+    { label: 'Under $50k / yr', value: '0-50' },
+    { label: '$50k – $80k / yr', value: '50-80' },
+    { label: '$80k – $120k / yr', value: '80-120' },
+    { label: '$120k – $160k / yr', value: '120-160' },
+    { label: '$160k – $200k / yr', value: '160-200' },
+    { label: '$200k+ / yr', value: '200+' },
   ],
   companySizes: ['1-10', '11-50', '51-200', '201-500', '500-1000', '1000+'],
   postedDates: [

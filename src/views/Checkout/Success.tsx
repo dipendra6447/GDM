@@ -84,7 +84,7 @@ const Success: React.FC = () => {
             total: latestInv.totalAmount,
             transactionId: latestInv.invoiceNumber || ("TXN" + Date.now().toString().slice(-8)),
             invoiceId: latestInv.id,
-            date: new Date(latestInv.createdAt).toLocaleDateString("en-IN", {
+            date: new Date(latestInv.createdAt).toLocaleDateString("en-US", {
               day: "numeric",
               month: "short",
               year: "numeric",
@@ -123,7 +123,7 @@ const Success: React.FC = () => {
     subtotal: 299,
     gst: 54,
     transactionId: "TXN" + Date.now().toString().slice(-8),
-    date: new Date().toLocaleDateString("en-IN", {
+    date: new Date().toLocaleDateString("en-US", {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -211,18 +211,18 @@ const Success: React.FC = () => {
               <span className="label">
                 <i className="bi bi-cash"></i> Subtotal
               </span>
-              <span className="value">₹{infoData.subtotal}</span>
+              <span className="value">${infoData.subtotal}</span>
             </div>
             <div className="confirm-detail-row">
               <span className="label">
-                <i className="bi bi-percent"></i> GST (18%)
+                <i className="bi bi-percent"></i> Sales Tax (18%)
               </span>
-              <span className="value">₹{infoData.gst}</span>
+              <span className="value">${infoData.gst}</span>
             </div>
             <div className="confirm-detail-divider" />
             <div className="confirm-detail-row total">
               <span className="label">Total Paid</span>
-              <span className="value">₹{infoData.total}</span>
+              <span className="value">${infoData.total}</span>
             </div>
           </div>
 

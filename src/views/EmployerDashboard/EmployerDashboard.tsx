@@ -526,10 +526,10 @@ export default function EmployerDashboard() {
                           <p className="mb-1" style={{ fontSize: '0.8rem', color: '#B0B0B0' }}>Billing Price</p>
                           <h4 style={{ fontWeight: 700, margin: 0, color: '#FFFFFF', fontSize: '1.4rem' }}>
                             {(activeSub.tier || '').toLowerCase().includes('silver') || (activeSub.tier || '').toLowerCase().includes('daily')
-                              ? '₹49/day'
+                              ? '$49/day'
                               : (activeSub.tier || '').toLowerCase().includes('gold') || (activeSub.tier || '').toLowerCase().includes('weekly')
-                              ? '₹199/week'
-                              : '₹599/month'}
+                              ? '$199/week'
+                              : '$599/month'}
                           </h4>
                         </div>
                       </div>
@@ -561,7 +561,7 @@ export default function EmployerDashboard() {
                       <div className="mb-3">
                         <span className="badge bg-secondary mb-2" style={{ fontWeight: 500 }}>CURRENT PLAN</span>
                         <h3 className="mb-1" style={{ fontWeight: 700 }}>Free Employer Plan</h3>
-                        <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: ₹0 (Free Tier)</p>
+                        <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: $0 (Free Tier)</p>
                       </div>
 
                       <hr />

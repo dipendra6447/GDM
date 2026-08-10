@@ -364,7 +364,7 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
           </div>
           <div className="col-md-4 profile-form-group">
             <label className="profile-label">Phone Number</label>
-            <input type="tel" name="phone" className="profile-input" placeholder="+91 98765 43210" value={formData.phone} onChange={handleInputChange} />
+            <input type="tel" name="phone" className="profile-input" placeholder="+1 (555) 123-4567" value={formData.phone} onChange={handleInputChange} />
           </div>
           <div className="col-md-4 profile-form-group">
             <label className="profile-label">Alternate Phone</label>
@@ -526,8 +526,8 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
           <input type="number" name="totalExperienceYears" className="profile-input" min="0" value={formData.totalExperienceYears} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 profile-form-group">
-          <label className="profile-label">Expected Salary (LPA)</label>
-          <input type="text" name="expectedSalary" className="profile-input" value={formData.expectedSalary} onChange={handleInputChange} />
+          <label className="profile-label">Expected Salary ($ / yr)</label>
+          <input type="text" name="expectedSalary" className="profile-input" placeholder="e.g. $120,000" value={formData.expectedSalary} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 profile-form-group">
           <label className="profile-label">Availability</label>

@@ -55,7 +55,7 @@ const DEFAULT_BUSINESSES: PromotedBusiness[] = [
     category: "Health & Fitness",
     tagline: "Your Strongest Self Starts Here",
     description: "State-of-the-art gym, nutrition coaching & wellness programs designed for working professionals.",
-    offer: "💪 3 Months @ ₹999",
+    offer: "💪 3 Months @ $29/mo",
     ctaLabel: "Get Started",
     ctaHref: "/contact?service=business-promotion",
     accent: "#F43F5E",
