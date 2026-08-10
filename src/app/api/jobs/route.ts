@@ -95,7 +95,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, data: allJobs, meta: { page, limit, total: Number(count) } });
   } catch (error: any) {
     console.error('❌ GET /api/jobs Error:', error);
-    return NextResponse.json({ success: false, message: 'Failed to fetch jobs', data: [] }, { status: 500 });
+    const isDbMissing = !process.env.DATABASE_URL;
+    return NextResponse.json({
+      success: false,
+      message: isDbMissing ? 'DATABASE_URL environment variable is missing in AWS Amplify Console.' : 'Failed to fetch jobs',
+      error: error?.message || String(error),
+      data: []
+    }, { status: 500 });
   }
 }
 
