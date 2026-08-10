@@ -104,7 +104,12 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('❌ Me error:', error.message);
-    return NextResponse.json({ success: false, message: 'Failed to fetch user profile.' }, { status: 500 });
+    console.error('❌ Me error:', error?.stack || error?.message || error);
+    const isDbMissing = !process.env.DATABASE_URL;
+    return NextResponse.json({
+      success: false,
+      message: isDbMissing ? 'DATABASE_URL environment variable is missing in AWS Amplify Console.' : 'Failed to fetch user profile.',
+      error: process.env.NODE_ENV === 'development' || isDbMissing ? error?.message : undefined,
+    }, { status: 500 });
   }
 }
