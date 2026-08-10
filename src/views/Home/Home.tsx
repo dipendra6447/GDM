@@ -7,6 +7,7 @@ import CategorySection from "../../components/CategorySection/CategorySection";
 import TrendingJobs from "../../components/TrendingJobs/TrendingJobs";
 import StatsBanner from "../../components/StatsBanner/StatsBanner";
 import PromotedBusinesses from "../../components/PromotedBusinesses/PromotedBusinesses";
+import BusinessGrowth from "../../components/BusinessGrowth/BusinessGrowth";
 import DiscoverJobs from "../../components/DiscoverJobs/DiscoverJobs";
 import BlogSection from "../../components/BlogSection/BlogSection";
 import AdPromotion from "../../components/AdPromotion/AdPromotion";
@@ -62,6 +63,7 @@ const Home: React.FC = () => {
         <div className="container">
           <PromotedBusinesses variant="home" />
         </div>
+        <BusinessGrowth />
         <DiscoverJobs />
         <StatsBanner />
         <BlogSection />

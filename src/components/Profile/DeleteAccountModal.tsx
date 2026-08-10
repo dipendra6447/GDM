@@ -28,19 +28,19 @@ export default function DeleteAccountModal({ show, onClose }: Props) {
   return (
     <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.6)' }} tabIndex={-1}>
       <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content profile-item-card border-danger" style={{ background: '#1e293b' }}>
+        <div className="modal-content profile-item-card border-danger" style={{ background: 'var(--color-white)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)' }}>
           <div className="modal-header border-bottom-0 pb-0">
             <h5 className="modal-title text-danger">
               <i className="bi bi-exclamation-triangle-fill me-2"></i> Delete Account
             </h5>
-            <button type="button" className="btn-close btn-close-white" onClick={onClose} aria-label="Close"></button>
+            <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
           </div>
           <div className="modal-body">
-            <p className="text-white mb-3">
+            <p className="mb-3" style={{ color: 'var(--color-text-dark)' }}>
               This action is <strong>irreversible</strong>. This will permanently delete your account, 
               including all your profiles (Job Seeker, Employer, Business Promoter) and associated data.
             </p>
-            <p className="text-secondary" style={{ fontSize: '0.9rem' }}>
+            <p style={{ color: 'var(--color-text-gray)', fontSize: '0.9rem' }}>
               Please type your email address (<strong>{user?.email}</strong>) to confirm.
             </p>
             <input 

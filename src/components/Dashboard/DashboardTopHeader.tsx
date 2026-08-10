@@ -139,7 +139,21 @@ export default function DashboardTopHeader() {
 
       <div className="d-flex align-items-center gap-3">
         {/* Hide Get Premium button if user has active subscription for current role */}
-        {!activeSub && (
+        {activeSub ? (
+          <Link
+            href={activeRole === 2 ? "/employer/post-job?tab=subscription" : "/dashboard/subscription"}
+            className="btn-get-premium nav-sub-badge-btn"
+            id="dash-header-sub-badge-btn"
+            style={{
+              background: activeSub.badgeBg,
+              color: '#FFFFFF',
+              borderColor: activeSub.borderColor,
+              boxShadow: `0 4px 15px ${activeSub.glowColor}`
+            }}
+          >
+            {activeSub.badgeLabel}
+          </Link>
+        ) : (
           <Link
             href="/subscription-light"
             className="btn-get-premium"
@@ -150,85 +164,58 @@ export default function DashboardTopHeader() {
           </Link>
         )}
 
-        <div className="position-relative nav-profile-wrapper" ref={dropdownRef}>
-          {activeSub && (
-            <span
-              className="nav-sub-badge-top"
-              style={{
-                background: activeSub.badgeBg,
-                color: activeSub.badgeTextColor,
-                boxShadow: `0 2px 10px ${activeSub.glowColor}`,
-                border: '1px solid rgba(255, 255, 255, 0.6)'
-              }}
-            >
-              {activeSub.badgeLabel}
-            </span>
-          )}
-
+        <div className="nav-profile-wrapper" ref={dropdownRef}>
           <button 
-            className="dashboard-profile-btn border-0 d-flex align-items-center gap-2"
+            className="nav-profile-btn"
             onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
             type="button"
             style={activeSub ? {
+              borderColor: activeSub.borderColor,
               background: activeSub.bgColor,
-              padding: '6px 16px 6px 6px',
-              borderRadius: '99px',
-              cursor: 'pointer',
-              boxShadow: `0 4px 20px ${activeSub.glowColor}`,
-              border: `2px solid ${activeSub.borderColor}`
-            } : {
-              background: '#ffffff',
-              padding: '6px 16px 6px 6px',
-              borderRadius: '99px',
-              cursor: 'pointer',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              border: '1px solid #e2e8f0'
-            }}
+              boxShadow: `0 0 14px ${activeSub.glowColor}`,
+              color: activeSub.color
+            } : undefined}
           >
             {user?.avatarUrl ? (
-               <img src={user.avatarUrl} alt="Avatar" className="dash-avatar" style={activeSub ? { border: `2px solid ${activeSub.color}` } : undefined} />
+               <img 
+                 src={user.avatarUrl} 
+                 alt="Profile" 
+                 className="nav-profile-avatar" 
+                 style={activeSub ? { border: `2px solid ${activeSub.color}` } : undefined} 
+               />
             ) : (
-               <div className="dash-avatar" style={activeSub ? { border: `2px solid ${activeSub.color}` } : undefined}>{getInitial()}</div>
+               <div 
+                 className="nav-profile-initial" 
+                 style={activeSub ? { background: activeSub.badgeBg, color: activeSub.badgeTextColor } : undefined}
+               >
+                 {getInitial()}
+               </div>
             )}
-            <span style={{ fontSize: '0.875rem', fontWeight: 700, color: activeSub ? activeSub.color : '#1e293b' }}>{user?.email?.split('@')[0]}</span>
-            <i className={`bi bi-chevron-${profileDropdownOpen ? 'up' : 'down'} ms-1`} style={{ fontSize: '0.8rem', color: activeSub ? activeSub.color : '#64748b' }}></i>
+            <i className={`bi bi-chevron-${profileDropdownOpen ? 'up' : 'down'} nav-profile-chevron`} style={activeSub ? { color: activeSub.color } : undefined}></i>
           </button>
 
           {profileDropdownOpen && (
-            <div 
-              className="position-absolute end-0 mt-2 p-3 shadow-lg"
-              style={{
-                width: '270px',
-                background: '#ffffff',
-                borderRadius: '16px',
-                border: '1px solid #e2e8f0',
-                zIndex: 1050,
-                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.12)'
-              }}
-            >
+            <div className="nav-profile-dropdown">
               {/* User Header Info */}
-              <div className="d-flex align-items-center gap-3 mb-3 p-2" style={{ background: '#f8fafc', borderRadius: '12px' }}>
+              <div className="nav-dropdown-header">
                 {user?.avatarUrl ? (
-                  <img src={user.avatarUrl} alt="Avatar" className="dash-avatar" style={{ width: '40px', height: '40px' }} />
+                  <img src={user.avatarUrl} alt="Profile" className="nav-dropdown-avatar" />
                 ) : (
-                  <div className="dash-avatar" style={{ width: '40px', height: '40px', fontSize: '1rem' }}>{getInitial()}</div>
+                  <div className="nav-dropdown-initial">{getInitial()}</div>
                 )}
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {user?.email}
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                <div className="nav-dropdown-info">
+                  <span className="nav-dropdown-email">{user?.email}</span>
+                  <span className="nav-dropdown-role">
                     {activeRole === 2 ? 'Employer' : activeRole === 3 ? 'Business Promoter' : 'Job Seeker'}
-                  </div>
+                  </span>
                 </div>
               </div>
 
-              <div className="dropdown-divider my-2" style={{ borderColor: '#f1f5f9' }} />
+              <div className="nav-dropdown-divider" />
 
               <Link 
                 href={`/profile?tab=${activeRole}`}
-                className="dropdown-item d-flex align-items-center gap-2 py-2 px-3 rounded text-dark"
-                style={{ fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}
+                className="nav-dropdown-item"
                 onClick={() => setProfileDropdownOpen(false)}
               >
                 <i className="bi bi-person-gear text-primary"></i> Profile Settings
@@ -236,8 +223,7 @@ export default function DashboardTopHeader() {
 
               <Link 
                 href={`/dashboard/subscription?role=${activeRole}`}
-                className="dropdown-item d-flex align-items-center gap-2 py-2 px-3 rounded text-dark"
-                style={{ fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}
+                className="nav-dropdown-item"
                 onClick={() => setProfileDropdownOpen(false)}
               >
                 <i className="bi bi-credit-card-fill text-primary"></i> My Subscription
@@ -246,8 +232,8 @@ export default function DashboardTopHeader() {
               {/* Multi-Role Switcher Section */}
               {user?.roles && user.roles.length > 1 && (
                 <>
-                  <div className="dropdown-divider my-2" style={{ borderColor: '#f1f5f9' }} />
-                  <div className="py-1">
+                  <div className="nav-dropdown-divider" />
+                  <div className="px-3 py-2">
                     <span style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700, display: 'block', marginBottom: '8px' }}>
                       <i className="bi bi-arrow-repeat me-1"></i> Switch Role
                     </span>
@@ -326,11 +312,9 @@ export default function DashboardTopHeader() {
                 </>
               )}
 
-              <div className="dropdown-divider my-2" style={{ borderColor: '#f1f5f9' }} />
-
+              <div className="nav-dropdown-divider" />
               <button
-                className="btn btn-sm w-100 text-start d-flex align-items-center gap-2 py-2 px-3 text-danger border-0 bg-transparent"
-                style={{ fontSize: '0.875rem', fontWeight: 600 }}
+                className="nav-dropdown-item nav-dropdown-logout"
                 onClick={() => {
                   setProfileDropdownOpen(false);
                   logout();
