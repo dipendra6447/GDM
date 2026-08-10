@@ -501,7 +501,7 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
               <div className="col-md-4 profile-form-group d-flex align-items-center">
                 <div className="form-check mt-4">
                   <input type="checkbox" className="form-check-input" checked={exp.isCurrent} onChange={(e) => handleExperienceChange(idx, 'isCurrent', e.target.checked)} />
-                  <label className="form-check-label text-white ms-2">I currently work here</label>
+                  <label className="form-check-label ms-2" style={{ color: 'var(--color-text-dark)' }}>I currently work here</label>
                 </div>
               </div>
               <div className="col-md-12 profile-form-group mb-0">
@@ -698,9 +698,9 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
                 <div
                   className="profile-item-card p-3"
                   style={{
-                    border: '1px dashed rgba(255,255,255,0.15)',
+                    border: '1px dashed var(--color-border)',
                     borderRadius: '12px',
-                    background: 'rgba(15, 23, 42, 0.4)',
+                    background: 'rgba(248, 250, 255, 0.6)',
                     position: 'relative'
                   }}
                 >
@@ -732,14 +732,14 @@ export default function JobSeekerProfileForm({ initialData, roleId = 1 }: Props)
                     />
                   </div>
 
-                  <div className="profile-file-upload text-center p-3 mb-2" style={{ border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                  <div className="profile-file-upload text-center p-3 mb-2" style={{ border: '1px solid var(--color-border)', background: 'rgba(248, 250, 255, 0.4)', borderRadius: '8px' }}>
                     <input
                       type="file"
                       accept=".pdf,.doc,.docx"
                       onChange={(e) => handleResumeFileChange(idx, e)}
                     />
                     <i className="bi bi-file-earmark-pdf-fill" style={{ fontSize: '1.6rem', color: hasFile ? '#2454FF' : '#64748b' }} />
-                    <div className="mt-1" style={{ fontSize: '0.8rem', color: hasFile ? '#60a5fa' : '#94a3b8', fontWeight: hasFile ? 600 : 400 }}>
+                    <div className="mt-1" style={{ fontSize: '0.8rem', color: hasFile ? 'var(--color-primary)' : 'var(--color-text-gray)', fontWeight: hasFile ? 600 : 400 }}>
                       {newFile ? newFile.name : currentResume?.fileUrl ? currentResume.fileUrl.split('/').pop() : `Upload Resume ${idx + 1}`}
                     </div>
                   </div>

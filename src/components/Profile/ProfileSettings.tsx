@@ -78,7 +78,7 @@ export default function ProfileSettings() {
 
       <div className="profile-item-card mb-4">
         <div className="profile-item-card-header mb-3">
-          <h5 className="profile-item-card-title text-white mb-0">Change Password</h5>
+          <h5 className="profile-item-card-title mb-0" style={{ color: 'var(--color-navy)' }}>Change Password</h5>
         </div>
         {!user?.googleId ? (
           <form onSubmit={handlePasswordReset}>
@@ -122,8 +122,8 @@ export default function ProfileSettings() {
               </svg>
             </div>
             <div>
-              <div className="text-white fw-semibold" style={{ fontSize: '0.9rem' }}>Google</div>
-              <div className="text-secondary" style={{ fontSize: '0.8rem' }}>
+              <div className="fw-semibold" style={{ fontSize: '0.9rem', color: 'var(--color-navy)' }}>Google</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-gray)' }}>
                 {user?.googleId ? 'Connected' : 'Not connected'}
               </div>
             </div>

@@ -10,9 +10,12 @@ const PersonaCards: React.FC = () => {
       <div className="container">
         <div className="persona-cards-grid">
           {/* Card 1: I'm Looking For Work */}
-          <div className="persona-card">
+          <div className="persona-card card-purple">
             <div className="persona-icon-circle icon-circle-purple">
-              <i className="bi bi-person-fill"></i>
+              <div className="icon-wrapper">
+                <i className="bi bi-person-fill main-icon"></i>
+                <i className="bi bi-briefcase-fill sub-icon"></i>
+              </div>
             </div>
             <div className="persona-card-content">
               <h3 className="persona-card-title">I'm Looking For Work</h3>
@@ -20,15 +23,15 @@ const PersonaCards: React.FC = () => {
                 Find jobs, freelance opportunities, networking, events, and professional growth.
               </p>
               <Link href="/jobs" className="persona-card-link link-purple">
-                Explore Opportunities <i className="bi bi-arrow-right"></i>
+                Explore Opportunities <span className="arrow-right">→</span>
               </Link>
             </div>
           </div>
 
           {/* Card 2: I'm Growing My Business */}
-          <div className="persona-card">
+          <div className="persona-card card-green">
             <div className="persona-icon-circle icon-circle-green">
-              <i className="bi bi-shop"></i>
+              <i className="bi bi-shop main-icon"></i>
             </div>
             <div className="persona-card-content">
               <h3 className="persona-card-title">I'm Growing My Business</h3>
@@ -36,15 +39,18 @@ const PersonaCards: React.FC = () => {
                 Hire talent, promote your business, advertise services, connect with customers, and grow.
               </p>
               <Link href="/marketplace" className="persona-card-link link-green">
-                Grow My Business <i className="bi bi-arrow-right"></i>
+                Grow My Business <span className="arrow-right">→</span>
               </Link>
             </div>
           </div>
 
           {/* Card 3: I'm Looking For Both */}
-          <div className="persona-card">
+          <div className="persona-card card-blue">
             <div className="persona-icon-circle icon-circle-blue">
-              <i className="bi bi-people-fill"></i>
+              <div className="icon-wrapper">
+                <i className="bi bi-person-fill main-icon"></i>
+                <i className="bi bi-briefcase-fill sub-icon"></i>
+              </div>
             </div>
             <div className="persona-card-content">
               <h3 className="persona-card-title">I'm Looking For Both</h3>
@@ -52,7 +58,7 @@ const PersonaCards: React.FC = () => {
                 Manage your career and business from one account and discover everything.
               </p>
               <Link href="/register" className="persona-card-link link-blue">
-                Discover Everything <i className="bi bi-arrow-right"></i>
+                Discover Everything <span className="arrow-right">→</span>
               </Link>
             </div>
           </div>
