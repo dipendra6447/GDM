@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import "../Home/Home.css";
 import Hero from "@/components/Hero/Hero";
 import CategorySection from "@/components/CategorySection/CategorySection";
 import TrendingJobs from "@/components/TrendingJobs/TrendingJobs";
 import StatsBanner from "@/components/StatsBanner/StatsBanner";
 import PromotedBusinesses from "@/components/PromotedBusinesses/PromotedBusinesses";
+import BusinessGrowth from "@/components/BusinessGrowth/BusinessGrowth";
 import DiscoverJobs from "@/components/DiscoverJobs/DiscoverJobs";
 import BlogSection from "@/components/BlogSection/BlogSection";
 import AdPromotion from "@/components/AdPromotion/AdPromotion";
@@ -45,6 +47,7 @@ const SeekerHomeView: React.FC = () => {
                 <div className="container p-0">
                   <PromotedBusinesses variant="home" />
                 </div>
+                <BusinessGrowth />
                 <DiscoverJobs />
                 <BlogSection />
               </div>
@@ -58,6 +61,7 @@ const SeekerHomeView: React.FC = () => {
             <div className="container">
               <PromotedBusinesses variant="home" />
             </div>
+            <BusinessGrowth />
             <DiscoverJobs />
             <StatsBanner />
             <BlogSection />

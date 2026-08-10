@@ -408,8 +408,8 @@ export default function ProfilePage() {
         {/* Single-Role User: Role Selection Upgrade Modal */}
         {showAddRoleModal && (
           <div className="role-modal-overlay">
-            <div className="role-modal-content" style={{ maxWidth: '520px', borderRadius: '20px', padding: '28px', background: '#0f172a', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <button className="role-modal-close" onClick={() => setShowAddRoleModal(false)} type="button" style={{ color: '#94a3b8' }}>
+            <div className="role-modal-content" style={{ maxWidth: '520px', borderRadius: '20px', padding: '28px', background: 'var(--color-white)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)' }}>
+              <button className="role-modal-close" onClick={() => setShowAddRoleModal(false)} type="button" style={{ color: 'var(--color-text-gray)' }}>
                 <i className="bi bi-x-lg" />
               </button>
               
@@ -417,8 +417,8 @@ export default function ProfilePage() {
                 <div className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style={{ width: '56px', height: '56px', background: 'rgba(212, 175, 55, 0.15)', color: '#D4AF37', fontSize: '1.5rem' }}>
                   <i className="bi bi-plus-circle-fill" />
                 </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#f8fafc', margin: '0 0 6px' }}>Add Another Role</h3>
-                <p style={{ fontSize: '0.875rem', color: '#94a3b8', margin: 0 }}>Select a role below to sign up and expand your capabilities on JobNest.</p>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-navy)', margin: '0 0 6px' }}>Add Another Role</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-gray)', margin: 0 }}>Select a role below to sign up and expand your capabilities on JobNest.</p>
               </div>
 
               <div className="d-flex flex-column gap-3 mb-4">
@@ -426,7 +426,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     className="btn text-start p-3 border d-flex align-items-center justify-content-between rounded-3"
-                    style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#f8fafc' }}
+                    style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-text-dark)', boxShadow: 'var(--shadow-sm)' }}
                     onClick={() => {
                       setShowAddRoleModal(false);
                       router.push('/register?role=job_seeker');
@@ -437,8 +437,8 @@ export default function ProfilePage() {
                         <i className="bi bi-person-badge fs-4"></i>
                       </div>
                       <div>
-                        <strong className="d-block" style={{ fontSize: '0.95rem', color: '#f8fafc' }}>Job Seeker</strong>
-                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Apply for jobs, track applications, upload resume</span>
+                        <strong className="d-block" style={{ fontSize: '0.95rem', color: 'var(--color-navy)' }}>Job Seeker</strong>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-gray)' }}>Apply for jobs, track applications, upload resume</span>
                       </div>
                     </div>
                     <i className="bi bi-chevron-right text-muted"></i>
@@ -449,7 +449,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     className="btn text-start p-3 border d-flex align-items-center justify-content-between rounded-3"
-                    style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#f8fafc' }}
+                    style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-text-dark)', boxShadow: 'var(--shadow-sm)' }}
                     onClick={() => {
                       setShowAddRoleModal(false);
                       router.push('/register?role=job_poster');
@@ -460,8 +460,8 @@ export default function ProfilePage() {
                         <i className="bi bi-building fs-4"></i>
                       </div>
                       <div>
-                        <strong className="d-block" style={{ fontSize: '0.95rem', color: '#f8fafc' }}>Employer / Job Poster</strong>
-                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Post job openings, manage candidates, recruit talent</span>
+                        <strong className="d-block" style={{ fontSize: '0.95rem', color: 'var(--color-navy)' }}>Employer / Job Poster</strong>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-gray)' }}>Post job openings, manage candidates, recruit talent</span>
                       </div>
                     </div>
                     <i className="bi bi-chevron-right text-muted"></i>
@@ -472,7 +472,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     className="btn text-start p-3 border d-flex align-items-center justify-content-between rounded-3"
-                    style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#f8fafc' }}
+                    style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-text-dark)', boxShadow: 'var(--shadow-sm)' }}
                     onClick={() => {
                       setShowAddRoleModal(false);
                       router.push('/register?role=business_promoter');
@@ -483,8 +483,8 @@ export default function ProfilePage() {
                         <i className="bi bi-megaphone fs-4"></i>
                       </div>
                       <div>
-                        <strong className="d-block" style={{ fontSize: '0.95rem', color: '#f8fafc' }}>Business Promoter</strong>
-                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Promote services, feature products, run ad campaigns</span>
+                        <strong className="d-block" style={{ fontSize: '0.95rem', color: 'var(--color-navy)' }}>Business Promoter</strong>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-gray)' }}>Promote services, feature products, run ad campaigns</span>
                       </div>
                     </div>
                     <i className="bi bi-chevron-right text-muted"></i>
@@ -495,7 +495,7 @@ export default function ProfilePage() {
               <div className="text-center">
                 <button
                   type="button"
-                  className="btn btn-link text-secondary text-decoration-none"
+                  className="btn btn-link text-muted text-decoration-none"
                   onClick={() => setShowAddRoleModal(false)}
                 >
                   Cancel

@@ -35,17 +35,15 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const iconBg = job.iconBg || '#ede9fe';
   const iconColor = job.iconColor || '#6d28d9';
   const iconClass = job.iconClass || 'bi-briefcase-fill';
-  const buttonColor = job.buttonColor || job.iconBg || '#3b82f6';
 
-  // Combine jobType, workMode, and skills into a clean tag array
-  const displayTags = [
-    job.jobType,
-    job.workMode,
-    ...(job.tags || []),
-  ].filter(Boolean) as string[];
+  // Map iconBg to theme class
+  const themeClass = iconBg === '#4f1eeb' ? 'theme-purple' :
+                     iconBg === '#ff7a00' ? 'theme-orange' :
+                     iconBg === '#00904a' ? 'theme-green' :
+                     'theme-blue';
 
   return (
-    <article className="client-job-card" id={`job-card-${job.id}`}>
+    <Link href={`/jobs/${job.slug || job.id}`} className={`client-job-card ${themeClass}`} id={`job-card-${job.id}`}>
       {/* Hot Tag Top Right */}
       {job.isHot !== false && (
         <div className="job-hot-badge">
@@ -53,59 +51,54 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
         </div>
       )}
 
-      {/* Card Header: Icon Square */}
-      <div className="job-card-header-icon">
+      {/* Card Header: Horizontal row with Icon Square and Text Stack */}
+      <div className="job-card-header-row">
         <div
           className="job-icon-square"
-          style={{ backgroundColor: iconBg, color: iconColor }}
+          style={{ backgroundColor: iconBg }}
         >
           <i className={`bi ${iconClass}`}></i>
         </div>
+        <div className="job-header-text">
+          <h3 className="job-card-title" title={job.title}>
+            {job.title}
+          </h3>
+          <div className="job-card-company-row">
+            <span className="company-name">{job.companyName}</span>
+            {job.isVerified !== false && (
+              <i className="bi bi-patch-check-fill company-verified-tick" title="Verified Company"></i>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Main Card Content */}
-      <div className="job-card-content">
-        <h3 className="job-card-title" title={job.title}>
-          {job.title}
-        </h3>
-
-        <div className="job-card-company-row">
-          <i className="bi bi-building me-1 text-muted" style={{ fontSize: '13px' }}></i>
-          <span className="company-name">{job.companyName}</span>
-          {job.isVerified !== false && (
-            <i className="bi bi-patch-check-fill company-verified-tick" title="Verified Company"></i>
-          )}
-        </div>
-
-        <div className="job-card-location">
-          <i className="bi bi-geo-alt me-1"></i>
+      {/* Centered Middle Content */}
+      <div className="job-card-body-centered">
+        <div className="job-card-location" title={job.location}>
           {job.location}
         </div>
 
         <div className="job-card-salary">{job.salaryRange}</div>
 
-        {/* Skill Tags (Fixed height container) */}
         <div className="job-card-tags">
-          {displayTags.slice(0, 5).map((t, idx) => (
-            <span key={idx} className="job-pill-tag">
-              {t}
+          <span className="job-pill-tag tag-purple">Full Time</span>
+          {job.workMode && (
+            <span className={`job-pill-tag tag-${job.workMode.toLowerCase().replace(/[^a-z]/g, '')}`}>
+              {job.workMode}
             </span>
-          ))}
+          )}
         </div>
       </div>
 
-      {/* Pinned Bottom Action Button */}
-      <div className="job-card-action">
-        <Link
-          href={`/jobs/${job.slug || job.id}`}
-          className="btn-view-job"
-          style={{ backgroundColor: buttonColor }}
-          id={`view-job-btn-${job.id}`}
-        >
-          View Job
-        </Link>
+      {/* Footer Row (Time + Applicants) */}
+      <div className="job-card-footer">
+        <span className="posted-time">{job.postedTime || '2h ago'}</span>
+        <span className="applicant-count">
+          <i className="bi bi-people me-1"></i>
+          {job.applicantCount || 0} Applicants
+        </span>
       </div>
-    </article>
+    </Link>
   );
 };
 

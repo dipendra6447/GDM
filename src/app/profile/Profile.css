@@ -1,11 +1,11 @@
 /* ============================================
-   PROFILE PAGE — Premium Dark Theme
+   PROFILE PAGE — Website Light Theme
    Synchronized with JobNest design system
    ============================================ */
 
 .profile-page {
   min-height: 100vh;
-  background: #070d1a;
+  background: var(--color-bg, #F8FAFF);
   padding-top: var(--navbar-height, 80px);
 }
 
@@ -17,7 +17,7 @@
   left: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(36,84,255,0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(36,84,255,0.04) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -29,7 +29,7 @@
   right: -200px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(123,62,255,0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(123,62,255,0.03) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -44,7 +44,7 @@
 .profile-page-header {
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--color-border, #EDF0F7);
 }
 
 .profile-breadcrumb {
@@ -52,30 +52,30 @@
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-gray, #6B7280);
   margin-bottom: 0.75rem;
 }
 
 .profile-breadcrumb a {
-  color: #64748b;
+  color: var(--color-text-gray, #6B7280);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.profile-breadcrumb a:hover { color: #3b82f6; }
+.profile-breadcrumb a:hover { color: var(--color-primary, #2454FF); }
 .profile-breadcrumb i { font-size: 0.65rem; }
 
 .profile-page-title {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 800;
-  color: #f8fafc;
+  color: var(--color-navy, #0B1739);
   margin: 0 0 0.35rem;
   letter-spacing: -0.03em;
 }
 
 .profile-page-subtitle {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--color-text-gray, #6B7280);
   margin: 0;
 }
 
@@ -95,13 +95,13 @@
 
 /* ── Left Sidebar Card ── */
 .profile-sidebar-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--color-white, #ffffff);
+  border: 1px solid var(--color-border, #EDF0F7);
   border-radius: 20px;
   padding: 2rem 1.5rem;
   position: sticky;
   top: calc(var(--navbar-height, 80px) + 2rem);
-  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
 }
 
 .profile-sidebar-avatar-section {
@@ -110,20 +110,20 @@
   align-items: center;
   text-align: center;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--color-border, #EDF0F7);
   margin-bottom: 1.5rem;
 }
 
 .profile-sidebar-name {
   font-size: 1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--color-navy, #0B1739);
   margin: 1rem 0 0.25rem;
 }
 
 .profile-sidebar-email {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-gray, #6B7280);
   margin: 0;
 }
 
@@ -140,15 +140,29 @@
   text-transform: uppercase;
 }
 
-.role-badge-seeker { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
-.role-badge-employer { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-.role-badge-promoter { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.role-badge-seeker {
+  background: rgba(36, 84, 255, 0.06);
+  color: var(--color-primary, #2454FF);
+  border: 1px solid rgba(36, 84, 255, 0.15);
+}
+
+.role-badge-employer {
+  background: rgba(20, 184, 166, 0.06);
+  color: #0d9488;
+  border: 1px solid rgba(20, 184, 166, 0.15);
+}
+
+.role-badge-promoter {
+  background: rgba(245, 158, 11, 0.06);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.15);
+}
 
 /* ── Completion Meter ── */
 .profile-completion-block {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--color-border, #EDF0F7);
 }
 
 .profile-completion-header {
@@ -160,33 +174,33 @@
 
 .profile-completion-label {
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: var(--color-text-gray, #6B7280);
   font-weight: 500;
 }
 
 .profile-completion-pct {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #3b82f6;
+  color: var(--color-primary, #2454FF);
 }
 
 .profile-completion-track {
   height: 6px;
-  background: rgba(255,255,255,0.06);
+  background: var(--color-border, #EDF0F7);
   border-radius: 99px;
   overflow: hidden;
 }
 
 .profile-completion-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2454ff, #7b3eff);
+  background: linear-gradient(90deg, var(--color-primary, #2454FF), var(--color-purple, #7B3EFF));
   border-radius: 99px;
   transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
 }
 
 .profile-completion-tip {
   font-size: 0.72rem;
-  color: #475569;
+  color: var(--color-text-gray, #6B7280);
   margin-top: 6px;
 }
 
@@ -204,7 +218,7 @@
   padding: 9px 12px;
   border-radius: 10px;
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: var(--color-text-gray, #6B7280);
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
@@ -216,13 +230,13 @@
 }
 
 .profile-sidebar-nav-item:hover {
-  background: rgba(255,255,255,0.05);
-  color: #f1f5f9;
+  background: rgba(36, 84, 255, 0.04);
+  color: var(--color-primary, #2454FF);
 }
 
 .profile-sidebar-nav-item.active {
-  background: rgba(36,84,255,0.12);
-  color: #60a5fa;
+  background: rgba(36, 84, 255, 0.08);
+  color: var(--color-primary, #2454FF);
   font-weight: 600;
 }
 
@@ -233,8 +247,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #3b82f6;
-  box-shadow: 0 0 6px rgba(59,130,246,0.7);
+  background: var(--color-primary, #2454FF);
+  box-shadow: 0 0 6px rgba(36, 84, 255, 0.4);
 }
 
 .profile-sidebar-nav-item i {
@@ -270,13 +284,14 @@
   gap: 14px;
   padding: 16px 20px;
   border-radius: 16px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--color-white, #ffffff);
+  border: 1px solid var(--color-border, #EDF0F7);
   cursor: pointer;
   transition: all 0.25s ease;
   text-align: left;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
 }
 
 .profile-role-tab-card::before {
@@ -292,9 +307,10 @@
 }
 
 .profile-role-tab-card:hover {
-  background: rgba(255,255,255,0.06);
+  background: var(--color-white, #ffffff);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
+  border-color: rgba(36, 84, 255, 0.15);
 }
 
 /* Icon wrap */
@@ -322,14 +338,14 @@
 .profile-role-tab-label {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--color-navy, #0B1739);
   transition: color 0.25s;
   display: block;
 }
 
 .profile-role-tab-desc {
   font-size: 0.74rem;
-  color: #475569;
+  color: var(--color-text-gray, #6B7280);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -351,80 +367,80 @@
 
 /* ── Job Seeker — Blue ── */
 .role-tab-seeker .profile-role-tab-icon-wrap {
-  background: rgba(59,130,246,0.1);
-  color: #3b82f6;
+  background: rgba(36, 84, 255, 0.08);
+  color: var(--color-primary, #2454FF);
 }
 .role-tab-seeker:hover .profile-role-tab-icon-wrap {
-  background: rgba(59,130,246,0.18);
+  background: rgba(36, 84, 255, 0.14);
 }
-.role-tab-seeker::before { background: #3b82f6; }
+.role-tab-seeker::before { background: var(--color-primary, #2454FF); }
 .role-tab-seeker.active {
-  background: rgba(59,130,246,0.08);
-  border-color: rgba(59,130,246,0.35);
-  box-shadow: 0 4px 20px rgba(59,130,246,0.15);
+  background: var(--color-white, #ffffff);
+  border-color: rgba(36, 84, 255, 0.3);
+  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
 }
 .role-tab-seeker.active::before { opacity: 1; }
-.role-tab-seeker.active .profile-role-tab-label { color: #60a5fa; }
+.role-tab-seeker.active .profile-role-tab-label { color: var(--color-primary, #2454FF); }
 .role-tab-seeker.active .profile-role-tab-icon-wrap {
-  background: rgba(59,130,246,0.2);
-  box-shadow: 0 0 12px rgba(59,130,246,0.3);
+  background: rgba(36, 84, 255, 0.12);
+  box-shadow: 0 0 12px rgba(36, 84, 255, 0.15);
 }
 .role-tab-seeker .profile-role-tab-active-badge {
-  background: rgba(59,130,246,0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(59,130,246,0.3);
+  background: rgba(36, 84, 255, 0.08);
+  color: var(--color-primary, #2454FF);
+  border: 1px solid rgba(36, 84, 255, 0.15);
 }
 
 /* ── Employer — Emerald ── */
 .role-tab-employer .profile-role-tab-icon-wrap {
-  background: rgba(16,185,129,0.1);
-  color: #10b981;
+  background: rgba(20, 184, 166, 0.08);
+  color: #0d9488;
 }
 .role-tab-employer:hover .profile-role-tab-icon-wrap {
-  background: rgba(16,185,129,0.18);
+  background: rgba(20, 184, 166, 0.14);
 }
-.role-tab-employer::before { background: #10b981; }
+.role-tab-employer::before { background: #0d9488; }
 .role-tab-employer.active {
-  background: rgba(16,185,129,0.08);
-  border-color: rgba(16,185,129,0.35);
-  box-shadow: 0 4px 20px rgba(16,185,129,0.15);
+  background: var(--color-white, #ffffff);
+  border-color: rgba(20, 184, 166, 0.3);
+  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
 }
 .role-tab-employer.active::before { opacity: 1; }
-.role-tab-employer.active .profile-role-tab-label { color: #34d399; }
+.role-tab-employer.active .profile-role-tab-label { color: #0d9488; }
 .role-tab-employer.active .profile-role-tab-icon-wrap {
-  background: rgba(16,185,129,0.2);
-  box-shadow: 0 0 12px rgba(16,185,129,0.3);
+  background: rgba(20, 184, 166, 0.12);
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.15);
 }
 .role-tab-employer .profile-role-tab-active-badge {
-  background: rgba(16,185,129,0.15);
-  color: #34d399;
-  border: 1px solid rgba(16,185,129,0.3);
+  background: rgba(20, 184, 166, 0.08);
+  color: #0d9488;
+  border: 1px solid rgba(20, 184, 166, 0.15);
 }
 
 /* ── Business Promoter — Amber ── */
 .role-tab-promoter .profile-role-tab-icon-wrap {
-  background: rgba(245,158,11,0.1);
-  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  color: #b45309;
 }
 .role-tab-promoter:hover .profile-role-tab-icon-wrap {
-  background: rgba(245,158,11,0.18);
+  background: rgba(245, 158, 11, 0.14);
 }
-.role-tab-promoter::before { background: #f59e0b; }
+.role-tab-promoter::before { background: #b45309; }
 .role-tab-promoter.active {
-  background: rgba(245,158,11,0.08);
-  border-color: rgba(245,158,11,0.35);
-  box-shadow: 0 4px 20px rgba(245,158,11,0.12);
+  background: var(--color-white, #ffffff);
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
 }
 .role-tab-promoter.active::before { opacity: 1; }
-.role-tab-promoter.active .profile-role-tab-label { color: #fbbf24; }
+.role-tab-promoter.active .profile-role-tab-label { color: #b45309; }
 .role-tab-promoter.active .profile-role-tab-icon-wrap {
-  background: rgba(245,158,11,0.2);
-  box-shadow: 0 0 12px rgba(245,158,11,0.3);
+  background: rgba(245, 158, 11, 0.12);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
 }
 .role-tab-promoter .profile-role-tab-active-badge {
-  background: rgba(245,158,11,0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(245,158,11,0.3);
+  background: rgba(245, 158, 11, 0.08);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.15);
 }
 
 @media (max-width: 768px) {
@@ -434,16 +450,16 @@
 
 /* ── Main Form Card ── */
 .profile-main-card {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--color-white, #ffffff);
+  border: 1px solid var(--color-border, #EDF0F7);
   border-radius: 20px;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
 }
 
 .profile-main-card-header {
   padding: 1.5rem 2rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--color-border, #EDF0F7);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -452,7 +468,7 @@
 .profile-main-card-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--color-navy, #0B1739);
   margin: 0;
   display: flex;
   align-items: center;
@@ -461,7 +477,7 @@
 
 .profile-main-card-title i {
   font-size: 1.1rem;
-  color: var(--color-primary);
+  color: var(--color-primary, #2454FF);
 }
 
 .profile-main-card-body {
@@ -479,7 +495,7 @@
 .profile-section-divider-label {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--color-navy, #0B1739);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   white-space: nowrap;
@@ -488,7 +504,7 @@
 .profile-section-divider-line {
   flex: 1;
   height: 1px;
-  background: rgba(255,255,255,0.06);
+  background: var(--color-border, #EDF0F7);
 }
 
 .profile-section-divider-btn {
@@ -497,9 +513,9 @@
   gap: 5px;
   padding: 5px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(36,84,255,0.4);
-  background: rgba(36,84,255,0.08);
-  color: #60a5fa;
+  border: 1px solid rgba(36, 84, 255, 0.2);
+  background: rgba(36, 84, 255, 0.05);
+  color: var(--color-primary, #2454FF);
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -508,8 +524,8 @@
 }
 
 .profile-section-divider-btn:hover {
-  background: rgba(36,84,255,0.18);
-  border-color: rgba(36,84,255,0.7);
+  background: rgba(36, 84, 255, 0.1);
+  border-color: var(--color-primary, #2454FF);
 }
 
 /* ── Form Fields ── */
@@ -521,7 +537,7 @@
   display: block;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--color-navy, #0B1739);
   margin-bottom: 0.5rem;
   letter-spacing: 0.02em;
 }
@@ -530,9 +546,9 @@
 .profile-select,
 .profile-textarea {
   width: 100%;
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  color: #f1f5f9;
+  background: var(--color-white, #ffffff);
+  border: 1px solid var(--color-border, #EDF0F7);
+  color: var(--color-text-dark, #1a1a2e);
   padding: 11px 15px;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -542,7 +558,7 @@
 
 .profile-input::placeholder,
 .profile-textarea::placeholder {
-  color: #334155;
+  color: #94a3b8;
 }
 
 .profile-textarea {
@@ -553,20 +569,20 @@
 .profile-input:focus,
 .profile-select:focus,
 .profile-textarea:focus {
-  border-color: rgba(36, 84, 255, 0.6);
-  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.12);
-  background: rgba(15, 23, 42, 0.9);
+  border-color: var(--color-primary, #2454FF);
+  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.1);
+  background: var(--color-white, #ffffff);
 }
 
 .profile-select option {
-  background: #0f172a;
-  color: #f1f5f9;
+  background: var(--color-white, #ffffff);
+  color: var(--color-text-dark, #1a1a2e);
 }
 
 /* ── Item Card (experience / education entries) ── */
 .profile-item-card {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(248, 250, 255, 0.6);
+  border: 1px solid var(--color-border, #EDF0F7);
   border-radius: 14px;
   padding: 1.25rem;
   margin-bottom: 1rem;
@@ -574,7 +590,7 @@
 }
 
 .profile-item-card:hover {
-  border-color: rgba(36,84,255,0.3);
+  border-color: rgba(36, 84, 255, 0.3);
 }
 
 .profile-item-card-header {
@@ -587,7 +603,7 @@
 .profile-item-card-title {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--color-navy, #0B1739);
   margin: 0;
 }
 
@@ -597,9 +613,9 @@
   gap: 5px;
   padding: 4px 10px;
   border-radius: 7px;
-  border: 1px solid rgba(239,68,68,0.3);
-  background: rgba(239,68,68,0.08);
-  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+  color: #ef4444;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
@@ -607,15 +623,15 @@
 }
 
 .profile-item-remove-btn:hover {
-  background: rgba(239,68,68,0.18);
-  border-color: rgba(239,68,68,0.6);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
 }
 
 /* ── File Upload Zone ── */
 .profile-file-upload {
   position: relative;
-  background: rgba(15, 23, 42, 0.5);
-  border: 2px dashed rgba(255, 255, 255, 0.1);
+  background: rgba(248, 250, 255, 0.6);
+  border: 2px dashed var(--color-border, #EDF0F7);
   border-radius: 14px;
   padding: 1.5rem;
   text-align: center;
@@ -624,8 +640,8 @@
 }
 
 .profile-file-upload:hover {
-  border-color: rgba(36,84,255,0.5);
-  background: rgba(36,84,255,0.04);
+  border-color: var(--color-primary, #2454FF);
+  background: rgba(36, 84, 255, 0.04);
 }
 
 .profile-file-upload input[type="file"] {
@@ -645,8 +661,8 @@
   justify-content: space-between;
   margin-top: 0.75rem;
   padding: 0.75rem 1rem;
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(20, 184, 166, 0.06);
+  border: 1px solid rgba(20, 184, 166, 0.2);
   border-radius: 12px;
   gap: 12px;
   flex-wrap: wrap;
@@ -668,14 +684,14 @@
 .resume-download-label {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #10b981;
+  color: #0d9488;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .resume-download-filename {
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: var(--color-text-gray, #6B7280);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -687,9 +703,9 @@
   align-items: center;
   flex-shrink: 0;
   padding: 7px 16px;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #10b981;
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  color: #0d9488;
   border-radius: 9px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -698,9 +714,9 @@
 }
 
 .resume-download-btn:hover {
-  background: rgba(16, 185, 129, 0.22);
-  border-color: #10b981;
-  color: #34d399;
+  background: rgba(20, 184, 166, 0.2);
+  border-color: #0d9488;
+  color: #0f766e;
   transform: translateY(-1px);
 }
 
@@ -710,11 +726,11 @@
   justify-content: flex-end;
   padding-top: 1.5rem;
   margin-top: 1.5rem;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--color-border, #EDF0F7);
 }
 
 .btn-profile-save {
-  background: linear-gradient(135deg, #2454ff, #7b3eff);
+  background: linear-gradient(135deg, var(--color-primary, #2454FF), var(--color-purple, #7B3EFF));
   color: white;
   border: none;
   padding: 12px 36px;
@@ -723,7 +739,7 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.25s;
-  box-shadow: 0 4px 18px rgba(36,84,255,0.3);
+  box-shadow: var(--shadow-blue, 0 8px 24px rgba(36, 84, 255, 0.25));
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -731,7 +747,7 @@
 
 .btn-profile-save:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(36,84,255,0.5);
+  box-shadow: 0 10px 30px rgba(36, 84, 255, 0.4);
 }
 
 .btn-profile-save:disabled {
@@ -752,9 +768,9 @@
 }
 
 .profile-message.success {
-  background: rgba(16, 185, 129, 0.08);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(20, 184, 166, 0.08);
+  color: #0d9488;
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .profile-message.error {
@@ -768,7 +784,7 @@
   padding-left: 1.5rem;
   margin: 0.5rem 0 0 0;
   font-size: 0.85rem;
-  color: #fca5a5;
+  color: #f87171;
 }
 
 .profile-error-list li {
@@ -788,8 +804,8 @@
 .profile-loading-spinner {
   width: 44px;
   height: 44px;
-  border: 3px solid rgba(255,255,255,0.08);
-  border-top-color: #3b82f6;
+  border: 3px solid var(--color-border, #EDF0F7);
+  border-top-color: var(--color-primary, #2454FF);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -797,14 +813,14 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .profile-loading-text {
-  color: #64748b;
+  color: var(--color-text-gray, #6B7280);
   font-size: 0.9rem;
 }
 
 /* React Quill custom style for Profile */
 .profile-quill-wrapper {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--color-white, #ffffff);
+  border: 1px solid var(--color-border, #EDF0F7);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.2s ease;
@@ -812,8 +828,8 @@
 
 .profile-quill-wrapper .ql-toolbar {
   border: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
-  background: rgba(255, 255, 255, 0.02) !important;
+  border-bottom: 1px solid var(--color-border, #EDF0F7) !important;
+  background: rgba(248, 250, 255, 0.5) !important;
 }
 
 .profile-quill-wrapper .ql-container {
@@ -824,39 +840,39 @@
 }
 
 .profile-quill-wrapper .ql-editor {
-  color: #f1f5f9 !important;
+  color: var(--color-text-dark, #1a1a2e) !important;
   min-height: 150px;
 }
 
 .profile-quill-wrapper .ql-editor.ql-blank::before {
-  color: #334155 !important;
+  color: #94a3b8 !important;
   font-style: normal !important;
 }
 
 .profile-quill-wrapper:focus-within {
-  border-color: rgba(36, 84, 255, 0.6);
-  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.12);
-  background: rgba(15, 23, 42, 0.9);
+  border-color: var(--color-primary, #2454FF);
+  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.1);
+  background: var(--color-white, #ffffff);
 }
 
-/* Fix icons and dropdowns for dark mode */
+/* Fix icons and dropdowns for light mode */
 .profile-quill-wrapper .ql-snow .ql-stroke {
-  stroke: #94a3b8 !important;
+  stroke: var(--color-text-gray, #6B7280) !important;
 }
 .profile-quill-wrapper .ql-snow .ql-fill {
-  fill: #94a3b8 !important;
+  fill: var(--color-text-gray, #6B7280) !important;
 }
 .profile-quill-wrapper .ql-snow .ql-picker {
-  color: #94a3b8 !important;
+  color: var(--color-text-gray, #6B7280) !important;
 }
 .profile-quill-wrapper .ql-snow .ql-picker-options {
-  background-color: #0f172a !important;
-  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  background-color: var(--color-white, #ffffff) !important;
+  border: 1px solid var(--color-border, #EDF0F7) !important;
 }
 .profile-quill-wrapper .ql-snow .ql-picker-item {
-  color: #94a3b8 !important;
+  color: var(--color-text-gray, #6B7280) !important;
 }
 .profile-quill-wrapper .ql-snow .ql-picker-item:hover,
 .profile-quill-wrapper .ql-snow .ql-picker-item.ql-selected {
-  color: #f1f5f9 !important;
+  color: var(--color-text-dark, #1a1a2e) !important;
 }

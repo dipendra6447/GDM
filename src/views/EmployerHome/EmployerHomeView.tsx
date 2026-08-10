@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
+import "../Home/Home.css";
 import Link from "next/link";
 import EmployerHero from "@/components/EmployerHome/EmployerHero";
 import EmployerProfileSidebar from "@/components/EmployerHome/EmployerProfileSidebar";
 import EmployerCandidateSearch from "@/components/EmployerHome/EmployerCandidateSearch";
 import EmployerBenefitsSection from "@/components/EmployerHome/EmployerBenefitsSection";
+import BusinessGrowth from "@/components/BusinessGrowth/BusinessGrowth";
 import PromotedBusinesses from "@/components/PromotedBusinesses/PromotedBusinesses";
 import BlogSection from "@/components/BlogSection/BlogSection";
 import AdPromotion from "@/components/AdPromotion/AdPromotion";
@@ -56,6 +58,8 @@ const EmployerHomeView: React.FC<EmployerHomeViewProps> = ({ onSwitchRole }) => 
                 {/* Why Employers Choose JobNest */}
                 <EmployerBenefitsSection />
 
+                <BusinessGrowth />
+
                 {/* Featured Promoted Businesses */}
                 <div className="container p-0 my-5">
                   <PromotedBusinesses variant="home" />
@@ -71,6 +75,7 @@ const EmployerHomeView: React.FC<EmployerHomeViewProps> = ({ onSwitchRole }) => 
             <EmployerCandidateSearch />
             <AdBanner />
             <EmployerBenefitsSection />
+            <BusinessGrowth />
             <div className="container my-5">
               <PromotedBusinesses variant="home" />
             </div>
