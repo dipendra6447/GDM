@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import "./AdPromotion.css";
 
 interface AdPromotionProps {
@@ -46,6 +47,7 @@ const AdPromotion: React.FC<AdPromotionProps> = ({
   bannerVisible = true,
   onBannerClose,
 }) => {
+  const router = useRouter();
   const [floatingVisible, setFloatingVisible] = useState(true);
   const [adIndex, setAdIndex] = useState(0);
 
@@ -119,19 +121,31 @@ const AdPromotion: React.FC<AdPromotionProps> = ({
           </button>
           <span className="float-ad-adlabel">Ad</span>
 
-          <div className="float-ad-img-wrap">
+          <div 
+            className="float-ad-img-wrap"
+            onClick={() => router.push('/subscription?role=business')}
+            style={{ cursor: 'pointer' }}
+          >
             <img src={currentAd.img} alt={currentAd.title} loading="lazy" />
           </div>
 
           <div className="float-ad-body">
-            <div>
+            <div
+              onClick={() => router.push('/subscription?role=business')}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="float-ad-tag">{currentAd.tag}</div>
               <div className="float-ad-title">{currentAd.title}</div>
               <div className="float-ad-desc">{currentAd.desc}</div>
               <div className="float-ad-offer">{currentAd.offer}</div>
             </div>
             <div>
-              <button className="float-ad-cta">{currentAd.cta}</button>
+              <button 
+                className="float-ad-cta"
+                onClick={() => router.push('/subscription?role=business')}
+              >
+                {currentAd.cta}
+              </button>
               <div className="float-ad-nav">
                 {floatAds.map((_, i) => (
                   <button
