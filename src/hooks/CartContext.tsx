@@ -45,7 +45,7 @@ const defaultContext: CartContextType = {
   removeFromCart: () => {},
   clearCart: () => {},
   updateBilling: () => {},
-  getPrice: () => "₹0",
+  getPrice: () => "$0",
   getPriceNum: () => 0,
   getBillingLabel: () => "",
 };
@@ -106,7 +106,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const getPrice = useCallback((): string => {
-    if (!item) return "₹0";
+    if (!item) return "$0";
     if (item.billing === "daily") return item.priceDaily;
     if (item.billing === "weekly") return item.priceWeekly;
     return item.priceMonthly;

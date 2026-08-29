@@ -310,7 +310,7 @@ export default function SubscriptionsPage() {
                         {plan.isPopular && <span className="badge badge-warning" style={{marginLeft: 8}}>Popular</span>}
                         {plan.isBestValue && <span className="badge badge-purple" style={{marginLeft: 8}}>Best Value</span>}
                       </td>
-                      <td>₹{plan.price}{plan.billingCycle}</td>
+                      <td>${plan.price}{plan.billingCycle}</td>
                       <td><span className="badge badge-secondary">{plan.roleTarget.replace('_', ' ')}</span></td>
                       <td><span className={`status-badge ${plan.isActive ? 'badge-success' : 'badge-secondary'}`}>{plan.isActive ? 'Active' : 'Inactive'}</span></td>
                       <td>
@@ -342,7 +342,7 @@ export default function SubscriptionsPage() {
                   <input type="text" name="name" className="form-control" value={planFormData.name} onChange={handlePlanInputChange} required />
                 </div>
                 <div className="form-group">
-                  <label>Price (₹)</label>
+                  <label>Price ($)</label>
                   <input type="number" name="price" className="form-control" value={planFormData.price} onChange={handlePlanInputChange} required />
                 </div>
                 <div className="form-group">

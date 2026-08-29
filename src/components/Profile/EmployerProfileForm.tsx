@@ -94,7 +94,7 @@ export default function EmployerProfileForm({ initialData, roleId = 2 }: Props) 
           </div>
           <div className="col-md-4 profile-form-group">
             <label className="profile-label">Headquarters</label>
-            <input type="text" name="headquarters" className="profile-input" placeholder="Mumbai, India" value={formData.headquarters} onChange={handleInputChange} />
+            <input type="text" name="headquarters" className="profile-input" placeholder="San Francisco, CA" value={formData.headquarters} onChange={handleInputChange} />
           </div>
           <div className="col-md-12 profile-form-group">
             <label className="profile-label">About Company</label>
@@ -130,7 +130,7 @@ export default function EmployerProfileForm({ initialData, roleId = 2 }: Props) 
         <div className="row">
           <div className="col-md-4 profile-form-group">
             <label className="profile-label">HR Name</label>
-            <input type="text" name="hrName" className="profile-input" placeholder="Priya Sharma" value={formData.hrName} onChange={handleInputChange} />
+            <input type="text" name="hrName" className="profile-input" placeholder="Sarah Jenkins" value={formData.hrName} onChange={handleInputChange} />
           </div>
           <div className="col-md-4 profile-form-group">
             <label className="profile-label">HR Email</label>
@@ -138,7 +138,7 @@ export default function EmployerProfileForm({ initialData, roleId = 2 }: Props) 
           </div>
           <div className="col-md-4 profile-form-group">
             <label className="profile-label">HR Phone</label>
-            <input type="tel" name="hrPhone" className="profile-input" placeholder="+91 98765 43210" value={formData.hrPhone} onChange={handleInputChange} />
+            <input type="tel" name="hrPhone" className="profile-input" placeholder="+1 (555) 234-5678" value={formData.hrPhone} onChange={handleInputChange} />
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ const floatAds = [
   },
   {
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&auto=format&fit=crop&q=80",
-    tag: "Café • Koramangala",
+    tag: "Café • Downtown SF",
     title: "The Pixel Brew Café",
     desc: "Work-friendly WiFi café. Perfect for remote workers.",
     offer: "☕ Buy 1 Get 1 Free",
@@ -38,7 +38,7 @@ const floatAds = [
     tag: "Fitness Studio",
     title: "IronMind Fitness",
     desc: "Morning batches for working professionals. Trainer included.",
-    offer: "💪 3 Months @ ₹999",
+    offer: "💪 3 Months @ $29/mo",
     cta: "Grab This Deal →",
   },
 ];

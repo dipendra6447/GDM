@@ -185,11 +185,11 @@ const Terms: React.FC = () => {
                   <span className="terms-section-number">06</span>
                   <h2>Billing &amp; Payments</h2>
                 </div>
-                <p>By purchasing a subscription, you authorize JobNest to charge your selected payment method for the applicable fees. All prices are listed in Indian Rupees (₹) and include applicable taxes unless otherwise stated.</p>
+                <p>By purchasing a subscription, you authorize JobNest to charge your selected payment method for the applicable fees. All prices are listed in US Dollars ($) and include applicable taxes unless otherwise stated.</p>
                 <ul className="terms-list">
-                  <li>GST (18%) is applied to all subscription purchases</li>
+                  <li>Applicable Sales Tax is applied to subscription purchases based on location</li>
                   <li>Payment is due at the time of subscription activation</li>
-                  <li>Accepted payment methods: Credit Card, Debit Card, Net Banking, EMI, and Other digital wallets (Amazon Pay, PayPal, Razorpay, Stripe)</li>
+                  <li>Accepted payment methods: Credit Card, Debit Card, Net Banking, and major digital wallets (Amazon Pay, PayPal, Stripe)</li>
                   <li>All transactions are secured with 256-bit SSL encryption and are PCI-DSS compliant</li>
                 </ul>
               </section>
@@ -208,7 +208,7 @@ const Terms: React.FC = () => {
                 </ul>
                 <div className="terms-callout terms-callout--warning">
                   <span className="terms-callout-icon">⚠️</span>
-                  <p>JobNest reserves the right to deny refund requests that do not meet these criteria. To request a refund, contact <strong>support@jobnest.in</strong>.</p>
+                  <p>JobNest reserves the right to deny refund requests that do not meet these criteria. To request a refund, contact <strong>support@jobnest.com</strong>.</p>
                 </div>
               </section>
 
@@ -316,17 +316,17 @@ const Terms: React.FC = () => {
                   <div className="terms-contact-card">
                     <div className="terms-contact-icon">📧</div>
                     <div className="terms-contact-label">Email</div>
-                    <a href="mailto:legal@jobnest.in">legal@jobnest.in</a>
+                    <a href="mailto:legal@jobnest.com">legal@jobnest.com</a>
                   </div>
                   <div className="terms-contact-card">
                     <div className="terms-contact-icon">📞</div>
                     <div className="terms-contact-label">Support</div>
-                    <a href="tel:+918001234567">+91 800-123-4567</a>
+                    <a href="tel:+18005550199">+1 (800) 555-0199</a>
                   </div>
                   <div className="terms-contact-card">
                     <div className="terms-contact-icon">📍</div>
                     <div className="terms-contact-label">Address</div>
-                    <span>JobNest HQ, Bengaluru, Karnataka, India</span>
+                    <span>JobNest HQ, San Francisco, California, USA</span>
                   </div>
                 </div>
               </section>

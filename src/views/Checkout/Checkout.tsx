@@ -79,12 +79,12 @@ interface CardFormState {
 }
 
 const BANKS = [
-  { id: "sbi", name: "SBI", icon: "🏦" },
-  { id: "hdfc", name: "HDFC", icon: "🏛️" },
-  { id: "icici", name: "ICICI", icon: "🏦" },
-  { id: "axis", name: "Axis", icon: "🏛️" },
-  { id: "kotak", name: "Kotak", icon: "🏦" },
-  { id: "pnb", name: "PNB", icon: "🏛️" },
+  { id: "chase", name: "JPMorgan Chase", icon: "🏦" },
+  { id: "bofa", name: "Bank of America", icon: "🏛️" },
+  { id: "wellsfargo", name: "Wells Fargo", icon: "🏦" },
+  { id: "citi", name: "Citibank", icon: "🏛️" },
+  { id: "capitalone", name: "Capital One", icon: "🏦" },
+  { id: "usbank", name: "U.S. Bank", icon: "🏛️" },
 ];
 
 
@@ -92,7 +92,7 @@ const PAYMENT_METHODS = [
   {
     id: "credit-card" as PaymentMethodType,
     name: "Credit Card",
-    desc: "Visa, Mastercard, Rupay",
+    desc: "Visa, Mastercard, AMEX, Discover",
     icon: "💳",
   },
   {
@@ -430,16 +430,16 @@ const Checkout: React.FC = () => {
                   onChange={(e) => setSelectedBank(e.target.value)}
                 >
                   <option value="">Choose a bank...</option>
-                  <option value="sbi">State Bank of India</option>
-                  <option value="hdfc">HDFC Bank</option>
-                  <option value="icici">ICICI Bank</option>
-                  <option value="axis">Axis Bank</option>
-                  <option value="kotak">Kotak Mahindra Bank</option>
-                  <option value="pnb">Punjab National Bank</option>
-                  <option value="bob">Bank of Baroda</option>
-                  <option value="canara">Canara Bank</option>
-                  <option value="idbi">IDBI Bank</option>
-                  <option value="yes">Yes Bank</option>
+                  <option value="chase">JPMorgan Chase Bank</option>
+                  <option value="bofa">Bank of America</option>
+                  <option value="wellsfargo">Wells Fargo Bank</option>
+                  <option value="citi">Citibank</option>
+                  <option value="capitalone">Capital One</option>
+                  <option value="usbank">U.S. Bank</option>
+                  <option value="pnc">PNC Bank</option>
+                  <option value="truist">Truist Financial</option>
+                  <option value="td">TD Bank</option>
+                  <option value="goldman">Goldman Sachs</option>
                 </select>
               </div>
             </div>
@@ -550,16 +550,16 @@ const Checkout: React.FC = () => {
             {/* Price Breakdown */}
             <div className="checkout-summary-row">
               <span className="label">Subtotal</span>
-              <span className="value">₹{subtotal}</span>
+              <span className="value">${subtotal}</span>
             </div>
             <div className="checkout-summary-row">
-              <span className="label">GST (18%)</span>
-              <span className="value">₹{gst}</span>
+              <span className="label">Sales Tax (18%)</span>
+              <span className="value">${gst}</span>
             </div>
             <div className="checkout-summary-divider" />
             <div className="checkout-summary-total">
               <span className="label">Total</span>
-              <span className="value">₹{total}</span>
+              <span className="value">${total}</span>
             </div>
 
             {/* Pay Now */}
@@ -575,7 +575,7 @@ const Checkout: React.FC = () => {
                 </>
               ) : isFormValid ? (
                 <>
-                  <i className="bi bi-lock-fill" /> Pay ₹{total} Now
+                  <i className="bi bi-lock-fill" /> Pay ${total} Now
                 </>
               ) : (
                 <>

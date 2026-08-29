@@ -91,14 +91,14 @@ export default function AdminInvoicesPage() {
         <div className="col-md-4">
           <div className="card border-0 shadow-sm p-4 bg-white" style={{ borderRadius: '16px' }}>
             <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: '0.85rem' }}>TOTAL SALES REVENUE</span>
-            <h2 className="fw-bold mb-0 text-success">₹{totalRevenue}</h2>
+            <h2 className="fw-bold mb-0 text-success">${totalRevenue}</h2>
             <span className="text-secondary mt-1 d-block" style={{ fontSize: '0.75rem' }}>From paid subscriptions</span>
           </div>
         </div>
         <div className="col-md-4">
           <div className="card border-0 shadow-sm p-4 bg-white" style={{ borderRadius: '16px' }}>
-            <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: '0.85rem' }}>GST TAX COLLECTED (18%)</span>
-            <h2 className="fw-bold mb-0 text-primary">₹{totalTax}</h2>
+            <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: '0.85rem' }}>SALES TAX COLLECTED (18%)</span>
+            <h2 className="fw-bold mb-0 text-primary">${totalTax}</h2>
             <span className="text-secondary mt-1 d-block" style={{ fontSize: '0.75rem' }}>For government tax filing</span>
           </div>
         </div>
@@ -186,8 +186,8 @@ export default function AdminInvoicesPage() {
                         {inv.paymentStatus}
                       </span>
                     </td>
-                    <td className="text-secondary">₹{inv.amount}</td>
-                    <td className="fw-bold text-dark">₹{inv.totalAmount}</td>
+                    <td className="text-secondary">${inv.amount}</td>
+                    <td className="fw-bold text-dark">${inv.totalAmount}</td>
                     <td style={{ textAlign: 'right' }}>
                       <Link 
                         href={`/invoice/${inv.id}`} 

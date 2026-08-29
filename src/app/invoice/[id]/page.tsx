@@ -131,14 +131,13 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
               <i className="bi bi-briefcase-fill" /> JobNest
             </h2>
             <p className="text-secondary mb-0" style={{ fontSize: '0.88rem', lineHeight: '1.5' }}>
-              JobNest Recruitment Portal Ltd.<br />
-              102 Enterprise Way, Tech Hub District<br />
-              Bangalore, Karnataka - 560001<br />
-              India
+              JobNest Inc.<br />
+              100 Market Street, Suite 400<br />
+              San Francisco, CA 94105<br />
+              United States
             </p>
             <p className="text-secondary mb-0 mt-2" style={{ fontSize: '0.82rem' }}>
-              <strong>GSTIN:</strong> 29AAAAC2929B1Z8<br />
-              <strong>CIN:</strong> U74999KA2026PTC10999
+              <strong>EIN / Tax ID:</strong> 94-3829104
             </p>
           </div>
           <div className="col-sm-6 text-sm-end mt-4 mt-sm-0">
@@ -171,8 +170,8 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
           {invoice.gstNumber && (
             <div className="col-sm-6 text-sm-end mt-4 mt-sm-0">
               <div className="d-inline-block text-start p-3 bg-light" style={{ borderRadius: '12px' }}>
-                <span className="fw-semibold text-secondary d-block mb-1" style={{ fontSize: '0.78rem' }}>TAX CREDIT INFORMATION</span>
-                <span className="fw-bold text-dark d-block" style={{ fontSize: '0.9rem' }}>GSTIN: {invoice.gstNumber}</span>
+                <span className="fw-semibold text-secondary d-block mb-1" style={{ fontSize: '0.78rem' }}>TAX IDENTIFICATION</span>
+                <span className="fw-bold text-dark d-block" style={{ fontSize: '0.9rem' }}>Tax ID / EIN: {invoice.gstNumber}</span>
               </div>
             </div>
           )}
@@ -186,7 +185,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
                 <th style={{ width: '50px' }}>#</th>
                 <th>Item / Description</th>
                 <th className="text-end" style={{ width: '120px' }}>Base Price</th>
-                <th className="text-end" style={{ width: '100px' }}>GST (18%)</th>
+                <th className="text-end" style={{ width: '100px' }}>Sales Tax (18%)</th>
                 <th className="text-end" style={{ width: '120px' }}>Total</th>
               </tr>
             </thead>
@@ -201,9 +200,9 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
                     Subscription access for recruitment tools / listings.
                   </span>
                 </td>
-                <td className="text-end">₹{invoice.amount}</td>
-                <td className="text-end">₹{invoice.tax}</td>
-                <td className="text-end fw-bold">₹{invoice.totalAmount}</td>
+                <td className="text-end">${invoice.amount}</td>
+                <td className="text-end">${invoice.tax}</td>
+                <td className="text-end fw-bold">${invoice.totalAmount}</td>
               </tr>
             </tbody>
           </table>
@@ -215,16 +214,16 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
             <div className="d-inline-block text-start w-100 p-3 border" style={{ borderRadius: '12px', background: '#f8fafc' }}>
               <div className="d-flex justify-content-between mb-2" style={{ fontSize: '0.9rem' }}>
                 <span className="text-secondary">Subtotal (Base):</span>
-                <span className="fw-semibold text-dark">₹{invoice.amount}</span>
+                <span className="fw-semibold text-dark">${invoice.amount}</span>
               </div>
               <div className="d-flex justify-content-between mb-2" style={{ fontSize: '0.9rem' }}>
-                <span className="text-secondary">GST (18%):</span>
-                <span className="fw-semibold text-dark">₹{invoice.tax}</span>
+                <span className="text-secondary">Sales Tax (18%):</span>
+                <span className="fw-semibold text-dark">${invoice.tax}</span>
               </div>
               <hr className="my-2" />
               <div className="d-flex justify-content-between" style={{ fontSize: '1.05rem' }}>
                 <span className="fw-bold text-dark">Grand Total:</span>
-                <span className="fw-bold text-primary" style={{ color: '#2454ff' }}>₹{invoice.totalAmount}</span>
+                <span className="fw-bold text-primary" style={{ color: '#2454ff' }}>${invoice.totalAmount}</span>
               </div>
             </div>
           </div>

@@ -366,8 +366,8 @@ export default function BusinessDetailPage({ params }: PageProps) {
                             <td>{camp.impressions !== undefined ? camp.impressions : '0'}</td>
                             <td>{camp.clicks !== undefined ? camp.clicks : '0'}</td>
                             <td className="fw-semibold text-primary">{camp.ctr !== undefined ? `${camp.ctr}%` : '0.00%'}</td>
-                            <td>{camp.cpc !== undefined ? `₹${camp.cpc}` : '₹0.00'}</td>
-                            <td className="fw-semibold text-dark">{camp.spent !== undefined ? `₹${camp.spent}` : '₹0'}</td>
+                            <td>{camp.cpc !== undefined ? `$${camp.cpc}` : '$0.00'}</td>
+                            <td className="fw-semibold text-dark">{camp.spent !== undefined ? `$${camp.spent}` : '$0'}</td>
                             <td>
                               <select 
                                 className={`form-select form-select-sm fw-semibold border ${
@@ -465,7 +465,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
                               {inv.tier}
                             </span>
                           </td>
-                          <td className="fw-bold text-dark">₹{inv.totalAmount}</td>
+                          <td className="fw-bold text-dark">${inv.totalAmount}</td>
                           <td className="text-center">
                             <a 
                               href={`/invoice/${inv.id}`} 

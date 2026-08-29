@@ -212,7 +212,7 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
         <div className="row">
           <div className="col-md-6 profile-form-group">
             <label className="profile-label">Contact Phone</label>
-            <input type="tel" name="contactPhone" className="profile-input" placeholder="+91 98765 43210" value={formData.contactPhone} onChange={handleInputChange} />
+            <input type="tel" name="contactPhone" className="profile-input" placeholder="+1 (555) 345-6789" value={formData.contactPhone} onChange={handleInputChange} />
           </div>
           <div className="col-md-6 profile-form-group">
             <label className="profile-label">Contact Email</label>
@@ -290,8 +290,8 @@ export default function BusinessPromoterProfileForm({ initialData, roleId = 3 }:
             />
           </div>
           <div className="col-md-12 profile-form-group">
-            <label className="profile-label">GST Number (Optional)</label>
-            <input type="text" name="gstNumber" className="profile-input" placeholder="GSTIN..." value={formData.gstNumber} onChange={handleInputChange} />
+            <label className="profile-label">Tax ID / EIN (Optional)</label>
+            <input type="text" name="gstNumber" className="profile-input" placeholder="e.g. 94-3829104" value={formData.gstNumber} onChange={handleInputChange} />
           </div>
         </div>
       </div>
