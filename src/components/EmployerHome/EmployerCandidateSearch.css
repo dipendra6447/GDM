@@ -1,6 +1,7 @@
-/* Employer Candidate Search & Showcase Styling */
+/* Employer Candidate Search & Showcase Styling — LUXURY DARK EDITION */
 .emp-cand-section {
   padding: 40px 0;
+  position: relative;
 }
 
 .emp-cand-header {
@@ -10,12 +11,12 @@
 .emp-cand-title {
   font-size: 1.75rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   letter-spacing: -0.01em;
 }
 
 .emp-cand-subtitle {
-  color: #64748b;
+  color: #94A3B8;
   font-size: 0.98rem;
 }
 
@@ -27,9 +28,9 @@
 }
 
 .emp-cand-pill {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+  color: #CBD5E1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
   padding: 8px 18px;
   font-size: 0.88rem;
@@ -40,28 +41,29 @@
 
 .emp-cand-pill:hover,
 .emp-cand-pill.active {
-  background: #2454ff;
+  background: #2454FF;
   color: #ffffff;
-  border-color: #2454ff;
-  box-shadow: 0 4px 12px rgba(36, 84, 255, 0.25);
+  border-color: #2454FF;
+  box-shadow: 0 4px 14px rgba(36, 84, 255, 0.4);
 }
 
 .emp-cand-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #0E121E;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 20px;
   transition: all 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
 }
 
 .emp-cand-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-  border-color: rgba(36, 84, 255, 0.3);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(36, 84, 255, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .emp-cand-top-info {
@@ -75,7 +77,7 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
   color: #ffffff;
   font-weight: 700;
   font-size: 1.25rem;
@@ -83,18 +85,20 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .emp-cand-name {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0;
 }
 
 .emp-cand-role {
   font-size: 0.88rem;
-  color: #2454ff;
+  color: #60A5FA;
   font-weight: 600;
   margin: 0;
 }
@@ -104,7 +108,7 @@
   flex-wrap: wrap;
   gap: 12px;
   font-size: 0.82rem;
-  color: #64748b;
+  color: #94A3B8;
   margin-bottom: 16px;
 }
 
@@ -117,9 +121,9 @@
 }
 
 .emp-skill-tag {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #334155;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #CBD5E1;
   font-size: 0.78rem;
   font-weight: 600;
   padding: 4px 10px;

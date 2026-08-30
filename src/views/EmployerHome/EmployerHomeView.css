@@ -1,11 +1,13 @@
-/* Employer Home View Styling */
+/* Employer Home View Styling — LUXURY DARK EDITION */
 .emp-home-main {
-  background: #f8fafc;
+  background: #08090E;
   min-height: 100vh;
+  color: #FFFFFF;
+  position: relative;
 }
 
 .emp-home-banner-strip {
-  background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(90deg, #090C16 0%, #11182C 100%);
   color: #ffffff;
   padding: 16px 0;
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);

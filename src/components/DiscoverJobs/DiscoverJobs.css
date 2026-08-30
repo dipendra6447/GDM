@@ -1,12 +1,13 @@
 /* ============================================
-   DISCOVER JOBS — Redesigned Right Side Mosaic
+   DISCOVER JOBS — LUXURY DARK EDITION
    ============================================ */
 
 .discover-section {
-  background: var(--color-white);
+  background: transparent;
+  position: relative;
 }
 
-/* ── LEFT SIDE — unchanged ── */
+/* ── LEFT SIDE ── */
 .discover-highlights {
   display: flex;
   flex-direction: column;
@@ -28,18 +29,20 @@
   justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .dh-label {
   font-size: 15px;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-navy);
+  font-weight: 700;
+  color: #FFFFFF;
   margin: 0 0 4px;
 }
 
 .dh-text {
   font-size: 13px;
-  color: var(--color-text-gray);
+  color: #94A3B8;
   margin: 0;
   line-height: 1.6;
 }
@@ -73,19 +76,21 @@
   border-radius: 18px;
   overflow: hidden;
   position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .mosaic-img-wrap::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 18px;
   transition: background 0.3s ease;
 }
 
 .mosaic-img-wrap:hover::after {
-  background: rgba(36, 84, 255, 0.06);
+  background: rgba(36, 84, 255, 0.1);
 }
 
 /* Large left image */
@@ -93,7 +98,7 @@
   height: 340px;
 }
 
-/* Two small stacked images (each roughly half height) */
+/* Two small stacked images */
 .mosaic-small {
   height: 160px;
 }
@@ -112,26 +117,27 @@
 }
 
 /* ============================================
-   BLUE STAT BOX  (overlays bottom-left area)
+   DARK STAT BOX (overlays bottom-left area)
    ============================================ */
 .mosaic-stat-box {
   position: absolute;
   bottom: -24px;
   left: -4px;
   width: 196px;
-  background: var(--color-primary);
-  background: linear-gradient(135deg, #2454FF 0%, #1448FF 60%, #4F46E5 100%);
+  background: linear-gradient(135deg, #0E1428 0%, #151F42 60%, #1E1B4B 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 18px;
   padding: 22px 20px 18px;
-  box-shadow: 0 16px 40px rgba(36, 84, 255, 0.40);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.15);
   z-index: 5;
   animation: floatStatBox 5s ease-in-out infinite;
+  backdrop-filter: blur(12px);
 }
 
 .msb-number {
   font-size: 38px;
-  font-weight: var(--font-weight-black);
-  color: #ffffff;
+  font-weight: 900;
+  color: #FFFFFF;
   line-height: 1;
   margin: 0 0 6px;
   letter-spacing: -1px;
@@ -139,8 +145,8 @@
 
 .msb-label {
   font-size: 13px;
-  font-weight: var(--font-weight-medium);
-  color: rgba(255, 255, 255, 0.80);
+  font-weight: 500;
+  color: #CBD5E1;
   margin: 0 0 14px;
   line-height: 1.4;
 }
@@ -156,11 +162,11 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(255, 255, 255, 0.50);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   margin-left: -8px;
   transition: transform 0.2s ease;
   flex-shrink: 0;
@@ -177,9 +183,9 @@
 
 .msb-avatar--more {
   font-size: 14px;
-  font-weight: var(--font-weight-bold);
+  font-weight: 700;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(36, 84, 255, 0.4);
 }
 
 /* ── Float animation ── */

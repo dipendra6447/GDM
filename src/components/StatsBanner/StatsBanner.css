@@ -1,17 +1,22 @@
 /* ============================================
-   STATS BANNER STYLES
+   STATS BANNER — LUXURY DARK EDITION
    ============================================ */
 
 .stats-banner {
-  background: var(--color-bg);
+  background: transparent;
+  padding: 40px 0;
+  position: relative;
 }
 
 .stats-card {
-  background: var(--gradient-banner);
+  background: linear-gradient(135deg, #0A0D18 0%, #11172E 50%, #1C1236 100%);
+  border: 1px solid rgba(212, 175, 55, 0.25);
   border-radius: 28px;
-  padding: 24px 14px;
+  padding: 36px 24px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(36, 84, 255, 0.15);
+  backdrop-filter: blur(16px);
 }
 
 .stats-bg-glow {
@@ -20,7 +25,7 @@
   right: -10%;
   width: 400px;
   height: 400px;
-  background: rgba(255, 255, 255, 0.08);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(36, 84, 255, 0.1) 50%, transparent 70%);
   border-radius: 50%;
   filter: blur(60px);
   pointer-events: none;
@@ -31,7 +36,7 @@
   align-items: center;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16px;
 }
 
 .stat-item {
@@ -42,7 +47,8 @@
 .stat-icon {
   width: 56px;
   height: 56px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -50,26 +56,29 @@
   font-size: 24px;
   margin: 0 auto 16px;
   backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  color: #60A5FA;
 }
 
 .stat-number {
   font-size: 44px;
-  font-weight: var(--font-weight-black);
-  color: white;
+  font-weight: 900;
+  color: #FFFFFF;
   line-height: 1;
   margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
 
 .stat-label {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: var(--font-weight-medium);
+  color: #94A3B8;
+  font-weight: 500;
 }
 
 .stats-divider {
   width: 1px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .stats-cta {
@@ -104,6 +113,7 @@
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     display: grid;
+    gap: 20px;
   }
 
   .stat-number {

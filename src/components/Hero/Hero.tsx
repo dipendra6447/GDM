@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import './Hero.css';
 
-const DEFAULT_HERO_BG = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1920&auto=format&fit=crop';
+const DEFAULT_HERO_BG = '/images/hero_banner_dark.jpg';
 
 const Hero: React.FC = () => {
   const router = useRouter();

@@ -1,14 +1,15 @@
-/* Employer Profile Sidebar Styling */
+/* Employer Profile Sidebar Styling — LUXURY DARK EDITION */
 .emp-sidebar-card {
-  background: #ffffff;
+  background: #0E121E;
   border-radius: 16px;
   padding: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
 }
 
 .emp-sidebar-top {
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 20px;
 }
 
@@ -28,14 +29,15 @@
   justify-content: center;
   font-size: 2rem;
   font-weight: 800;
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.35);
   margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .emp-company-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   margin-top: 12px;
   margin-bottom: 4px;
 }
@@ -44,27 +46,27 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #ecfdf5;
-  color: #059669;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
   font-size: 0.78rem;
   font-weight: 600;
   padding: 4px 12px;
   border-radius: 50px;
-  border: 1px solid rgba(5, 150, 105, 0.2);
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .emp-perf-box {
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   padding: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   margin-top: 20px;
 }
 
 .emp-perf-title {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #64748b;
+  color: #94A3B8;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -72,13 +74,13 @@
 .emp-perf-metric-val {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   line-height: 1.2;
 }
 
 .emp-perf-metric-label {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #94A3B8;
 }
 
 .emp-sidebar-links {
@@ -94,7 +96,7 @@
   gap: 12px;
   padding: 12px 16px;
   border-radius: 10px;
-  color: #475569;
+  color: #CBD5E1;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.92rem;
@@ -103,8 +105,8 @@
 
 .emp-sidebar-link-item:hover,
 .emp-sidebar-link-item.active {
-  background: rgba(36, 84, 255, 0.08);
-  color: #2454ff;
+  background: rgba(36, 84, 255, 0.15);
+  color: #60A5FA;
 }
 
 .emp-sidebar-link-item i {
@@ -112,9 +114,9 @@
 }
 
 .emp-switch-role-btn {
-  background: #0a0a0a;
-  color: #d4af37;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.12);
+  color: #D4AF37;
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 10px;
   padding: 10px 14px;
   font-size: 0.85rem;
@@ -127,9 +129,11 @@
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .emp-switch-role-btn:hover {
-  background: #171717;
-  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.22);
+  border-color: #D4AF37;
+  color: #F5E27C;
 }
