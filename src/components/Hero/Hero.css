@@ -52,7 +52,7 @@
 .hero-dark-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(10 17 32 / 0%) 0%, rgb(10 17 32 / 43%) 50%, rgb(10 17 32 / 52%) 100%);
+  background: linear-gradient(180deg, rgba(8, 9, 14, 0.45) 0%, rgba(8, 9, 14, 0.7) 60%, rgba(8, 9, 14, 0.95) 100%);
   z-index: 1;
 }
 
@@ -110,11 +110,11 @@
 .hero-tabs-nav {
   display: flex;
   gap: 0;
-  background: #ffffff;
-  padding: 5px;
+  background: #0F1322;
+  padding: 6px;
   border-radius: 40px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .hero-tab-btn {
@@ -127,41 +127,43 @@
   background: transparent;
   font-size: 14px;
   font-weight: 600;
-  color: #64748b;
+  color: #94A3B8;
   cursor: pointer;
   transition: all 0.25s ease;
   white-space: nowrap;
 }
 
 .hero-tab-btn:hover {
-  color: #3b82f6;
+  color: #FFFFFF;
 }
 
 .hero-tab-btn.active {
-  background: #ffffff;
-  color: #2563eb;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.12);
-  border: 1px solid rgba(37, 99, 235, 0.1);
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  color: #F8FAFC;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
 .hero-tab-btn.active i {
-  color: #2563eb;
+  color: #60A5FA;
 }
 
 .hero-tab-btn i {
   font-size: 15px;
-  color: #94a3b8;
+  color: #64748B;
   transition: color 0.25s ease;
 }
 
 /* Main Search Card */
 .hero-main-search-card {
-  background: #ffffff;
+  background: rgba(14, 18, 30, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-radius: 24px;
   padding: 44px 32px 28px;
   /* Extra top padding to account for floating tabs */
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid #f1f5f9;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Inner Horizontal Input Bar */
@@ -169,12 +171,12 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: rgba(8, 11, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 100px;
   padding: 8px 8px 8px 24px;
   margin-bottom: 20px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .hero-search-field-col {
@@ -201,23 +203,27 @@
 
 /* Icon Badges */
 .blue-circle {
-  background-color: #eff6ff;
-  color: #3b82f6;
+  background-color: rgba(37, 99, 235, 0.18);
+  color: #60A5FA;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .green-circle {
-  background-color: #f0fdf4;
-  color: #16a34a;
+  background-color: rgba(22, 163, 74, 0.18);
+  color: #4ADE80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
 }
 
 .purple-circle {
-  background-color: #faf5ff;
-  color: #9333ea;
+  background-color: rgba(147, 51, 234, 0.18);
+  color: #C084FC;
+  border: 1px solid rgba(192, 132, 252, 0.3);
 }
 
 .yellow-circle {
-  background-color: #fffbeb;
-  color: #d97706;
+  background-color: rgba(217, 119, 6, 0.18);
+  color: #FBBF24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .hero-field-content {
@@ -230,7 +236,7 @@
 .hero-field-title {
   font-size: 11px;
   font-weight: 700;
-  color: #1e293b;
+  color: #94A3B8;
   margin-bottom: 2px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -243,7 +249,7 @@
   outline: none;
   font-size: 13.5px;
   font-weight: 500;
-  color: #334155;
+  color: #FFFFFF;
   width: 100%;
   padding: 0 18px 0 0;
   cursor: text;
@@ -252,11 +258,21 @@
   overflow: hidden;
 }
 
+.hero-field-input-clean::placeholder {
+  color: #64748B;
+}
+
 .hero-field-select-clean {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   cursor: pointer;
+  background-color: transparent;
+}
+
+.hero-field-select-clean option {
+  background-color: #0F1322;
+  color: #FFFFFF;
 }
 
 .hero-select-wrapper {
@@ -270,22 +286,22 @@
   position: absolute;
   right: 4px;
   font-size: 11px;
-  color: #94a3b8;
+  color: #64748B;
   pointer-events: none;
 }
 
 .hero-field-divider {
   width: 1px;
   height: 36px;
-  background-color: #e2e8f0;
+  background-color: rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }
 
 /* Search Submit Button */
 .hero-search-submit-button {
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 100px;
   padding: 12px 28px;
   font-size: 14.5px;
@@ -294,15 +310,15 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   height: 48px;
   flex-shrink: 0;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.4);
 }
 
 .hero-search-submit-button:hover {
-  background-color: #1d4ed8;
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
   transform: translateY(-1px);
 }
 
@@ -325,7 +341,7 @@
 
 .hero-popular-label {
   font-weight: 700;
-  color: #475569;
+  color: #94A3B8;
   margin-right: 8px;
 }
 
@@ -337,9 +353,9 @@
 }
 
 .hero-popular-tag-btn {
-  background-color: #f1f5f9;
-  color: #475569;
-  border: none;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #CBD5E1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 6px 14px;
   border-radius: 30px;
   font-size: 12px;
@@ -349,23 +365,26 @@
 }
 
 .hero-popular-tag-btn:hover {
-  background-color: #e2e8f0;
-  color: #0f172a;
+  background-color: rgba(37, 99, 235, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #FFFFFF;
+  transform: translateY(-1px);
 }
 
 .hero-browse-all-link {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #2563eb;
+  color: #60A5FA;
   font-weight: 700;
   text-decoration: none;
   font-size: 13px;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .hero-browse-all-link:hover {
-  color: #1d4ed8;
+  color: #93C5FD;
+  transform: translateX(3px);
 }
 
 /* Statistics Row Below Card */
@@ -391,26 +410,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .hero-stat-icon-circle i {
   font-size: 22px;
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
 /* Stat Circle Backgrounds */
 .stat-blue {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
 }
 
 .stat-green {
-  background-color: #16a34a;
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.4);
 }
 
 .stat-purple {
-  background-color: #7c3aed;
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
 }
 
 .hero-stat-text {
@@ -421,14 +444,14 @@
 .hero-stat-number {
   font-size: 22px;
   font-weight: 800;
-  color: #ffffff;
+  color: #FFFFFF;
   line-height: 1.1;
 }
 
 .hero-stat-label {
   font-size: 13px;
   font-weight: 600;
-  color: #94a3b8;
+  color: #94A3B8;
 }
 
 /* Responsive Styles */
@@ -451,7 +474,7 @@
 
   .hero-search-field-col {
     padding: 10px 0;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .hero-search-submit-button {

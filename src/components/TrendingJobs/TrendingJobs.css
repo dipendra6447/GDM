@@ -1,10 +1,13 @@
 /* ============================================
-   MOST TRENDING JOBS — Pixel-Perfect Redesign
+   MOST TRENDING JOBS — LUXURY DARK EDITION
    ============================================ */
 
 .trending-section {
-  padding: 60px 0 80px;
-  background: #fafbfd; /* Match Home view off-white canvas */
+  padding: 80px 0;
+  background: linear-gradient(180deg, #090C16 0%, #10152A 50%, #090C16 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
 }
 
 /* Header Row & Title */
@@ -14,8 +17,9 @@
   gap: 6px;
   padding: 6px 14px;
   border-radius: 9999px;
-  background: #f3f0ff; /* Lavender background */
-  color: #4f1eeb; /* Purple text */
+  background: rgba(147, 51, 234, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(192, 132, 252, 0.3);
   font-size: 13.5px;
   font-weight: 700;
   margin-bottom: 12px;
@@ -24,24 +28,26 @@
 .trending-main-title {
   font-size: 32px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0;
   letter-spacing: -0.02em;
 }
 
 .trending-main-title .highlight-text {
-  color: #4f1eeb;
+  background: linear-gradient(135deg, #3B82F6 0%, #A855F7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .view-all-jobs-link {
   font-size: 15px;
   font-weight: 700;
-  color: #4f1eeb;
+  color: #60A5FA;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .view-all-jobs-link .arrow-right {
@@ -49,6 +55,10 @@
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   font-size: 16px;
   line-height: 1;
+}
+
+.view-all-jobs-link:hover {
+  color: #93C5FD;
 }
 
 .view-all-jobs-link:hover .arrow-right {
@@ -66,8 +76,8 @@
 
 /* ── Individual Client Job Card (Link Wrapper) ── */
 .client-job-card {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: #0E121E;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 22px;
   padding: 24px;
   position: relative;
@@ -81,31 +91,32 @@
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
 }
 
 /* Hover Theme Setups */
 .theme-purple {
-  --card-hover-border: rgba(79, 30, 235, 0.3);
-  --card-hover-shadow: rgba(79, 30, 235, 0.08);
+  --card-hover-border: rgba(168, 85, 247, 0.5);
+  --card-hover-shadow: rgba(168, 85, 247, 0.2);
 }
 .theme-orange {
-  --card-hover-border: rgba(255, 122, 0, 0.3);
-  --card-hover-shadow: rgba(255, 122, 0, 0.08);
+  --card-hover-border: rgba(251, 146, 60, 0.5);
+  --card-hover-shadow: rgba(251, 146, 60, 0.2);
 }
 .theme-blue {
-  --card-hover-border: rgba(32, 52, 255, 0.3);
-  --card-hover-shadow: rgba(32, 52, 255, 0.08);
+  --card-hover-border: rgba(96, 165, 250, 0.5);
+  --card-hover-shadow: rgba(96, 165, 250, 0.2);
 }
 .theme-green {
-  --card-hover-border: rgba(0, 144, 74, 0.3);
-  --card-hover-shadow: rgba(0, 144, 74, 0.08);
+  --card-hover-border: rgba(52, 211, 153, 0.5);
+  --card-hover-shadow: rgba(52, 211, 153, 0.2);
 }
 
 .client-job-card:hover {
   transform: translateY(-6px);
   border-color: var(--card-hover-border);
-  box-shadow: 0 16px 32px var(--card-hover-shadow), 0 4px 10px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 20px 40px var(--card-hover-shadow), 0 10px 20px rgba(0, 0, 0, 0.6);
 }
 
 /* Hot Tag */
@@ -115,9 +126,9 @@
   right: 16px;
   font-size: 10px;
   font-weight: 700;
-  color: #ef4444;
-  background: #fef2f2;
-  border: 1px solid #fee2e2;
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   padding: 2px 8px;
   border-radius: 9999px;
   display: flex;
@@ -144,6 +155,8 @@
   font-size: 20px;
   color: #ffffff;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .job-header-text {
@@ -155,14 +168,14 @@
 .job-card-title {
   font-size: 15px;
   font-weight: 800;
-  color: #0a0a0a;
+  color: #FFFFFF;
   margin: 0 0 3px 0;
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 42px; /* Restrict height for up to 2 lines */
+  height: 42px;
 }
 
 .job-card-company-row {
@@ -170,7 +183,7 @@
   align-items: center;
   gap: 4px;
   font-size: 12.5px;
-  color: #52525b;
+  color: #94A3B8;
 }
 
 .company-name {
@@ -181,7 +194,7 @@
 }
 
 .company-verified-tick {
-  color: #2563eb;
+  color: #60A5FA;
   font-size: 13px;
   flex-shrink: 0;
 }
@@ -197,7 +210,7 @@
 
 .job-card-location {
   font-size: 13px;
-  color: #71717a;
+  color: #94A3B8;
   margin-bottom: 6px;
   font-weight: 500;
   max-width: 100%;
@@ -209,7 +222,7 @@
 .job-card-salary {
   font-size: 15px;
   font-weight: 800;
-  color: #00904a; /* Green matching mockup */
+  color: #34D399; /* Vibrant Green */
   margin-bottom: 12px;
 }
 
@@ -229,23 +242,27 @@
 }
 
 .tag-purple {
-  background: #f3f0ff;
-  color: #4f1eeb;
+  background: rgba(147, 51, 234, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(192, 132, 252, 0.3);
 }
 
 .tag-remote {
-  background: #eff6ff;
-  color: #2034ff;
+  background: rgba(37, 99, 235, 0.15);
+  color: #60A5FA;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .tag-hybrid {
-  background: #ecfdf5;
-  color: #00904a;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .tag-onsite {
-  background: #fff7ed;
-  color: #ff7a00;
+  background: rgba(249, 115, 22, 0.15);
+  color: #FB923C;
+  border: 1px solid rgba(251, 146, 60, 0.3);
 }
 
 /* Footer (Posted Time & Applicants count) */
@@ -253,10 +270,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #f4f4f5;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 12px;
   font-size: 12px;
-  color: #71717a;
+  color: #94A3B8;
   font-weight: 500;
   margin-top: auto;
 }

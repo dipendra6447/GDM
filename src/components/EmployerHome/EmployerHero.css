@@ -1,6 +1,6 @@
 /* Employer Hero Section Styling */
 .emp-hero-wrapper {
-  background: linear-gradient(135deg, #090d16 0%, #0d1527 50%, #080a10 100%);
+  background: linear-gradient(135deg, rgba(9, 13, 22, 0.86) 0%, rgba(13, 21, 39, 0.9) 50%, rgba(8, 10, 16, 0.94) 100%), url('/images/hero_banner_dark.jpg') center/cover no-repeat;
   position: relative;
   overflow: hidden;
   padding: 80px 0 60px;

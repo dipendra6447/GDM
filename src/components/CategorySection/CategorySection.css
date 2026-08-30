@@ -1,10 +1,11 @@
 /* ============================================
-   CATEGORY SECTION — Pixel-Perfect Redesign
+   CATEGORY SECTION — LUXURY DARK EDITION
    ============================================ */
 
 .category-section {
   padding: 60px 0 80px;
-  background: #fafbfd; /* Match Home view canvas background */
+  background: transparent;
+  position: relative;
 }
 
 /* Header block */
@@ -25,13 +26,15 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #f3f0ff; /* Lavender */
-  color: #4f1eeb; /* Primary purple */
+  background: rgba(147, 51, 234, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(192, 132, 252, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(147, 51, 234, 0.25);
 }
 
 .cat-title-text-stack {
@@ -42,14 +45,14 @@
 .cat-section-title {
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0;
   letter-spacing: -0.02em;
 }
 
 .cat-section-subtitle {
   font-size: 14.5px;
-  color: #71717a;
+  color: #94A3B8;
   margin: 4px 0 0 0;
   font-weight: 500;
 }
@@ -61,14 +64,14 @@
   gap: 8px;
   padding: 9px 22px;
   border-radius: 9999px;
-  border: 1px solid rgba(79, 30, 235, 0.2);
-  background: #ffffff;
-  color: #4f1eeb;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: #60A5FA;
   font-size: 13.5px;
   font-weight: 700;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(79, 30, 235, 0.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .btn-view-all-industries .arrow-right {
@@ -77,10 +80,10 @@
 }
 
 .btn-view-all-industries:hover {
-  background: #f3f0ff;
-  border-color: #4f1eeb;
-  color: #4f1eeb;
-  box-shadow: 0 4px 12px rgba(79, 30, 235, 0.08);
+  background: rgba(37, 99, 235, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #93C5FD;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
 }
 
 .btn-view-all-industries:hover .arrow-right {
@@ -108,10 +111,10 @@
 
 /* Individual Category Card */
 .cat-card {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: #0E121E;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 20px 20px 56px 20px; /* Leave space at bottom for sparkline */
+  padding: 20px 20px 56px 20px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -124,14 +127,14 @@
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
 }
 
 .cat-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(79, 30, 235, 0.25);
-  border-color: var(--cat-accent);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.04), 0 4px 10px rgba(0, 0, 0, 0.02);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.2);
 }
 
 /* Header row (Icon left, title stack right) */
@@ -145,8 +148,8 @@
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: var(--cat-icon-bg);
-  border: 1px solid var(--cat-icon-border);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,7 +158,7 @@
 }
 
 .cat-card:hover .cat-card-img-wrap {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .cat-card-img-wrap img {
@@ -173,7 +176,7 @@
 .cat-card-label {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0 0 2px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -182,7 +185,7 @@
 
 .cat-card-jobs {
   font-size: 12.5px;
-  color: #71717a;
+  color: #94A3B8;
   font-weight: 600;
 }
 
@@ -196,7 +199,7 @@
 .cat-card-trend {
   font-size: 12px;
   font-weight: 700;
-  color: #10b981; /* Green color match */
+  color: #34D399;
   display: inline-flex;
   align-items: center;
 }
@@ -209,12 +212,13 @@
 /* Absolute sparkline wave at the bottom */
 .cat-card-sparkline {
   position: absolute;
-  bottom: 6px; /* Raised slightly from 0 to 6px to avoid rounded corner clipping */
+  bottom: 6px;
   left: 0;
   right: 0;
   width: 100%;
-  height: 42px; /* Increased height to make wave fully visible */
+  height: 42px;
   pointer-events: none;
+  opacity: 0.8;
 }
 
 /* Responsive Grid Adaptors */
@@ -273,7 +277,7 @@
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #111422 25%, #1A2035 50%, #111422 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 12px;

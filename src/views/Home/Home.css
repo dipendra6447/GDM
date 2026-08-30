@@ -1,4 +1,11 @@
-/* Home page wrapper */
+/* ============================================
+   HOME VIEW — LUXURY DARK SAAS THEME
+   ============================================ */
+
+body, html {
+  background-color: #08090E !important;
+  color: #FFFFFF;
+}
 
 /* ── Fixed header: banner + navbar locked at top ── */
 .sticky-header {
@@ -10,7 +17,48 @@
   width: 100%;
 }
 
+/* ── Main Home Wrapper ── */
+main {
+  background-color: #08090E;
+  position: relative;
+  overflow-x: hidden;
+  color: #FFFFFF;
+  min-height: 100vh;
+}
+
+/* Ambient background glow accents */
+main::before {
+  content: '';
+  position: absolute;
+  top: 200px;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(36, 84, 255, 0.08) 0%, rgba(212, 175, 55, 0.04) 40%, transparent 70%);
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+main::after {
+  content: '';
+  position: absolute;
+  top: 1200px;
+  right: -200px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(123, 62, 255, 0.07) 0%, rgba(36, 84, 255, 0.04) 50%, transparent 70%);
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ── Sticky Sidebar Layout for Logged In State ── */
+.home-split-layout {
+  position: relative;
+  z-index: 1;
+}
+
 .home-layout-row {
   display: flex;
   flex-direction: column;
