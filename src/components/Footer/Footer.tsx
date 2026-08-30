@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Logo from '../Logo/Logo';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -42,13 +43,8 @@ const Footer: React.FC = () => {
         <div className="row g-4">
           {/* Brand & Socials Column */}
           <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
-            <div className="footer-brand-logo">
-              <div className="footer-brand-icon">
-                <i className="bi bi-briefcase-fill"></i>
-              </div>
-              <div className="footer-brand-name">
-                Go<span>DiscoverMe</span>
-              </div>
+            <div className="footer-brand-logo mb-3">
+              <Logo size={36} />
             </div>
             <p className="footer-col-brand-text">
               The all-in-one discovery platform connecting people, businesses, and opportunities.
