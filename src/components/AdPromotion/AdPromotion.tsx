@@ -48,7 +48,7 @@ const AdPromotion: React.FC<AdPromotionProps> = ({
   onBannerClose,
 }) => {
   const router = useRouter();
-  const [floatingVisible, setFloatingVisible] = useState(true);
+  const [floatingVisible, setFloatingVisible] = useState(false);
   const [adIndex, setAdIndex] = useState(0);
 
   // Auto-rotate floating ads

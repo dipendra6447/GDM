@@ -1,6 +1,7 @@
 .business-register-page {
   min-height: 100vh;
-  background: var(--bg-secondary, #f8fafc);
+  background: var(--bg-black, #08090E);
+  color: #FFFFFF;
   padding: 80px 0 0;
   font-family: 'Inter', sans-serif;
 }
@@ -13,9 +14,10 @@
 }
 
 .business-register-container {
-  background: white;
+  background: var(--bg-card-dark, #0F121E);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 800px;
   overflow: hidden;
@@ -65,18 +67,18 @@
 .form-group label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #334155;
+  color: #FFFFFF;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   padding: 0.75rem 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   font-size: 1rem;
-  color: #1e293b;
-  background: #f8fafc;
+  color: #FFFFFF;
+  background: var(--bg-dark-2, #111422);
   transition: all 0.2s ease;
   font-family: inherit;
 }
@@ -86,8 +88,8 @@
 .form-group textarea:focus {
   outline: none;
   border-color: #6366f1;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  background: var(--bg-dark-2, #111422);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
 }
 
 .form-group textarea {
@@ -101,7 +103,7 @@
   justify-content: flex-end;
   margin-top: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .btn-register {

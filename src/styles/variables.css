@@ -6,9 +6,9 @@
   --color-primary: #2454FF;
   --color-primary-dark: #1448FF;
   --color-purple: #7B3EFF;
-  --color-navy: #0B1739;
-  --color-footer-navy: #071B6B;
-  --color-search-bg: #0A2C87;
+  --color-navy: #FFFFFF;
+  --color-footer-navy: #08090E;
+  --color-search-bg: #0C0E17;
   --color-success: #14B87A;
 
   /* Luxury Gold & Dark Theme Tokens */
@@ -37,7 +37,7 @@
   --color-border: rgba(255, 255, 255, 0.08);
   --color-text-gray: #94A3B8;
   --color-text-dark: #FFFFFF;
-  --color-white: #ffffff;
+  --color-white: #0F121E;
 
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #2454FF, #4F46E5);

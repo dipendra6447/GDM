@@ -121,7 +121,7 @@
 
 /* ── Payment Section ── */
 .payment-section {
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   padding: 36px;
@@ -301,7 +301,7 @@
 }
 
 .payment-form-input {
-  background: #ffffff;
+  background: var(--bg-dark-2, #111422);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 14px 16px;
@@ -314,7 +314,7 @@
 }
 
 .payment-form-input::placeholder {
-  color: #aab1bc;
+  color: #64748B;
 }
 
 .payment-form-input:focus {
@@ -323,7 +323,7 @@
 }
 
 .payment-form-select {
-  background: #ffffff;
+  background: var(--bg-dark-2, #111422);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 14px 16px;
@@ -347,7 +347,7 @@
 }
 
 .payment-form-select option {
-  background: #ffffff;
+  background: #111422;
   color: var(--color-navy);
 }
 
@@ -364,7 +364,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  background: #ffffff;
+  background: var(--bg-dark-2, #111422);
   border: 2px solid var(--color-border);
   border-radius: 14px;
   padding: 16px 12px 14px;
@@ -459,7 +459,7 @@
 }
 
 .bank-option {
-  background: #ffffff;
+  background: var(--bg-dark-2, #111422);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 12px;
@@ -498,7 +498,7 @@
 }
 
 .emi-tenure-option {
-  background: #ffffff;
+  background: var(--bg-dark-2, #111422);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 14px;
@@ -544,7 +544,7 @@
 
 /* ── Order Summary Sidebar ── */
 .checkout-summary {
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   padding: 32px;
@@ -781,7 +781,7 @@
 }
 
 .success-modal {
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
   border: 1px solid var(--color-border);
   border-radius: 32px;
   padding: 48px;

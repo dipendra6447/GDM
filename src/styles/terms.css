@@ -3,7 +3,8 @@
    ============================================ */
 
 .terms-page {
-  background: var(--color-bg, #f5f7fb);
+  background: var(--bg-black, #08090E);
+  color: #FFFFFF;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
   padding-top: 80px;
@@ -107,8 +108,8 @@
 }
 
 .terms-toc-inner {
-  background: #ffffff;
-  border: 1px solid var(--color-border, #e8eaf0);
+  background: var(--bg-card-dark, #0F121E);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(36, 84, 255, 0.06);
@@ -158,8 +159,8 @@
 }
 
 .terms-section {
-  background: #ffffff;
-  border: 1px solid var(--color-border, #e8eaf0);
+  background: var(--bg-card-dark, #0F121E);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 20px;
   padding: 36px;
   margin-bottom: 20px;
@@ -195,7 +196,7 @@
 
 .terms-section p {
   font-size: 15px;
-  color: #4b5563;
+  color: #94A3B8;
   line-height: 1.75;
   margin-bottom: 14px;
 }
@@ -225,7 +226,7 @@
   align-items: flex-start;
   gap: 10px;
   font-size: 15px;
-  color: #4b5563;
+  color: #94A3B8;
   line-height: 1.6;
   padding-left: 0;
 }
@@ -322,7 +323,7 @@
 
 .terms-table tbody td {
   padding: 14px 20px;
-  color: #374151;
+  color: #94A3B8;
   vertical-align: top;
 }
 
@@ -340,8 +341,8 @@
 }
 
 .terms-contact-card {
-  background: var(--color-bg, #f5f7fb);
-  border: 1px solid var(--color-border, #e8eaf0);
+  background: var(--bg-dark-2, #111422);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 16px;
   padding: 20px;
   text-align: center;

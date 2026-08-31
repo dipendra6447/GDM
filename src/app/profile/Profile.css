@@ -1,11 +1,12 @@
 /* ============================================
-   PROFILE PAGE — Website Light Theme
+   PROFILE PAGE — Website Dark Theme
    Synchronized with JobNest design system
    ============================================ */
 
 .profile-page {
   min-height: 100vh;
-  background: var(--color-bg, #F8FAFF);
+  background: var(--bg-black, #08090E);
+  color: var(--text-dark-title, #ffffff);
   padding-top: var(--navbar-height, 80px);
 }
 
@@ -17,7 +18,7 @@
   left: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(36,84,255,0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(36,84,255,0.08) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -29,7 +30,7 @@
   right: -200px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(123,62,255,0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -44,7 +45,7 @@
 .profile-page-header {
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-border, #EDF0F7);
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
 }
 
 .profile-breadcrumb {
@@ -52,30 +53,30 @@
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  color: var(--color-text-gray, #6B7280);
+  color: var(--text-dark-body, #94A3B8);
   margin-bottom: 0.75rem;
 }
 
 .profile-breadcrumb a {
-  color: var(--color-text-gray, #6B7280);
+  color: var(--text-dark-body, #94A3B8);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.profile-breadcrumb a:hover { color: var(--color-primary, #2454FF); }
+.profile-breadcrumb a:hover { color: var(--gold, #D4AF37); }
 .profile-breadcrumb i { font-size: 0.65rem; }
 
 .profile-page-title {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 800;
-  color: var(--color-navy, #0B1739);
+  color: var(--text-dark-title, #FFFFFF);
   margin: 0 0 0.35rem;
   letter-spacing: -0.03em;
 }
 
 .profile-page-subtitle {
   font-size: 0.9rem;
-  color: var(--color-text-gray, #6B7280);
+  color: var(--text-dark-body, #94A3B8);
   margin: 0;
 }
 
@@ -95,13 +96,13 @@
 
 /* ── Left Sidebar Card ── */
 .profile-sidebar-card {
-  background: var(--color-white, #ffffff);
-  border: 1px solid var(--color-border, #EDF0F7);
+  background: var(--bg-card-dark, #0F121E);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 20px;
   padding: 2rem 1.5rem;
   position: sticky;
   top: calc(var(--navbar-height, 80px) + 2rem);
-  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
 }
 
 .profile-sidebar-avatar-section {
@@ -110,20 +111,20 @@
   align-items: center;
   text-align: center;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-border, #EDF0F7);
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   margin-bottom: 1.5rem;
 }
 
 .profile-sidebar-name {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-navy, #0B1739);
+  color: #FFFFFF;
   margin: 1rem 0 0.25rem;
 }
 
 .profile-sidebar-email {
   font-size: 0.8rem;
-  color: var(--color-text-gray, #6B7280);
+  color: #94A3B8;
   margin: 0;
 }
 
@@ -284,14 +285,14 @@
   gap: 14px;
   padding: 16px 20px;
   border-radius: 16px;
-  background: var(--color-white, #ffffff);
-  border: 1px solid var(--color-border, #EDF0F7);
+  background: var(--bg-dark-2, #111422);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   cursor: pointer;
   transition: all 0.25s ease;
   text-align: left;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
 .profile-role-tab-card::before {
@@ -307,10 +308,10 @@
 }
 
 .profile-role-tab-card:hover {
-  background: var(--color-white, #ffffff);
+  background: var(--bg-dark-3, #171B2E);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
-  border-color: rgba(36, 84, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border-color: rgba(212, 175, 55, 0.3);
 }
 
 /* Icon wrap */
@@ -338,14 +339,14 @@
 .profile-role-tab-label {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--color-navy, #0B1739);
+  color: #FFFFFF;
   transition: color 0.25s;
   display: block;
 }
 
 .profile-role-tab-desc {
   font-size: 0.74rem;
-  color: var(--color-text-gray, #6B7280);
+  color: #94A3B8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -367,80 +368,80 @@
 
 /* ── Job Seeker — Blue ── */
 .role-tab-seeker .profile-role-tab-icon-wrap {
-  background: rgba(36, 84, 255, 0.08);
-  color: var(--color-primary, #2454FF);
+  background: rgba(36, 84, 255, 0.12);
+  color: #60a5fa;
 }
 .role-tab-seeker:hover .profile-role-tab-icon-wrap {
-  background: rgba(36, 84, 255, 0.14);
+  background: rgba(36, 84, 255, 0.2);
 }
 .role-tab-seeker::before { background: var(--color-primary, #2454FF); }
 .role-tab-seeker.active {
-  background: var(--color-white, #ffffff);
-  border-color: rgba(36, 84, 255, 0.3);
-  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
+  background: var(--bg-dark-3, #171B2E);
+  border-color: rgba(36, 84, 255, 0.4);
+  box-shadow: 0 8px 24px rgba(36, 84, 255, 0.2);
 }
 .role-tab-seeker.active::before { opacity: 1; }
-.role-tab-seeker.active .profile-role-tab-label { color: var(--color-primary, #2454FF); }
+.role-tab-seeker.active .profile-role-tab-label { color: #60a5fa; }
 .role-tab-seeker.active .profile-role-tab-icon-wrap {
-  background: rgba(36, 84, 255, 0.12);
-  box-shadow: 0 0 12px rgba(36, 84, 255, 0.15);
+  background: rgba(36, 84, 255, 0.2);
+  box-shadow: 0 0 12px rgba(36, 84, 255, 0.25);
 }
 .role-tab-seeker .profile-role-tab-active-badge {
-  background: rgba(36, 84, 255, 0.08);
-  color: var(--color-primary, #2454FF);
-  border: 1px solid rgba(36, 84, 255, 0.15);
+  background: rgba(36, 84, 255, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(36, 84, 255, 0.3);
 }
 
 /* ── Employer — Emerald ── */
 .role-tab-employer .profile-role-tab-icon-wrap {
-  background: rgba(20, 184, 166, 0.08);
-  color: #0d9488;
+  background: rgba(20, 184, 166, 0.12);
+  color: #2dd4bf;
 }
 .role-tab-employer:hover .profile-role-tab-icon-wrap {
-  background: rgba(20, 184, 166, 0.14);
+  background: rgba(20, 184, 166, 0.2);
 }
-.role-tab-employer::before { background: #0d9488; }
+.role-tab-employer::before { background: #2dd4bf; }
 .role-tab-employer.active {
-  background: var(--color-white, #ffffff);
-  border-color: rgba(20, 184, 166, 0.3);
-  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
+  background: var(--bg-dark-3, #171B2E);
+  border-color: rgba(20, 184, 166, 0.4);
+  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.2);
 }
 .role-tab-employer.active::before { opacity: 1; }
-.role-tab-employer.active .profile-role-tab-label { color: #0d9488; }
+.role-tab-employer.active .profile-role-tab-label { color: #2dd4bf; }
 .role-tab-employer.active .profile-role-tab-icon-wrap {
-  background: rgba(20, 184, 166, 0.12);
-  box-shadow: 0 0 12px rgba(20, 184, 166, 0.15);
+  background: rgba(20, 184, 166, 0.2);
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.25);
 }
 .role-tab-employer .profile-role-tab-active-badge {
-  background: rgba(20, 184, 166, 0.08);
-  color: #0d9488;
-  border: 1px solid rgba(20, 184, 166, 0.15);
+  background: rgba(20, 184, 166, 0.15);
+  color: #2dd4bf;
+  border: 1px solid rgba(20, 184, 166, 0.3);
 }
 
 /* ── Business Promoter — Amber ── */
 .role-tab-promoter .profile-role-tab-icon-wrap {
-  background: rgba(245, 158, 11, 0.08);
-  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
 }
 .role-tab-promoter:hover .profile-role-tab-icon-wrap {
-  background: rgba(245, 158, 11, 0.14);
+  background: rgba(245, 158, 11, 0.2);
 }
-.role-tab-promoter::before { background: #b45309; }
+.role-tab-promoter::before { background: #fbbf24; }
 .role-tab-promoter.active {
-  background: var(--color-white, #ffffff);
-  border-color: rgba(245, 158, 11, 0.3);
-  box-shadow: var(--shadow-md, 0 12px 30px rgba(0, 0, 0, 0.06));
+  background: var(--bg-dark-3, #171B2E);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
 }
 .role-tab-promoter.active::before { opacity: 1; }
-.role-tab-promoter.active .profile-role-tab-label { color: #b45309; }
+.role-tab-promoter.active .profile-role-tab-label { color: #fbbf24; }
 .role-tab-promoter.active .profile-role-tab-icon-wrap {
-  background: rgba(245, 158, 11, 0.12);
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+  background: rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
 }
 .role-tab-promoter .profile-role-tab-active-badge {
-  background: rgba(245, 158, 11, 0.08);
-  color: #b45309;
-  border: 1px solid rgba(245, 158, 11, 0.15);
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -450,16 +451,16 @@
 
 /* ── Main Form Card ── */
 .profile-main-card {
-  background: var(--color-white, #ffffff);
-  border: 1px solid var(--color-border, #EDF0F7);
+  background: var(--bg-card-dark, #0F121E);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
 }
 
 .profile-main-card-header {
   padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--color-border, #EDF0F7);
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -468,7 +469,7 @@
 .profile-main-card-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--color-navy, #0B1739);
+  color: #FFFFFF;
   margin: 0;
   display: flex;
   align-items: center;
@@ -477,7 +478,7 @@
 
 .profile-main-card-title i {
   font-size: 1.1rem;
-  color: var(--color-primary, #2454FF);
+  color: var(--gold, #D4AF37);
 }
 
 .profile-main-card-body {
@@ -495,7 +496,7 @@
 .profile-section-divider-label {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--color-navy, #0B1739);
+  color: #FFFFFF;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   white-space: nowrap;
@@ -504,7 +505,7 @@
 .profile-section-divider-line {
   flex: 1;
   height: 1px;
-  background: var(--color-border, #EDF0F7);
+  background: var(--border-dark, rgba(255, 255, 255, 0.08));
 }
 
 .profile-section-divider-btn {
@@ -513,9 +514,9 @@
   gap: 5px;
   padding: 5px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(36, 84, 255, 0.2);
-  background: rgba(36, 84, 255, 0.05);
-  color: var(--color-primary, #2454FF);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--gold, #D4AF37);
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -524,8 +525,8 @@
 }
 
 .profile-section-divider-btn:hover {
-  background: rgba(36, 84, 255, 0.1);
-  border-color: var(--color-primary, #2454FF);
+  background: rgba(212, 175, 55, 0.15);
+  border-color: var(--gold, #D4AF37);
 }
 
 /* ── Form Fields ── */
@@ -537,7 +538,7 @@
   display: block;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-navy, #0B1739);
+  color: #FFFFFF;
   margin-bottom: 0.5rem;
   letter-spacing: 0.02em;
 }
@@ -546,9 +547,9 @@
 .profile-select,
 .profile-textarea {
   width: 100%;
-  background: var(--color-white, #ffffff);
-  border: 1px solid var(--color-border, #EDF0F7);
-  color: var(--color-text-dark, #1a1a2e);
+  background: var(--bg-dark-2, #111422);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
   padding: 11px 15px;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -558,7 +559,7 @@
 
 .profile-input::placeholder,
 .profile-textarea::placeholder {
-  color: #94a3b8;
+  color: #64748B;
 }
 
 .profile-textarea {
@@ -569,20 +570,20 @@
 .profile-input:focus,
 .profile-select:focus,
 .profile-textarea:focus {
-  border-color: var(--color-primary, #2454FF);
-  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.1);
-  background: var(--color-white, #ffffff);
+  border-color: var(--gold, #D4AF37);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+  background: var(--bg-dark-2, #111422);
 }
 
 .profile-select option {
-  background: var(--color-white, #ffffff);
-  color: var(--color-text-dark, #1a1a2e);
+  background: #111422;
+  color: #FFFFFF;
 }
 
 /* ── Item Card (experience / education entries) ── */
 .profile-item-card {
-  background: rgba(248, 250, 255, 0.6);
-  border: 1px solid var(--color-border, #EDF0F7);
+  background: var(--bg-dark-2, #111422);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 14px;
   padding: 1.25rem;
   margin-bottom: 1rem;
@@ -590,7 +591,7 @@
 }
 
 .profile-item-card:hover {
-  border-color: rgba(36, 84, 255, 0.3);
+  border-color: rgba(212, 175, 55, 0.3);
 }
 
 .profile-item-card-header {
@@ -603,7 +604,7 @@
 .profile-item-card-title {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--color-navy, #0B1739);
+  color: #FFFFFF;
   margin: 0;
 }
 
@@ -614,8 +615,8 @@
   padding: 4px 10px;
   border-radius: 7px;
   border: 1px solid rgba(239, 68, 68, 0.3);
-  background: rgba(239, 68, 68, 0.05);
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
@@ -623,15 +624,15 @@
 }
 
 .profile-item-remove-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.2);
   border-color: #ef4444;
 }
 
 /* ── File Upload Zone ── */
 .profile-file-upload {
   position: relative;
-  background: rgba(248, 250, 255, 0.6);
-  border: 2px dashed var(--color-border, #EDF0F7);
+  background: var(--bg-dark-2, #111422);
+  border: 2px dashed rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   padding: 1.5rem;
   text-align: center;
@@ -640,8 +641,8 @@
 }
 
 .profile-file-upload:hover {
-  border-color: var(--color-primary, #2454FF);
-  background: rgba(36, 84, 255, 0.04);
+  border-color: var(--gold, #D4AF37);
+  background: rgba(212, 175, 55, 0.04);
 }
 
 .profile-file-upload input[type="file"] {
