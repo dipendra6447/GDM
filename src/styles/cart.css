@@ -143,7 +143,7 @@
 
 /* ── Cart Item Card ── */
 .cart-item-card {
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   padding: 32px;
@@ -382,7 +382,7 @@
 
 /* ── Order Summary Sidebar ── */
 .cart-summary {
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   padding: 32px;

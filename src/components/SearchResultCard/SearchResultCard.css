@@ -3,7 +3,7 @@
    ============================================ */
 
 .sr-card {
-  background: #fff;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   padding: 20px;
@@ -455,9 +455,9 @@
 }
 
 .sr-card-active {
-  border-color: #0B1739 !important; /* Premium dark navy/black border */
+  border-color: var(--gold, #D4AF37) !important;
   border-width: 1.5px !important;
-  box-shadow: 0 4px 16px rgba(11, 23, 57, 0.08) !important;
-  background-color: #fff !important;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.15) !important;
+  background-color: var(--bg-card-dark, #0F121E) !important;
 }
 
