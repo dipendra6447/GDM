@@ -7,7 +7,7 @@
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   box-shadow: var(--shadow-card);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--gray-200);
   position: relative;
   overflow: hidden;
   transition: all var(--transition-base);
@@ -30,10 +30,21 @@
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
-.stat-card.blue::before { background: var(--gradient-blue); }
-.stat-card.purple::before { background: var(--gradient-purple); }
-.stat-card.cyan::before { background: var(--gradient-cyan); }
-.stat-card.green::before { background: var(--gradient-green); }
+.stat-card.blue::before {
+  background: var(--gradient-blue);
+}
+
+.stat-card.purple::before {
+  background: var(--gradient-purple);
+}
+
+.stat-card.cyan::before {
+  background: var(--gradient-cyan);
+}
+
+.stat-card.green::before {
+  background: var(--gradient-green);
+}
 
 /* Background glow */
 .stat-card::after {
@@ -52,10 +63,21 @@
   opacity: 0.1;
 }
 
-.stat-card.blue::after { background: var(--primary-500); }
-.stat-card.purple::after { background: var(--secondary-500); }
-.stat-card.cyan::after { background: var(--accent-500); }
-.stat-card.green::after { background: var(--success-500); }
+.stat-card.blue::after {
+  background: var(--primary-500);
+}
+
+.stat-card.purple::after {
+  background: var(--secondary-500);
+}
+
+.stat-card.cyan::after {
+  background: var(--accent-500);
+}
+
+.stat-card.green::after {
+  background: var(--success-500);
+}
 
 /* Card content layout */
 .stat-card-header {
@@ -77,10 +99,21 @@
   flex-shrink: 0;
 }
 
-.stat-card-icon.blue { background: var(--gradient-blue); }
-.stat-card-icon.purple { background: var(--gradient-purple); }
-.stat-card-icon.cyan { background: var(--gradient-cyan); }
-.stat-card-icon.green { background: var(--gradient-green); }
+.stat-card-icon.blue {
+  background: var(--gradient-blue);
+}
+
+.stat-card-icon.purple {
+  background: var(--gradient-purple);
+}
+
+.stat-card-icon.cyan {
+  background: var(--gradient-cyan);
+}
+
+.stat-card-icon.green {
+  background: var(--gradient-green);
+}
 
 .stat-card-change {
   font-size: var(--font-size-xs);
@@ -131,7 +164,18 @@
   transition: width 1s ease-out;
 }
 
-.stat-card-progress-bar.blue { background: var(--gradient-blue); }
-.stat-card-progress-bar.purple { background: var(--gradient-purple); }
-.stat-card-progress-bar.cyan { background: var(--gradient-cyan); }
-.stat-card-progress-bar.green { background: var(--gradient-green); }
+.stat-card-progress-bar.blue {
+  background: var(--gradient-blue);
+}
+
+.stat-card-progress-bar.purple {
+  background: var(--gradient-purple);
+}
+
+.stat-card-progress-bar.cyan {
+  background: var(--gradient-cyan);
+}
+
+.stat-card-progress-bar.green {
+  background: var(--gradient-green);
+}

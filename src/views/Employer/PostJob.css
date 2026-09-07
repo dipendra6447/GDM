@@ -69,16 +69,16 @@
 
 /* ── Form Card ── */
 .pj-form-card {
-  background: white;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-card);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
 .pj-form-card-header {
   padding: 24px 28px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   display: flex;
   align-items: center;
   gap: 12px;
@@ -142,9 +142,9 @@
   padding: 12px 16px;
   font-size: 15px;
   font-family: var(--font-family);
-  color: var(--color-navy);
-  background: #f8fafc;
-  border: 1.5px solid var(--color-border);
+  color: var(--text-dark-title, #FFFFFF);
+  background: var(--bg-dark-2, #111422);
+  border: 1.5px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-sm);
   transition: var(--transition-fast);
   outline: none;
@@ -153,13 +153,13 @@
 .pj-input:focus,
 .pj-textarea:focus {
   border-color: var(--color-primary);
-  background: white;
-  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.08);
+  background: var(--bg-card-dark-hover, #15192A);
+  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.15);
 }
 
 .pj-input::placeholder,
 .pj-textarea::placeholder {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .pj-form-row {
@@ -180,9 +180,9 @@
   padding: 12px 16px;
   font-size: 15px;
   font-family: var(--font-family);
-  color: var(--color-navy);
-  background: #f8fafc;
-  border: 1.5px solid var(--color-border);
+  color: var(--text-dark-title, #FFFFFF);
+  background: var(--bg-dark-2, #111422);
+  border: 1.5px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-sm);
   transition: var(--transition-fast);
   outline: none;
@@ -194,10 +194,15 @@
   background-size: 10px auto;
 }
 
+.pj-select option {
+  background-color: #111422;
+  color: #FFFFFF;
+}
+
 .pj-select:focus {
   border-color: var(--color-primary);
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.08);
+  background-color: var(--bg-card-dark-hover, #15192A);
+  box-shadow: 0 0 0 3px rgba(36, 84, 255, 0.15);
 }
 
 .pj-textarea {
@@ -216,9 +221,9 @@
   font-size: 15px;
   border-bottom-left-radius: var(--radius-sm);
   border-bottom-right-radius: var(--radius-sm);
-  border-color: var(--color-border);
+  border-color: var(--border-dark, rgba(255, 255, 255, 0.08));
   min-height: 200px;
-  background: #f8fafc;
+  background: var(--bg-dark-2, #111422);
   transition: var(--transition-fast);
 }
 
@@ -226,23 +231,23 @@
   font-family: var(--font-family);
   border-top-left-radius: var(--radius-sm);
   border-top-right-radius: var(--radius-sm);
-  border-color: var(--color-border);
-  background: white;
+  border-color: var(--border-dark, rgba(255, 255, 255, 0.08));
+  background: var(--bg-dark-3, #171B2E);
 }
 
 .pj-quill-wrapper .ql-editor {
   min-height: 200px;
-  color: var(--color-navy);
+  color: var(--text-dark-title, #FFFFFF);
 }
 
 .pj-quill-wrapper .ql-editor.ql-blank::before {
-  color: #94a3b8;
+  color: #64748b;
   font-style: normal;
 }
 
 .pj-quill-wrapper:focus-within .ql-container {
   border-color: var(--color-primary);
-  background: white;
+  background: var(--bg-card-dark-hover, #15192A);
 }
 
 .pj-quill-wrapper:focus-within .ql-toolbar {
@@ -325,26 +330,26 @@
   font-size: 15px;
   font-weight: var(--font-weight-semibold);
   font-family: var(--font-family);
-  color: var(--color-text-gray);
-  background: white;
-  border: 1.5px solid var(--color-border);
+  color: var(--text-dark-title, #FFFFFF);
+  background: var(--bg-dark-2, #111422);
+  border: 1.5px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-button);
   cursor: pointer;
   transition: var(--transition-base);
 }
 
 .pj-btn-cancel:hover {
-  border-color: #94a3b8;
-  color: var(--color-navy);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
 }
 
 /* ── Error Alert ── */
 .pj-alert-error {
   padding: 14px 18px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   border-radius: var(--radius-sm);
-  color: #dc2626;
+  color: #ef4444;
   font-size: 14px;
   margin-bottom: 20px;
   display: flex;
@@ -359,9 +364,9 @@
 
 /* ── Sidebar Tips Card ── */
 .pj-sidebar-card {
-  background: white;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-card);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   box-shadow: var(--shadow-sm);
   padding: 24px;
   position: sticky;
@@ -406,7 +411,7 @@
 
 .pj-tip-text {
   font-size: 13px;
-  color: #475569;
+  color: var(--text-dark-body, #94A3B8);
   line-height: 1.5;
 }
 
@@ -444,9 +449,9 @@
 
 /* ── Success State ── */
 .pj-success-card {
-  background: white;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-card);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   box-shadow: var(--shadow-md);
   padding: 48px;
   text-align: center;
@@ -469,8 +474,13 @@
 }
 
 @keyframes pj-success-pop {
-  0% { transform: scale(0); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .pj-success-title {
@@ -526,8 +536,8 @@
   font-weight: var(--font-weight-semibold);
   font-family: var(--font-family);
   color: var(--color-primary);
-  background: white;
-  border: 1.5px solid var(--color-primary);
+  background: var(--bg-dark-2, #111422);
+  border: 1.5px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-button);
   cursor: pointer;
   text-decoration: none;
@@ -535,7 +545,7 @@
 }
 
 .pj-btn-view-jobs:hover {
-  background: rgba(36, 84, 255, 0.05);
+  background: rgba(36, 84, 255, 0.1);
   color: var(--color-primary);
 }
 
@@ -559,7 +569,9 @@
 }
 
 @keyframes pj-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .pj-loading-text {
@@ -627,9 +639,9 @@
 }
 
 .pj-manage-card {
-  background: white;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-card);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   display: flex;
@@ -638,7 +650,7 @@
 
 .pj-manage-card-header {
   padding: 24px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -660,7 +672,7 @@
 
 .pj-manage-card-stats {
   padding: 16px 24px;
-  background: #f8fafc;
+  background: var(--bg-dark-2, #111422);
   display: flex;
   align-items: center;
   gap: 20px;
@@ -669,7 +681,7 @@
 
 .pj-stat {
   font-size: 13px;
-  color: #475569;
+  color: var(--text-dark-body, #94A3B8);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -698,12 +710,12 @@
 }
 
 .pj-status-badge.active {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.15);
   color: #10b981;
 }
 
 .pj-status-badge.inactive {
-  background: rgba(100, 116, 139, 0.1);
+  background: rgba(100, 116, 139, 0.15);
   color: #64748b;
 }
 
@@ -727,7 +739,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #cbd5e1;
+  background-color: #334155;
   transition: 0.3s;
   border-radius: 24px;
 }
@@ -742,18 +754,18 @@
   background-color: white;
   transition: 0.3s;
   border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-input:checked + .pj-slider {
+input:checked+.pj-slider {
   background-color: #10b981;
 }
 
-input:focus + .pj-slider {
+input:focus+.pj-slider {
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
-input:checked + .pj-slider:before {
+input:checked+.pj-slider:before {
   transform: translateX(20px);
 }
 
@@ -761,16 +773,16 @@ input:checked + .pj-slider:before {
 .pj-empty-state {
   padding: 64px 24px;
   text-align: center;
-  background: white;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-card);
-  border: 1px dashed var(--color-border);
+  border: 1px dashed var(--border-dark, rgba(255, 255, 255, 0.08));
 }
 
 .pj-empty-icon {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: var(--bg-dark-2, #111422);
   color: #94a3b8;
   font-size: 36px;
   display: flex;
@@ -803,4 +815,3 @@ input:checked + .pj-slider:before {
   padding: 40px;
   justify-content: center;
 }
-

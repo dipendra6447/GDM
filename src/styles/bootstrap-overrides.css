@@ -30,7 +30,9 @@
 
 /* Card overrides */
 .app:not(:has(.admin-layout)) .card {
-  border: 1px solid var(--color-border);
+  background-color: var(--bg-card-dark, #0F121E) !important;
+  color: var(--text-dark-title, #FFFFFF);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-md);
 }
@@ -42,32 +44,97 @@
 
 /* Form overrides */
 .app:not(:has(.admin-layout)) .form-control {
+  background-color: var(--bg-dark-2, #111422) !important;
+  color: var(--text-dark-title, #FFFFFF) !important;
   border-radius: var(--radius-input);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
   padding: 12px 20px;
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   transition: var(--transition-base);
 }
 
+.app:not(:has(.admin-layout)) .form-control::placeholder {
+  color: var(--text-dark-muted, #64748B) !important;
+}
+
 .app:not(:has(.admin-layout)) .form-control:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.1);
+  border-color: var(--color-primary) !important;
+  background-color: var(--bg-card-dark-hover, #15192A) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.15) !important;
   outline: none;
 }
 
 /* Select */
 .app:not(:has(.admin-layout)) .form-select {
+  background-color: var(--bg-dark-2, #111422) !important;
+  color: var(--text-dark-title, #FFFFFF) !important;
   border-radius: var(--radius-input);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
   padding: 12px 20px;
   font-family: var(--font-family);
   transition: var(--transition-base);
 }
 
+.app:not(:has(.admin-layout)) .form-select option {
+  background-color: #111422;
+  color: #FFFFFF;
+}
+
 .app:not(:has(.admin-layout)) .form-select:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.1);
+  border-color: var(--color-primary) !important;
+  background-color: var(--bg-card-dark-hover, #15192A) !important;
+  box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.15) !important;
+}
+
+/* Dropdown menu override */
+.app:not(:has(.admin-layout)) .dropdown-menu {
+  background-color: var(--bg-card-dark, #0F121E) !important;
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
+  color: var(--text-dark-title, #FFFFFF) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 12px;
+}
+
+.app:not(:has(.admin-layout)) .dropdown-item {
+  color: var(--text-dark-body, #94A3B8) !important;
+  transition: var(--transition-fast);
+}
+
+.app:not(:has(.admin-layout)) .dropdown-item:hover,
+.app:not(:has(.admin-layout)) .dropdown-item:focus {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #FFFFFF !important;
+}
+
+/* Modal overrides */
+.app:not(:has(.admin-layout)) .modal-content {
+  background-color: var(--bg-card-dark, #0F121E) !important;
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
+  color: var(--text-dark-title, #FFFFFF) !important;
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8) !important;
+}
+
+.app:not(:has(.admin-layout)) .modal-header {
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
+}
+
+.app:not(:has(.admin-layout)) .modal-footer {
+  border-top: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
+}
+
+/* Table overrides */
+.app:not(:has(.admin-layout)) .table {
+  color: var(--text-dark-body, #94A3B8) !important;
+  border-color: var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
+}
+
+.app:not(:has(.admin-layout)) .table> :not(caption)>*>* {
+  background-color: transparent !important;
+  color: inherit !important;
+  border-bottom-color: var(--border-dark, rgba(255, 255, 255, 0.08)) !important;
 }
 
 /* Nav tabs override */

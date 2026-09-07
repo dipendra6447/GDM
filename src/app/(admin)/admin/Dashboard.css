@@ -23,7 +23,7 @@
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--gray-200);
   padding: var(--space-6);
   transition: box-shadow var(--transition-base);
 }
@@ -178,14 +178,45 @@
   transition: height 0.8s ease;
 }
 
-.chart-bar:nth-child(1) { background: var(--primary-200); height: 40%; }
-.chart-bar:nth-child(2) { background: var(--primary-300); height: 65%; }
-.chart-bar:nth-child(3) { background: var(--primary-400); height: 50%; }
-.chart-bar:nth-child(4) { background: var(--primary-500); height: 85%; }
-.chart-bar:nth-child(5) { background: var(--secondary-400); height: 70%; }
-.chart-bar:nth-child(6) { background: var(--secondary-300); height: 55%; }
-.chart-bar:nth-child(7) { background: var(--accent-400); height: 90%; }
-.chart-bar:nth-child(8) { background: var(--accent-300); height: 60%; }
+.chart-bar:nth-child(1) {
+  background: var(--primary-200);
+  height: 40%;
+}
+
+.chart-bar:nth-child(2) {
+  background: var(--primary-300);
+  height: 65%;
+}
+
+.chart-bar:nth-child(3) {
+  background: var(--primary-400);
+  height: 50%;
+}
+
+.chart-bar:nth-child(4) {
+  background: var(--primary-500);
+  height: 85%;
+}
+
+.chart-bar:nth-child(5) {
+  background: var(--secondary-400);
+  height: 70%;
+}
+
+.chart-bar:nth-child(6) {
+  background: var(--secondary-300);
+  height: 55%;
+}
+
+.chart-bar:nth-child(7) {
+  background: var(--accent-400);
+  height: 90%;
+}
+
+.chart-bar:nth-child(8) {
+  background: var(--accent-300);
+  height: 60%;
+}
 
 /* ---- Stats Mini Cards ---- */
 .stats-mini-grid {

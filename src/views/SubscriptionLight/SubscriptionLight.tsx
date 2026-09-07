@@ -133,11 +133,12 @@ const SubscriptionLight: React.FC = () => {
 
           {availableRoleCount > 1 ? (
             <div
-              className="d-inline-flex p-1.5 rounded-4 shadow-sm"
+              className="d-inline-flex p-1 rounded-4 shadow-lg"
               style={{
-                background: "#FFFFFF",
-                border: "1px solid rgba(36, 84, 255, 0.15)",
-                boxShadow: "0 10px 30px rgba(36, 84, 255, 0.08)"
+                background: "rgba(17, 17, 17, 0.9)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(212, 175, 55, 0.3)",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
               }}
             >
               {hasJobSeekerRole && (
@@ -148,10 +149,10 @@ const SubscriptionLight: React.FC = () => {
                   style={{
                     borderRadius: "12px",
                     fontSize: "0.95rem",
-                    background: selectedRole === "jobseeker" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
-                    color: selectedRole === "jobseeker" ? "#FFFFFF" : "#4B5680",
+                    background: selectedRole === "jobseeker" ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
+                    color: selectedRole === "jobseeker" ? "#000000" : "#FFFFFF",
                     border: "none",
-                    boxShadow: selectedRole === "jobseeker" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
+                    boxShadow: selectedRole === "jobseeker" ? "0 4px 15px rgba(212, 175, 55, 0.3)" : "none",
                     fontWeight: 700
                   }}
                 >
@@ -167,10 +168,10 @@ const SubscriptionLight: React.FC = () => {
                   style={{
                     borderRadius: "12px",
                     fontSize: "0.95rem",
-                    background: selectedRole === "employer" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
-                    color: selectedRole === "employer" ? "#FFFFFF" : "#4B5680",
+                    background: selectedRole === "employer" ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
+                    color: selectedRole === "employer" ? "#000000" : "#FFFFFF",
                     border: "none",
-                    boxShadow: selectedRole === "employer" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
+                    boxShadow: selectedRole === "employer" ? "0 4px 15px rgba(212, 175, 55, 0.3)" : "none",
                     fontWeight: 700
                   }}
                 >
@@ -186,10 +187,10 @@ const SubscriptionLight: React.FC = () => {
                   style={{
                     borderRadius: "12px",
                     fontSize: "0.95rem",
-                    background: selectedRole === "business" ? "linear-gradient(135deg, #2454FF, #4F46E5)" : "transparent",
-                    color: selectedRole === "business" ? "#FFFFFF" : "#4B5680",
+                    background: selectedRole === "business" ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
+                    color: selectedRole === "business" ? "#000000" : "#FFFFFF",
                     border: "none",
-                    boxShadow: selectedRole === "business" ? "0 4px 15px rgba(36, 84, 255, 0.3)" : "none",
+                    boxShadow: selectedRole === "business" ? "0 4px 15px rgba(212, 175, 55, 0.3)" : "none",
                     fontWeight: 700
                   }}
                 >
@@ -202,8 +203,8 @@ const SubscriptionLight: React.FC = () => {
               {selectedRole === "employer"
                 ? '🏢 Membership Plans for Employers'
                 : selectedRole === "business"
-                ? '🚀 Membership Plans for Business Promoters'
-                : '👨‍💻 Membership Plans for Job Seekers'}
+                  ? '🚀 Membership Plans for Business Promoters'
+                  : '👨‍💻 Membership Plans for Job Seekers'}
             </div>
           )}
         </div>
@@ -211,7 +212,6 @@ const SubscriptionLight: React.FC = () => {
         {selectedRole === "jobseeker" && (
           <JobSeekerPlans
             onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
-            isLight
             dbPlans={seekerPlans}
             loading={loading}
           />
@@ -220,7 +220,6 @@ const SubscriptionLight: React.FC = () => {
         {selectedRole === "employer" && (
           <EmployerPlans
             onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
-            isLight
             dbPlans={employerPlans}
             loading={loading}
           />
@@ -229,7 +228,6 @@ const SubscriptionLight: React.FC = () => {
         {selectedRole === "business" && (
           <BusinessPromotionPlans
             onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
-            isLight
             dbPlans={businessPlans}
             loading={loading}
           />
@@ -260,7 +258,6 @@ const SubscriptionLight: React.FC = () => {
               setRoleSwitch((prev) => ({ ...prev, open: false }));
             }}
             onCancel={() => setRoleSwitch((prev) => ({ ...prev, open: false }))}
-            isLight
           />
         )}
       </main>

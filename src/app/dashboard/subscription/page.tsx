@@ -33,8 +33,8 @@ export default function SubscriptionPage() {
       return;
     }
     try {
-      const fetchDashboardUrl = isJobSeeker 
-        ? '/api/dashboard/job-seeker' 
+      const fetchDashboardUrl = isJobSeeker
+        ? '/api/dashboard/job-seeker'
         : null;
 
       const promises: Promise<any>[] = [
@@ -52,7 +52,7 @@ export default function SubscriptionPage() {
       const responses = await Promise.all(promises);
       const subsJson = await responses[0].json();
       const invoicesJson = await responses[1].json();
-      
+
       let dashboardJson: any = { success: false, data: null };
       let jobsJson: any = { success: false, data: [] };
 
@@ -167,24 +167,24 @@ export default function SubscriptionPage() {
         <div className="row g-4 mb-5">
           <div className="col-lg-6">
             {activeSeekerSub ? (
-              <div 
-                className="card text-white p-4" 
-                style={{ 
-                  borderRadius: '16px', 
-                  background: 'linear-gradient(135deg, #111111 0%, #1a1a1a 100%)', 
+              <div
+                className="card text-white p-4"
+                style={{
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #111111 0%, #1a1a1a 100%)',
                   border: '1px solid rgba(212, 175, 55, 0.3)',
                   boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                 }}
               >
                 <div className="d-flex justify-content-between align-items-start mb-3">
                   <div>
-                    <span 
-                      className="badge mb-2" 
-                      style={{ 
-                        backgroundColor: '#D4AF37', 
-                        color: '#0A0A0A', 
+                    <span
+                      className="badge mb-2"
+                      style={{
+                        backgroundColor: '#D4AF37',
+                        color: '#0A0A0A',
                         fontWeight: 600,
-                        boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)' 
+                        boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)'
                       }}
                     >
                       ✨ {activeSeekerSub.planName ? activeSeekerSub.planName.toUpperCase() : 'PREMIUM'} MEMBER
@@ -217,33 +217,33 @@ export default function SubscriptionPage() {
                   </div>
                 </div>
 
-                <Link href="/subscription-light" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
                   Manage Subscription
                 </Link>
               </div>
             ) : (
-              <div className="card p-4" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
+              <div className="card p-4" style={{ borderRadius: '16px', background: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
                 <div className="mb-3">
                   <span className="badge bg-secondary mb-2" style={{ fontWeight: 500 }}>CURRENT PLAN</span>
-                  <h3 className="mb-1" style={{ fontWeight: 700 }}>Basic Seeker Plan</h3>
+                  <h3 className="mb-1 text-white" style={{ fontWeight: 700 }}>Basic Seeker Plan</h3>
                   <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: $0 (Free Tier)</p>
                 </div>
 
-                <hr />
+                <hr style={{ borderColor: 'var(--border-dark, rgba(255, 255, 255, 0.08))' }} />
 
                 <div className="mb-4">
-                  <h5 className="mb-2" style={{ fontSize: '0.95rem', fontWeight: 600 }}>Free Job Applications Remaining</h5>
+                  <h5 className="mb-2 text-white" style={{ fontSize: '0.95rem', fontWeight: 600 }}>Free Job Applications Remaining</h5>
                   <div className="d-flex justify-content-between mb-1" style={{ fontSize: '0.85rem' }}>
                     <span className="text-secondary">Used: {appliedCount} of {freeLimit} applications</span>
-                    <span className="fw-bold">{appliedCount >= freeLimit ? 'Limit reached' : `${freeLimit - appliedCount} left`}</span>
+                    <span className="fw-bold text-white">{appliedCount >= freeLimit ? 'Limit reached' : `${freeLimit - appliedCount} left`}</span>
                   </div>
-                  <div className="progress" style={{ height: '8px', borderRadius: '4px' }}>
-                    <div 
-                      className={`progress-bar ${appliedCount >= freeLimit ? 'bg-danger' : 'bg-primary'}`} 
-                      role="progressbar" 
+                  <div className="progress" style={{ height: '8px', borderRadius: '4px', backgroundColor: '#111422' }}>
+                    <div
+                      className={`progress-bar ${appliedCount >= freeLimit ? 'bg-danger' : 'bg-primary'}`}
+                      role="progressbar"
                       style={{ width: `${Math.min((appliedCount / freeLimit) * 100, 100)}%` }}
-                      aria-valuenow={appliedCount} 
-                      aria-valuemin={0} 
+                      aria-valuenow={appliedCount}
+                      aria-valuemin={0}
                       aria-valuemax={freeLimit}
                     ></div>
                   </div>
@@ -255,7 +255,7 @@ export default function SubscriptionPage() {
                   )}
                 </div>
 
-                <Link href="/subscription-light" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
                   Upgrade to Premium
                 </Link>
               </div>
@@ -263,8 +263,8 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="col-lg-6">
-            <div className="card p-4 h-100" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
-              <h4 className="mb-3" style={{ fontWeight: 600 }}>Seeker Premium Benefits</h4>
+            <div className="card p-4 h-100" style={{ borderRadius: '16px', background: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
+              <h4 className="mb-3 text-white" style={{ fontWeight: 600 }}>Seeker Premium Benefits</h4>
               <ul className="list-unstyled mb-0" style={{ display: 'grid', gap: '0.75rem' }}>
                 <li className="d-flex align-items-start gap-2">
                   <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
@@ -298,24 +298,24 @@ export default function SubscriptionPage() {
         <div className="row g-4 mb-5">
           <div className="col-lg-6">
             {activeEmployerSub ? (
-              <div 
-                className="card text-white p-4" 
-                style={{ 
-                  borderRadius: '16px', 
-                  background: 'linear-gradient(135deg, #111111 0%, #1a1a1a 100%)', 
+              <div
+                className="card text-white p-4"
+                style={{
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #111111 0%, #1a1a1a 100%)',
                   border: '1px solid rgba(212, 175, 55, 0.3)',
                   boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                 }}
               >
                 <div className="d-flex justify-content-between align-items-start mb-3">
                   <div>
-                    <span 
-                      className="badge mb-2" 
-                      style={{ 
-                        backgroundColor: '#D4AF37', 
-                        color: '#0A0A0A', 
+                    <span
+                      className="badge mb-2"
+                      style={{
+                        backgroundColor: '#D4AF37',
+                        color: '#0A0A0A',
                         fontWeight: 600,
-                        boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)' 
+                        boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)'
                       }}
                     >
                       ✨ {activeEmployerSub.planName ? activeEmployerSub.planName.toUpperCase() : 'PROFESSIONAL'} EMPLOYER
@@ -348,33 +348,33 @@ export default function SubscriptionPage() {
                   </div>
                 </div>
 
-                <Link href="/subscription-light" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
                   Manage Subscription
                 </Link>
               </div>
             ) : (
-              <div className="card p-4" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
+              <div className="card p-4" style={{ borderRadius: '16px', background: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
                 <div className="mb-3">
                   <span className="badge bg-secondary mb-2" style={{ fontWeight: 500 }}>CURRENT PLAN</span>
-                  <h3 className="mb-1" style={{ fontWeight: 700 }}>Free Employer Plan</h3>
+                  <h3 className="mb-1 text-white" style={{ fontWeight: 700 }}>Free Employer Plan</h3>
                   <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Pricing: $0 (Free Tier)</p>
                 </div>
 
-                <hr />
+                <hr style={{ borderColor: 'var(--border-dark, rgba(255, 255, 255, 0.08))' }} />
 
                 <div className="mb-4">
-                  <h5 className="mb-2" style={{ fontSize: '0.95rem', fontWeight: 600 }}>Free Job Postings Remaining</h5>
+                  <h5 className="mb-2 text-white" style={{ fontSize: '0.95rem', fontWeight: 600 }}>Free Job Postings Remaining</h5>
                   <div className="d-flex justify-content-between mb-1" style={{ fontSize: '0.85rem' }}>
                     <span className="text-secondary">Used: {postedJobsCount} of {freeLimit} jobs</span>
-                    <span className="fw-bold">{postedJobsCount >= freeLimit ? 'Limit reached' : `${freeLimit - postedJobsCount} left`}</span>
+                    <span className="fw-bold text-white">{postedJobsCount >= freeLimit ? 'Limit reached' : `${freeLimit - postedJobsCount} left`}</span>
                   </div>
-                  <div className="progress" style={{ height: '8px', borderRadius: '4px' }}>
-                    <div 
-                      className={`progress-bar ${postedJobsCount >= freeLimit ? 'bg-danger' : 'bg-primary'}`} 
-                      role="progressbar" 
+                  <div className="progress" style={{ height: '8px', borderRadius: '4px', backgroundColor: '#111422' }}>
+                    <div
+                      className={`progress-bar ${postedJobsCount >= freeLimit ? 'bg-danger' : 'bg-primary'}`}
+                      role="progressbar"
                       style={{ width: `${Math.min((postedJobsCount / freeLimit) * 100, 100)}%` }}
-                      aria-valuenow={postedJobsCount} 
-                      aria-valuemin={0} 
+                      aria-valuenow={postedJobsCount}
+                      aria-valuemin={0}
                       aria-valuemax={freeLimit}
                     ></div>
                   </div>
@@ -386,7 +386,7 @@ export default function SubscriptionPage() {
                   )}
                 </div>
 
-                <Link href="/subscription-light" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
                   Upgrade to Premium
                 </Link>
               </div>
@@ -394,27 +394,27 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="col-lg-6">
-            <div className="card p-4 h-100" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
-              <h4 className="mb-3" style={{ fontWeight: 600 }}>Employer Premium Benefits</h4>
+            <div className="card p-4 h-100" style={{ borderRadius: '16px', background: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
+              <h4 className="mb-3 text-white" style={{ fontWeight: 600 }}>Employer Premium Benefits</h4>
               <ul className="list-unstyled mb-0" style={{ display: 'grid', gap: '0.75rem' }}>
                 <li className="d-flex align-items-start gap-2">
                   <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
                   <div>
-                    <strong>Unlimited Job Posting</strong>
+                    <strong className="text-white">Unlimited Job Posting</strong>
                     <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Post as many jobs as you need to scale your hiring.</p>
                   </div>
                 </li>
                 <li className="d-flex align-items-start gap-2">
                   <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
                   <div>
-                    <strong>Featured Jobs & Verification Badge</strong>
+                    <strong className="text-white">Featured Jobs & Verification Badge</strong>
                     <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Get higher search ranking for your job ads and build candidate trust.</p>
                   </div>
                 </li>
                 <li className="d-flex align-items-start gap-2">
                   <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
                   <div>
-                    <strong>Candidate Shortlisting & Analytics</strong>
+                    <strong className="text-white">Candidate Shortlisting & Analytics</strong>
                     <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Access advanced analytics on applicant trends and dashboard shortcuts.</p>
                   </div>
                 </li>
@@ -429,24 +429,24 @@ export default function SubscriptionPage() {
         <div className="row g-4 mb-5">
           <div className="col-lg-6">
             {activePromoterSub ? (
-              <div 
-                className="card text-white p-4" 
-                style={{ 
-                  borderRadius: '16px', 
-                  background: 'linear-gradient(135deg, #111111 0%, #1a1a1a 100%)', 
+              <div
+                className="card text-white p-4"
+                style={{
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #111111 0%, #1a1a1a 100%)',
                   border: '1px solid rgba(212, 175, 55, 0.3)',
                   boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                 }}
               >
                 <div className="d-flex justify-content-between align-items-start mb-3">
                   <div>
-                    <span 
-                      className="badge mb-2" 
-                      style={{ 
-                        backgroundColor: '#D4AF37', 
-                        color: '#0A0A0A', 
+                    <span
+                      className="badge mb-2"
+                      style={{
+                        backgroundColor: '#D4AF37',
+                        color: '#0A0A0A',
                         fontWeight: 600,
-                        boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)' 
+                        boxShadow: '0 0 10px rgba(212, 175, 55, 0.4)'
                       }}
                     >
                       ✨ {activePromoterSub.planName ? activePromoterSub.planName.toUpperCase() : 'PREMIUM'} BUSINESS
@@ -479,26 +479,26 @@ export default function SubscriptionPage() {
                   </div>
                 </div>
 
-                <Link href="/subscription-light" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
+                <Link href="/subscription" className="btn btn-outline-warning w-100" style={{ borderRadius: '8px', border: '1px solid #D4AF37', color: '#D4AF37' }}>
                   Manage Subscription
                 </Link>
               </div>
             ) : (
-              <div className="card p-4" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
+              <div className="card p-4" style={{ borderRadius: '16px', background: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
                 <div className="mb-3">
                   <span className="badge bg-danger-subtle text-danger mb-2" style={{ fontWeight: 500 }}>PLAN REQUIRED</span>
-                  <h3 className="mb-1" style={{ fontWeight: 700 }}>No Active Promotion Plan</h3>
+                  <h3 className="mb-1 text-white" style={{ fontWeight: 700 }}>No Active Promotion Plan</h3>
                   <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>Business promotions are always paid on JobNest.</p>
                 </div>
 
-                <hr />
+                <hr style={{ borderColor: 'var(--border-dark, rgba(255, 255, 255, 0.08))' }} />
 
                 <div className="alert alert-warning py-3" style={{ fontSize: '0.88rem' }}>
                   <i className="bi bi-exclamation-triangle-fill me-2"></i>
                   You need an active subscription plan to submit or keep business promotions visible.
                 </div>
 
-                <Link href="/subscription-light" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
+                <Link href="/subscription" className="btn btn-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: 600 }}>
                   Buy Promotion Plan
                 </Link>
               </div>
@@ -506,27 +506,27 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="col-lg-6">
-            <div className="card p-4 h-100" style={{ borderRadius: '16px', background: '#ffffff', border: '1px solid #dee2e6' }}>
-              <h4 className="mb-3" style={{ fontWeight: 600 }}>Promoter Plan Features</h4>
+            <div className="card p-4 h-100" style={{ borderRadius: '16px', background: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
+              <h4 className="mb-3 text-white" style={{ fontWeight: 600 }}>Promoter Plan Features</h4>
               <ul className="list-unstyled mb-0" style={{ display: 'grid', gap: '0.75rem' }}>
                 <li className="d-flex align-items-start gap-2">
                   <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
                   <div>
-                    <strong>Homepage Promotion</strong>
+                    <strong className="text-white">Homepage Promotion</strong>
                     <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Display banners on high traffic pages.</p>
                   </div>
                 </li>
                 <li className="d-flex align-items-start gap-2">
                   <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
                   <div>
-                    <strong>Featured Placements & Boost</strong>
+                    <strong className="text-white">Featured Placements & Boost</strong>
                     <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Appear at the top of category searches.</p>
                   </div>
                 </li>
                 <li className="d-flex align-items-start gap-2">
                   <i className="bi bi-check-circle-fill text-success" style={{ marginTop: '0.15rem' }}></i>
                   <div>
-                    <strong>Lead Generation Support</strong>
+                    <strong className="text-white">Lead Generation Support</strong>
                     <p className="text-secondary mb-0" style={{ fontSize: '0.85rem' }}>Direct contact requests and inquiries from users.</p>
                   </div>
                 </li>
@@ -537,9 +537,9 @@ export default function SubscriptionPage() {
       )}
 
       {/* BILLING / ORDER HISTORY SECTION */}
-      <div className="card border-0 shadow-sm p-4 mt-4" style={{ borderRadius: '20px', backgroundColor: '#ffffff' }}>
-        <h3 className="fw-bold text-dark mb-4" style={{ fontSize: '1.25rem' }}>Billing &amp; Invoice History</h3>
-        
+      <div className="card border-0 shadow-sm p-4 mt-4" style={{ borderRadius: '20px', backgroundColor: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
+        <h3 className="fw-bold text-white mb-4" style={{ fontSize: '1.25rem' }}>Billing &amp; Invoice History</h3>
+
         {invoicesList.length === 0 ? (
           <div className="text-center py-5">
             <i className="bi bi-receipt text-secondary fs-1 mb-2" />
@@ -561,26 +561,25 @@ export default function SubscriptionPage() {
               <tbody>
                 {invoicesList.map((invoice) => (
                   <tr key={invoice.id}>
-                    <td className="fw-bold" style={{ color: '#1e293b' }}>{invoice.invoiceNumber}</td>
+                    <td className="fw-bold" style={{ color: 'var(--text-dark-title, #FFFFFF)' }}>{invoice.invoiceNumber}</td>
                     <td className="text-secondary" style={{ fontSize: '0.9rem' }}>
                       {new Date(invoice.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                     </td>
                     <td>
-                      <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.78rem' }}>
+                      <span className="badge bg-dark text-light border px-2 py-1" style={{ fontSize: '0.78rem', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                         {invoice.gstNumber ? 'Business Promo' : 'Premium Subscription'}
                       </span>
                     </td>
-                    <td className="fw-bold text-dark">${invoice.totalAmount}</td>
+                    <td className="fw-bold text-white">${invoice.totalAmount}</td>
                     <td>
-                      <span className={`badge px-2 py-1 ${
-                        invoice.paymentStatus === 'paid' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger'
-                      }`} style={{ textTransform: 'capitalize', fontSize: '0.75rem', borderRadius: '6px' }}>
+                      <span className={`badge px-2 py-1 ${invoice.paymentStatus === 'paid' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger'
+                        }`} style={{ textTransform: 'capitalize', fontSize: '0.75rem', borderRadius: '6px' }}>
                         {invoice.paymentStatus}
                       </span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <Link 
-                        href={`/invoice/${invoice.id}`} 
+                      <Link
+                        href={`/invoice/${invoice.id}`}
                         target="_blank"
                         className="btn btn-sm btn-outline-primary fw-semibold px-3"
                         style={{ borderRadius: '8px' }}

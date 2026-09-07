@@ -25,9 +25,9 @@
 
 /* ── Results Header ── */
 .jl2-results-header {
-  background: #fff;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   padding: 20px;
   margin-bottom: 16px;
 }
@@ -93,8 +93,8 @@
 .jl2-filter-select {
   appearance: none;
   -webkit-appearance: none;
-  background: #fff;
-  border: 1.5px solid var(--color-border);
+  background: var(--bg-dark-2, #111422);
+  border: 1.5px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 8px;
   padding: 6px 24px 6px 8px;
   font-family: var(--font-family);
@@ -103,11 +103,16 @@
   color: var(--color-navy);
   cursor: pointer;
   transition: var(--transition-base);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236B7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 8px;
   min-width: 0;
+}
+
+.jl2-filter-select option {
+  background-color: #111422;
+  color: #FFFFFF;
 }
 
 .jl2-filter-select:hover {
@@ -166,9 +171,9 @@
 
 /* ── Job Details Box ── */
 .jl2-details-card {
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -178,9 +183,9 @@
 
 .jl2-details-header {
   padding: 20px 24px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   flex-shrink: 0;
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
 }
 
 .jl2-details-header-main {
@@ -278,29 +283,29 @@
 }
 
 .jl2-details-tag {
-  background: #F3F4F6;
-  border: 1px solid #E5E7EB;
+  background: var(--bg-dark-2, #111422);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 6px;
   padding: 3px 8px;
   font-size: 12px;
-  color: #4B5563;
+  color: var(--text-dark-body, #94A3B8);
   font-weight: var(--font-weight-medium);
 }
 
 .jl2-details-tag-highlight {
-  background: #FEF3C7;
-  border: 1px solid #FCD34D;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--border-gold, rgba(212, 175, 55, 0.25));
   border-radius: 6px;
   padding: 3px 8px;
   font-size: 12px;
-  color: #92400E;
+  color: var(--gold-light, #F5E27C);
   font-weight: var(--font-weight-semibold);
 }
 
 /* Sub-banner resume */
 .jl2-details-banner {
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--border-gold, rgba(212, 175, 55, 0.25));
   border-radius: 12px;
   margin: 16px 24px 0;
   padding: 12px 16px;
@@ -319,26 +324,26 @@
 
 .jl2-banner-icon {
   font-size: 18px;
-  color: #D97706;
+  color: var(--gold, #D4AF37);
   margin-top: 2px;
 }
 
 .jl2-banner-title {
   font-size: 13px;
   font-weight: var(--font-weight-bold);
-  color: #92400E;
+  color: var(--gold-light, #F5E27C);
 }
 
 .jl2-banner-desc {
   font-size: 11.5px;
-  color: #B45309;
+  color: var(--text-dark-body, #94A3B8);
   margin-top: 1px;
 }
 
 .jl2-banner-action-btn {
-  background: #ffffff;
-  border: 1.5px solid #D97706;
-  color: #D97706;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1.5px solid var(--gold, #D4AF37);
+  color: var(--gold-light, #F5E27C);
   border-radius: var(--radius-button);
   padding: 5px 12px;
   font-size: 11px;
@@ -349,8 +354,8 @@
 }
 
 .jl2-banner-action-btn:hover {
-  background: #D97706;
-  color: #ffffff;
+  background: var(--gold, #D4AF37);
+  color: #08090E;
 }
 
 /* Scrollable area */
@@ -374,7 +379,7 @@
   font-weight: var(--font-weight-bold);
   color: var(--color-navy);
   margin: 0;
-  border-bottom: 2px solid #F3F4F6;
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   padding-bottom: 4px;
 }
 
@@ -388,10 +393,10 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  background: #F9FAFB;
+  background: var(--bg-dark-2, #111422);
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid #F3F4F6;
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
 }
 
 .jl2-summary-label {
@@ -410,7 +415,7 @@
 .jl2-details-description-html {
   font-size: 13px;
   line-height: 1.55;
-  color: #374151;
+  color: var(--text-dark-body, #94A3B8);
 }
 
 .jl2-details-description-html p {
@@ -431,34 +436,34 @@
 }
 
 .jl2-details-skill-tag {
-  background: #F3F4F6;
-  border: 1px solid #E5E7EB;
+  background: var(--bg-dark-2, #111422);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: 6px;
   padding: 3px 8px;
   font-size: 11.5px;
-  color: #4B5563;
+  color: var(--text-dark-body, #94A3B8);
   font-weight: var(--font-weight-medium);
 }
 
 .jl2-details-text {
   font-size: 13px;
   line-height: 1.55;
-  color: #374151;
+  color: var(--text-dark-body, #94A3B8);
   margin: 0;
 }
 
 /* Bottom Apply */
 .jl2-details-footer {
   padding: 14px 24px;
-  border-top: 1px solid var(--color-border);
-  background: #ffffff;
+  border-top: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
+  background: var(--bg-card-dark, #0F121E);
   flex-shrink: 0;
   display: flex;
   justify-content: center;
 }
 
 .jl2-apply-btn-bottom {
-  background: #0B1739;
+  background: var(--color-primary, #2454FF);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-button);
@@ -487,9 +492,9 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  background: #ffffff;
+  background: var(--bg-card-dark, #0F121E);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   padding: 40px;
   text-align: center;
 }

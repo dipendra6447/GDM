@@ -170,13 +170,13 @@ export default function JobApplicantsPage() {
                           disabled={updatingId === app.id}
                           onChange={(e) => handleUpdateStatus(app.id, e.target.value)}
                           className="form-select form-select-sm"
-                          style={{ 
-                            width: 'auto', 
-                            display: 'inline-block', 
-                            borderRadius: '6px', 
-                            backgroundColor: '#f8fafc', 
-                            color: '#0f172a',
-                            border: '1px solid #cbd5e1',
+                          style={{
+                            width: 'auto',
+                            display: 'inline-block',
+                            borderRadius: '6px',
+                            backgroundColor: 'var(--bg-dark-2, #111422)',
+                            color: 'var(--text-dark-title, #FFFFFF)',
+                            border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))',
                             padding: '4px 12px'
                           }}
                         >
