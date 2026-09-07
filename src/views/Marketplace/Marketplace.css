@@ -9,8 +9,8 @@
 
 /* ── Top Section ── */
 .mp-top-section {
-  background: #fff;
-  border-bottom: 1px solid var(--color-border);
+  background: var(--bg-card-dark, #0F121E);
+  border-bottom: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   padding-bottom: 0;
 }
 
@@ -73,7 +73,7 @@
     gap: 16px;
   }
 
-  .mp-sidebar-sticky > :last-child {
+  .mp-sidebar-sticky> :last-child {
     grid-column: 1 / -1;
   }
 

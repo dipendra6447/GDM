@@ -3,8 +3,8 @@
    ============================================================ */
 
 .jdh-wrapper {
-  background: white;
-  border: 1px solid var(--color-border);
+  background: var(--bg-card-dark, #0F121E);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
   padding: 28px 32px;
@@ -201,12 +201,12 @@
   justify-content: center;
   gap: 8px;
   padding: 10px 20px;
-  background: white;
-  color: var(--color-navy);
+  background: var(--bg-dark-2, #111422);
+  color: var(--text-dark-title, #FFFFFF);
   font-size: 14px;
   font-weight: var(--font-weight-medium);
   border-radius: var(--radius-button);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   cursor: pointer;
   transition: var(--transition-base);
 }

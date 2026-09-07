@@ -52,7 +52,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#f8fafc' }}>
+      <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: 'var(--bg-black, #08090E)' }}>
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -73,45 +73,55 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
   }
 
   return (
-    <div style={{ backgroundColor: '#f1f5f9', minHeight: '100vh', padding: '2rem 1rem' }}>
-      
+    <div style={{ backgroundColor: 'var(--bg-black, #08090E)', minHeight: '100vh', padding: '2rem 1rem' }}>
+
       {/* CSS Print Rules overrides */}
       <style jsx global>{`
         @media print {
           body {
             background-color: #ffffff !important;
+            color: #000000 !important;
             padding: 0 !important;
           }
           .invoice-actions-bar {
             display: none !important;
           }
           .invoice-card {
+            background: #ffffff !important;
+            color: #000000 !important;
             border: none !important;
             box-shadow: none !important;
             padding: 0 !important;
-            background: transparent !important;
+          }
+          .invoice-card * {
+            color: #000000 !important;
+            background-color: transparent !important;
+            border-color: #dee2e6 !important;
+          }
+          .invoice-card .text-primary {
+            color: #2454ff !important;
           }
         }
       `}</style>
 
       {/* Floating Action Menu Bar */}
-      <div className="invoice-actions-bar d-flex justify-content-between align-items-center max-width-800 mx-auto mb-4 p-3 bg-white shadow-sm border border-light" style={{ borderRadius: '16px', maxWidth: '800px' }}>
+      <div className="invoice-actions-bar d-flex justify-content-between align-items-center max-width-800 mx-auto mb-4 p-3 shadow-sm" style={{ borderRadius: '16px', maxWidth: '800px', backgroundColor: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
         <div className="d-flex align-items-center gap-2">
           <i className="bi bi-file-earmark-pdf fs-4 text-primary" />
           <div>
-            <h5 className="fw-bold mb-0" style={{ fontSize: '1rem' }}>Tax Invoice</h5>
+            <h5 className="fw-bold mb-0 text-white" style={{ fontSize: '1rem' }}>Tax Invoice</h5>
             <p className="text-secondary mb-0" style={{ fontSize: '0.8rem' }}>Invoice #{invoice.invoiceNumber}</p>
           </div>
         </div>
         <div className="d-flex gap-2">
-          <button 
+          <button
             onClick={handlePrint}
             className="btn btn-primary d-flex align-items-center gap-2 px-4 py-2"
             style={{ borderRadius: '10px', background: '#2454ff', border: 'none' }}
           >
             <i className="bi bi-printer-fill" /> Download / Print PDF
           </button>
-          <button 
+          <button
             onClick={() => window.close()}
             className="btn btn-outline-secondary px-3 py-2"
             style={{ borderRadius: '10px' }}
@@ -122,8 +132,8 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
       </div>
 
       {/* Printable Invoice Page Canvas */}
-      <div className="card invoice-card mx-auto p-5 bg-white border-light shadow-sm" style={{ maxWidth: '800px', borderRadius: '24px' }}>
-        
+      <div className="card invoice-card mx-auto p-5 shadow-sm text-white" style={{ maxWidth: '800px', borderRadius: '24px', backgroundColor: 'var(--bg-card-dark, #0F121E)', border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
+
         {/* Invoice Header block */}
         <div className="row align-items-start mb-5">
           <div className="col-sm-6">
@@ -141,25 +151,25 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
             </p>
           </div>
           <div className="col-sm-6 text-sm-end mt-4 mt-sm-0">
-            <h1 className="fw-bold text-dark mb-1" style={{ fontSize: '2rem' }}>TAX INVOICE</h1>
+            <h1 className="fw-bold text-white mb-1" style={{ fontSize: '2rem' }}>TAX INVOICE</h1>
             <p className="text-secondary fw-semibold mb-3">Original for Recipient</p>
-            
-            <div className="d-inline-block text-start border-start border-light ps-3 mt-1">
-              <p className="mb-1" style={{ fontSize: '0.85rem' }}><strong className="text-dark">Invoice No:</strong> {invoice.invoiceNumber}</p>
-              <p className="mb-1" style={{ fontSize: '0.85rem' }}><strong className="text-dark">Date of Issue:</strong> {new Date(invoice.createdAt).toLocaleDateString()}</p>
-              <p className="mb-1" style={{ fontSize: '0.85rem' }}><strong className="text-dark">Payment Status:</strong> <span className="text-success fw-bold">PAID</span></p>
-              <p className="mb-0" style={{ fontSize: '0.85rem' }}><strong className="text-dark">Payment Mode:</strong> {invoice.paymentMethod.toUpperCase()}</p>
+
+            <div className="d-inline-block text-start border-start border-secondary ps-3 mt-1">
+              <p className="mb-1" style={{ fontSize: '0.85rem' }}><strong className="text-white">Invoice No:</strong> {invoice.invoiceNumber}</p>
+              <p className="mb-1" style={{ fontSize: '0.85rem' }}><strong className="text-white">Date of Issue:</strong> {new Date(invoice.createdAt).toLocaleDateString()}</p>
+              <p className="mb-1" style={{ fontSize: '0.85rem' }}><strong className="text-white">Payment Status:</strong> <span className="text-success fw-bold">PAID</span></p>
+              <p className="mb-0" style={{ fontSize: '0.85rem' }}><strong className="text-white">Payment Mode:</strong> {invoice.paymentMethod.toUpperCase()}</p>
             </div>
           </div>
         </div>
 
-        <hr className="my-4" style={{ borderColor: '#e2e8f0' }} />
+        <hr className="my-4" style={{ borderColor: 'var(--border-dark, rgba(255, 255, 255, 0.08))' }} />
 
         {/* Billing Information Details */}
         <div className="row mb-5">
           <div className="col-sm-6">
-            <h5 className="fw-bold text-dark mb-3">BILL TO:</h5>
-            <h4 className="fw-bold text-dark mb-1" style={{ fontSize: '1.1rem' }}>{invoice.billingName}</h4>
+            <h5 className="fw-bold text-white mb-3">BILL TO:</h5>
+            <h4 className="fw-bold text-white mb-1" style={{ fontSize: '1.1rem' }}>{invoice.billingName}</h4>
             <p className="text-secondary mb-0" style={{ fontSize: '0.88rem' }}>{invoice.billingEmail}</p>
             {invoice.billingAddress && (
               <p className="text-secondary mb-0 mt-2" style={{ fontSize: '0.88rem', whiteSpace: 'pre-line' }}>
@@ -179,8 +189,8 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
 
         {/* Itemized Table */}
         <div className="table-responsive mb-4">
-          <table className="table align-middle table-bordered">
-            <thead className="table-light">
+          <table className="table align-middle table-bordered" style={{ borderColor: 'var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
+            <thead className="table-dark">
               <tr>
                 <th style={{ width: '50px' }}>#</th>
                 <th>Item / Description</th>
@@ -193,16 +203,16 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
               <tr>
                 <td>1</td>
                 <td>
-                  <span className="fw-bold d-block" style={{ color: '#1e293b' }}>
+                  <span className="fw-bold d-block text-white">
                     JobNest Premium Service
                   </span>
                   <span className="text-secondary" style={{ fontSize: '0.8rem' }}>
                     Subscription access for recruitment tools / listings.
                   </span>
                 </td>
-                <td className="text-end">${invoice.amount}</td>
-                <td className="text-end">${invoice.tax}</td>
-                <td className="text-end fw-bold">${invoice.totalAmount}</td>
+                <td className="text-end text-white">${invoice.amount}</td>
+                <td className="text-end text-white">${invoice.tax}</td>
+                <td className="text-end fw-bold text-white">${invoice.totalAmount}</td>
               </tr>
             </tbody>
           </table>
@@ -211,18 +221,18 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         {/* Calculations Block */}
         <div className="row justify-content-end mb-5">
           <div className="col-sm-5 text-sm-end">
-            <div className="d-inline-block text-start w-100 p-3 border" style={{ borderRadius: '12px', background: '#f8fafc' }}>
+            <div className="d-inline-block text-start w-100 p-3 border" style={{ borderRadius: '12px', background: 'var(--bg-dark-2, #111422)', borderColor: 'var(--border-dark, rgba(255, 255, 255, 0.08))' }}>
               <div className="d-flex justify-content-between mb-2" style={{ fontSize: '0.9rem' }}>
                 <span className="text-secondary">Subtotal (Base):</span>
-                <span className="fw-semibold text-dark">${invoice.amount}</span>
+                <span className="fw-semibold text-white">${invoice.amount}</span>
               </div>
               <div className="d-flex justify-content-between mb-2" style={{ fontSize: '0.9rem' }}>
                 <span className="text-secondary">Sales Tax (18%):</span>
-                <span className="fw-semibold text-dark">${invoice.tax}</span>
+                <span className="fw-semibold text-white">${invoice.tax}</span>
               </div>
-              <hr className="my-2" />
+              <hr className="my-2" style={{ borderColor: 'var(--border-dark, rgba(255, 255, 255, 0.08))' }} />
               <div className="d-flex justify-content-between" style={{ fontSize: '1.05rem' }}>
-                <span className="fw-bold text-dark">Grand Total:</span>
+                <span className="fw-bold text-white">Grand Total:</span>
                 <span className="fw-bold text-primary" style={{ color: '#2454ff' }}>${invoice.totalAmount}</span>
               </div>
             </div>
@@ -230,9 +240,9 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         </div>
 
         {/* Signature & T&C Footer */}
-        <div className="row mt-5 pt-4 align-items-end" style={{ borderTop: '1px dashed #cbd5e1' }}>
-          <div className="col-sm-7" style={{ fontSize: '0.78rem', color: '#64748b' }}>
-            <span className="fw-bold d-block mb-1">Terms &amp; Conditions:</span>
+        <div className="row mt-5 pt-4 align-items-end" style={{ borderTop: '1px dashed var(--border-dark, rgba(255, 255, 255, 0.15))' }}>
+          <div className="col-sm-7" style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
+            <span className="fw-bold d-block mb-1 text-white">Terms &amp; Conditions:</span>
             <p className="mb-0">
               1. This is a computer-generated tax invoice and requires no physical signature.<br />
               2. Fees once paid for subscriptions are non-refundable under any circumstances.<br />
@@ -242,7 +252,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
           <div className="col-sm-5 text-sm-end mt-4 mt-sm-0">
             <div className="d-inline-block text-center">
               <div style={{ height: '40px' }} />
-              <p className="fw-bold mb-0 text-dark" style={{ borderTop: '1px solid #1e293b', paddingTop: '4px', fontSize: '0.85rem' }}>
+              <p className="fw-bold mb-0 text-white" style={{ borderTop: '1px solid var(--border-dark, rgba(255, 255, 255, 0.2))', paddingTop: '4px', fontSize: '0.85rem' }}>
                 Authorised Signatory
               </p>
               <span className="text-secondary" style={{ fontSize: '0.78rem' }}>JobNest Recruitment Portal</span>

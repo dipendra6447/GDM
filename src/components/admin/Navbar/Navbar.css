@@ -12,7 +12,7 @@
   background: var(--bg-navbar);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--gray-200);
   z-index: 1030;
   display: flex;
   align-items: center;
@@ -191,7 +191,7 @@
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--gray-200);
   padding: var(--space-2);
   z-index: 1060;
   opacity: 0;

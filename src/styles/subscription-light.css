@@ -1,27 +1,28 @@
 /* ============================================================
-   SUBSCRIPTION PAGE — WEBSITE BLUE THEME (Light Override)
+   SUBSCRIPTION PAGE — LUXURY DARK THEME
+   Unified with Home Page & Subscription Dark Theme
    ============================================================ */
 
-/* ── Override CSS Variables under .subscription-light-page ── */
+/* ── CSS Custom Properties under .subscription-light-page ── */
 .subscription-light-page {
-  /* Map gold → primary blue */
-  --gold: #2454FF;
-  --gold-dark: #1448FF;
-  --gold-light: #6b8fff;
-  --bg-black: #F8FAFF;
-  --bg-card: #FFFFFF;
-  --bg-card-2: #F0F4FF;
-  --border-gold: rgba(36, 84, 255, 0.15);
-  --border-gold-hover: rgba(36, 84, 255, 0.45);
-  --text-white: #0B1739;
-  --text-secondary: #4B5680;
-  --text-muted: #8892B0;
-  --gradient-gold: linear-gradient(135deg, #2454FF, #4F46E5);
-  --gradient-gold-light: linear-gradient(135deg, #6b8fff, #2454FF);
-  --glow-gold: 0 0 30px rgba(36, 84, 255, 0.15);
-  --glow-gold-strong: 0 0 60px rgba(36, 84, 255, 0.25);
-  --shadow-card: 0 20px 60px rgba(36, 84, 255, 0.08);
-  --shadow-gold: 0 8px 32px rgba(36, 84, 255, 0.2);
+  --gold: #D4AF37;
+  --gold-dark: #B8860B;
+  --gold-light: #F5E27C;
+  --bg-black: #08090E;
+  --bg-card: #0F121E;
+  --bg-card-2: #111422;
+  --border-gold: rgba(212, 175, 55, 0.25);
+  --border-gold-hover: rgba(212, 175, 55, 0.6);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --text-white: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --gradient-gold: linear-gradient(135deg, #D4AF37, #B8860B);
+  --gradient-gold-light: linear-gradient(135deg, #F5E27C, #D4AF37);
+  --glow-gold: 0 0 30px rgba(212, 175, 55, 0.25);
+  --glow-gold-strong: 0 0 60px rgba(212, 175, 55, 0.5);
+  --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 8px 32px rgba(212, 175, 55, 0.25);
 
   background-color: var(--bg-black);
   color: var(--text-white);
@@ -37,112 +38,110 @@
   z-index: 0;
 }
 
-/* Dark overlay for text readability over background image */
 .subscription-light-page .sub-hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(#0a143cf0 0%, #0a143cde 40%, #0a143cb0 100%);
+  background: radial-gradient(circle at 50% 30%, rgba(36, 84, 255, 0.12) 0%, rgba(8, 9, 14, 0.95) 70%, #08090E 100%);
   z-index: 1;
   pointer-events: none;
 }
 
 .subscription-light-page .hero-glow-left {
-  background: radial-gradient(circle, rgba(36, 84, 255, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
   z-index: 1;
 }
 
 .subscription-light-page .hero-glow-right {
-  background: radial-gradient(circle, rgba(123, 62, 255, 0.10) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(36, 84, 255, 0.12) 0%, transparent 70%);
   z-index: 1;
 }
 
 .subscription-light-page .hero-particle {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(212, 175, 55, 0.6);
 }
 
 .subscription-light-page .sub-hero-title {
   color: #FFFFFF;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
 }
 
 .subscription-light-page .sub-hero-title span {
-  background: linear-gradient(135deg, #FFFFFF, #d4e4ff) !important;
+  background: var(--gradient-gold) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3));
 }
 
 .subscription-light-page .sub-hero-desc {
-  color: rgba(255, 255, 255, 0.90);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+  color: var(--text-secondary);
 }
 
 /* ── Hero Buttons ── */
 .subscription-light-page .btn-gold {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(36, 84, 255, 0.3);
+  background: var(--gradient-gold);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
 }
 
 .subscription-light-page .btn-gold:hover {
-  color: #fff;
-  box-shadow: 0 16px 40px rgba(36, 84, 255, 0.45);
+  color: #000000;
+  box-shadow: 0 16px 40px rgba(212, 175, 55, 0.5);
 }
 
 .subscription-light-page .btn-gold::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
 .subscription-light-page .btn-gold-outline {
-  color: #2454FF;
-  border-color: #2454FF;
-  background: transparent;
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .subscription-light-page .btn-gold-outline:hover {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(36, 84, 255, 0.3);
+  background: rgba(212, 175, 55, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.2);
 }
 
-/* Hero-specific outline button: white border/text over dark overlay */
 .subscription-light-page .sub-hero .btn-gold-outline {
   color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(6px);
 }
 
 .subscription-light-page .sub-hero .btn-gold-outline:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.8);
-  color: #FFFFFF;
-  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.25);
 }
 
 /* ── Badge / Labels ── */
 .subscription-light-page .sub-badge {
-  background: rgba(36, 84, 255, 0.08);
-  border-color: rgba(36, 84, 255, 0.2);
-  color: #2454FF;
+  background: rgba(212, 175, 55, 0.1);
+  border-color: var(--border-gold);
+  color: var(--gold);
 }
 
-/* Hero badge: light glassmorphism over dark overlay */
 .subscription-light-page .sub-hero .sub-badge {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #FFFFFF;
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.3);
+  color: var(--gold);
   backdrop-filter: blur(8px);
 }
 
 .subscription-light-page .sub-heading {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .sub-heading .gold-text {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -154,48 +153,49 @@
 
 /* ── Billing Toggle ── */
 .subscription-light-page .billing-toggle-wrapper {
-  background: #FFFFFF;
-  border-color: rgba(36, 84, 255, 0.2);
-  box-shadow: 0 4px 20px rgba(36, 84, 255, 0.08);
+  background: #111422;
+  border-color: var(--border-subtle);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .subscription-light-page .billing-toggle-slider {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
 }
 
 .subscription-light-page .billing-btn {
-  color: #4B5680;
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .billing-btn.active {
-  color: #fff;
+  color: #000000;
+  font-weight: 700;
 }
 
 /* ── Pricing Cards ── */
 .subscription-light-page .pricing-section {
-  background: #F8FAFF;
+  background: transparent;
 }
 
 .subscription-light-page .pricing-card {
-  background: #FFFFFF;
-  border-color: rgba(36, 84, 255, 0.12);
-  box-shadow: 0 4px 24px rgba(36, 84, 255, 0.06);
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .subscription-light-page .pricing-card::before {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
 }
 
 .subscription-light-page .pricing-card:hover {
-  box-shadow: 0 20px 60px rgba(36, 84, 255, 0.12);
-  border-color: rgba(36, 84, 255, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border-color: rgba(212, 175, 55, 0.5);
   transform: translateY(-8px);
 }
 
 .subscription-light-page .pricing-card.featured {
-  background: linear-gradient(145deg, #EEF2FF, #F0F4FF);
-  border-color: #2454FF;
-  box-shadow: 0 0 40px rgba(36, 84, 255, 0.15);
+  background: linear-gradient(145deg, #111528, #0E1222);
+  border-color: var(--gold);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
 }
 
 .subscription-light-page .pricing-card.featured::before {
@@ -203,275 +203,285 @@
 }
 
 .subscription-light-page .card-badge {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
+  background: var(--gradient-gold);
+  color: #000000;
+  font-weight: 700;
 }
 
 .subscription-light-page .card-plan-type {
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .subscription-light-page .card-plan-name {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .price-amount {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .pricing-card.featured .price-amount {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .subscription-light-page .price-amount.free-price {
-  color: #8892B0;
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .price-period {
-  color: #4B5680;
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .price-desc {
-  color: #8892B0;
+  color: var(--text-muted);
 }
 
 .subscription-light-page .card-divider {
-  background: rgba(36, 84, 255, 0.1);
+  background: var(--border-subtle);
 }
 
 .subscription-light-page .feature-item {
-  color: #4B5680;
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .feature-item.included {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .feature-check.yes {
-  background: rgba(36, 84, 255, 0.1);
-  color: #2454FF;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold);
 }
 
 .subscription-light-page .feature-check.no {
-  background: rgba(0, 0, 0, 0.04);
-  color: #B0B8CC;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
 }
 
 .subscription-light-page .card-cta-btn {
-  border-color: rgba(36, 84, 255, 0.25);
-  color: #4B5680;
-  background: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .subscription-light-page .card-cta-btn:hover {
-  border-color: #2454FF;
-  color: #2454FF;
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
 }
 
 .subscription-light-page .card-cta-btn.primary {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
   border-color: transparent;
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(36, 84, 255, 0.25);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.25);
 }
 
 .subscription-light-page .card-cta-btn.primary:hover {
-  box-shadow: 0 16px 40px rgba(36, 84, 255, 0.4);
+  box-shadow: 0 16px 40px rgba(212, 175, 55, 0.45);
+  color: #000000;
 }
 
 .subscription-light-page .admin-note {
-  color: #8892B0;
+  color: var(--text-muted);
 }
 
 /* ── Comparison Table ── */
 .subscription-light-page .comparison-section {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F0F4FF 100%);
+  background: transparent;
 }
 
 .subscription-light-page .comparison-table-wrapper {
-  border-color: rgba(36, 84, 255, 0.15);
-  box-shadow: 0 20px 60px rgba(36, 84, 255, 0.07);
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .subscription-light-page .comparison-table {
-  background: #FFFFFF;
+  background: var(--bg-card);
 }
 
 .subscription-light-page .comparison-table thead tr {
-  background: linear-gradient(135deg, #EEF2FF, #E8EEFF);
+  background: var(--bg-card-2);
 }
 
 .subscription-light-page .comparison-table th {
-  color: #4B5680;
-  border-bottom-color: rgba(36, 84, 255, 0.12);
+  color: var(--text-secondary);
+  border-bottom-color: var(--border-subtle);
 }
 
 .subscription-light-page .comparison-table th:first-child {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .comparison-table th.gold-header {
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .subscription-light-page .comparison-table td {
-  color: #4B5680;
-  border-bottom-color: rgba(36, 84, 255, 0.05);
+  color: var(--text-secondary);
+  border-bottom-color: rgba(255, 255, 255, 0.04);
 }
 
 .subscription-light-page .comparison-table td:first-child {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .comparison-table tbody tr:hover td {
-  background: rgba(36, 84, 255, 0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .subscription-light-page .check-icon {
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .subscription-light-page .cross-icon {
-  color: #CDD5E0;
+  color: var(--text-muted);
 }
 
 /* ── Premium Benefits ── */
 .subscription-light-page .benefits-section {
-  background: #F8FAFF;
+  background: transparent;
 }
 
 .subscription-light-page .benefit-card {
-  background: #FFFFFF;
-  border-color: rgba(36, 84, 255, 0.12);
-  box-shadow: 0 4px 20px rgba(36, 84, 255, 0.05);
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .subscription-light-page .benefit-card::after {
-  background: radial-gradient(circle, rgba(36, 84, 255, 0.06) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.06) 0%, transparent 60%);
 }
 
 .subscription-light-page .benefit-card:hover {
-  border-color: rgba(36, 84, 255, 0.35);
-  box-shadow: 0 20px 50px rgba(36, 84, 255, 0.1);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .subscription-light-page .benefit-icon {
-  filter: drop-shadow(0 0 8px rgba(36, 84, 255, 0.25));
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.25));
 }
 
 .subscription-light-page .benefit-title {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .benefit-desc {
-  color: #4B5680;
+  color: var(--text-secondary);
 }
 
 /* ── Testimonials ── */
 .subscription-light-page .testimonials-section {
-  background: linear-gradient(180deg, #F0F4FF 0%, #F8FAFF 100%);
-}
-
-.subscription-light-page .testimonial-card {
-  background: linear-gradient(145deg, #FFFFFF, #F4F7FF);
-  border-color: rgba(36, 84, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(36, 84, 255, 0.07);
-}
-
-.subscription-light-page .testimonial-quote {
-  color: #2454FF;
-}
-
-.subscription-light-page .testimonial-text {
-  color: #0B1739;
-}
-
-.subscription-light-page .author-avatar {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
-}
-
-.subscription-light-page .author-name {
-  color: #0B1739;
-}
-
-.subscription-light-page .author-role {
-  color: #2454FF;
-}
-
-.subscription-light-page .testimonial-stars {
-  color: #2454FF;
-}
-
-.subscription-light-page .testimonial-dot {
-  background: #C5CDE8;
-}
-
-.subscription-light-page .testimonial-dot.active {
-  background: #2454FF;
-}
-
-.subscription-light-page .testimonial-arrow-btn {
-  border-color: rgba(36, 84, 255, 0.25);
-  color: #2454FF;
   background: transparent;
 }
 
+.subscription-light-page .testimonial-card {
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.subscription-light-page .testimonial-quote {
+  color: var(--gold);
+}
+
+.subscription-light-page .testimonial-text {
+  color: #CBD5E1;
+}
+
+.subscription-light-page .author-avatar {
+  background: var(--gradient-gold);
+  color: #000000;
+  font-weight: 700;
+}
+
+.subscription-light-page .author-name {
+  color: #FFFFFF;
+}
+
+.subscription-light-page .author-role {
+  color: var(--gold);
+}
+
+.subscription-light-page .testimonial-stars {
+  color: var(--gold);
+}
+
+.subscription-light-page .testimonial-dot {
+  background: #334155;
+}
+
+.subscription-light-page .testimonial-dot.active {
+  background: var(--gold);
+}
+
+.subscription-light-page .testimonial-arrow-btn {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .subscription-light-page .testimonial-arrow-btn:hover {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
+  background: var(--gradient-gold);
+  color: #000000;
   border-color: transparent;
 }
 
 /* ── FAQ ── */
 .subscription-light-page .faq-section {
-  background: #FFFFFF;
+  background: transparent;
 }
 
 .subscription-light-page .faq-item {
-  background: #F8FAFF;
-  border-color: rgba(36, 84, 255, 0.12);
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
 }
 
 .subscription-light-page .faq-item.open {
-  border-color: rgba(36, 84, 255, 0.4);
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 .subscription-light-page .faq-question-text {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .subscription-light-page .faq-icon {
-  background: rgba(36, 84, 255, 0.07);
-  border-color: rgba(36, 84, 255, 0.2);
-  color: #2454FF;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--gold);
 }
 
 .subscription-light-page .faq-item.open .faq-icon {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
+  background: var(--gradient-gold);
+  color: #000000;
 }
 
 .subscription-light-page .faq-answer-text {
-  color: #4B5680;
+  color: var(--text-secondary);
+}
+
+.subscription-light-page .faq-answer {
+  overflow: hidden;
 }
 
 /* ── CTA Section ── */
 .subscription-light-page .sub-cta-section {
-  background: linear-gradient(135deg, #2454FF 0%, #4F46E5 50%, #7B3EFF 100%);
+  background: linear-gradient(135deg, #0C0E17 0%, #111422 100%);
   position: relative;
   overflow: hidden;
 }
 
 .subscription-light-page .sub-cta-section::before {
-  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
 }
 
 .subscription-light-page .cta-gold-line {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(212, 175, 55, 0.5);
 }
 
 .subscription-light-page .cta-heading {
@@ -479,23 +489,24 @@
 }
 
 .subscription-light-page .cta-desc {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .sub-cta-section .btn-gold {
-  background: #FFFFFF;
-  color: #2454FF;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  background: var(--gradient-gold);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
 }
 
 .subscription-light-page .sub-cta-section .btn-gold:hover {
-  color: #1448FF;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  color: #000000;
+  box-shadow: 0 16px 40px rgba(212, 175, 55, 0.5);
 }
 
 .subscription-light-page .sub-cta-section .btn-gold-outline {
   color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .subscription-light-page .sub-cta-section .btn-gold-outline:hover {
@@ -506,215 +517,105 @@
 
 /* ── Floating Shapes ── */
 .subscription-light-page .float-shape {
-  background: radial-gradient(circle, rgba(36, 84, 255, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
 }
 
-/* ── CTA float shapes — override for gradient bg ── */
 .subscription-light-page .sub-cta-section .float-shape {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
 }
 
 /* ── Stats Strip ── */
 .subscription-light-page .stats-strip {
-  background: #FFFFFF;
-  border-top-color: rgba(36, 84, 255, 0.12);
-  border-bottom-color: rgba(36, 84, 255, 0.12);
+  background: var(--bg-card);
+  border-top-color: var(--border-subtle);
+  border-bottom-color: var(--border-subtle);
 }
 
 .subscription-light-page .stat-number {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .subscription-light-page .stat-label {
-  color: #4B5680;
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .stat-divider {
-  background: rgba(36, 84, 255, 0.12);
+  background: var(--border-subtle);
 }
 
 /* ── Plan Tab Badges ── */
 .subscription-light-page .plan-tab {
-  border-color: rgba(36, 84, 255, 0.2);
-  color: #4B5680;
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .plan-tab.active-tab {
-  background: rgba(36, 84, 255, 0.08);
-  color: #2454FF;
-  border-color: rgba(36, 84, 255, 0.35);
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold);
+  border-color: var(--border-gold);
 }
 
 /* ── Section Dividers ── */
 .subscription-light-page .sub-section-divider {
-  background: linear-gradient(90deg, transparent, rgba(36, 84, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.25), transparent);
 }
 
-/* ── Navbar — restore website (Home page) default styles ── */
-/* Cancel out all dark/gold overrides from subscription.css  */
-.subscription-light-page .navbar-wrapper .navbar {
-  background: rgba(255, 255, 255, 0.97) !important;
-  border-bottom: 1px solid rgba(36, 84, 255, 0.08) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: none !important;
-}
-
-.subscription-light-page .navbar-scrolled .navbar {
-  background: rgba(255, 255, 255, 0.99) !important;
-  box-shadow: 0 4px 24px rgba(36, 84, 255, 0.08) !important;
-}
-
-/* Logo — restore blue accent */
-.subscription-light-page .logo-text {
-  color: var(--color-navy, #0B1739) !important;
-}
-
-.subscription-light-page .logo-accent {
-  color: var(--color-primary, #2454FF) !important;
-}
-
-/* Nav links — restore dark text */
-.subscription-light-page .nav-links .nav-link {
-  color: var(--color-navy, #0B1739) !important;
-}
-
-.subscription-light-page .nav-links .nav-link:hover {
-  color: var(--color-primary, #2454FF) !important;
-  background: rgba(36, 84, 255, 0.06) !important;
-}
-
-.subscription-light-page .nav-links .nav-link::after {
-  background: var(--color-primary, #2454FF) !important;
-}
-
-/* CTA buttons — restore original blue styles */
-.subscription-light-page .btn-login {
-  color: var(--color-navy, #0B1739) !important;
-  border-color: var(--color-border, #EDF0F7) !important;
-}
-
-.subscription-light-page .btn-login:hover {
-  color: var(--color-primary, #2454FF) !important;
-  border-color: var(--color-primary, #2454FF) !important;
-  background: rgba(36, 84, 255, 0.06) !important;
-}
-
-.subscription-light-page .btn-register {
-  background: var(--gradient-primary, linear-gradient(135deg, #2454FF, #4F46E5)) !important;
-  box-shadow: var(--shadow-blue, 0 8px 24px rgba(36, 84, 255, 0.25)) !important;
-}
-
-.subscription-light-page .btn-register:hover {
-  box-shadow: 0 12px 32px rgba(36, 84, 255, 0.4) !important;
-}
-
-/* Hamburger lines — restore dark color */
-.subscription-light-page .custom-toggler span {
-  background: var(--color-navy, #0B1739) !important;
-}
-
-@media (max-width: 991px) {
-  .subscription-light-page .navbar-collapse.show {
-    background: #ffffff !important;
-    border: 1px solid rgba(36, 84, 255, 0.1) !important;
-    box-shadow: 0 20px 60px rgba(36, 84, 255, 0.08) !important;
-  }
-
-  .subscription-light-page .navbar-cta {
-    border-top-color: rgba(36, 84, 255, 0.1) !important;
-  }
-}
-
-/* ── Scrollbar ── */
-.subscription-light-page::-webkit-scrollbar {
-  width: 4px;
-}
-
-.subscription-light-page::-webkit-scrollbar-track {
-  background: #F0F4FF;
-}
-
-.subscription-light-page::-webkit-scrollbar-thumb {
-  background: #2454FF;
-  border-radius: 2px;
-}
-
-/* ── Responsive Tweaks ── */
-@media (max-width: 991px) {
-  .subscription-light-page .pricing-cards-row.two-col {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-    margin: 0 auto;
-  }
-}
-
-/* ============================================================
-   INLINE STYLE OVERRIDES (for dark-hardcoded component styles)
-   ============================================================ */
-
-/* Employer Plans — inline dark gradient background override */
+/* ── Plan Components Dark Overrides ── */
 .subscription-light-page #employer-plans {
-  background: linear-gradient(180deg, #EEF2FF 0%, #F8FAFF 100%) !important;
+  background: transparent !important;
 }
 
-/* Business Promotion — inline dark gradient card override */
 .subscription-light-page #biz-promo-plan {
-  background: linear-gradient(145deg, #EEF2FF, #F0F6FF) !important;
-  box-shadow: 0 0 40px rgba(36, 84, 255, 0.12), 0 30px 80px rgba(36, 84, 255, 0.06) !important;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Business Promo card-badge override */
 .subscription-light-page #biz-promo-plan .card-badge {
-  background: linear-gradient(135deg, #2454FF, #4F46E5) !important;
-  color: #fff !important;
+  background: var(--gradient-gold) !important;
+  color: #000000 !important;
+  font-weight: 700;
 }
 
-/* Business Promo price-amount gradient override */
 .subscription-light-page #biz-promo-plan .price-amount {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* FAQ answer overflow — ensure it doesn't bleed */
-.subscription-light-page .faq-answer {
-  overflow: hidden;
-}
-
-/* ── Tier ribbon overrides for light page ── */
+/* ── Tier ribbon overrides ── */
 .subscription-light-page .tier-silver.pricing-card {
-  border-color: rgba(150, 150, 150, 0.3);
-  background: #FFFFFF;
+  border-color: var(--border-subtle);
+  background: var(--bg-card);
 }
 
 .subscription-light-page .tier-platinum.pricing-card {
-  background: linear-gradient(145deg, #F5F0FF, #EEE8FF);
-  border-color: rgba(123, 79, 255, 0.25);
+  background: linear-gradient(145deg, #161226, #110E1E);
+  border-color: rgba(167, 139, 250, 0.35);
 }
 
 .subscription-light-page .tier-gold.pricing-card.featured {
-  background: linear-gradient(145deg, #EEF2FF, #F0F4FF);
+  background: linear-gradient(145deg, #111528, #0E1222);
 }
 
 .subscription-light-page .tier-gold .price-amount {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .subscription-light-page .tier-silver .price-amount {
-  color: #8892B0;
-  -webkit-text-fill-color: #8892B0;
+  color: var(--text-secondary);
+  -webkit-text-fill-color: var(--text-secondary);
 }
 
 .subscription-light-page .tier-platinum .price-amount {
-  background: linear-gradient(135deg, #7B4FFF, #B57BFF);
+  background: linear-gradient(135deg, #A78BFA, #DDD6FE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -722,170 +623,170 @@
 
 /* ── Per-section billing toggle ── */
 .subscription-light-page .section-billing-toggle {
-  background: #FFFFFF;
-  border-color: rgba(36, 84, 255, 0.2);
-  box-shadow: 0 4px 16px rgba(36, 84, 255, 0.06);
+  background: var(--bg-card-2);
+  border-color: var(--border-subtle);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .subscription-light-page .sbt-btn {
-  color: #4B5680;
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .sbt-btn.active {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(36, 84, 255, 0.3);
+  background: var(--gradient-gold);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
 }
 
 .subscription-light-page .sbt-btn:not(.active):hover {
-  color: #2454FF;
-  background: rgba(36, 84, 255, 0.06);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* ── Plan action row ── */
 .subscription-light-page .plan-action-row {
-  background: rgba(36, 84, 255, 0.04);
-  border-color: rgba(36, 84, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-subtle);
 }
 
 .subscription-light-page .btn-compare-plans {
-  border-color: rgba(36, 84, 255, 0.4);
-  color: #2454FF;
+  border-color: var(--border-gold);
+  color: var(--gold);
 }
 
 .subscription-light-page .btn-compare-plans:hover {
-  background: rgba(36, 84, 255, 0.08);
-  border-color: #2454FF;
-  box-shadow: 0 8px 24px rgba(36, 84, 255, 0.15);
+  background: rgba(212, 175, 55, 0.12);
+  border-color: var(--gold);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
 }
 
 .subscription-light-page .role-switch-label {
-  color: #8892B0;
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .role-pill {
-  border-color: rgba(36, 84, 255, 0.2);
-  color: #4B5680;
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .subscription-light-page .role-pill:hover {
-  background: rgba(36, 84, 255, 0.08);
-  border-color: rgba(36, 84, 255, 0.45);
-  color: #2454FF;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--gold);
+  color: #FFFFFF;
 }
 
 /* ============================================================
-   COMPARE MODAL — LIGHT THEME
-   position:fixed modals escape .subscription-light-page scope,
-   so we target .compare-modal--light class instead.
+   COMPARE MODAL — DARK LUXURY THEME
    ============================================================ */
 .compare-modal-overlay.compare-modal--light {
-  background: rgba(240, 244, 255, 0.75);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .compare-modal-box.compare-modal--light {
-  background: #FFFFFF;
-  border-color: rgba(36, 84, 255, 0.2);
-  box-shadow: 0 40px 100px rgba(36, 84, 255, 0.12), 0 8px 32px rgba(36, 84, 255, 0.08);
+  background: #0F121E;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-header {
-  border-bottom-color: rgba(36, 84, 255, 0.1);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-title {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .compare-modal-box.compare-modal--light .gold-text {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .compare-modal-box.compare-modal--light .sub-badge {
-  background: rgba(36, 84, 255, 0.08);
-  border-color: rgba(36, 84, 255, 0.2);
-  color: #2454FF;
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.25);
+  color: var(--gold);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-close {
-  background: rgba(36, 84, 255, 0.06);
-  border-color: rgba(36, 84, 255, 0.15);
-  color: #4B5680;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-close:hover {
-  background: rgba(36, 84, 255, 0.12);
-  border-color: #2454FF;
-  color: #2454FF;
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table thead tr {
-  background: linear-gradient(135deg, #EEF2FF, #E8EEFF);
+  background: #111422;
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table th {
-  color: #4B5680;
-  border-bottom-color: rgba(36, 84, 255, 0.12);
+  color: var(--text-secondary);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table th:first-child {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table th.silver-header {
-  color: #8892B0;
+  color: var(--text-secondary);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table th.gold-header {
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table th.platinum-header {
-  color: #7B4FFF;
+  color: #A78BFA;
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table td {
-  color: #4B5680;
-  border-bottom-color: rgba(36, 84, 255, 0.05);
+  color: var(--text-secondary);
+  border-bottom-color: rgba(255, 255, 255, 0.04);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table td:first-child {
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-table tbody tr:hover td {
-  background: rgba(36, 84, 255, 0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .compare-modal-box.compare-modal--light .cmp-check {
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .compare-modal-box.compare-modal--light .cmp-cross {
-  color: #C5CDE8;
+  color: var(--text-muted);
 }
 
 .compare-modal-box.compare-modal--light .cmp-check-text {
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .compare-modal-box.compare-modal--light .cmp-plain {
-  color: #4B5680;
+  color: var(--text-secondary);
 }
 
 .compare-modal-box.compare-modal--light .compare-modal-footer {
-  border-top-color: rgba(36, 84, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 .compare-modal-box.compare-modal--light .card-cta-btn.primary {
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(36, 84, 255, 0.25);
+  background: var(--gradient-gold);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.25);
 }
 
 /* ============================================================
@@ -899,37 +800,47 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(11, 23, 57, 0.65);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   animation: roleModalFadeIn 0.25s ease-out forwards;
 }
 
 @keyframes roleModalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .role-restricted-box {
   position: relative;
   width: 100%;
   max-width: 480px;
-  background: #FFFFFF;
+  background: #0F121E;
   border-radius: 20px;
   padding: 32px 28px;
-  box-shadow: 0 30px 90px rgba(11, 23, 57, 0.2), 0 8px 32px rgba(36, 84, 255, 0.1);
-  border: 1px solid rgba(36, 84, 255, 0.18);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7), 0 0 40px rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
   animation: roleBoxSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes roleBoxSlideUp {
-  from { opacity: 0; transform: translateY(20px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .role-restricted-overlay.dark-mode .role-restricted-box {
-  background: #121624;
+  background: #0F121E;
   border-color: rgba(212, 175, 55, 0.3);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7), 0 0 40px rgba(212, 175, 55, 0.15);
 }
@@ -941,9 +852,9 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(36, 84, 255, 0.06);
-  border: 1px solid rgba(36, 84, 255, 0.15);
-  color: #4B5680;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -959,8 +870,8 @@
 }
 
 .role-restricted-close:hover {
-  background: rgba(36, 84, 255, 0.12);
-  color: #2454FF;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--gold);
   transform: rotate(90deg);
 }
 
@@ -990,7 +901,7 @@
 .role-restricted-title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #0B1739;
+  color: #FFFFFF;
   margin-bottom: 16px;
 }
 
@@ -999,7 +910,7 @@
 }
 
 .role-restricted-notice {
-  background: rgba(245, 158, 11, 0.06);
+  background: rgba(245, 158, 11, 0.08);
   border: 1px solid rgba(245, 158, 11, 0.25);
   border-radius: 12px;
   padding: 16px;
@@ -1009,7 +920,7 @@
 
 .role-restricted-main-text {
   font-size: 0.95rem;
-  color: #374151;
+  color: #E2E8F0;
   line-height: 1.5;
   margin-bottom: 8px;
 }
@@ -1020,7 +931,7 @@
 
 .role-restricted-sub-text {
   font-size: 0.92rem;
-  color: #4B5680;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
 }
@@ -1034,11 +945,11 @@
 }
 
 .role-highlight.current {
-  color: #DC2626;
+  color: #EF4444;
 }
 
 .role-highlight.target {
-  color: #2563EB;
+  color: var(--gold);
 }
 
 .role-restricted-overlay.dark-mode .role-highlight.target {
@@ -1050,15 +961,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: #F8FAFF;
-  border: 1px solid rgba(36, 84, 255, 0.12);
+  background: #111422;
+  border: 1px solid var(--border-subtle);
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 24px;
 }
 
 .role-restricted-overlay.dark-mode .role-restricted-comparison {
-  background: #1A2035;
+  background: #111422;
   border-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -1078,14 +989,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #8892B0;
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 
 .role-comp-name {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0B1739;
+  color: #FFFFFF;
 }
 
 .role-restricted-overlay.dark-mode .role-comp-name {
@@ -1093,11 +1004,11 @@
 }
 
 .role-comp-card.from .role-comp-name {
-  color: #DC2626;
+  color: #EF4444;
 }
 
 .role-comp-card.to .role-comp-name {
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .role-restricted-overlay.dark-mode .role-comp-card.to .role-comp-name {
@@ -1106,7 +1017,7 @@
 
 .role-comp-arrow {
   font-size: 1.2rem;
-  color: #2454FF;
+  color: var(--gold);
 }
 
 .role-restricted-overlay.dark-mode .role-comp-arrow {
@@ -1122,9 +1033,9 @@
   flex: 1;
   padding: 12px 18px;
   border-radius: 10px;
-  border: 1px solid rgba(36, 84, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   background: transparent;
-  color: #4B5680;
+  color: var(--text-secondary);
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -1137,8 +1048,8 @@
 }
 
 .role-btn-cancel-action:hover {
-  background: rgba(36, 84, 255, 0.06);
-  color: #0B1739;
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
 }
 
 .role-restricted-overlay.dark-mode .role-btn-cancel-action:hover {
@@ -1151,12 +1062,12 @@
   padding: 12px 18px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #2454FF, #4F46E5);
-  color: #FFFFFF;
-  font-weight: 600;
+  background: var(--gradient-gold);
+  color: #000000;
+  font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(36, 84, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
   transition: all 0.2s ease;
 }
 
@@ -1168,7 +1079,7 @@
 
 .role-btn-switch-action:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(36, 84, 255, 0.4);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.5);
 }
 
 .role-restricted-overlay.dark-mode .role-btn-switch-action:hover {

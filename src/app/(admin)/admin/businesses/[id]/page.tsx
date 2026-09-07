@@ -195,7 +195,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
       />
 
       <div className="mb-4">
-        <button 
+        <button
           className="btn btn-outline-secondary d-flex align-items-center gap-2"
           onClick={() => router.push('/admin/businesses')}
           style={{ borderRadius: '8px' }}
@@ -205,7 +205,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
       </div>
 
       {loading ? (
-        <div className="card border-0 shadow-sm p-5 text-center" style={{ borderRadius: '20px', backgroundColor: '#ffffff' }}>
+        <div className="card border-0 shadow-sm p-5 text-center" style={{ borderRadius: '20px', backgroundColor: 'var(--bg-card)' }}>
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading details...</span>
           </div>
@@ -220,13 +220,13 @@ export default function BusinessDetailPage({ params }: PageProps) {
           No data found for this business.
         </div>
       ) : (
-        <div className="card border-0 shadow-sm p-4" style={{ borderRadius: '20px', backgroundColor: '#ffffff' }}>
+        <div className="card border-0 shadow-sm p-4" style={{ borderRadius: '20px', backgroundColor: 'var(--bg-card)' }}>
           <div className="d-flex align-items-center gap-3 mb-4">
             <div className="p-3 bg-primary-subtle text-primary rounded-circle" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center' }}>
               <MdStorefront size={28} />
             </div>
             <div>
-              <h3 className="fw-bold mb-1" style={{ color: '#1e293b' }}>
+              <h3 className="fw-bold mb-1" style={{ color: 'var(--gray-900)' }}>
                 {details.profile?.businessName || 'Business Profile'}
               </h3>
               <p className="text-secondary mb-0" style={{ fontSize: '0.9rem' }}>
@@ -250,7 +250,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
 
           {/* Tab Content Components */}
           <div className="py-2">
-            
+
             {/* Profile Tab */}
             {activeTab === 'profile' && (
               <div className="row g-4">
@@ -292,11 +292,11 @@ export default function BusinessDetailPage({ params }: PageProps) {
                 </div>
                 <div className="col-md-12">
                   <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: '0.82rem' }}>REGISTERED HEADQUARTERS ADDRESS</span>
-                  <p className="fw-semibold text-dark fs-5">{details.profile?.address || 'N/A'}</p>
+                  <p className="fw-semibold fs-5" style={{ color: 'var(--gray-900)' }}>{details.profile?.address || 'N/A'}</p>
                 </div>
                 <div className="col-md-12">
                   <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: '0.82rem' }}>ABOUT THE BRAND / SERVICES</span>
-                  <div className="p-3 bg-light rounded-3 text-secondary" style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
+                  <div className="p-3 rounded-3 text-secondary" style={{ fontSize: '0.95rem', lineHeight: '1.6', background: 'var(--gray-100)' }}>
                     {details.profile?.about || 'No details provided.'}
                   </div>
                 </div>
@@ -308,8 +308,8 @@ export default function BusinessDetailPage({ params }: PageProps) {
               <div>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h5 className="fw-bold text-dark mb-0">Marketing Campaigns ({details.campaigns?.length || 0})</h5>
-                  <button 
-                    className="btn btn-primary btn-sm d-flex align-items-center gap-1 px-3 py-2" 
+                  <button
+                    className="btn btn-primary btn-sm d-flex align-items-center gap-1 px-3 py-2"
                     onClick={handleOpenAddModal}
                     style={{ borderRadius: '10px' }}
                   >
@@ -322,8 +322,8 @@ export default function BusinessDetailPage({ params }: PageProps) {
                     <div className="card border-0 shadow-sm p-4 text-center" style={{ borderRadius: '16px' }}>
                       <p className="text-secondary mb-3">No marketing campaigns created for this business yet.</p>
                       <div>
-                        <button 
-                          className="btn btn-primary btn-sm px-4 py-2 fw-semibold" 
+                        <button
+                          className="btn btn-primary btn-sm px-4 py-2 fw-semibold"
                           onClick={handleOpenAddModal}
                           style={{ borderRadius: '10px' }}
                         >
@@ -352,10 +352,10 @@ export default function BusinessDetailPage({ params }: PageProps) {
                             <td>
                               {camp.bannerUrl ? (
                                 <a href={camp.bannerUrl} target="_blank" rel="noopener noreferrer">
-                                  <img 
-                                    src={camp.bannerUrl.split(',')[0]} 
-                                    alt="Banner" 
-                                    style={{ width: '90px', height: '45px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #e2e8f0' }} 
+                                  <img
+                                    src={camp.bannerUrl.split(',')[0]}
+                                    alt="Banner"
+                                    style={{ width: '90px', height: '45px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #e2e8f0' }}
                                   />
                                 </a>
                               ) : (
@@ -369,13 +369,12 @@ export default function BusinessDetailPage({ params }: PageProps) {
                             <td>{camp.cpc !== undefined ? `$${camp.cpc}` : '$0.00'}</td>
                             <td className="fw-semibold text-dark">{camp.spent !== undefined ? `$${camp.spent}` : '$0'}</td>
                             <td>
-                              <select 
-                                className={`form-select form-select-sm fw-semibold border ${
-                                  camp.status === 'active' ? 'bg-success-subtle text-success border-success' : 
-                                  camp.status === 'pending_approval' ? 'bg-warning-subtle text-warning border-warning' : 
-                                  camp.status === 'rejected' ? 'bg-danger-subtle text-danger border-danger' : 
-                                  'bg-light text-secondary'
-                                }`} 
+                              <select
+                                className={`form-select form-select-sm fw-semibold border ${camp.status === 'active' ? 'bg-success-subtle text-success border-success' :
+                                    camp.status === 'pending_approval' ? 'bg-warning-subtle text-warning border-warning' :
+                                      camp.status === 'rejected' ? 'bg-danger-subtle text-danger border-danger' :
+                                        'bg-light text-secondary'
+                                  }`}
                                 style={{ borderRadius: '6px', fontSize: '0.8rem', width: 'auto' }}
                                 value={camp.status || 'draft'}
                                 onChange={(e) => handleUpdateCampaignStatus(camp.id, e.target.value)}
@@ -390,7 +389,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
                             <td className="text-center">
                               <div className="d-flex justify-content-center gap-1">
                                 {camp.status !== 'active' && (
-                                  <button 
+                                  <button
                                     className="btn btn-sm btn-success p-1 d-flex align-items-center justify-content-center gap-1 px-2"
                                     onClick={() => handleUpdateCampaignStatus(camp.id, 'active')}
                                     title="Approve & Activate Campaign"
@@ -400,7 +399,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
                                   </button>
                                 )}
 
-                                <button 
+                                <button
                                   className="btn btn-sm btn-outline-primary p-1 d-flex align-items-center justify-content-center"
                                   onClick={() => handleOpenEditModal(camp)}
                                   title="Edit Campaign"
@@ -410,7 +409,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
                                 </button>
 
                                 {camp.status === 'active' && (
-                                  <button 
+                                  <button
                                     className="btn btn-sm btn-outline-danger p-1 d-flex align-items-center justify-content-center"
                                     onClick={() => handleUpdateCampaignStatus(camp.id, 'rejected')}
                                     title="Reject / Deactivate Campaign"
@@ -420,7 +419,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
                                   </button>
                                 )}
 
-                                <button 
+                                <button
                                   className="btn btn-sm btn-outline-danger p-1 d-flex align-items-center justify-content-center"
                                   onClick={() => handleDeleteCampaign(camp.id, camp.businessName)}
                                   title="Delete Campaign"
@@ -458,19 +457,19 @@ export default function BusinessDetailPage({ params }: PageProps) {
                     <tbody>
                       {details.invoices.map((inv: any) => (
                         <tr key={inv.id}>
-                          <td className="fw-bold" style={{ color: '#1e293b' }}>{inv.invoiceNumber}</td>
+                          <td className="fw-bold" style={{ color: 'var(--gray-900)' }}>{inv.invoiceNumber}</td>
                           <td>{new Date(inv.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                           <td>
-                            <span className="badge bg-light text-dark text-capitalize border" style={{ borderRadius: '6px', fontSize: '0.8rem', padding: '5px 10px' }}>
+                            <span className="badge text-capitalize border" style={{ borderRadius: '6px', fontSize: '0.8rem', padding: '5px 10px', background: 'var(--gray-100)', color: 'var(--gray-900)', borderColor: 'var(--gray-200)' }}>
                               {inv.tier}
                             </span>
                           </td>
-                          <td className="fw-bold text-dark">${inv.totalAmount}</td>
+                          <td className="fw-bold" style={{ color: 'var(--gray-900)' }}>${inv.totalAmount}</td>
                           <td className="text-center">
-                            <a 
-                              href={`/invoice/${inv.id}`} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
+                            <a
+                              href={`/invoice/${inv.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-3"
                               style={{ borderRadius: '8px', fontSize: '0.85rem' }}
                             >
@@ -492,14 +491,14 @@ export default function BusinessDetailPage({ params }: PageProps) {
       {/* ADMIN ADD / EDIT CAMPAIGN MODAL WITH COLLAGE MAKER */}
       {showModal && (
         <div className="admin-modal-overlay d-flex align-items-center justify-content-center" style={{ zIndex: 1060, position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)' }}>
-          <div className="admin-modal bg-white" style={{ maxWidth: '800px', width: '90%', borderRadius: '24px', padding: '1.75rem', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="admin-modal" style={{ maxWidth: '800px', width: '90%', borderRadius: '24px', padding: '1.75rem', maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-header border-0 pb-2 d-flex justify-content-between align-items-center">
-              <h3 className="fw-bold mb-0" style={{ color: '#111c44' }}>
+              <h3 className="fw-bold mb-0" style={{ color: 'var(--gray-900)' }}>
                 {editingPromo ? 'Edit Business Campaign' : 'Add Campaign For Business'}
               </h3>
-              <button className="btn-close" onClick={() => setShowModal(false)} aria-label="Close"></button>
+              <button className="btn-close btn-close-white" onClick={() => setShowModal(false)} aria-label="Close"></button>
             </div>
-            
+
             <form onSubmit={handleSaveCampaign}>
               <div className="modal-body py-3">
                 {errorMsg && (
@@ -512,37 +511,37 @@ export default function BusinessDetailPage({ params }: PageProps) {
                 <div className="row g-3">
                   <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>Owner Email *</label>
-                    <input type="email" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.userEmail} onChange={(e) => setFormData({...formData, userEmail: e.target.value})} required readOnly />
+                    <input type="email" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.userEmail} onChange={(e) => setFormData({ ...formData, userEmail: e.target.value })} required readOnly />
                   </div>
-                  
+
                   <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>Business Name *</label>
-                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.businessName} onChange={(e) => setFormData({...formData, businessName: e.target.value})} required />
+                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.businessName} onChange={(e) => setFormData({ ...formData, businessName: e.target.value })} required />
                   </div>
 
                   <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>Business Category *</label>
-                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} required />
+                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} required />
                   </div>
 
                   <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>Campaign Tagline / Purpose</label>
-                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.purpose} onChange={(e) => setFormData({...formData, purpose: e.target.value})} />
+                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.purpose} onChange={(e) => setFormData({ ...formData, purpose: e.target.value })} />
                   </div>
 
                   <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>Dynamic Button Text (CTA Label) *</label>
-                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.ctaLabel} onChange={(e) => setFormData({...formData, ctaLabel: e.target.value})} placeholder="e.g. Visit Website, Book Consultation, Learn More" required />
+                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.ctaLabel} onChange={(e) => setFormData({ ...formData, ctaLabel: e.target.value })} placeholder="e.g. Visit Website, Book Consultation, Learn More" required />
                   </div>
 
                   <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>CTA Destination Link / Website URL *</label>
-                    <input type="url" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.businessContactDetails} onChange={(e) => setFormData({...formData, businessContactDetails: e.target.value})} placeholder="https://yourbusiness.com" required />
+                    <input type="url" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.businessContactDetails} onChange={(e) => setFormData({ ...formData, businessContactDetails: e.target.value })} placeholder="https://yourbusiness.com" required />
                   </div>
 
                   <div className="col-md-12">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>Offer Pill / Badge Text</label>
-                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.offerTag} onChange={(e) => setFormData({...formData, offerTag: e.target.value})} />
+                    <input type="text" className="form-control px-3 py-2" style={{ borderRadius: '10px' }} value={formData.offerTag} onChange={(e) => setFormData({ ...formData, offerTag: e.target.value })} />
                   </div>
 
                   {/* COLLAGE MAKER COMPONENT */}
@@ -557,13 +556,13 @@ export default function BusinessDetailPage({ params }: PageProps) {
 
                   <div className="col-md-12">
                     <label className="form-label fw-semibold text-secondary" style={{ fontSize: '0.85rem' }}>Campaign Description</label>
-                    <textarea 
-                      name="description" 
-                      className="form-control px-3 py-2" 
+                    <textarea
+                      name="description"
+                      className="form-control px-3 py-2"
                       style={{ borderRadius: '10px' }}
                       rows={3}
-                      value={formData.description} 
-                      onChange={(e) => setFormData({...formData, description: e.target.value})} 
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     />
                   </div>
                 </div>

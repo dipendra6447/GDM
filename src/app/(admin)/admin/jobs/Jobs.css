@@ -2,12 +2,23 @@
    Jobs.css — Styles for Jobs Management
    ============================================ */
 
-.jobs-page { animation: fadeIn 0.5s ease-out; }
+.jobs-page {
+  animation: fadeIn 0.5s ease-out;
+}
 
-.job-title { font-weight: 500; color: var(--gray-900); font-size: 1.05rem; }
+.job-title {
+  font-weight: 500;
+  color: var(--gray-900);
+  font-size: 1.05rem;
+}
 
-.row-deleted { opacity: 0.5; }
-.row-deleted td { text-decoration: line-through; }
+.row-deleted {
+  opacity: 0.5;
+}
+
+.row-deleted td {
+  text-decoration: line-through;
+}
 
 /* ── Improved Tabs for Jobs Page ── */
 .jobs-page .role-filter-tabs {
@@ -17,7 +28,7 @@
   display: inline-flex;
   border: 1px solid var(--gray-200);
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .jobs-page .role-tab {
@@ -48,13 +59,14 @@
 
 /* ── Add Job Modal & Editor Enhancements ── */
 .job-modal {
-  max-width: 900px !important; /* Make the job modal significantly wider */
+  max-width: 900px !important;
+  /* Make the job modal significantly wider */
   width: 95%;
 }
 
 .job-editor-wrapper {
-  background: #fff;
-  color: #333;
+  background: var(--bg-card);
+  color: var(--gray-900);
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--gray-200);
@@ -62,20 +74,36 @@
 
 .job-editor-wrapper .ql-toolbar {
   border: none !important;
-  border-bottom: 1px solid #ddd !important;
-  background: #f8f9fa;
+  border-bottom: 1px solid var(--gray-200) !important;
+  background: var(--gray-100);
   font-family: inherit;
+}
+
+.job-editor-wrapper .ql-toolbar .ql-stroke {
+  stroke: var(--gray-400);
+}
+
+.job-editor-wrapper .ql-toolbar .ql-fill {
+  fill: var(--gray-400);
+}
+
+.job-editor-wrapper .ql-toolbar .ql-picker {
+  color: var(--gray-400);
 }
 
 .job-editor-wrapper .ql-container {
   border: none !important;
   font-family: inherit;
   font-size: 1rem;
+  background: var(--bg-card);
+  color: var(--gray-900);
 }
 
 .job-editor-wrapper .ql-editor {
-  min-height: 400px; /* Much taller description field */
+  min-height: 400px;
+  /* Much taller description field */
   padding: 1.5rem;
+  color: var(--gray-900);
 }
 
 /* Shared styles from Users.css are imported globally */

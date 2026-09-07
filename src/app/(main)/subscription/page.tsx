@@ -1,4 +1,4 @@
-import Page from '@/views/SubscriptionLight/SubscriptionLight';
+import Page from '@/views/Subscription/Subscription';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

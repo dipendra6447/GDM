@@ -105,7 +105,7 @@ export default function SavedJobsPage() {
           isSaved: true,
         }));
         setSavedJobs(mapped);
-        
+
         // Auto-select first job
         if (mapped.length > 0) {
           selectJob(mapped[0]);
@@ -170,7 +170,7 @@ export default function SavedJobsPage() {
         }
       });
       const json = await res.json();
-      
+
       if (res.ok && json.success) {
         setSelectedJobApplied(true);
         alert('Application submitted successfully!');
@@ -329,7 +329,7 @@ export default function SavedJobsPage() {
                         >
                           <i className="bi bi-bookmark-fill" />
                         </button>
-                        
+
                         {/* Apply Now button (top) */}
                         {!isEmployer && (
                           <button
@@ -459,9 +459,9 @@ export default function SavedJobsPage() {
             style={{
               width: '400px',
               borderRadius: '16px',
-              border: '1px solid rgba(255, 255, 255, 0.8)',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-              background: '#ffffff',
+              border: '1px solid var(--border-dark, rgba(255, 255, 255, 0.08))',
+              boxShadow: '0 24px 60px rgba(0, 0, 0, 0.8)',
+              background: 'var(--bg-card-dark, #0F121E)',
               padding: '24px',
             }}
           >
@@ -471,7 +471,7 @@ export default function SavedJobsPage() {
                   width: '56px',
                   height: '56px',
                   borderRadius: '50%',
-                  backgroundColor: '#fee2e2',
+                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
                   color: '#ef4444',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -482,7 +482,7 @@ export default function SavedJobsPage() {
               >
                 <i className="bi bi-exclamation-triangle-fill"></i>
               </div>
-              <h4 style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>Remove Saved Job?</h4>
+              <h4 style={{ fontWeight: 600, color: 'var(--text-dark-title, #FFFFFF)', margin: 0 }}>Remove Saved Job?</h4>
             </div>
 
             <p className="text-center text-secondary mb-4" style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>

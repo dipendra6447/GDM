@@ -29,8 +29,8 @@
 
 /* Tab placeholder */
 .jd-tab-placeholder {
-  background: white;
-  border: 1px solid var(--color-border);
+  background: var(--bg-card-dark, #0F121E);
+  border: 1px solid var(--border-dark, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-card);
   padding: 60px;
   text-align: center;
@@ -42,7 +42,7 @@
   font-size: 48px;
   display: block;
   margin-bottom: 16px;
-  color: var(--color-border);
+  color: var(--border-dark, rgba(255, 255, 255, 0.08));
 }
 
 /* ── Responsive ── */
@@ -50,6 +50,7 @@
   .jd-layout {
     grid-template-columns: 1fr;
   }
+
   .jd-sidebar-col {
     position: static;
     order: -1;
@@ -58,20 +59,21 @@
 
 /* ── Skeleton Loading ── */
 .skeleton-shimmer {
-  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%);
+  background: linear-gradient(90deg, #15192A 25%, #1D233A 37%, #15192A 63%);
   background-size: 200% 100%;
   animation: shimmer-jd 1.4s infinite linear;
 }
 
 .skeleton-block {
   border-radius: 6px;
-  background-color: #e5e7eb;
+  background-color: #1D233A;
 }
 
 @keyframes shimmer-jd {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }

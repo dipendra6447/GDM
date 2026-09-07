@@ -309,14 +309,14 @@ function ContactContent() {
                 <div className="success-icon-badge">
                   <i className="bi bi-check-lg"></i>
                 </div>
-                <h3 className="h2 mb-3" style={{ color: '#0F172A', fontWeight: 800 }}>
+                <h3 className="h2 mb-3" style={{ color: '#FFFFFF', fontWeight: 800 }}>
                   Quote Request Received!
                 </h3>
-                <p style={{ color: '#475569', maxWidth: 600, margin: '0 auto 1.5rem', fontSize: '1.05rem' }}>
-                  Thank you, <strong style={{ color: '#2454FF' }}>{submittedData.fullName}</strong>. Our senior solution architect will review your project details for <strong style={{ color: '#0F172A' }}>{currentServiceObj.title}</strong> and send a comprehensive proposal to <strong style={{ color: '#2454FF' }}>{submittedData.email}</strong> within 2 hours.
+                <p style={{ color: '#94A3B8', maxWidth: 600, margin: '0 auto 1.5rem', fontSize: '1.05rem' }}>
+                  Thank you, <strong style={{ color: '#2454FF' }}>{submittedData.fullName}</strong>. Our senior solution architect will review your project details for <strong style={{ color: '#FFFFFF' }}>{currentServiceObj.title}</strong> and send a comprehensive proposal to <strong style={{ color: '#2454FF' }}>{submittedData.email}</strong> within 2 hours.
                 </p>
 
-                <div className="p-3 mb-4 rounded-3" style={{ background: '#F8FAFC', border: '1px solid rgba(36, 84, 255, 0.2)', display: 'inline-block', textAlign: 'left', minWidth: 300 }}>
+                <div className="p-3 mb-4 rounded-3" style={{ background: '#111422', border: '1px solid rgba(36, 84, 255, 0.2)', display: 'inline-block', textAlign: 'left', minWidth: 300 }}>
                   <div style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '0.25rem' }}>Reference Ticket ID</div>
                   <div style={{ fontSize: '1rem', fontWeight: 700, color: '#2454FF', fontFamily: 'monospace' }}>
                     {submittedData.id || `JN-QUOTE-${Math.floor(100000 + Math.random() * 900000)}`}
@@ -512,7 +512,7 @@ function ContactContent() {
         <section className="capabilities-section">
           <div className="text-center mb-4">
             <span className="contact-badge">Why Partner With Us</span>
-            <h2 className="h2 font-weight-bold mt-2" style={{ color: '#0F172A', fontWeight: 800 }}>
+            <h2 className="h2 font-weight-bold mt-2" style={{ color: '#FFFFFF', fontWeight: 800 }}>
               Enterprise Digital Engineering Standards
             </h2>
           </div>
@@ -564,7 +564,7 @@ function ContactContent() {
         <section className="contact-faq-section">
           <div className="text-center mb-4">
             <span className="contact-badge">Got Questions?</span>
-            <h2 className="h2 font-weight-bold mt-2" style={{ color: '#0F172A', fontWeight: 800 }}>
+            <h2 className="h2 font-weight-bold mt-2" style={{ color: '#FFFFFF', fontWeight: 800 }}>
               Frequently Asked Questions
             </h2>
           </div>
