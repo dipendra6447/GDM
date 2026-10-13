@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import "../../styles/subscription.css";
 import "../../styles/subscription-light.css";
-import "../Home/Home.css";
 import PricingHero from "../../components/PricingHero/PricingHero";
 import JobSeekerPlans from "../../components/JobSeekerPlans/JobSeekerPlans";
 import EmployerPlans from "../../components/EmployerPlans/EmployerPlans";
@@ -29,6 +28,7 @@ const SubscriptionLight: React.FC = () => {
   const searchParams = useSearchParams();
 
   const [selectedRole, setSelectedRole] = useState<UserRole>("jobseeker");
+
   const [roleSwitch, setRoleSwitch] = useState<RoleSwitchState>({
     open: false,
     from: "jobseeker",
@@ -38,12 +38,9 @@ const SubscriptionLight: React.FC = () => {
   const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Compute available role access for current user (or guest)
   const hasJobSeekerRole = !isLoggedIn || (user?.roles?.includes(1) ?? true);
   const hasEmployerRole = !isLoggedIn || (user?.roles?.includes(2) ?? false);
   const hasBusinessRole = !isLoggedIn || (user?.roles?.includes(3) ?? false);
-
-  const availableRoleCount = [hasJobSeekerRole, hasEmployerRole, hasBusinessRole].filter(Boolean).length;
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -67,14 +64,22 @@ const SubscriptionLight: React.FC = () => {
   useEffect(() => {
     if (isLoggedIn && user?.roles?.length) {
       if (activeRole && user.roles.includes(activeRole)) {
-        if (activeRole === 2) setSelectedRole("employer");
-        else if (activeRole === 3) setSelectedRole("business");
-        else setSelectedRole("jobseeker");
+        if (activeRole === 2) {
+          setSelectedRole("employer");
+        } else if (activeRole === 3) {
+          setSelectedRole("business");
+        } else {
+          setSelectedRole("jobseeker");
+        }
       } else {
         const firstRole = user.roles[0];
-        if (firstRole === 2) setSelectedRole("employer");
-        else if (firstRole === 3) setSelectedRole("business");
-        else setSelectedRole("jobseeker");
+        if (firstRole === 2) {
+          setSelectedRole("employer");
+        } else if (firstRole === 3) {
+          setSelectedRole("business");
+        } else {
+          setSelectedRole("jobseeker");
+        }
       }
     } else {
       const roleParam = searchParams.get("role") || searchParams.get("tab") || searchParams.get("type");
@@ -91,18 +96,42 @@ const SubscriptionLight: React.FC = () => {
     }
   }, [searchParams, activeRole, isLoggedIn, userRolesKey]);
 
-  const handleRoleTabChange = (role: UserRole) => {
+  const handleRoleSelect = (targetRole: UserRole) => {
     if (!isLoggedIn) {
-      setSelectedRole(role);
+      setSelectedRole(targetRole);
+      const el = document.getElementById("plans");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
       return;
     }
 
-    if (role === "jobseeker" && hasJobSeekerRole) setSelectedRole("jobseeker");
-    if (role === "employer" && hasEmployerRole) setSelectedRole("employer");
-    if (role === "business" && hasBusinessRole) setSelectedRole("business");
+    if (targetRole === "jobseeker") {
+      if (hasJobSeekerRole) {
+        setSelectedRole("jobseeker");
+      } else {
+        openRoleSwitch(selectedRole, "jobseeker");
+      }
+    } else if (targetRole === "employer") {
+      if (hasEmployerRole) {
+        setSelectedRole("employer");
+      } else {
+        openRoleSwitch(selectedRole, "employer");
+      }
+    } else if (targetRole === "business") {
+      if (hasBusinessRole) {
+        setSelectedRole("business");
+      } else {
+        openRoleSwitch(selectedRole, "business");
+      }
+    }
   };
 
   const openRoleSwitch = (from: UserRole, to: UserRole) => {
+    if (!isLoggedIn) {
+      setSelectedRole(to);
+      const el = document.getElementById("plans");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     setRoleSwitch({ open: true, from, to });
   };
 
@@ -112,139 +141,114 @@ const SubscriptionLight: React.FC = () => {
 
   return (
     <div className="subscription-page subscription-light-page">
-      <Breadcrumb items={[{ label: 'Subscription & Pricing' }]} />
+      <Breadcrumb items={[{ label: "Subscription & Pricing" }]} />
       <main style={{ paddingTop: "0" }}>
         {/* 1. Hero */}
         <PricingHero />
 
-        {/* Stats Strip */}
+        {/* 2. Stats Strip */}
         <StatsStrip />
 
         {/* Section Divider */}
         <div className="sub-section-divider" />
 
-        {/* Role Selector Tabs — Dynamically rendered based on assigned user roles */}
-        <div className="container mt-4 mb-4 text-center" id="plans">
-          <div className="sub-badge mb-3">
-            {isLoggedIn
-              ? `✨ Plans for Your Account (${user?.roles?.length || 1} Role${(user?.roles?.length || 1) > 1 ? 's' : ''})`
-              : '✨ Select Pricing Category'}
-          </div>
-
-          {availableRoleCount > 1 ? (
-            <div
-              className="d-inline-flex p-1 rounded-4 shadow-lg"
-              style={{
-                background: "rgba(17, 17, 17, 0.9)",
-                backdropFilter: "blur(16px)",
-                border: "1px solid rgba(212, 175, 55, 0.3)",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
-              }}
+        {/* 3. Three User Plan Switcher: 1. Job Seekers, 2. Employer, 3. Business */}
+        <div className="container mt-2 mb-4 text-center" id="plans">
+          <div className="triple-role-switcher" role="tablist" aria-label="User Plans">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedRole === "jobseeker"}
+              onClick={() => handleRoleSelect("jobseeker")}
+              className={`role-segment-btn ${selectedRole === "jobseeker" ? "active" : ""}`}
+              id="role-tab-jobseeker"
+              aria-label="1. Job Seekers"
             >
-              {hasJobSeekerRole && (
-                <button
-                  type="button"
-                  onClick={() => handleRoleTabChange("jobseeker")}
-                  className="btn px-4 py-2.5 fw-bold transition-all"
-                  style={{
-                    borderRadius: "12px",
-                    fontSize: "0.95rem",
-                    background: selectedRole === "jobseeker" ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
-                    color: selectedRole === "jobseeker" ? "#000000" : "#FFFFFF",
-                    border: "none",
-                    boxShadow: selectedRole === "jobseeker" ? "0 4px 15px rgba(212, 175, 55, 0.3)" : "none",
-                    fontWeight: 700
-                  }}
-                >
-                  👨‍💻 Job Seekers
-                </button>
-              )}
+              <div className="role-segment-icon">👤</div>
+              <div>
+                <div className="role-segment-title">1. Job Seekers</div>
+                <div className="role-segment-sub">
+                  Find jobs, build profile & apply
+                </div>
+              </div>
+            </button>
 
-              {hasEmployerRole && (
-                <button
-                  type="button"
-                  onClick={() => handleRoleTabChange("employer")}
-                  className="btn px-4 py-2.5 fw-bold transition-all"
-                  style={{
-                    borderRadius: "12px",
-                    fontSize: "0.95rem",
-                    background: selectedRole === "employer" ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
-                    color: selectedRole === "employer" ? "#000000" : "#FFFFFF",
-                    border: "none",
-                    boxShadow: selectedRole === "employer" ? "0 4px 15px rgba(212, 175, 55, 0.3)" : "none",
-                    fontWeight: 700
-                  }}
-                >
-                  🏢 Employers
-                </button>
-              )}
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedRole === "employer"}
+              onClick={() => handleRoleSelect("employer")}
+              className={`role-segment-btn ${selectedRole === "employer" ? "active" : ""}`}
+              id="role-tab-employer"
+              aria-label="2. Employer"
+            >
+              <div className="role-segment-icon">🏢</div>
+              <div>
+                <div className="role-segment-title">2. Employer</div>
+                <div className="role-segment-sub">
+                  Post jobs, hire talent & manage candidates
+                </div>
+              </div>
+            </button>
 
-              {hasBusinessRole && (
-                <button
-                  type="button"
-                  onClick={() => handleRoleTabChange("business")}
-                  className="btn px-4 py-2.5 fw-bold transition-all"
-                  style={{
-                    borderRadius: "12px",
-                    fontSize: "0.95rem",
-                    background: selectedRole === "business" ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
-                    color: selectedRole === "business" ? "#000000" : "#FFFFFF",
-                    border: "none",
-                    boxShadow: selectedRole === "business" ? "0 4px 15px rgba(212, 175, 55, 0.3)" : "none",
-                    fontWeight: 700
-                  }}
-                >
-                  🚀 Business Promoters
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="sub-badge" style={{ fontSize: '1.05rem', padding: '10px 24px', borderRadius: '30px' }}>
-              {selectedRole === "employer"
-                ? '🏢 Membership Plans for Employers'
-                : selectedRole === "business"
-                  ? '🚀 Membership Plans for Business Promoters'
-                  : '👨‍💻 Membership Plans for Job Seekers'}
-            </div>
-          )}
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedRole === "business"}
+              onClick={() => handleRoleSelect("business")}
+              className={`role-segment-btn ${selectedRole === "business" ? "active" : ""}`}
+              id="role-tab-business"
+              aria-label="3. Business"
+            >
+              <div className="role-segment-icon">🚀</div>
+              <div>
+                <div className="role-segment-title">3. Business</div>
+                <div className="role-segment-sub">
+                  Promote brand, gain reach & generate leads
+                </div>
+              </div>
+            </button>
+          </div>
         </div>
 
-        {selectedRole === "jobseeker" && (
-          <JobSeekerPlans
-            onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
-            dbPlans={seekerPlans}
-            loading={loading}
-          />
-        )}
+        {/* 4. Pricing Plans Rendering */}
+        <div id="pricing-plans-display">
+          {selectedRole === "jobseeker" && (
+            <JobSeekerPlans
+              onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
+              dbPlans={seekerPlans}
+              loading={loading}
+              isLight={false}
+            />
+          )}
 
-        {selectedRole === "employer" && (
-          <EmployerPlans
-            onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
-            dbPlans={employerPlans}
-            loading={loading}
-          />
-        )}
+          {selectedRole === "employer" && (
+            <EmployerPlans
+              onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
+              dbPlans={employerPlans}
+              loading={loading}
+              isLight={false}
+            />
+          )}
 
-        {selectedRole === "business" && (
-          <BusinessPromotionPlans
-            onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
-            dbPlans={businessPlans}
-            loading={loading}
-          />
-        )}
-
-        {/* Section Divider */}
-        <div className="sub-section-divider" />
-
-        {/* Overall Comparison Table */}
-        <ComparisonTable />
+          {selectedRole === "business" && (
+            <BusinessPromotionPlans
+              onRoleSwitch={(from, to) => openRoleSwitch(from as UserRole, to as UserRole)}
+              dbPlans={businessPlans}
+              loading={loading}
+              isLight={false}
+            />
+          )}
+        </div>
 
         <div className="sub-section-divider" />
         <PremiumBenefits />
         <div className="sub-section-divider" />
-        <Testimonials />
+        <ComparisonTable />
         <div className="sub-section-divider" />
         <FAQ />
+        <div className="sub-section-divider" />
+        <Testimonials />
         <div className="sub-section-divider" />
         <SubscriptionCTA />
 
@@ -253,6 +257,7 @@ const SubscriptionLight: React.FC = () => {
           <RoleSwitcherModal
             currentRole={roleSwitch.from}
             targetRole={roleSwitch.to}
+            isLight={false}
             onConfirm={() => {
               setSelectedRole(roleSwitch.to);
               setRoleSwitch((prev) => ({ ...prev, open: false }));

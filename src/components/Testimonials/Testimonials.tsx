@@ -53,10 +53,10 @@ const Testimonials: React.FC = () => {
     <section className="testimonials-section" id="testimonials">
       <div className="container">
         <div className="text-center mb-5">
-          <div className="sub-badge">Success Stories</div>
-          <h2 className="sub-heading">
-            <span className="gold-text">What Our Members Say</span>
-          </h2>
+          <div className="sub-eyebrow mb-2">
+            <span className="eyebrow-bullet">•</span> SUCCESS STORIES
+          </div>
+          <h2 className="sub-heading">What Our Members Say</h2>
         </div>
 
         <div className="testimonial-slider" style={{ overflow: "hidden" }}>

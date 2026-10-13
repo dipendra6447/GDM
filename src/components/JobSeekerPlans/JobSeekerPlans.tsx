@@ -11,82 +11,88 @@ gsap.registerPlugin(ScrollTrigger);
 
 type BillingPeriod = "daily" | "weekly" | "monthly";
 
-const plans = [
+// Default fallback plans matching the design mockup exactly
+const defaultPlans = [
   {
-    id: "js-silver",
-    tier: "Silver",
+    id: "js-free",
+    tier: "Free",
+    icon: "🚀",
+    iconBoxClass: "icon-box-violet",
     badge: null,
-    tierClass: "tier-silver",
-    priceDaily: "$29",
-    priceWeekly: "$99",
-    priceMonthly: "$299",
-    desc: "Perfect for active job seekers",
+    tierClass: "tier-free",
+    priceDaily: "$0",
+    priceWeekly: "$0",
+    priceMonthly: "$0",
+    desc: "Start exploring and see what's possible.",
     features: [
-      { text: "Search Unlimited Jobs", included: true },
-      { text: "First 3 Applications Free", included: true },
-      { text: "Basic Profile", included: true },
-      { text: "Apply Tracking", included: true },
-      { text: "Unlimited Applications", included: false },
-      { text: "Priority Visibility", included: false },
-      { text: "Analytics Dashboard", included: false },
+      { text: "Create your profile", included: true },
+      { text: "Discover jobs & opportunities", included: true },
+      { text: "Browse businesses & services", included: true },
+      { text: "Apply and connect", included: true },
+      { text: "Basic networking", included: true },
+      { text: "Basic profile visibility", included: true },
     ],
-    cta: "Get Silver",
+    cta: "Create Free Account →",
     featured: false,
   },
   {
-    id: "js-gold",
-    tier: "Gold",
-    badge: "⭐ Most Popular",
-    tierClass: "tier-gold",
-    priceDaily: "$59",
-    priceWeekly: "$199",
-    priceMonthly: "$599",
-    desc: "Unlimited applications & priority",
+    id: "js-plus",
+    tier: "Plus",
+    icon: "👑",
+    iconBoxClass: "icon-box-blue",
+    badge: "★ Most Popular",
+    tierClass: "tier-plus",
+    priceDaily: "$1.99",
+    priceWeekly: "$4.99",
+    priceMonthly: "$9.99",
+    desc: "Get more tools and visibility to grow your opportunities.",
     features: [
-      { text: "Everything in Silver", included: true },
-      { text: "Unlimited Applications", included: true },
-      { text: "Priority Profile Visibility", included: true },
-      { text: "Featured Candidate Badge", included: true },
-      { text: "Application Analytics", included: true },
-      { text: "Resume Enhancement", included: false },
-      { text: "Premium Support", included: false },
+      { text: "Everything in Free", included: true },
+      { text: "Enhanced profile", included: true },
+      { text: "Promote yourself", included: true },
+      { text: "Increased visibility", included: true },
+      { text: "Advanced search", included: true },
+      { text: "Priority placement", included: true },
+      { text: "More networking features", included: true },
     ],
-    cta: "Get Gold",
+    cta: "Get Plus →",
     featured: true,
   },
   {
-    id: "js-platinum",
-    tier: "Platinum",
-    badge: "👑 Best Value",
-    tierClass: "tier-platinum",
-    priceDaily: "$99",
-    priceWeekly: "$299",
-    priceMonthly: "$899",
-    desc: "Maximum career acceleration",
+    id: "js-pro",
+    tier: "Pro",
+    icon: "💎",
+    iconBoxClass: "icon-box-purple",
+    badge: null,
+    tierClass: "tier-pro",
+    priceDaily: "$3.99",
+    priceWeekly: "$8.99",
+    priceMonthly: "$19.99",
+    desc: "For professionals serious about growth.",
     features: [
-      { text: "Everything in Gold", included: true },
-      { text: "Resume Enhancement", included: true },
-      { text: "Premium Support 24/7", included: true },
-      { text: "Early Access Jobs", included: true },
-      { text: "Career Coaching Session", included: true },
-      { text: "LinkedIn Profile Boost", included: true },
-      { text: "Dedicated Account Manager", included: true },
+      { text: "Everything in Plus", included: true },
+      { text: "Maximum profile visibility", included: true },
+      { text: "Advanced promotion tools", included: true },
+      { text: "Detailed analytics", included: true },
+      { text: "Priority discovery", included: true },
+      { text: "Exclusive opportunities", included: true },
+      { text: "Professional tools & features", included: true },
     ],
-    cta: "Get Platinum",
+    cta: "Get Pro →",
     featured: false,
   },
 ];
 
-// Comparison data
+// Comparison table data
 const compareRows = [
-  { feature: "Job Applications", silver: "First 3 Free", gold: "✓ Unlimited", platinum: "✓ Unlimited" },
-  { feature: "Profile Visibility", silver: "Basic", gold: "✓ Priority", platinum: "✓ Featured" },
-  { feature: "Candidate Badge", silver: "✗", gold: "✓", platinum: "✓ Premium" },
-  { feature: "Analytics Dashboard", silver: "✗", gold: "✓", platinum: "✓ Advanced" },
-  { feature: "Resume Enhancement", silver: "✗", gold: "✗", platinum: "✓" },
-  { feature: "Career Coaching", silver: "✗", gold: "✗", platinum: "✓" },
-  { feature: "Priority Support", silver: "✗", gold: "✓", platinum: "✓ 24/7" },
-  { feature: "Early Access Jobs", silver: "✗", gold: "✗", platinum: "✓" },
+  { feature: "Create Profile", free: "✓", plus: "✓", pro: "✓" },
+  { feature: "Discover Jobs & Opportunities", free: "✓", plus: "✓", pro: "✓" },
+  { feature: "Apply / Connect", free: "✓ (First 3 Free)", plus: "✓ Unlimited", pro: "✓ Unlimited" },
+  { feature: "Promote Yourself", free: "—", plus: "✓", pro: "✓" },
+  { feature: "Enhanced Visibility", free: "—", plus: "✓", pro: "✓" },
+  { feature: "Advanced Search", free: "—", plus: "✓", pro: "✓" },
+  { feature: "Analytics", free: "Basic", plus: "Standard", pro: "Advanced" },
+  { feature: "Priority Placement", free: "—", plus: "—", pro: "✓" },
 ];
 
 interface JobSeekerPlansProps {
@@ -97,44 +103,55 @@ interface JobSeekerPlansProps {
 }
 
 const getDynamicPlans = (dbPlans: any[], billing: BillingPeriod) => {
-  // Sort by monthlyPrice to ensure correct order
   const sortedPlans = [...dbPlans].sort((a, b) => a.monthlyPrice - b.monthlyPrice);
-  
-  return sortedPlans.map(plan => {
-    // Transform DB features list to the UI format (assumed all in list are included)
-    const featuresList = plan.features ? plan.features.map((f: string) => ({
-      text: f,
-      included: true
-    })) : [];
+
+  return sortedPlans.map((plan, idx) => {
+    const featuresList = plan.features
+      ? plan.features.map((f: string) => ({ text: f, included: true }))
+      : [];
 
     let badge = null;
-    if (plan.isPopular) badge = "⭐ Most Popular";
-    else if (plan.isBestValue) badge = "👑 Best Value";
+    if (plan.isPopular) badge = "★ Most Popular";
+    else if (plan.isBestValue) badge = "💎 Best Value";
+
+    const icon = idx === 0 ? "🚀" : idx === 1 ? "👑" : "💎";
+    const iconBoxClass = idx === 0 ? "icon-box-violet" : idx === 1 ? "icon-box-blue" : "icon-box-purple";
 
     return {
       id: plan.id,
       tier: plan.name,
+      icon,
+      iconBoxClass,
       badge,
       tierClass: `tier-${plan.tier.toLowerCase()}`,
       priceDaily: `$${plan.dailyPrice}`,
       priceWeekly: `$${plan.weeklyPrice}`,
       priceMonthly: `$${plan.monthlyPrice}`,
-      desc: plan.tier === "free" ? "Perfect for active entry" : plan.tier === "plus" ? "Unlimited applications & more" : "Maximum career acceleration",
-      features: featuresList,
-      cta: plan.tier === "free" ? "Current Plan" : `Get ${plan.name}`,
-      featured: plan.isPopular
+      desc:
+        plan.tier === "free"
+          ? "Start exploring and see what's possible."
+          : plan.tier === "plus"
+          ? "Get more tools and visibility to grow your opportunities."
+          : "For professionals serious about growth.",
+      features: featuresList.length > 0 ? featuresList : (defaultPlans[idx]?.features || []),
+      cta: plan.tier === "free" ? "Create Free Account →" : `Get ${plan.name} →`,
+      featured: plan.isPopular || idx === 1,
     };
   });
 };
 
-const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight = false, dbPlans = [], loading = false }) => {
+const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({
+  onRoleSwitch,
+  isLight = false,
+  dbPlans = [],
+}) => {
   const { user, isLoggedIn, activeRole } = useAuth();
   const router = useRouter();
   const sectionRef = useRef<HTMLElement>(null);
   const [billing, setBilling] = useState<BillingPeriod>("monthly");
   const [showCompare, setShowCompare] = useState(false);
 
-  const renderedPlans = dbPlans.length > 0 ? getDynamicPlans(dbPlans, billing) : plans;
+  const renderedPlans = dbPlans.length > 0 ? getDynamicPlans(dbPlans, billing) : defaultPlans;
 
   const handleSelectPlan = (e: React.MouseEvent, planId: string) => {
     e.preventDefault();
@@ -150,7 +167,7 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
     router.push(`/cart?plan=${planId}&billing=${billing}`);
   };
 
-  const getPrice = (p: typeof plans[0]) => {
+  const getPrice = (p: typeof defaultPlans[0]) => {
     if (billing === "daily") return p.priceDaily;
     if (billing === "weekly") return p.priceWeekly;
     return p.priceMonthly;
@@ -171,9 +188,9 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
           once: true,
         },
         opacity: 0,
-        y: 60,
-        duration: 0.7,
-        stagger: 0.2,
+        y: 40,
+        duration: 0.6,
+        stagger: 0.15,
         ease: "power3.out",
         clearProps: "all",
       });
@@ -181,48 +198,51 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
     return () => ctx.revert();
   }, []);
 
-  // Trap body scroll when compare modal open
   useEffect(() => {
     document.body.style.overflow = showCompare ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [showCompare]);
 
   const renderCell = (val: string) => {
     if (val === "✓") return <span className="cmp-check">✓</span>;
-    if (val === "✗") return <span className="cmp-cross">✗</span>;
+    if (val === "—" || val === "✗") return <span className="cmp-cross">—</span>;
     if (val.startsWith("✓")) return <span className="cmp-check-text">{val}</span>;
     return <span className="cmp-plain">{val}</span>;
   };
 
   return (
     <>
-      <section className="pricing-section" ref={sectionRef} id="plans">
+      <section className="pricing-section" ref={sectionRef} id="personal-plans">
         <div className="container">
           <div className="pricing-section-title">
-            <div className="sub-badge">For Job Seekers</div>
-            <h2 className="sub-heading">
-              <span className="gold-text">Apply Without Limitations</span>
-            </h2>
+            <div className="sub-eyebrow mb-2">
+              <span className="eyebrow-bullet">•</span> 1. JOB SEEKER PLANS
+            </div>
+            <h2 className="sub-heading">Plans for Your Next Move</h2>
             <p className="sub-subheading">
-              Choose your power level and accelerate your career journey.
+              Find work, build your profile, get discovered, and connect with opportunities.
             </p>
           </div>
 
-          {/* Per-section billing toggle */}
-          <div className="section-billing-toggle">
-            {(["daily", "weekly", "monthly"] as BillingPeriod[]).map((p) => (
-              <button
-                key={p}
-                className={`sbt-btn${billing === p ? " active" : ""}`}
-                onClick={() => setBilling(p)}
-                id={`js-billing-${p}`}
-              >
-                {p.charAt(0).toUpperCase() + p.slice(1)}
-              </button>
-            ))}
+          {/* Billing toggle */}
+          <div className="text-center">
+            <div className="section-billing-toggle">
+              {(["daily", "weekly", "monthly"] as BillingPeriod[]).map((p) => (
+                <button
+                  key={p}
+                  className={`sbt-btn${billing === p ? " active" : ""}`}
+                  onClick={() => setBilling(p)}
+                  id={`js-billing-${p}`}
+                >
+                  {p.charAt(0).toUpperCase() + p.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Three-tier cards */}
+          {/* Three-tier cards row matching reference image */}
           <div className="pricing-cards-row three-col">
             {renderedPlans.map((plan) => (
               <div
@@ -230,26 +250,35 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
                 className={`pricing-card js-plan-card${plan.featured ? " featured" : ""} ${plan.tierClass}`}
                 id={plan.id}
               >
-                {plan.badge && <div className="card-badge">{plan.badge}</div>}
-                <div className="card-tier-ribbon">{plan.tier}</div>
-                <div className="card-plan-type">Job Seeker</div>
-                <div className="card-plan-name">{plan.tier} Plan</div>
+                <div className="card-top-row">
+                  <div className={`card-icon-box ${plan.iconBoxClass || "icon-box-blue"}`}>
+                    {plan.icon || "🚀"}
+                  </div>
+                  {plan.badge && <div className="card-badge">{plan.badge}</div>}
+                </div>
+
+                <div className="card-plan-name">{plan.tier}</div>
+
                 <div className="card-price">
                   <span className="price-amount">{getPrice(plan)}</span>
                   <span className="price-period">{getPeriod()}</span>
-                  <p className="price-desc">{plan.desc}</p>
                 </div>
+
+                <p className="price-desc">{plan.desc}</p>
+
                 <div className="card-divider" />
+
                 <ul className="feature-list">
                   {plan.features.map((f: any) => (
                     <li key={f.text} className={`feature-item${f.included ? " included" : ""}`}>
                       <span className={`feature-check ${f.included ? "yes" : "no"}`}>
-                        {f.included ? "✓" : "✗"}
+                        {f.included ? "✓" : "—"}
                       </span>
-                      {f.text}
+                      <span>{f.text}</span>
                     </li>
                   ))}
                 </ul>
+
                 <button
                   type="button"
                   onClick={(e) => handleSelectPlan(e, plan.id)}
@@ -258,6 +287,7 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
                 >
                   {plan.cta}
                 </button>
+
                 <p className="plan-tc-link">
                   <Link href="/terms" target="_blank">Terms &amp; Conditions apply</Link>
                 </p>
@@ -272,14 +302,22 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
               id="js-compare-btn"
               onClick={() => setShowCompare(true)}
             >
-              <span className="compare-icon">⚖</span> Compare Job Seeker Plans
+              ⚖ Compare Job Seeker Plans
             </button>
             <div className="role-switch-inline">
               <span className="role-switch-label">Switch role:</span>
-              <button className="role-pill" onClick={() => onRoleSwitch("jobseeker", "employer")} id="js-switch-employer">
+              <button
+                className="role-pill"
+                onClick={() => onRoleSwitch("jobseeker", "employer")}
+                id="js-switch-employer"
+              >
                 🏢 Employer
               </button>
-              <button className="role-pill" onClick={() => onRoleSwitch("jobseeker", "business")} id="js-switch-business">
+              <button
+                className="role-pill"
+                onClick={() => onRoleSwitch("jobseeker", "business")}
+                id="js-switch-business"
+              >
                 📣 Business
               </button>
             </div>
@@ -289,39 +327,59 @@ const JobSeekerPlans: React.FC<JobSeekerPlansProps> = ({ onRoleSwitch, isLight =
 
       {/* Compare Modal */}
       {showCompare && (
-        <div className={`compare-modal-overlay${isLight ? " compare-modal--light" : ""}`} onClick={() => setShowCompare(false)} id="js-compare-modal">
-          <div className={`compare-modal-box${isLight ? " compare-modal--light" : ""}`} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={`compare-modal-overlay${isLight ? " compare-modal--light" : ""}`}
+          onClick={() => setShowCompare(false)}
+          id="js-compare-modal"
+        >
+          <div
+            className={`compare-modal-box${isLight ? " compare-modal--light" : ""}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="compare-modal-header">
               <div>
-                <div className="sub-badge" style={{ marginBottom: 8 }}>Job Seeker Plans</div>
-                <h3 className="compare-modal-title">Plan <span className="gold-text">Comparison</span></h3>
+                <div className="sub-eyebrow mb-1">Personal Plans</div>
+                <h3 className="compare-modal-title">Feature Comparison</h3>
               </div>
-              <button className="compare-modal-close" onClick={() => setShowCompare(false)} id="js-compare-close" aria-label="Close">✕</button>
+              <button
+                className="compare-modal-close"
+                onClick={() => setShowCompare(false)}
+                id="js-compare-close"
+                aria-label="Close"
+              >
+                ✕
+              </button>
             </div>
             <div className="compare-table-scroll">
               <table className="compare-modal-table">
                 <thead>
                   <tr>
                     <th>Feature</th>
-                    <th className="silver-header">🥈 Silver</th>
-                    <th className="gold-header">🥇 Gold</th>
-                    <th className="platinum-header">💎 Platinum</th>
+                    <th>Free</th>
+                    <th>Plus</th>
+                    <th>Pro</th>
                   </tr>
                 </thead>
                 <tbody>
                   {compareRows.map((row) => (
                     <tr key={row.feature}>
                       <td>{row.feature}</td>
-                      <td>{renderCell(row.silver)}</td>
-                      <td>{renderCell(row.gold)}</td>
-                      <td>{renderCell(row.platinum)}</td>
+                      <td>{renderCell(row.free)}</td>
+                      <td>{renderCell(row.plus)}</td>
+                      <td>{renderCell(row.pro)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             <div className="compare-modal-footer">
-              <a href="#plans" className="card-cta-btn primary" onClick={() => setShowCompare(false)} id="js-compare-choose">
+              <a
+                href="#personal-plans"
+                className="card-cta-btn primary"
+                onClick={() => setShowCompare(false)}
+                id="js-compare-choose"
+                style={{ maxWidth: 240 }}
+              >
                 Choose Your Plan
               </a>
             </div>
