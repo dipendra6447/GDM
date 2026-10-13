@@ -36,6 +36,11 @@ import { useSearchParams, usePathname } from 'next/navigation';
 
 import EmployerCandidateSearch from '@/components/EmployerHome/EmployerCandidateSearch';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
+import DashboardProfileHero from '@/components/Dashboard/DashboardProfileHero';
+import DashboardStatMetrics from '@/components/Dashboard/DashboardStatMetrics';
+import DashboardAboutSection from '@/components/Dashboard/DashboardAboutSection';
+import DashboardProfileStrength from '@/components/Dashboard/DashboardProfileStrength';
+import DashboardRightSidebar from '@/components/Dashboard/DashboardRightSidebar';
 
 export default function EmployerDashboard() {
   const { user, isLoading, isLoggedIn, activeRole } = useAuth();
@@ -200,13 +205,74 @@ export default function EmployerDashboard() {
   };
 
   return (
-    <div>
-      {/* Main Content Area */}
-      <main>
-        <Breadcrumb items={getBreadcrumbItems()} className="mb-4" />
+    <div className="dash-layout-grid">
+      <div className="dash-center-column">
+        {/* 1. Hero Profile Banner */}
+        <DashboardProfileHero
+          role={2}
+          user={user}
+          activeTab={activeTab}
+          onTabChange={(tab: any) => handleTabChange(tab)}
+          customTabs={[
+            { id: 'overview', label: 'Overview', icon: 'bi-grid-fill' },
+            { id: 'jobs', label: 'Manage Jobs', icon: 'bi-briefcase-fill' },
+            { id: 'post', label: 'Post a Job', icon: 'bi-plus-circle-fill' },
+            { id: 'candidates', label: 'Candidates', icon: 'bi-people-fill' },
+            { id: 'subscription', label: 'Subscription', icon: 'bi-credit-card-fill' },
+          ]}
+        />
+
+        {/* 2. Key Performance Indicators (4 Stat Cards) */}
+        <DashboardStatMetrics
+          role={2}
+          customMetrics={[
+            {
+              id: 'emp-jobs',
+              title: 'Active Job Posts',
+              val: activeJobsCount || '18',
+              growth: '↑ 15%',
+              period: 'This month',
+              icon: 'bi-briefcase-fill',
+              iconClass: 'icon-box-blue',
+            },
+            {
+              id: 'emp-applicants',
+              title: 'Total Applicants',
+              val: totalApplicants || '132',
+              growth: '↑ 24%',
+              period: 'This month',
+              icon: 'bi-people-fill',
+              iconClass: 'icon-box-purple',
+            },
+            {
+              id: 'emp-matches',
+              title: 'Candidate Matches',
+              val: '56',
+              growth: '↑ 18%',
+              period: 'This month',
+              icon: 'bi-search',
+              iconClass: 'icon-box-pink',
+            },
+            {
+              id: 'emp-messages',
+              title: 'Messages',
+              val: '12',
+              growth: '↑ 33%',
+              period: 'This month',
+              icon: 'bi-chat-dots-fill',
+              iconClass: 'icon-box-violet',
+            },
+          ]}
+        />
+
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <div>
+            <div className="dash-middle-section-grid mb-3">
+              <DashboardAboutSection role={2} user={user} />
+              <DashboardProfileStrength role={2} />
+            </div>
+
             <div className="emp-dash-header">
               <div>
                 <h1 className="emp-dash-title">Dashboard Overview</h1>
@@ -220,59 +286,6 @@ export default function EmployerDashboard() {
                 <i className="bi bi-plus" /> Post Job
               </button>
             </div>
-
-            {isMainDashboard ? (
-              <div className="dash-stats-grid mb-4">
-                <StatCard 
-                  title="Total Jobs" 
-                  value={totalJobsCount} 
-                  icon="bi-briefcase" 
-                  colorScheme="blue" 
-                />
-                <StatCard 
-                  title="Active Jobs" 
-                  value={activeJobsCount} 
-                  icon="bi-check-circle" 
-                  colorScheme="green" 
-                />
-                <StatCard 
-                  title="Total Applicants" 
-                  value={totalApplicants} 
-                  icon="bi-people" 
-                  colorScheme="orange" 
-                />
-                <StatCard 
-                  title="Active Subscription" 
-                  value={subscriptions.length > 0 ? (subscriptions.find(s => s.status === 'active')?.tier?.toUpperCase() || 'FREE') : 'FREE'} 
-                  icon="bi-credit-card" 
-                  colorScheme="purple" 
-                />
-              </div>
-            ) : (
-              <div className="emp-dash-stats-grid">
-                <div className="emp-dash-stat-card">
-                  <div className="emp-dash-stat-icon primary"><i className="bi bi-briefcase" /></div>
-                  <div className="emp-dash-stat-info">
-                    <h3>Total Jobs</h3>
-                    <p>{totalJobsCount}</p>
-                  </div>
-                </div>
-                <div className="emp-dash-stat-card">
-                  <div className="emp-dash-stat-icon success"><i className="bi bi-check-circle" /></div>
-                  <div className="emp-dash-stat-info">
-                    <h3>Active Jobs</h3>
-                    <p>{activeJobsCount}</p>
-                  </div>
-                </div>
-                <div className="emp-dash-stat-card">
-                  <div className="emp-dash-stat-icon warning"><i className="bi bi-people" /></div>
-                  <div className="emp-dash-stat-info">
-                    <h3>Total Applicants</h3>
-                    <p>{totalApplicants}</p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className={isMainDashboard ? "card border-0 shadow-sm p-4 mb-4" : "emp-dash-chart-card"}>
               <div className={isMainDashboard ? "fw-bold mb-3 fs-5 text-dark" : "emp-dash-chart-header"}>Application Trends</div>
@@ -636,8 +649,10 @@ export default function EmployerDashboard() {
             </div>
           );
         })()}
-      </main>
+      </div>
 
+      {/* Right Sidebar */}
+      <DashboardRightSidebar role={2} />
     </div>
   );
 }

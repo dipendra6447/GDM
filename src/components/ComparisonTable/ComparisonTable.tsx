@@ -7,84 +7,59 @@ gsap.registerPlugin(ScrollTrigger);
 
 const rows = [
   {
-    feature: "Job Applications",
-    free: "3 only",
-    jsP: "✓ Unlimited",
-    empP: "—",
-    bizP: "—",
+    feature: "Create Profile",
+    free: "✓",
+    plus: "✓",
+    pro: "✓",
   },
   {
-    feature: "Unlimited Applications",
-    free: "✗",
-    jsP: "✓",
-    empP: "—",
-    bizP: "—",
+    feature: "Discover Jobs & Opportunities",
+    free: "✓",
+    plus: "✓",
+    pro: "✓",
   },
   {
-    feature: "Job Posting",
-    free: "Up to 3",
-    jsP: "—",
-    empP: "✓ Unlimited",
-    bizP: "—",
+    feature: "Apply / Connect",
+    free: "✓",
+    plus: "✓",
+    pro: "✓",
   },
   {
-    feature: "Featured Listing",
-    free: "✗",
-    jsP: "✓",
-    empP: "✓",
-    bizP: "✓",
+    feature: "Promote Yourself",
+    free: "—",
+    plus: "✓",
+    pro: "✓",
   },
   {
-    feature: "Business Promotion",
-    free: "✗",
-    jsP: "✗",
-    empP: "✗",
-    bizP: "✓",
+    feature: "Enhanced Visibility",
+    free: "—",
+    plus: "✓",
+    pro: "✓",
+  },
+  {
+    feature: "Advanced Search",
+    free: "—",
+    plus: "✓",
+    pro: "✓",
   },
   {
     feature: "Analytics",
-    free: "✗",
-    jsP: "✓",
-    empP: "✓",
-    bizP: "✓",
+    free: "Basic",
+    plus: "Standard",
+    pro: "Advanced",
   },
   {
-    feature: "Priority Support",
-    free: "✗",
-    jsP: "✓",
-    empP: "✓",
-    bizP: "✓",
-  },
-  {
-    feature: "Verification Badge",
-    free: "✗",
-    jsP: "✗",
-    empP: "✓",
-    bizP: "—",
-  },
-  {
-    feature: "Premium Visibility",
-    free: "✗",
-    jsP: "✓",
-    empP: "✓",
-    bizP: "✓",
+    feature: "Priority Placement",
+    free: "—",
+    plus: "—",
+    pro: "✓",
   },
 ];
 
 const renderCell = (val: string) => {
-  if (val === "✓")
-    return <span className="check-icon">✓</span>;
-  if (val === "✗")
-    return <span className="cross-icon">✗</span>;
-  if (val.startsWith("✓"))
-    return (
-      <span style={{ color: "#D4AF37", fontWeight: 600, fontSize: "13px" }}>
-        {val}
-      </span>
-    );
-  if (val === "—")
-    return <span style={{ color: "#333" }}>—</span>;
-  return <span style={{ fontSize: "13px", color: "#B0B0B0" }}>{val}</span>;
+  if (val === "✓") return <span className="check-icon">✓</span>;
+  if (val === "—" || val === "✗") return <span className="cross-icon">—</span>;
+  return <span style={{ fontSize: "14px", color: "#cbd5e1" }}>{val}</span>;
 };
 
 const ComparisonTable: React.FC = () => {
@@ -98,9 +73,9 @@ const ComparisonTable: React.FC = () => {
           start: "top 80%",
         },
         opacity: 0,
-        x: -20,
-        duration: 0.4,
-        stagger: 0.07,
+        x: -15,
+        duration: 0.35,
+        stagger: 0.05,
         ease: "power2.out",
       });
     }, sectionRef);
@@ -110,34 +85,21 @@ const ComparisonTable: React.FC = () => {
   return (
     <section className="comparison-section" ref={sectionRef} id="comparison">
       <div className="container">
-        <div className="text-center mb-5">
-          <div className="sub-badge">Compare Plans</div>
-          <h2 className="sub-heading">
-            <span className="gold-text">Feature Comparison</span>
-          </h2>
-          <p className="sub-subheading">
-            Find the right plan for your needs.
-          </p>
+        <div className="text-start mb-4">
+          <div className="sub-eyebrow mb-2">
+            <span className="eyebrow-bullet">•</span> COMPARE PLANS
+          </div>
+          <h2 className="sub-heading">Find the Right Plan for You</h2>
         </div>
 
         <div className="comparison-table-wrapper">
           <table className="comparison-table" role="table" aria-label="Plan comparison">
             <thead>
               <tr>
-                <th scope="col">Feature</th>
-                <th scope="col">Free</th>
-                <th scope="col" className="gold-header">
-                  <div className="table-plan-label">Job Seeker</div>
-                  Premium
-                </th>
-                <th scope="col" className="gold-header">
-                  <div className="table-plan-label">Employer</div>
-                  Premium
-                </th>
-                <th scope="col" className="gold-header">
-                  <div className="table-plan-label">Business</div>
-                  Promotion
-                </th>
+                <th scope="col" style={{ width: "34%" }}>Features</th>
+                <th scope="col" style={{ width: "22%" }}>Free</th>
+                <th scope="col" style={{ width: "22%" }}>Plus</th>
+                <th scope="col" style={{ width: "22%" }}>Pro</th>
               </tr>
             </thead>
             <tbody>
@@ -145,9 +107,8 @@ const ComparisonTable: React.FC = () => {
                 <tr key={row.feature}>
                   <td>{row.feature}</td>
                   <td>{renderCell(row.free)}</td>
-                  <td>{renderCell(row.jsP)}</td>
-                  <td>{renderCell(row.empP)}</td>
-                  <td>{renderCell(row.bizP)}</td>
+                  <td>{renderCell(row.plus)}</td>
+                  <td>{renderCell(row.pro)}</td>
                 </tr>
               ))}
             </tbody>

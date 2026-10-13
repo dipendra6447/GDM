@@ -3,7 +3,6 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import Logo from '../Logo/Logo';
 import './Dashboard.css';
 
 interface Props {
@@ -16,71 +15,130 @@ const DashboardSidebar: React.FC<Props> = ({ activeRole = 1 }) => {
   const { logout } = useAuth();
 
   const isEmployer = activeRole === 2;
-  const isJobSeeker = activeRole === 1;
   const isBusinessPromoter = activeRole === 3;
-
   const currentTab = searchParams.get('tab') || 'overview';
 
-  const isItemActive = (href: string) => {
-    const [basePath, query] = href.split('?');
-    if (pathname !== basePath) return false;
-    if (!query) return !searchParams.has('tab') || currentTab === 'overview';
-    const urlParams = new URLSearchParams(query);
-    return urlParams.get('tab') === currentTab;
-  };
-
   const navItems = [
-    ...(isEmployer ? [
-      { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard?tab=overview' },
-      { label: 'Manage Jobs', icon: 'bi-briefcase-fill', href: '/dashboard?tab=jobs' },
-      { label: 'Post a Job', icon: 'bi-plus-circle-fill', href: '/dashboard?tab=post' },
-      { label: 'Search Candidates', icon: 'bi-people-fill', href: '/dashboard?tab=candidates' },
-      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard?tab=subscription' }
-    ] : []),
-    ...(isJobSeeker ? [
-      { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard' },
-      { label: 'Applied Jobs', icon: 'bi-file-earmark-text-fill', href: '/dashboard/applied' },
-      { label: 'Saved Jobs', icon: 'bi-bookmark-fill', href: '/dashboard/saved' },
-      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=1' }
-    ] : []),
-    ...(isBusinessPromoter ? [
-      { label: 'Overview', icon: 'bi-grid-fill', href: '/dashboard?tab=overview' },
-      { label: 'My Campaigns', icon: 'bi-megaphone-fill', href: '/dashboard?tab=campaigns' },
-      { label: 'Analytics', icon: 'bi-graph-up-arrow', href: '/dashboard?tab=analytics' },
-      { label: 'My Subscription', icon: 'bi-credit-card-fill', href: '/dashboard/subscription?role=3' }
-    ] : []),
-    { label: 'Community', icon: 'bi-people-fill', href: '/dashboard/community' },
-    { label: 'Messages', icon: 'bi-chat-dots-fill', href: '/dashboard/messages' },
-    { label: 'Profile Settings', icon: 'bi-person-gear', href: `/profile?tab=${activeRole}` },
+    {
+      label: 'Dashboard',
+      icon: 'bi-grid-fill',
+      href: '/dashboard',
+      active: pathname === '/dashboard' && (!searchParams.has('tab') || currentTab === 'overview'),
+    },
+    {
+      label: 'Discover',
+      icon: 'bi-compass',
+      href: '/dashboard/community',
+      active: pathname.includes('/community'),
+    },
+    {
+      label: 'Jobs',
+      icon: 'bi-briefcase-fill',
+      href: isEmployer ? '/dashboard?tab=jobs' : '/dashboard/applied',
+      active: isEmployer ? currentTab === 'jobs' : pathname.includes('/applied'),
+    },
+    {
+      label: 'People',
+      icon: 'bi-people-fill',
+      href: isEmployer ? '/dashboard?tab=candidates' : '/dashboard/community',
+      active: isEmployer ? currentTab === 'candidates' : false,
+    },
+    {
+      label: 'Businesses',
+      icon: 'bi-shop',
+      href: isBusinessPromoter ? '/dashboard?tab=campaigns' : '/dashboard',
+      active: isBusinessPromoter ? currentTab === 'campaigns' : false,
+    },
+    {
+      label: 'Services',
+      icon: 'bi-tools',
+      href: '/services',
+      active: pathname.includes('/services'),
+    },
+    {
+      label: 'Events',
+      icon: 'bi-calendar-event',
+      href: '/events',
+      active: pathname.includes('/events'),
+    },
+    {
+      label: 'Messages',
+      icon: 'bi-chat-dots-fill',
+      href: '/dashboard/messages',
+      badge: 2,
+      active: pathname.includes('/messages'),
+    },
+    {
+      label: 'Saved',
+      icon: 'bi-bookmark-fill',
+      href: '/dashboard/saved',
+      active: pathname.includes('/saved'),
+    },
+    {
+      label: 'My Profile',
+      icon: 'bi-person-circle',
+      href: `/profile?tab=${activeRole}`,
+      active: pathname.includes('/profile'),
+    },
+    {
+      label: 'Promote',
+      icon: 'bi-megaphone-fill',
+      href: isBusinessPromoter ? '/dashboard?tab=campaigns' : '/subscription',
+      active: isBusinessPromoter && currentTab === 'campaigns',
+    },
+    {
+      label: 'Subscription',
+      icon: 'bi-credit-card-fill',
+      href: `/dashboard/subscription?role=${activeRole}`,
+      active: pathname.includes('/subscription'),
+    },
+    {
+      label: 'Settings',
+      icon: 'bi-gear-fill',
+      href: `/profile?tab=${activeRole}`,
+      active: false,
+    },
   ];
 
   return (
     <aside className="dashboard-sidebar">
-      <div className="sidebar-logo">
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <Logo size={30} />
-        </Link>
-      </div>
-
-      <nav className="sidebar-nav">
-        {navItems.map((item) => {
-          const active = isItemActive(item.href);
-          return (
-            <Link 
-              key={item.href}
-              href={item.href} 
-              className={`sidebar-nav-item ${active ? 'active' : ''}`}
-            >
-              <i className={`bi ${item.icon}`}></i>
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+      {/* Navigation Links matching mockup */}
+      <nav className="sidebar-nav-container">
+        <ul className="sidebar-nav-list">
+          {navItems.map((item) => (
+            <li key={item.label}>
+              <Link
+                href={item.href}
+                className={`sidebar-nav-link ${item.active ? 'active' : ''}`}
+                id={`sidebar-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                <div className="sidebar-nav-link-left">
+                  <i className={`bi ${item.icon}`} />
+                  <span>{item.label}</span>
+                </div>
+                {item.badge && (
+                  <span className="sidebar-item-badge">{item.badge}</span>
+                )}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </nav>
 
-      <div className="sidebar-footer">
-        <button className="sidebar-logout" onClick={logout}>
-          <i className="bi bi-box-arrow-left"></i>
+      {/* Upgrade for More Visibility Card matching mockup */}
+      <div className="sidebar-bottom-block">
+        <div className="sidebar-upgrade-card">
+          <div className="upgrade-crown-icon">👑</div>
+          <h4 className="upgrade-title">Upgrade for More Visibility</h4>
+          <p className="upgrade-desc">Get discovered by more people and opportunities.</p>
+          <Link href="/subscription" className="upgrade-btn" id="sidebar-upgrade-btn">
+            View Plans →
+          </Link>
+        </div>
+
+        {/* Log Out button */}
+        <button className="sidebar-logout-btn" onClick={logout} id="sidebar-logout-btn">
+          <i className="bi bi-box-arrow-left" />
           <span>Log Out</span>
         </button>
       </div>

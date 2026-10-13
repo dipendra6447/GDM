@@ -34,12 +34,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="dashboard-layout">
-      <DashboardSidebar activeRole={activeRole} />
-      <main className="dashboard-main" style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
-        <DashboardTopHeader />
-        {children}
-      </main>
+    <div className="dashboard-app-wrapper">
+      <DashboardTopHeader />
+      <div className="dashboard-layout">
+        <DashboardSidebar activeRole={activeRole} />
+        <main className="dashboard-main">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
