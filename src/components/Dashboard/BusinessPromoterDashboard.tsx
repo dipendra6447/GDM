@@ -16,6 +16,11 @@ import StatCard from './StatCard';
 import BusinessAdCard from '../BusinessAdCard/BusinessAdCard';
 import CollageMaker from '../CollageMaker/CollageMaker';
 import AdBanner from '@/components/AdBanner/AdBanner';
+import DashboardProfileHero from './DashboardProfileHero';
+import DashboardStatMetrics from './DashboardStatMetrics';
+import DashboardAboutSection from './DashboardAboutSection';
+import DashboardProfileStrength from './DashboardProfileStrength';
+import DashboardRightSidebar from './DashboardRightSidebar';
 
 export default function BusinessPromoterDashboard() {
   const searchParams = useSearchParams();
@@ -266,65 +271,89 @@ export default function BusinessPromoterDashboard() {
   }
 
   return (
-    <div className="business-promoter-dashboard">
+    <div className="dash-layout-grid">
+      <div className="dash-center-column">
+        {/* 1. Hero Profile Banner */}
+        <DashboardProfileHero
+          role={3}
+          activeTab={activeTab}
+          onTabChange={(tab) => router.push(`/dashboard?tab=${tab}`, { scroll: false })}
+          customTabs={[
+            { id: 'overview', label: 'Overview', icon: 'bi-grid-fill' },
+            { id: 'campaigns', label: 'My Campaigns', icon: 'bi-megaphone-fill' },
+            { id: 'post', label: 'Create Ad', icon: 'bi-plus-circle-fill' },
+            { id: 'analytics', label: 'Analytics', icon: 'bi-graph-up' },
+            { id: 'services', label: 'Services', icon: 'bi-tools' },
+            { id: 'collage', label: 'Collage Maker', icon: 'bi-images' },
+            { id: 'subscription', label: 'Subscription', icon: 'bi-credit-card-fill' },
+          ]}
+        />
 
-      {/* Expiry / Warning Alert Banner */}
-      {!activeSub && (
-        <div className="alert alert-warning border-warning bg-transparent text-warning p-3 mb-4 d-flex justify-content-between align-items-center" style={{ borderRadius: '16px' }}>
-          <div className="d-flex align-items-center gap-2">
-            <i className="bi bi-exclamation-triangle-fill fs-5" />
-            <div>
-              <span className="fw-bold">No Active Promotion Subscription:</span> You need an active subscription to make your ad campaigns live. Any new campaigns will be saved as drafts.
+        {/* 2. Key Performance Indicators (4 Stat Cards) */}
+        <DashboardStatMetrics
+          role={3}
+          customMetrics={[
+            {
+              id: 'biz-impressions',
+              title: 'Campaign Impressions',
+              val: totals?.impressions ? Number(totals.impressions).toLocaleString() : '2,450',
+              growth: '↑ 38%',
+              period: 'This month',
+              icon: 'bi-eye-fill',
+              iconClass: 'icon-box-blue',
+            },
+            {
+              id: 'biz-clicks',
+              title: 'Ad Clicks',
+              val: totals?.clicks ? Number(totals.clicks).toLocaleString() : '132',
+              growth: '↑ 21%',
+              period: 'This month',
+              icon: 'bi-cursor-fill',
+              iconClass: 'icon-box-purple',
+            },
+            {
+              id: 'biz-leads',
+              title: 'Customer Leads',
+              val: activePromosCount ? `${activePromosCount * 14}` : '56',
+              growth: '↑ 24%',
+              period: 'This month',
+              icon: 'bi-bullseye',
+              iconClass: 'icon-box-pink',
+            },
+            {
+              id: 'biz-inquiries',
+              title: 'Inquiries',
+              val: '12',
+              growth: '↑ 33%',
+              period: 'This month',
+              icon: 'bi-chat-dots-fill',
+              iconClass: 'icon-box-violet',
+            },
+          ]}
+        />
+
+        {/* Expiry / Warning Alert Banner */}
+        {!activeSub && (
+          <div className="alert alert-warning border-warning bg-transparent text-warning p-3 mb-3 d-flex justify-content-between align-items-center" style={{ borderRadius: '16px' }}>
+            <div className="d-flex align-items-center gap-2">
+              <i className="bi bi-exclamation-triangle-fill fs-5" />
+              <div>
+                <span className="fw-bold">No Active Promotion Subscription:</span> You need an active subscription to make your ad campaigns live. Any new campaigns will be saved as drafts.
+              </div>
             </div>
+            <Link href="/subscription" className="btn btn-sm btn-warning text-dark fw-bold px-3 py-1" style={{ borderRadius: '8px' }}>
+              Buy Plan
+            </Link>
           </div>
-          <Link href="/subscription-light" className="btn btn-sm btn-warning text-dark fw-bold px-3 py-1" style={{ borderRadius: '8px' }}>
-            Buy Plan
-          </Link>
-        </div>
-      )}
+        )}
 
-      {/* OVERVIEW TAB */}
-      {activeTab === 'overview' && (
-        <>
-          {/* Overview Stat Cards */}
-          <div className="dash-stats-grid mb-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-            <StatCard
-              title="Active Ads"
-              value={activePromosCount}
-              icon="bi-megaphone-fill"
-              colorScheme="green"
-            />
-            <StatCard
-              title="Total Spent"
-              value={`$${totals.spent}`}
-              icon="bi-currency-dollar"
-              colorScheme="orange"
-            />
-            <StatCard
-              title="Avg CTR"
-              value={`${totals.ctr}%`}
-              icon="bi-percent"
-              colorScheme="blue"
-            />
-            <StatCard
-              title="Avg CPC"
-              value={`$${totals.cpc}`}
-              icon="bi-graph-up-arrow"
-              colorScheme="purple"
-            />
-            <StatCard
-              title="Impressions"
-              value={totals.impressions}
-              icon="bi-eye-fill"
-              colorScheme="cyan"
-            />
-            <StatCard
-              title="Active Subscription"
-              value={activeSub ? activeSub.tier.toUpperCase() : 'NONE'}
-              icon="bi-shield-check"
-              colorScheme="purple"
-            />
-          </div>
+        {/* OVERVIEW TAB */}
+        {activeTab === 'overview' && (
+          <>
+            <div className="dash-middle-section-grid mb-3">
+              <DashboardAboutSection role={3} />
+              <DashboardProfileStrength role={3} />
+            </div>
 
           {/* Analytics Chart Section */}
           <div className="row g-4 mb-4">
@@ -688,6 +717,10 @@ export default function BusinessPromoterDashboard() {
         </>
       )}
 
+      </div>
+
+      {/* Right Sidebar */}
+      <DashboardRightSidebar role={3} />
     </div>
   );
 }

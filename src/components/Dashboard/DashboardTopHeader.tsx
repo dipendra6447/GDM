@@ -1,7 +1,10 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import Logo from '../Logo/Logo';
 import '../Navbar/Navbar.css';
 
 interface ActiveSubscriptionInfo {
@@ -18,8 +21,10 @@ interface ActiveSubscriptionInfo {
 
 export default function DashboardTopHeader() {
   const { user, activeRole, switchRole, logout } = useAuth();
+  const router = useRouter();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [activeSub, setActiveSub] = useState<ActiveSubscriptionInfo | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -85,14 +90,6 @@ export default function DashboardTopHeader() {
                 badgeBg = 'linear-gradient(135deg, #E0E0E0, #808080)';
                 badgeTextColor = '#000000';
                 glowColor = 'rgba(192, 192, 192, 0.4)';
-              } else {
-                badgeLabel = '✨ GOLD';
-                color = '#D4AF37';
-                bgColor = 'rgba(212, 175, 55, 0.1)';
-                borderColor = '#D4AF37';
-                badgeBg = 'linear-gradient(135deg, #D4AF37, #B8860B)';
-                badgeTextColor = '#000000';
-                glowColor = 'rgba(212, 175, 55, 0.4)';
               }
 
               setActiveSub({
@@ -125,20 +122,77 @@ export default function DashboardTopHeader() {
   if (!user) return null;
 
   const getInitial = () => user?.email?.charAt(0).toUpperCase() || 'U';
+  const displayName = (user as any)?.name || user?.email?.split('@')[0] || 'Michael';
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/jobs?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
-    <div className="dashboard-top-header d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom position-relative">
-      <div>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>
-          {activeRole === 2 ? 'Employer Dashboard' : activeRole === 3 ? 'Business Promoter Dashboard' : 'Job Seeker Dashboard'}
-        </h3>
-        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>
-          Welcome back, {user?.email?.split('@')[0] || 'User'}!
-        </p>
+    <header className="dashboard-topbar">
+      {/* 1. Left: GoDiscoverMe Logo */}
+      <div className="dash-topbar-left">
+        <Link href="/dashboard" className="d-flex align-items-center text-decoration-none">
+          <Logo size={28} />
+        </Link>
       </div>
 
-      <div className="d-flex align-items-center gap-3">
-        {/* Hide Get Premium button if user has active subscription for current role */}
+      {/* 2. Center: Search Bar with Location and Search Button matching Mockup */}
+      <div className="dash-topbar-center">
+        <div className="dash-topbar-search-box">
+          <i className="bi bi-search search-icon" />
+          <input
+            type="text"
+            placeholder="Search jobs, people, businesses, services, or events..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSearch();
+            }}
+            aria-label="Search GoDiscoverMe"
+          />
+          <div className="dash-topbar-location-pill">
+            <i className="bi bi-geo-alt-fill text-primary me-1" />
+            <span>Dayton, OH</span>
+          </div>
+          <button
+            type="button"
+            className="dash-topbar-search-btn"
+            onClick={handleSearch}
+            aria-label="Submit search"
+          >
+            <i className="bi bi-search" />
+          </button>
+        </div>
+      </div>
+
+      {/* 3. Right: Notifications, Messages, Sub Badge & Profile */}
+      <div className="dash-topbar-right">
+        {/* Notifications Icon with Badge (3) */}
+        <button
+          type="button"
+          className="dash-icon-btn"
+          aria-label="Notifications"
+          title="Notifications"
+        >
+          <i className="bi bi-bell-fill" />
+          <span className="dash-icon-badge">3</span>
+        </button>
+
+        {/* Messages Icon with Badge (2) */}
+        <Link
+          href="/dashboard/messages"
+          className="dash-icon-btn"
+          aria-label="Messages"
+          title="Messages"
+        >
+          <i className="bi bi-chat-dots-fill" />
+          <span className="dash-icon-badge">2</span>
+        </Link>
+
+        {/* Subscription Status or Premium Button */}
         {activeSub ? (
           <Link
             href={activeRole === 2 ? "/employer/post-job?tab=subscription" : "/dashboard/subscription"}
@@ -155,7 +209,7 @@ export default function DashboardTopHeader() {
           </Link>
         ) : (
           <Link
-            href="/subscription-light"
+            href="/subscription"
             className="btn-get-premium"
             id="dash-header-get-premium-btn"
           >
@@ -164,38 +218,36 @@ export default function DashboardTopHeader() {
           </Link>
         )}
 
-        <div className="nav-profile-wrapper" ref={dropdownRef}>
-          <button 
-            className="nav-profile-btn"
+        {/* User Profile Dropdown */}
+        <div className="nav-profile-wrapper position-relative" ref={dropdownRef}>
+          <button
+            className="dash-user-dropdown-btn"
             onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
             type="button"
-            style={activeSub ? {
-              borderColor: activeSub.borderColor,
-              background: activeSub.bgColor,
-              boxShadow: `0 0 14px ${activeSub.glowColor}`,
-              color: activeSub.color
-            } : undefined}
+            aria-label="Open profile menu"
           >
             {user?.avatarUrl ? (
-               <img 
-                 src={user.avatarUrl} 
-                 alt="Profile" 
-                 className="nav-profile-avatar" 
-                 style={activeSub ? { border: `2px solid ${activeSub.color}` } : undefined} 
-               />
+              <img
+                src={user.avatarUrl}
+                alt="Profile"
+                className="dash-topbar-avatar"
+              />
             ) : (
-               <div 
-                 className="nav-profile-initial" 
-                 style={activeSub ? { background: activeSub.badgeBg, color: activeSub.badgeTextColor } : undefined}
-               >
-                 {getInitial()}
-               </div>
+              <img
+                src="/images/dashboard_user_michael.jpg"
+                alt="Michael"
+                className="dash-topbar-avatar"
+                onError={(e) => {
+                  (e.target as HTMLElement).style.display = 'none';
+                }}
+              />
             )}
-            <i className={`bi bi-chevron-${profileDropdownOpen ? 'up' : 'down'} nav-profile-chevron`} style={activeSub ? { color: activeSub.color } : undefined}></i>
+            <span className="dash-topbar-name">{displayName}</span>
+            <i className={`bi bi-chevron-${profileDropdownOpen ? 'up' : 'down'} text-muted ms-1`} style={{ fontSize: '11px' }} />
           </button>
 
           {profileDropdownOpen && (
-            <div className="nav-profile-dropdown">
+            <div className="nav-profile-dropdown" style={{ right: 0, top: '48px' }}>
               {/* User Header Info */}
               <div className="nav-dropdown-header">
                 {user?.avatarUrl ? (
@@ -213,7 +265,7 @@ export default function DashboardTopHeader() {
 
               <div className="nav-dropdown-divider" />
 
-              <Link 
+              <Link
                 href={`/profile?tab=${activeRole}`}
                 className="nav-dropdown-item"
                 onClick={() => setProfileDropdownOpen(false)}
@@ -221,7 +273,7 @@ export default function DashboardTopHeader() {
                 <i className="bi bi-person-gear text-primary"></i> Profile Settings
               </Link>
 
-              <Link 
+              <Link
                 href={`/dashboard/subscription?role=${activeRole}`}
                 className="nav-dropdown-item"
                 onClick={() => setProfileDropdownOpen(false)}
@@ -247,9 +299,9 @@ export default function DashboardTopHeader() {
                             fontWeight: 600,
                             borderRadius: '8px',
                             padding: '6px 12px',
-                            background: activeRole === 1 ? '#2454FF' : '#f8fafc',
-                            color: activeRole === 1 ? '#ffffff' : '#334155',
-                            border: activeRole === 1 ? 'none' : '1px solid #e2e8f0',
+                            background: activeRole === 1 ? '#2454FF' : '#1e293b',
+                            color: activeRole === 1 ? '#ffffff' : '#94a3b8',
+                            border: activeRole === 1 ? 'none' : '1px solid rgba(255,255,255,0.1)',
                             transition: 'all 0.15s ease'
                           }}
                           onClick={() => {
@@ -258,7 +310,7 @@ export default function DashboardTopHeader() {
                           }}
                         >
                           <span><i className="bi bi-search me-2"></i>Job Seeker</span>
-                          {activeRole === 1 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                          {activeRole === 1 && <i className="bi bi-check-circle-fill ms-2 text-white"></i>}
                         </button>
                       )}
                       {user.roles.includes(2) && (
@@ -270,9 +322,9 @@ export default function DashboardTopHeader() {
                             fontWeight: 600,
                             borderRadius: '8px',
                             padding: '6px 12px',
-                            background: activeRole === 2 ? '#2454FF' : '#f8fafc',
-                            color: activeRole === 2 ? '#ffffff' : '#334155',
-                            border: activeRole === 2 ? 'none' : '1px solid #e2e8f0',
+                            background: activeRole === 2 ? '#2454FF' : '#1e293b',
+                            color: activeRole === 2 ? '#ffffff' : '#94a3b8',
+                            border: activeRole === 2 ? 'none' : '1px solid rgba(255,255,255,0.1)',
                             transition: 'all 0.15s ease'
                           }}
                           onClick={() => {
@@ -281,7 +333,7 @@ export default function DashboardTopHeader() {
                           }}
                         >
                           <span><i className="bi bi-building me-2"></i>Employer</span>
-                          {activeRole === 2 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                          {activeRole === 2 && <i className="bi bi-check-circle-fill ms-2 text-white"></i>}
                         </button>
                       )}
                       {user.roles.includes(3) && (
@@ -293,9 +345,9 @@ export default function DashboardTopHeader() {
                             fontWeight: 600,
                             borderRadius: '8px',
                             padding: '6px 12px',
-                            background: activeRole === 3 ? '#2454FF' : '#f8fafc',
-                            color: activeRole === 3 ? '#ffffff' : '#334155',
-                            border: activeRole === 3 ? 'none' : '1px solid #e2e8f0',
+                            background: activeRole === 3 ? '#2454FF' : '#1e293b',
+                            color: activeRole === 3 ? '#ffffff' : '#94a3b8',
+                            border: activeRole === 3 ? 'none' : '1px solid rgba(255,255,255,0.1)',
                             transition: 'all 0.15s ease'
                           }}
                           onClick={() => {
@@ -304,7 +356,7 @@ export default function DashboardTopHeader() {
                           }}
                         >
                           <span><i className="bi bi-megaphone me-2"></i>Business Promoter</span>
-                          {activeRole === 3 && <i className="bi bi-check-circle-fill ms-2" style={{ color: '#ffffff' }}></i>}
+                          {activeRole === 3 && <i className="bi bi-check-circle-fill ms-2 text-white"></i>}
                         </button>
                       )}
                     </div>
@@ -327,6 +379,6 @@ export default function DashboardTopHeader() {
           )}
         </div>
       </div>
-    </div>
+    </header>
   );
 }
