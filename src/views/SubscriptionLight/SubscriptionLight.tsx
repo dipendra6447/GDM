@@ -14,6 +14,7 @@ import Testimonials from "../../components/Testimonials/Testimonials";
 import FAQ from "../../components/FAQ/FAQ";
 import SubscriptionCTA from "../../components/SubscriptionCTA/SubscriptionCTA";
 import StatsStrip from "../../components/StatsStrip/StatsStrip";
+import HowDoYouWantToUse from "../../components/HowDoYouWantToUse/HowDoYouWantToUse";
 import RoleSwitcherModal, { UserRole } from "../../components/RoleSwitcherModal/RoleSwitcherModal";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 
@@ -146,7 +147,10 @@ const SubscriptionLight: React.FC = () => {
         {/* 1. Hero */}
         <PricingHero />
 
-        {/* 2. Stats Strip */}
+        {/* 2. "How do you want to use GoDiscoverMe?" Section */}
+        <HowDoYouWantToUse onSelectRole={handleRoleSelect} />
+
+        {/* 3. Stats Strip */}
         <StatsStrip />
 
         {/* Section Divider */}
