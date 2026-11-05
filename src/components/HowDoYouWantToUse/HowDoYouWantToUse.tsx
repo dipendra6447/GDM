@@ -31,7 +31,7 @@ const personaCards: PersonaGoalCard[] = [
     theme: 'blue',
     title: 'Find Work',
     subtitle: 'Jobs, gigs and opportunities',
-    avatar: '/images/persona_find_work_v2.png',
+    avatar: '/images/persona_find_work_clean.png',
     features: [
       'Browse job opportunities',
       'Find local and remote work',
@@ -47,7 +47,7 @@ const personaCards: PersonaGoalCard[] = [
     theme: 'green',
     title: 'Hire Talent',
     subtitle: 'Find people with the skills you need',
-    avatar: '/images/persona_hire_talent_v2.png',
+    avatar: '/images/persona_hire_talent_clean.png',
     features: [
       'Post jobs and gigs',
       'Find skilled talent',
@@ -63,7 +63,7 @@ const personaCards: PersonaGoalCard[] = [
     theme: 'purple',
     title: 'Promote Yourself',
     subtitle: 'Showcase your skills and services',
-    avatar: '/images/persona_promote_self_v2.png',
+    avatar: '/images/persona_promote_self_clean.png',
     features: [
       'Create a standout profile',
       'Highlight your skills & services',
@@ -79,7 +79,7 @@ const personaCards: PersonaGoalCard[] = [
     theme: 'orange',
     title: 'Grow Your Business',
     subtitle: 'Promote your business and reach customers',
-    avatar: '/images/persona_grow_business_v2.png',
+    avatar: '/images/persona_grow_business_clean.png',
     features: [
       'Create a business profile',
       'Promote your services',
